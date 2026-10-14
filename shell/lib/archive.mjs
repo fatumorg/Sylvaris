@@ -193,14 +193,27 @@ export function outName(text, format) {
     return WRITABLE.indexOf(archiveExt(name)) >= 0 ? name : name + "." + format
 }
 
+function extras(r) {
+    const skipped = (r.skipped || []).length
+    const replaced = (r.trashed || []).length
+    return (skipped > 0 ? " · skipped " + skipped : "") + (replaced > 0 ? " · replaced " + replaced : "")
+}
+
+function skippedText(r) {
+    const s = r.skipped || []
+    return s.length === 1 ? "“" + nameOf(s[0]) + "”" : s.length + " items"
+}
+
 export function extractNote(r) {
     if (r.cancelled)
         return "Stopped"
     if (r.failed.length > 0)
         return nameOf(r.failed[0].path) + ": " + r.failed[0].error
+    if (r.ok.length === 0 && (r.skipped || []).length > 0)
+        return "Skipped " + skippedText(r) + ", nothing extracted"
     if (r.ok.length === 1)
-        return "Extracted to “" + nameOf(r.ok[0][1]) + "”"
-    return "Extracted " + r.ok.length + (r.ok.every(p => p[0] === r.ok[0][0]) ? " items" : " archives")
+        return "Extracted to “" + nameOf(r.ok[0][1]) + "”" + extras(r)
+    return "Extracted " + r.ok.length + (r.ok.every(p => p[0] === r.ok[0][0]) ? " items" : " archives") + extras(r)
 }
 
 export function compressNote(r) {
@@ -208,5 +221,17 @@ export function compressNote(r) {
         return "Stopped"
     if (r.failed.length > 0)
         return nameOf(r.failed[0].path) + ": " + r.failed[0].error
-    return "Packed into “" + nameOf(r.ok[0][1]) + "”"
+    if (r.ok.length === 0)
+        return "Kept " + skippedText(r) + ", nothing packed"
+    return "Packed into “" + nameOf(r.ok[0][1]) + "”" + ((r.trashed || []).length > 0 ? " · the old one is in the trash" : "")
+}
+
+export function addNote(r) {
+    if (r.cancelled)
+        return "Stopped"
+    if (r.failed.length > 0)
+        return nameOf(r.failed[0].path) + ": " + r.failed[0].error
+    if (r.ok.length === 0)
+        return "Skipped " + skippedText(r) + ", nothing added"
+    return "Added " + (r.ok.length === 1 ? "“" + nameOf(r.ok[0][1]) + "”" : r.ok.length + " items") + extras(r)
 }

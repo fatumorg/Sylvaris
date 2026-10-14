@@ -1,0 +1,96 @@
+sleep 1.5
+check mkdir -p "$HOME/A/D" "$HOME/B/D" && printf 'new a' > "$HOME/A/a.txt" && printf 'old a' > "$HOME/B/a.txt" && printf 'new x' > "$HOME/A/D/x.txt" && printf 'old x' > "$HOME/B/D/x.txt" && printf 'y' > "$HOME/A/D/y.txt" && printf 'z' > "$HOME/B/D/z.txt"
+syl files open ~/A
+sleep 1.5
+syl files select D a.txt
+syl files act copy
+syl files go ~/B
+sleep 0.8
+syl files act paste
+sleep 1.5
+check sylvaris files state | grep -q '"clash":{"op":"copy","name":"D","actions":\["merge","replace","skip","both","rename"\]'
+shot files-clash-folder
+bg wtype -k Shift_L -s 400 -k m
+sleep 1.2
+check sylvaris files state | grep -q '"clash":{"op":"copy","name":"x.txt","actions":\["replace","skip","both","rename"\]'
+shot files-clash-file
+bg wtype -k Shift_L -s 400 -k n
+sleep 0.8
+shot files-clash-rename
+bg wtype -k Shift_L -s 400 x-new -k Return
+sleep 1.2
+check sylvaris files state | grep -q '"clash":{"op":"copy","name":"a.txt"'
+bg wtype -k Shift_L -s 400 -k r
+sleep 1.5
+check sylvaris files state | grep -q '"clash":null'
+check test "$(cat "$HOME/B/a.txt")" = "new a" && test "$(cat "$HOME/B/D/x.txt")" = "old x" && test "$(cat "$HOME/B/D/x-new.txt")" = "new x" && test -f "$HOME/B/D/y.txt" && test -f "$HOME/B/D/z.txt"
+check test "$(cat "$HOME/.local/share/Trash/files/a.txt")" = "old a"
+check test ! -e "$HOME/B/D (2)" && test ! -e "$HOME/B/a (2).txt"
+check sylvaris files state | grep -q 'Copied 2 items · replaced 1'
+syl files act undo
+sleep 2
+check test "$(cat "$HOME/B/a.txt")" = "old a" && test ! -e "$HOME/B/D/x-new.txt" && test ! -e "$HOME/B/D/y.txt" && test -f "$HOME/B/D/z.txt" && test "$(cat "$HOME/B/D/x.txt")" = "old x"
+syl files select a.txt
+syl files act copy
+syl files act paste
+sleep 1.5
+check sylvaris files state | grep -q '"clash":null'
+check test -f "$HOME/B/a (2).txt"
+syl files go ~/A
+sleep 0.8
+syl files select a.txt
+syl files act cut
+syl files go ~/B
+sleep 0.8
+syl files act paste
+sleep 1.5
+check sylvaris files state | grep -q '"clash":{"op":"move","name":"a.txt"'
+bg wtype -k Shift_L -s 400 -k Escape
+sleep 1.2
+check sylvaris files state | grep -q '"clash":null'
+check sylvaris files state | grep -q '"note":"Stopped"'
+check test -f "$HOME/A/a.txt" && test "$(cat "$HOME/B/a.txt")" = "old a"
+syl files go ~/A
+sleep 0.8
+syl files select a.txt
+syl files act cut
+syl files go ~/B
+sleep 0.8
+syl files act paste
+sleep 1.5
+check ! sylvaris files clash merge
+syl files clash skip
+sleep 1.2
+check sylvaris files state | grep -q 'Skipped “a.txt”'
+check test -f "$HOME/A/a.txt"
+check python3 -c 'import zipfile, os; z = zipfile.ZipFile(os.path.expanduser("~/B/pack.zip"), "w"); z.writestr("D/x.txt", "zip x"); z.writestr("D/w.txt", "zip w"); z.close()'
+syl files close
+syl archive open ~/B/pack.zip
+sleep 2
+syl archive act extractAll
+sleep 2
+check sylvaris archive state | grep -q '"clash":{"op":"extract","name":"D","actions":\["merge","replace","skip","both","rename"\]'
+shot archive-clash
+syl archive clash merge
+sleep 1.5
+check sylvaris archive state | grep -q '"clash":{"op":"extract","name":"x.txt"'
+syl archive clash skip
+sleep 2
+check test "$(cat "$HOME/B/D/x.txt")" = "old x" && test "$(cat "$HOME/B/D/w.txt")" = "zip w" && test ! -e "$HOME/B/D (2)"
+check sylvaris archive state | grep -q 'skipped 1'
+syl files close
+syl archive add ~/A/D
+sleep 2
+check sylvaris archive state | grep -q '"clash":{"op":"add","name":"D","actions":\["merge","replace","skip","both","rename"\]'
+syl archive clash both
+sleep 2.5
+check python3 -c 'import os, sys, zipfile; n = zipfile.ZipFile(os.path.expanduser("~/B/pack.zip")).namelist(); sys.exit(0 if "D (2)/y.txt" in n and "D/x.txt" in n else 1)'
+syl archive add ~/A/a.txt
+sleep 2
+syl archive add ~/B/a.txt
+sleep 2
+check sylvaris archive state | grep -q '"clash":{"op":"add","name":"a.txt"'
+syl archive clash replace
+sleep 2.5
+check python3 -c 'import os, sys, zipfile; z = zipfile.ZipFile(os.path.expanduser("~/B/pack.zip")); sys.exit(0 if z.namelist().count("a.txt") == 1 and z.read("a.txt") == b"old a" else 1)'
+syl archive close

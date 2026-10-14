@@ -933,6 +933,7 @@ ShellRoot {
                 picker: () => root.picker().state(),
                 mount: (...n) => root.need("files").driveVerb("open", n.join(" ")),
                 eject: (...n) => root.need("files").driveVerb("eject", n.join(" ")),
+                clash: (...w) => root.need("files").clashCommand(w),
                 state: () => root.need("files").state()
             },
             archive: {
@@ -952,6 +953,7 @@ ShellRoot {
                         a.extractText(dest.join(" "));
                 },
                 add: (...p) => root.need("archive").addFiles(p),
+                clash: (...w) => root.need("archive").clashCommand(w),
                 act: action => root.need("archive").act(String(action || "")),
                 state: () => root.need("archive").state()
             },

@@ -573,8 +573,7 @@ export function trashInfo(text) {
     return { path: p, date: date ? date[1].trim() : "" }
 }
 
-export function pastePlan(items, dest, taken, mode) {
-    const names = taken.slice()
+export function pastePlan(items, dest, mode) {
     const pairs = []
     const skipped = []
     for (const it of items) {
@@ -586,23 +585,85 @@ export function pastePlan(items, dest, taken, mode) {
             skipped.push({ path: it.path, why: "Already here" })
             continue
         }
-        const name = uniqueName(nameOf(it.path), names, it.dir)
-        names.push(name)
-        pairs.push([it.path, joinPath(dest, name)])
+        pairs.push([it.path, joinPath(dest, nameOf(it.path))])
     }
     return { pairs: pairs, skipped: skipped }
 }
 
 export function inverse(op) {
+    let inv = null
     if (op.kind === "move" || op.kind === "rename")
-        return { kind: "move", pairs: op.pairs.map(p => [p[1], p[0]]).reverse() }
-    if (op.kind === "copy")
-        return { kind: "trash", paths: op.pairs.map(p => p[1]) }
-    if (op.kind === "create")
-        return { kind: "trash", paths: op.paths.slice() }
-    if (op.kind === "trash")
-        return { kind: "restore", paths: op.paths.slice() }
-    return null
+        inv = { kind: "move", pairs: (op.moved || op.pairs).map(p => [p[1], p[0]]).reverse() }
+    else if (op.kind === "copy")
+        inv = { kind: "trash", paths: (op.made || op.pairs.map(p => p[1])).slice() }
+    else if (op.kind === "create")
+        inv = { kind: "trash", paths: op.paths.slice() }
+    else if (op.kind === "trash")
+        inv = { kind: "restore", paths: op.paths.slice() }
+    const back = (op.binned || []).filter(n => n !== "")
+    if (inv !== null && (inv.pairs || inv.paths).length === 0)
+        inv = back.length > 0 ? { kind: "bin", names: back } : null
+    else if (inv !== null && back.length > 0)
+        inv.then = { kind: "bin", names: back }
+    return inv
+}
+
+const CLASH_BUTTONS = [["skip", "Skip", "S"], ["both", "Keep both", "K"], ["rename", "Rename…", "N"], ["replace", "Replace", "R"], ["merge", "Merge", "M"]]
+
+export const CLASH_KEYS = { M: "merge", R: "replace", S: "skip", K: "both", N: "rename" }
+
+export function clashView(c, home, now) {
+    const mine = c.existing
+    const theirs = c.incoming
+    const detail = f => {
+        if (!f.dir && f.size < 0)
+            return "Not made yet"
+        const what = f.dir ? (f.count >= 0 ? countText(f.count) : "") : sizeText(f.size)
+        const when = whenText(f.time, now)
+        return [what, when].filter(x => x !== "").join(" · ")
+    }
+    const same = !theirs.dir && !mine.dir && theirs.size === mine.size && theirs.size >= 0 && Math.abs(theirs.time - mine.time) < 2000
+    const badge = (a, b) => {
+        if (same)
+            return ""
+        const out = []
+        if (a.time > 0 && b.time > 0 && a.time > b.time + 1000)
+            out.push("newer")
+        if (!a.dir && !b.dir && a.size >= 0 && b.size >= 0 && a.size > b.size)
+            out.push("larger")
+        const text = out.join(", ")
+        return text === "" ? "" : text.charAt(0).toUpperCase() + text.slice(1)
+    }
+    const from = c.op === "restore" ? "From the trash" : c.op === "compress" ? "The new archive" : c.op === "extract" ? "From " + nameOf(c.from) : "From " + pretty(c.from, home)
+    const where = c.op === "add" ? "the archive" : pretty(c.folder, home)
+    const folders = theirs.dir && mine.dir
+    const primary = c.actions.indexOf("merge") >= 0 ? "merge" : c.actions.indexOf("replace") >= 0 ? "replace" : "both"
+    return {
+        title: primary === "merge" ? "Merge “" + c.name + "”?" : primary === "replace" ? "Replace “" + c.name + "”?" : "“" + c.name + "” is already there",
+        text: folders ? "A folder called “" + c.name + "” is already in " + where + ". Merging adds what is new and asks about anything with the same name." : "Something called “" + c.name + "” is already in " + where + ".",
+        primary: primary,
+        same: same,
+        sides: [
+            { label: "Already there", detail: detail(mine), badge: badge(mine, theirs), folder: mine.dir },
+            { label: from, detail: detail(theirs), badge: badge(theirs, mine), folder: theirs.dir }
+        ],
+        buttons: CLASH_BUTTONS.filter(b => c.actions.indexOf(b[0]) >= 0).map(b => ({ id: b[0], label: b[1], key: b[2] }))
+    }
+}
+
+const CLASH_WORDS = { keep: "both", stop: "cancel" }
+
+export function clashAnswer(words, actions) {
+    const list = words.map(w => String(w))
+    const first = (list[0] || "").toLowerCase()
+    const what = CLASH_WORDS[first] || first
+    if (what !== "cancel" && actions.indexOf(what) < 0)
+        throw new Error(what + " is not one of: " + actions.concat(["cancel"]).join(", "))
+    const all = what !== "rename" && list[1] === "all"
+    const name = what === "rename" ? list.slice(1).join(" ").trim() : ""
+    if (what === "rename" && name === "")
+        throw new Error("rename needs a name")
+    return { do: what, all: all, name: name }
 }
 
 const WANTS = {

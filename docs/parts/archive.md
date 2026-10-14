@@ -12,7 +12,7 @@ SylFiles opens archives here when you double-click them, and its menu has Extrac
 
 - **Browse** folders inside the archive like ordinary folders: double-click, Enter, Backspace, Alt+Up, the path bar, the filter and type-ahead all work as in SylFiles. Sorting and icon size follow SylFiles.
 - **Open** a file and it is unpacked to `~/.cache/sylvaris/archive` and opened in its usual app. Copies older than a day are cleared.
-- **Extract**: Ctrl+E unpacks what you selected next to the archive, Ctrl+Shift+E everything, Ctrl+Alt+E asks where. Extract here is smart: an archive that holds one folder gives that folder, loose files get a folder named after the archive. Nothing is ever overwritten; a taken name gets a number.
+- **Extract**: Ctrl+E unpacks what you selected next to the archive, Ctrl+Shift+E everything, Ctrl+Alt+E asks where. Extract here is smart: an archive that holds one folder gives that folder, loose files get a folder named after the archive. A name that is already taken asks first: merge folders, replace (the old one goes to the trash), skip, keep both or rename, the same dialog as [SylFiles](files.md#when-a-name-is-taken). Adding files to an archive asks the same way about names inside it.
 - **Drag** files out onto SylFiles or any app to unpack just those.
 - **Change** zip, 7z and tar archives: drop files on the list to add them to the folder you are in, Delete takes the selection out after asking. Other formats can only be read.
 - **Passwords**: an archive with a password asks for it when it needs it. The password goes to the unpacker on its input, never on a command line, and is forgotten when the window closes.
@@ -64,6 +64,7 @@ sylvaris archive select a.jpg b.jpg
 sylvaris archive extract           # the selection, or everything, next to the archive
 sylvaris archive extract ~/Pictures
 sylvaris archive add ~/notes.txt   # into the folder you are in
+sylvaris archive clash skip        # answer the name clash, like files clash
 sylvaris archive act remove        # any action from the list above
 sylvaris archive search beach
 sylvaris archive state

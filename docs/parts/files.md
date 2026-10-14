@@ -50,7 +50,24 @@ Mounting goes through udisks2 (`services.udisks2.enable = true` on NixOS), phone
 | Compress | Ctrl+Alt+C packs the selection into a zip, 7z, tar.gz, tar.xz, tar.zst or tar in the same folder; type the name, pick the format |
 | Extract | Ctrl+Alt+X unpacks the selected archives here; right-click › Extract to “name” always makes a folder |
 
-Right-click (or the Menu key, or Shift+F10) shows everything that applies, with its key. Nothing is ever overwritten: a pasted or dropped file whose name is taken gets a number, like `notes (2).txt`. Copies show their progress and can be stopped; a half-copied file is removed.
+Right-click (or the Menu key, or Shift+F10) shows everything that applies, with its key. Copies show their progress and can be stopped; a half-copied file is removed. Pasting a copy into its own folder makes a duplicate, like `notes (2).txt`.
+
+### When a name is taken
+
+Pasting, dropping, extracting, packing or restoring onto a name that is already there asks first. The dialog shows both sides, their size or item count, their date, and which one is newer or larger:
+
+| Choice | Key | What happens |
+| --- | --- | --- |
+| Merge | M | folder onto folder: what is new goes in, and anything with the same name inside is asked about one by one |
+| Replace | R | the old one goes to the trash, the new one takes its place |
+| Skip | S | leave this one out |
+| Keep both | K | the new one gets a number, like `notes (2).txt` |
+| Rename… | N | type a name for the new one, the part before the extension is already selected |
+| Cancel | Esc | stop here; what was already done stays |
+
+Turn on **Do the same for every other clash** (or press A) to answer once: it covers the rest of the folder clashes or the rest of the file clashes, whichever you just answered. Undo after a replace takes the new items away and brings the replaced ones back from the trash; after a merge it only takes away what the merge added. Closing SylFiles while it asks stops the job.
+
+Files dragged out of SylArchive are unpacked in the background; dropping them before that finishes waits for them instead of failing.
 
 In the trash, Restore puts items back where they came from and Empty trash deletes everything for good.
 
@@ -129,6 +146,7 @@ sylvaris files act newFolder    # any action from the list above
 sylvaris files rename final.txt # the one selected item
 sylvaris files compress pack.zip  # the selection, without asking
 sylvaris files picker          # the open or save dialog, if one is up
+sylvaris files clash merge all  # answer the name clash: merge, replace, skip, keep, rename NAME or stop
 sylvaris files drives           # every drive SylFiles sees
 sylvaris files mount KINGSTON   # by label or device, then open it
 sylvaris files eject KINGSTON

@@ -205,5 +205,11 @@ FloatingWindow {
             z: 61
             files: win.archive
         }
+
+        ClashDialog {
+            anchors.fill: parent
+            z: 62
+            files: win.archive
+        }
     }
 }

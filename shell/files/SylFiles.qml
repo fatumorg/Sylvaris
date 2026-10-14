@@ -80,6 +80,7 @@ Scope {
     property var queue: []
     property var job: null
     property var result: null
+    property var clash: null
     property real done: 0
     property real total: 0
     property string note: ""
@@ -229,6 +230,8 @@ Scope {
             root.writePick(root.chooser.out, []);
             root.chooser = null;
         }
+        if (root.clash !== null)
+            root.answerClash("cancel", "", false);
         root.wanted = false;
         root.shown = false;
         root.menu = null;
@@ -750,7 +753,7 @@ Scope {
     }
 
     function transfer(items: var, dest: string, mode: string): void {
-        const plan = F.pastePlan(items, dest, dest === root.path ? root.allNames() : [], mode);
+        const plan = F.pastePlan(items, dest, mode);
         if (plan.skipped.length > 0 && plan.pairs.length === 0) {
             root.say(plan.skipped[0].why, false);
             return;
@@ -856,12 +859,40 @@ Scope {
         const inv = F.inverse(last);
         if (inv === null)
             return;
-        root.run({
-            kind: inv.kind === "move" ? "rename" : inv.kind === "restore" ? "untrash" : inv.kind,
-            pairs: inv.pairs || [],
-            paths: inv.paths || [],
-            undoing: true
-        });
+        const step = x => ({
+                kind: x.kind === "move" ? "rename" : x.kind === "restore" ? "untrash" : x.kind,
+                pairs: x.pairs || [],
+                paths: x.paths || [],
+                names: x.names || [],
+                undoing: true
+            });
+        root.run(step(inv));
+        if (inv.then)
+            root.run(step(inv.then));
+    }
+
+    function answerClash(what: string, name: string, all: bool): void {
+        if (root.clash === null)
+            return;
+        root.clash = null;
+        if (runner.running)
+            runner.write(JSON.stringify({
+                do: what,
+                name: name,
+                all: all
+            }) + "\n");
+    }
+
+    function clashCommand(words: var): void {
+        if (root.clash === null)
+            throw new Error("nothing is waiting for an answer");
+        const a = F.clashAnswer(words, root.clash.actions);
+        root.answerClash(a.do, a.name, a.all);
+    }
+
+    function remember(entry: var): void {
+        if (F.inverse(entry) !== null)
+            root.history = root.history.concat([entry]).slice(-30);
     }
 
     function toggleBookmark(p: string): void {
@@ -1194,24 +1225,27 @@ Scope {
         root.queue = root.queue.slice(1);
         root.job = op;
         root.result = null;
+        root.clash = null;
         root.done = 0;
         root.total = 0;
         const flat = (op.pairs || []).reduce((out, p) => out.concat(p), []);
+        const asks = ["copy", "move", "restore", "untrash", "bin", "compress", "extract"].indexOf(op.kind) >= 0;
         runner.command = {
-            copy: ["python3", root.helper, "copy"].concat(flat),
-            move: ["python3", root.helper, "move"].concat(flat),
+            copy: ["python3", root.helper, "--clashes", "copy"].concat(flat),
+            move: ["python3", root.helper, "--clashes", "move"].concat(flat),
             rename: ["python3", root.helper, "rename"].concat(flat),
             trash: ["gio", "trash", "--"].concat(op.paths || []),
             delete: ["rm", "-rf", "--"].concat(op.paths || []),
             mkdir: ["mkdir", "--"].concat(op.paths || []),
             touch: ["sh", "-c", "set -C; : > \"$1\"", "sh"].concat(op.paths || []),
-            restore: ["python3", root.helper, "restore"].concat(op.paths || []),
-            untrash: ["python3", root.helper, "untrash"].concat(op.paths || []),
+            restore: ["python3", root.helper, "--clashes", "restore"].concat(op.paths || []),
+            untrash: ["python3", root.helper, "--clashes", "untrash"].concat(op.paths || []),
+            bin: ["python3", root.helper, "--clashes", "restore"].concat(op.names || []),
             empty: ["gio", "trash", "--empty"],
-            compress: ["python3", root.archiveHelper, "compress", op.out, op.level, op.base].concat(op.names || []),
-            extract: ["python3", root.archiveHelper].concat(op.secret ? ["--ask"] : []).concat(["extract", op.archive, op.dest, op.mode, "0"])
+            compress: ["python3", root.archiveHelper, "--clashes", "compress", op.out, op.level, op.base].concat(op.names || []),
+            extract: ["python3", root.archiveHelper].concat(op.secret ? ["--ask"] : []).concat(["--clashes", "extract", op.archive, op.dest, op.mode, "0"])
         }[op.kind];
-        runner.stdinEnabled = op.secret ? true : false;
+        runner.stdinEnabled = asks || (op.secret ? true : false);
         runner.running = true;
     }
 
@@ -1250,13 +1284,15 @@ Scope {
             root.next();
             return;
         }
-        const made = r.cancelled ? [] : r.ok.map(p => p[1]);
-        if (made.length > 0)
-            root.history = root.history.concat([{
-                    kind: "create",
-                    paths: made
-                }]).slice(-30);
-        root.say(op.kind === "compress" ? A.compressNote(r) : A.extractNote(r), made.length > 0);
+        const made = r.ok.map(p => p[1]);
+        const created = op.kind === "extract" ? (r.moved || []).map(p => p[1]) : (r.made || made);
+        const before = root.history.length;
+        root.remember({
+            kind: "create",
+            paths: created,
+            binned: r.binned || []
+        });
+        root.say(op.kind === "compress" ? A.compressNote(r) : A.extractNote(r), root.history.length > before);
         const here = made.filter(p => F.parentOf(p) === root.path).map(p => F.nameOf(p));
         if (here.length > 0)
             root.wanting = here;
@@ -1274,14 +1310,17 @@ Scope {
         const pairs = r !== null ? r.ok : code === 0 ? (op.paths || []).map(p => [p, p]) : [];
         const made = pairs.map(p => p[1]);
         const failed = r !== null ? r.failed : [];
+        const skipped = r !== null && r.skipped ? r.skipped : [];
         let text = "";
-        if (op.kind === "copy" || op.kind === "move" || op.kind === "rename")
-            text = (op.kind === "copy" ? "Copied " : op.kind === "move" ? "Moved " : op.undoing ? "Put back " : "Renamed ") + (made.length === 1 ? "“" + F.nameOf(made[0]) + "”" : made.length + " items");
+        if ((op.kind === "copy" || op.kind === "move") && made.length === 0 && skipped.length > 0 && failed.length === 0)
+            text = "Skipped " + (skipped.length === 1 ? "“" + F.nameOf(skipped[0]) + "”" : skipped.length + " items");
+        else if (op.kind === "copy" || op.kind === "move" || op.kind === "rename")
+            text = (op.kind === "copy" ? "Copied " : op.kind === "move" ? "Moved " : op.undoing ? "Put back " : "Renamed ") + (made.length === 1 ? "“" + F.nameOf(made[0]) + "”" : made.length + " items") + (skipped.length > 0 ? " · skipped " + skipped.length : "") + (r !== null && r.trashed && r.trashed.length > 0 ? " · replaced " + r.trashed.length : "");
         else if (op.kind === "trash")
             text = code === 0 ? (op.paths.length === 1 ? "“" + F.nameOf(op.paths[0]) + "” moved to the trash" : op.paths.length + " items moved to the trash") : "Some items could not be moved to the trash";
         else if (op.kind === "delete")
             text = code === 0 ? "Deleted for good" : "Some items could not be deleted";
-        else if (op.kind === "restore" || op.kind === "untrash")
+        else if (op.kind === "restore" || op.kind === "untrash" || op.kind === "bin")
             text = made.length > 0 ? "Restored " + (made.length === 1 ? "“" + F.nameOf(made[0]) + "”" : made.length + " items") : "Nothing was restored";
         else if (op.kind === "empty")
             text = code === 0 ? "Trash emptied" : "The trash could not be emptied";
@@ -1291,18 +1330,22 @@ Scope {
             text = "Stopped" + (made.length > 0 ? " after " + made.length + (made.length === 1 ? " item" : " items") : "");
         else if (failed.length > 0)
             text = (made.length > 0 ? text + " · " : "") + (failed.length === 1 ? F.nameOf(failed[0].path) + ": " + failed[0].error : failed.length + " items failed");
-        const undoable = !op.undoing && made.length > 0 && ["copy", "move", "rename", "trash", "mkdir", "touch"].indexOf(op.kind) >= 0 && !(op.kind === "trash" && code !== 0);
-        if (undoable)
-            root.history = root.history.concat([op.kind === "mkdir" || op.kind === "touch" ? {
-                    kind: "create",
-                    paths: made
-                } : op.kind === "trash" ? {
-                    kind: "trash",
-                    paths: op.paths
-                } : {
-                    kind: op.kind,
-                    pairs: pairs
-                }]).slice(-30);
+        const before = root.history.length;
+        if (!op.undoing && made.length > 0 && ["copy", "move", "rename", "trash", "mkdir", "touch"].indexOf(op.kind) >= 0 && !(op.kind === "trash" && code !== 0))
+            root.remember(op.kind === "mkdir" || op.kind === "touch" ? {
+                kind: "create",
+                paths: made
+            } : op.kind === "trash" ? {
+                kind: "trash",
+                paths: op.paths
+            } : {
+                kind: op.kind,
+                pairs: pairs,
+                made: r !== null ? r.made : undefined,
+                moved: r !== null ? r.moved : undefined,
+                binned: r !== null ? r.binned : []
+            });
+        const undoable = root.history.length > before;
         const here = made.filter(p => F.parentOf(p) === root.path).map(p => F.nameOf(p));
         if (here.length > 0 && op.kind !== "trash" && op.kind !== "delete") {
             root.wanting = here;
@@ -1311,7 +1354,7 @@ Scope {
         }
         if (text !== "" && !op.renameAfter)
             root.say(text, undoable);
-        if (op.kind === "copy" || op.kind === "move" || op.kind === "rename" || op.kind === "mkdir" || op.kind === "touch")
+        if (["copy", "move", "rename", "mkdir", "touch", "restore", "untrash", "bin"].indexOf(op.kind) >= 0)
             root.rescanSoon();
         root.next();
     }
@@ -1356,6 +1399,12 @@ Scope {
                 count: root.clip.items.length
             },
             undo: root.history.length,
+            clash: root.clash === null ? null : {
+                op: root.clash.op,
+                name: root.clash.name,
+                actions: root.clash.actions,
+                error: root.clash.error || ""
+            },
             pick: root.chooser === null ? null : {
                 mode: root.chooser.mode,
                 multiple: root.chooser.multiple,
@@ -1454,6 +1503,12 @@ Scope {
                 }
                 if (msg.ok !== undefined) {
                     root.result = msg;
+                } else if (msg.clash !== undefined) {
+                    root.clash = msg.clash;
+                    if (!root.wanted)
+                        root.open(msg.clash.folder);
+                    else
+                        root.raise();
                 } else if (msg.total !== undefined) {
                     root.total = msg.total;
                     root.done = msg.done;
@@ -1461,15 +1516,17 @@ Scope {
             }
         }
         onStarted: {
-            if (runner.stdinEnabled) {
+            if (root.job !== null && root.job.secret) {
                 runner.write(root.job.secret + "\n");
                 root.job = Object.assign({}, root.job, {
                     secret: ""
                 });
-                runner.stdinEnabled = false;
             }
         }
-        onExited: code => root.finish(code)
+        onExited: code => {
+            root.clash = null;
+            root.finish(code);
+        }
     }
 
     Process {

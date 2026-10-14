@@ -89,6 +89,7 @@ Scope {
     property var queue: []
     property var job: null
     property var result: null
+    property var clash: null
     property real done: 0
     property real total: 0
     property string note: ""
@@ -161,6 +162,7 @@ Scope {
 
     function close(): void {
         root.cancelJob();
+        root.clash = null;
         root.wanted = false;
         root.shown = false;
         root.menu = null;
@@ -349,6 +351,25 @@ Scope {
     }
 
     function undo(): void {
+    }
+
+    function answerClash(what: string, name: string, all: bool): void {
+        if (root.clash === null)
+            return;
+        root.clash = null;
+        if (runner.running)
+            runner.write(JSON.stringify({
+                do: what,
+                name: name,
+                all: all
+            }) + "\n");
+    }
+
+    function clashCommand(words: var): void {
+        if (root.clash === null)
+            throw new Error("nothing is waiting for an answer");
+        const a = F.clashAnswer(words, root.clash.actions);
+        root.answerClash(a.do, a.name, a.all);
     }
 
     function cancelRename(): void {
@@ -700,12 +721,14 @@ Scope {
         root.queue = root.queue.slice(1);
         root.job = op;
         root.result = null;
+        root.clash = null;
         root.done = 0;
         root.total = 0;
-        const ask = root.secret !== "" ? ["--ask"] : [];
-        const base = ["python3", root.helper].concat(ask);
+        const asks = op.kind === "extract" || op.kind === "add";
+        const base = ["python3", root.helper].concat(root.secret !== "" ? ["--ask"] : []).concat(asks ? ["--clashes"] : []);
         runner.command = op.kind === "extract" || op.kind === "peek" ? base.concat(["extract", root.archive, op.dest, op.mode, String(op.strip)]).concat(op.names) : op.kind === "add" ? base.concat(["add", root.archive, op.inner]).concat(op.sources) : base.concat(["remove", root.archive]).concat(op.paths);
-        runner.stdinEnabled = root.secret !== "";
+        runner.withSecret = root.secret !== "";
+        runner.stdinEnabled = runner.withSecret || asks;
         runner.running = true;
     }
 
@@ -741,7 +764,7 @@ Scope {
                     Ipc.run(["files", "open", r.ok[0][1]]);
                 } catch (e) {}
         } else if (op.kind === "add") {
-            root.say(r.cancelled ? "Stopped" : r.failed.length > 0 ? F.nameOf(r.failed[0].path) + ": " + r.failed[0].error : "Added " + (r.ok.length === 1 ? "“" + F.nameOf(r.ok[0][1]) + "”" : r.ok.length + " items"), false);
+            root.say(A.addNote(r), false);
             root.wanting = r.ok.map(p => p[1]).filter(p => F.parentOf(p) === root.path).map(p => F.nameOf(p));
             root.load();
         } else if (op.kind === "remove") {
@@ -771,7 +794,13 @@ Scope {
             menu: root.menu !== null,
             dialog: root.dialog,
             asking: root.asking === null ? "" : root.asking.kind,
-            askError: root.asking === null ? "" : root.asking.error
+            askError: root.asking === null ? "" : root.asking.error,
+            clash: root.clash === null ? null : {
+                op: root.clash.op,
+                name: root.clash.name,
+                actions: root.clash.actions,
+                error: root.clash.error || ""
+            }
         };
     }
 
@@ -827,6 +856,7 @@ Scope {
 
     Process {
         id: runner
+        property bool withSecret: false
         stdout: SplitParser {
             onRead: line => {
                 if (line.charAt(0) !== "{")
@@ -839,6 +869,9 @@ Scope {
                 }
                 if (msg.ok !== undefined) {
                     root.result = msg;
+                } else if (msg.clash !== undefined) {
+                    root.clash = msg.clash;
+                    root.raise();
                 } else if (msg.total !== undefined) {
                     root.total = msg.total;
                     root.done = msg.done;
@@ -846,12 +879,15 @@ Scope {
             }
         }
         onStarted: {
-            if (runner.stdinEnabled) {
+            if (runner.withSecret)
                 runner.write(root.secret + "\n");
+            if (runner.withSecret && root.job !== null && root.job.kind !== "extract" && root.job.kind !== "add")
                 runner.stdinEnabled = false;
-            }
         }
-        onExited: code => root.finish(code)
+        onExited: code => {
+            root.clash = null;
+            root.finish(code);
+        }
     }
 
     Timer {

@@ -22,10 +22,11 @@ spec.loader.exec_module(archive)
 ODD = ["żółw ✓.md", "back\\slash.txt", "new\nline.txt", "tab\tx.txt", "arrow -> x.txt", "big[1]*?.txt"]
 
 
-def run(*argv, secret=None):
+def run(*argv, secret=None, answers=None):
     out = io.StringIO()
-    args = ["archive.py"] + (["--ask"] if secret is not None else []) + list(argv)
-    code = archive.main(args, out, io.StringIO((secret or "") + "\n"))
+    args = ["archive.py"] + (["--ask"] if secret is not None else []) + (["--clashes"] if answers is not None else []) + list(argv)
+    feed = (secret + "\n" if secret is not None else "") + "".join(json.dumps(a) + "\n" for a in answers or [])
+    code = archive.main(args, out, io.StringIO(feed))
     lines = [json.loads(line) for line in out.getvalue().splitlines() if line.startswith("{")]
     return code, lines
 
@@ -191,6 +192,95 @@ class ArchiveTest(unittest.TestCase):
         self.assertEqual(code, 0)
         with zipfile.ZipFile(z) as f:
             self.assertEqual(sorted(n for n in f.namelist() if not n.endswith("/")), ["docs/a.txt", "keep.txt"])
+
+    def asked(self, lines):
+        return [line["clash"] for line in lines if "clash" in line]
+
+    def test_extracting_over_a_folder_asks_to_merge_and_replaces_into_the_trash(self):
+        data = self.p("data")
+        with mock.patch.dict(os.environ, {"XDG_DATA_HOME": data}):
+            one = self.zip_of("project.zip", {"project/a.txt": "new a", "project/b/c.txt": "new c", "project/n.txt": "n"})
+            write(self.p("out", "project", "a.txt"), "old a")
+            write(self.p("out", "project", "b", "c.txt"), "old c")
+            write(self.p("out", "project", "mine.txt"), "mine")
+            code, lines = run("extract", one, self.p("out"), "smart", "0", answers=[{"do": "merge"}, {"do": "replace"}, {"do": "merge"}, {"do": "skip"}])
+            self.assertEqual(code, 0)
+            asked = self.asked(lines)
+            self.assertEqual([(a["op"], a["name"], a["from"]) for a in asked], [("extract", "project", one), ("extract", "a.txt", one), ("extract", "b", one), ("extract", "c.txt", one)])
+            self.assertEqual(asked[0]["actions"], ["merge", "replace", "skip", "both", "rename"])
+            self.assertEqual(read(self.p("out", "project", "a.txt")), "new a")
+            self.assertEqual(read(self.p("out", "project", "b", "c.txt")), "old c")
+            self.assertEqual(read(self.p("out", "project", "n.txt")), "n")
+            self.assertEqual(read(self.p("out", "project", "mine.txt")), "mine")
+            self.assertEqual(read(os.path.join(data, "Trash", "files", "a.txt")), "old a")
+            self.assertEqual(lines[-1]["ok"], [[one, self.p("out", "project")]])
+            self.assertEqual(sorted(lines[-1]["moved"][i][1] for i in range(2)), [self.p("out", "project", "a.txt"), self.p("out", "project", "n.txt")])
+            self.assertEqual(lines[-1]["trashed"], [self.p("out", "project", "a.txt")])
+            self.assertEqual(lines[-1]["skipped"][0].endswith("/c.txt"), True)
+            self.assertEqual(self.leftovers(self.p("out")), [])
+
+    def test_extracting_into_a_taken_folder_name_can_keep_both_or_stop(self):
+        loose = self.zip_of("loose.zip", {"a.txt": "a", "b.txt": "b"})
+        os.makedirs(self.p("out", "loose"))
+        code, lines = run("extract", loose, self.p("out"), "smart", "0", answers=[{"do": "both"}])
+        self.assertEqual(lines[-1]["ok"], [[loose, self.p("out", "loose (2)")]])
+        self.assertEqual(self.asked(lines)[0]["free"], "loose (2)")
+        code, lines = run("extract", loose, self.p("out"), "smart", "0", answers=[{"do": "cancel"}])
+        self.assertTrue(lines[-1]["cancelled"])
+        self.assertEqual(sorted(os.listdir(self.p("out"))), ["loose", "loose (2)"])
+
+    def test_password_and_clash_answers_share_the_input(self):
+        src = self.p("secret")
+        write(os.path.join(src, "s.txt"), "classified")
+        enc = self.p("enc.zip")
+        subprocess.run(["bsdtar", "-a", "-cf", enc, "--options", "zip:encryption=aes256", "--passphrase", "open sesame", "-C", src, "s.txt"], check=True, env=dict(os.environ, LC_ALL="C.UTF-8"))
+        write(self.p("out", "s.txt"), "public")
+        code, lines = run("extract", enc, self.p("out"), "smart", "0", secret="open sesame", answers=[{"do": "rename", "name": "s2.txt"}])
+        self.assertEqual(code, 0)
+        self.assertEqual(read(self.p("out", "s2.txt")), "classified")
+        self.assertEqual(read(self.p("out", "s.txt")), "public")
+
+    def test_compressing_onto_a_taken_name_asks(self):
+        data = self.p("data")
+        with mock.patch.dict(os.environ, {"XDG_DATA_HOME": data}):
+            write(self.p("src", "b.txt"), "b")
+            write(self.p("out", "pack.zip"), "taken")
+            code, lines = run("compress", self.p("out", "pack.zip"), "normal", self.p("src"), "b.txt", answers=[{"do": "skip"}])
+            self.assertEqual((code, lines[-1]["ok"], lines[-1]["skipped"]), (0, [], [self.p("out", "pack.zip")]))
+            self.assertEqual(self.asked(lines)[0]["actions"], ["replace", "skip", "both", "rename"])
+            code, lines = run("compress", self.p("out", "pack.zip"), "normal", self.p("src"), "b.txt", answers=[{"do": "replace"}])
+            self.assertEqual(lines[-1]["ok"], [["", self.p("out", "pack.zip")]])
+            self.assertEqual(read(os.path.join(data, "Trash", "files", "pack.zip")), "taken")
+            with zipfile.ZipFile(self.p("out", "pack.zip")) as z:
+                self.assertEqual(z.namelist(), ["b.txt"])
+            code, lines = run("compress", self.p("out", "pack.zip"), "normal", self.p("src"), "b.txt", answers=[{"do": "rename", "name": "other.zip"}])
+            self.assertEqual(lines[-1]["ok"], [["", self.p("out", "other.zip")]])
+            self.assertEqual(self.leftovers(self.p("out")), [])
+
+    def test_adding_asks_to_replace_merge_or_keep_both_inside_the_archive(self):
+        z = self.zip_of("box.zip", {"docs/a.txt": "a", "docs/pics/old.png": "o", "docs/pics/same.png": "s", "top.txt": "t"})
+        write(self.p("new", "a.txt"), "new a")
+        write(self.p("new", "top.txt"), "new top")
+        write(self.p("new", "pics", "same.png"), "s2")
+        write(self.p("new", "pics", "fresh.png"), "f")
+        answers = [{"do": "replace"}, {"do": "merge"}, {"do": "replace"}]
+        code, lines = run("add", z, "docs", self.p("new", "a.txt"), self.p("new", "pics"), answers=answers)
+        self.assertEqual(code, 0)
+        asked = self.asked(lines)
+        self.assertEqual([(a["op"], a["name"], a["existing"]["dir"]) for a in asked], [("add", "a.txt", False), ("add", "pics", True), ("add", "same.png", False)])
+        self.assertEqual(asked[1]["existing"]["count"], 2)
+        self.assertEqual(asked[0]["free"], "a (2).txt")
+        with zipfile.ZipFile(z) as f:
+            names = sorted(n for n in f.namelist() if not n.endswith("/"))
+            self.assertEqual(names, ["docs/a.txt", "docs/pics/fresh.png", "docs/pics/old.png", "docs/pics/same.png", "top.txt"])
+            self.assertEqual(f.read("docs/a.txt"), b"new a")
+            self.assertEqual(f.read("docs/pics/same.png"), b"s2")
+            self.assertEqual(f.read("docs/pics/old.png"), b"o")
+        code, lines = run("add", z, "", self.p("new", "top.txt"), answers=[{"do": "both"}])
+        self.assertEqual(lines[-1]["ok"], [[self.p("new", "top.txt"), z + "/top (2).txt"]])
+        code, lines = run("add", z, "", self.p("new", "top.txt"), answers=[{"do": "skip"}])
+        self.assertEqual((code, lines[-1]["skipped"], lines[-1]["failed"]), (0, [self.p("new", "top.txt")], []))
+        self.assertEqual(self.leftovers(self.dir), [])
 
     def test_stopping_cleans_up_the_half_made_folder(self):
         z = self.zip_of("big.zip", {"a/%d.txt" % i: "x" * 1000 for i in range(50)})

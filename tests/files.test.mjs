@@ -6,7 +6,7 @@ import {
     kindOf, kindLabel, glyphOf, themeIcon, arrange, sizeText, whenText, summary,
     uniqueName, checkName, pick, invert, nextIndex, bandHits,
     visit, goBack, goForward, userDirs, places, gtkBookmarks, trashInfo,
-    pastePlan, inverse, openers, sidebarOf, pathsOfUris, urisOf, keyText, statInfo, GLYPH, pickStart, pickTitle, pickChoice
+    pastePlan, inverse, clashView, clashAnswer, CLASH_KEYS, openers, sidebarOf, pathsOfUris, urisOf, keyText, statInfo, GLYPH, pickStart, pickTitle, pickChoice
 } from "../shell/lib/files.mjs"
 
 const CTRL = 0x04000000
@@ -281,14 +281,14 @@ test("trashInfo reads the original path and deletion date", () => {
     assert.deepEqual(trashInfo("junk"), { path: "", date: "" })
 })
 
-test("pastePlan picks free names, skips moves onto themselves and refuses folders into themselves", () => {
-    const plan = pastePlan([{ path: "/s/a.txt", dir: false }, { path: "/s/D", dir: true }, { path: "/t/x", dir: false }], "/t", ["a.txt", "x"], "copy")
-    assert.deepEqual(plan.pairs, [["/s/a.txt", "/t/a (2).txt"], ["/s/D", "/t/D"], ["/t/x", "/t/x (2)"]])
+test("pastePlan keeps names so clashes are asked about, skips moves onto themselves and refuses folders into themselves", () => {
+    const plan = pastePlan([{ path: "/s/a.txt", dir: false }, { path: "/s/D", dir: true }, { path: "/t/x", dir: false }], "/t", "copy")
+    assert.deepEqual(plan.pairs, [["/s/a.txt", "/t/a.txt"], ["/s/D", "/t/D"], ["/t/x", "/t/x"]])
     assert.deepEqual(plan.skipped, [])
-    const move = pastePlan([{ path: "/t/x", dir: false }, { path: "/t", dir: true }, { path: "/s/b", dir: false }], "/t/in", [], "move")
+    const move = pastePlan([{ path: "/t/x", dir: false }, { path: "/t", dir: true }, { path: "/s/b", dir: false }], "/t/in", "move")
     assert.deepEqual(move.pairs, [["/t/x", "/t/in/x"], ["/s/b", "/t/in/b"]])
     assert.deepEqual(move.skipped, [{ path: "/t", why: "A folder cannot go inside itself" }])
-    const here = pastePlan([{ path: "/t/x", dir: false }], "/t", ["x"], "move")
+    const here = pastePlan([{ path: "/t/x", dir: false }], "/t", "move")
     assert.deepEqual(here.pairs, [])
     assert.deepEqual(here.skipped, [{ path: "/t/x", why: "Already here" }])
 })
@@ -300,6 +300,58 @@ test("inverse undoes moves, renames, copies, new items and trashing", () => {
     assert.deepEqual(inverse({ kind: "create", paths: ["/n"] }), { kind: "trash", paths: ["/n"] })
     assert.deepEqual(inverse({ kind: "trash", paths: ["/x"] }), { kind: "restore", paths: ["/x"] })
     assert.equal(inverse({ kind: "restore", paths: ["/x"] }), null)
+})
+
+test("inverse of a merge or replace touches only what changed and brings replaced items back from the trash", () => {
+    const copy = { kind: "copy", pairs: [["/s/D", "/t/D"]], made: ["/t/D/new.txt"], binned: ["old.txt", ""] }
+    assert.deepEqual(inverse(copy), { kind: "trash", paths: ["/t/D/new.txt"], then: { kind: "bin", names: ["old.txt"] } })
+    const move = { kind: "move", pairs: [["/s/D", "/t/D"]], moved: [["/s/D/a", "/t/D/a"], ["/s/D/b", "/t/D/b"]], binned: [] }
+    assert.deepEqual(inverse(move), { kind: "move", pairs: [["/t/D/b", "/s/D/b"], ["/t/D/a", "/s/D/a"]] })
+    assert.equal(inverse({ kind: "copy", pairs: [["/a", "/b"]], made: [], binned: [] }), null)
+})
+
+test("clashView describes both sides, picks the safe default and lists the choices with keys", () => {
+    const now = new Date(2026, 9, 14, 12, 0).getTime()
+    const file = {
+        op: "copy", name: "a.txt", folder: "/home/n/Box", from: "/home/n/Downloads", free: "a (2).txt", actions: ["replace", "skip", "both", "rename"],
+        incoming: { dir: false, size: 2048, time: now - 60000, count: 0 }, existing: { dir: false, size: 3, time: new Date(2026, 9, 13, 9, 5).getTime(), count: 0 }
+    }
+    const v = clashView(file, "/home/n", now)
+    assert.equal(v.title, "Replace “a.txt”?")
+    assert.equal(v.text, "Something called “a.txt” is already in ~/Box.")
+    assert.equal(v.primary, "replace")
+    assert.deepEqual(v.sides, [
+        { label: "Already there", detail: "3 bytes · Yesterday 09:05", badge: "", folder: false },
+        { label: "From ~/Downloads", detail: "2.0 kB · Today 11:59", badge: "Newer, larger", folder: false }
+    ])
+    assert.equal(v.same, false)
+    assert.deepEqual(v.buttons.map(b => [b.id, b.label, b.key]), [["skip", "Skip", "S"], ["both", "Keep both", "K"], ["rename", "Rename…", "N"], ["replace", "Replace", "R"]])
+    const dir = Object.assign({}, file, {
+        op: "extract", name: "photos", from: "/home/n/photos.zip", actions: ["merge", "replace", "skip", "both", "rename"],
+        incoming: { dir: true, size: -1, time: 0, count: 3 }, existing: { dir: true, size: -1, time: now - 1000, count: 1 }
+    })
+    const d = clashView(dir, "/home/n", now)
+    assert.equal(d.title, "Merge “photos”?")
+    assert.equal(d.text, "A folder called “photos” is already in ~/Box. Merging adds what is new and asks about anything with the same name.")
+    assert.equal(d.primary, "merge")
+    assert.deepEqual(d.sides.map(x => [x.label, x.detail]), [["Already there", "1 item · Today 11:59"], ["From photos.zip", "3 items"]])
+    assert.deepEqual(d.buttons.map(b => b.id), ["skip", "both", "rename", "replace", "merge"])
+    assert.equal(clashView(Object.assign({}, file, { op: "add", folder: "/home/n/box.zip/docs" }), "/home/n", now).text, "Something called “a.txt” is already in the archive.")
+    assert.equal(clashView(Object.assign({}, file, { op: "restore", from: "" }), "/home/n", now).sides[1].label, "From the trash")
+    assert.equal(clashView(Object.assign({}, file, { op: "compress", incoming: { dir: false, size: -1, time: now, count: 0 } }), "/home/n", now).sides[1].detail, "Not made yet")
+    const same = clashView(Object.assign({}, file, { existing: Object.assign({}, file.incoming) }), "/home/n", now)
+    assert.equal(same.same, true)
+    assert.deepEqual(same.sides.map(x => x.badge), ["", ""])
+})
+
+test("clashAnswer reads keys and typed commands", () => {
+    assert.deepEqual(CLASH_KEYS, { M: "merge", R: "replace", S: "skip", K: "both", N: "rename" })
+    assert.deepEqual(clashAnswer(["merge", "all"], ["merge", "skip"]), { do: "merge", all: true, name: "" })
+    assert.deepEqual(clashAnswer(["rename", "new", "name.txt"], ["rename"]), { do: "rename", all: false, name: "new name.txt" })
+    assert.deepEqual(clashAnswer(["keep"], ["both"]), { do: "both", all: false, name: "" })
+    assert.deepEqual(clashAnswer(["stop"], []), { do: "cancel", all: false, name: "" })
+    assert.throws(() => clashAnswer(["merge"], ["replace"]), /merge is not one of: replace, cancel/)
+    assert.throws(() => clashAnswer(["rename"], ["rename"]), /rename needs a name/)
 })
 
 test("openers puts apps for the file's kind first and filters by the query", () => {

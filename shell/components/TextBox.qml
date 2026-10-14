@@ -8,6 +8,7 @@ Rectangle {
     property alias text: input.text
     property bool password: false
     property string placeholder: ""
+    property alias persistentSelection: input.persistentSelection
 
     signal accepted
 

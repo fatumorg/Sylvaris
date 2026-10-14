@@ -27,10 +27,14 @@ check test -f "$HOME/Docs/Projects/notes.txt" && test -f "$HOME/Docs/Projects/b2
 check sylvaris files state | grep -q '"selected":\["b2.md","notes.txt"\]'
 syl files act paste
 sleep 1.5
-check test -f "$HOME/Docs/Projects/notes (2).txt"
+check sylvaris files state | grep -q '"clash":{"op":"copy","name":"[a-z0-9]*\.[a-z]*","actions":\["replace","skip","both","rename"\]'
+syl files clash keep all
+sleep 1.5
+check test -f "$HOME/Docs/Projects/notes (2).txt" && test -f "$HOME/Docs/Projects/b2 (2).md"
+check sylvaris files state | grep -q '"clash":null'
 syl files act undo
 sleep 1.5
-check test ! -e "$HOME/Docs/Projects/notes (2).txt" && test -f "$HOME/Docs/Projects/notes.txt"
+check test ! -e "$HOME/Docs/Projects/notes (2).txt" && test ! -e "$HOME/Docs/Projects/b2 (2).md" && test -f "$HOME/Docs/Projects/notes.txt"
 syl files act back
 sleep 1
 check sylvaris files state | grep -q '"selected":\["Projects"\]'

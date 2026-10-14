@@ -14,7 +14,7 @@ import time
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from files import Cancelled, Job, free_path, size_of
+from files import Cancelled, Clashes, Job, Outcome, bin_into, free_path, put, size_of
 
 ENV = dict(os.environ, LC_ALL="C.UTF-8")
 TARRED = (".tar.gz", ".tar.bz2", ".tar.xz", ".tar.zst", ".tar.lz", ".tar.lzma", ".tar.lz4", ".tar.z", ".tgz", ".tbz", ".tbz2", ".txz", ".tzst", ".tlz", ".taz")
@@ -221,7 +221,7 @@ def password_state(job, lines):
 
 
 def result(**extra):
-    out = {"ok": [], "failed": [], "cancelled": False, "password": ""}
+    out = {"ok": [], "failed": [], "cancelled": False, "password": "", "skipped": [], "made": [], "moved": [], "trashed": [], "binned": []}
     out.update(extra)
     return out
 
@@ -250,25 +250,25 @@ def umask():
     return mask
 
 
-def place(tmp, dest, mode, stem):
+def place(job, clashes, tmp, dest, mode, stem, archive, out):
     tops = sorted(os.listdir(tmp))
-    made = []
     if mode == "into" or (mode == "smart" and len(tops) == 1):
         for top in tops:
-            src = os.path.join(tmp, top)
-            dst = free_path(os.path.join(dest, top), os.path.isdir(src) and not os.path.islink(src))
-            os.rename(src, dst)
-            made.append(dst)
-        os.rmdir(tmp)
+            final = put(job, clashes, "move", os.path.join(tmp, top), os.path.join(dest, top), out, archive)
+            if final is not None:
+                out.ok.append([archive, final])
+        shutil.rmtree(tmp, ignore_errors=True)
     else:
-        dst = free_path(os.path.join(dest, stem or "Extracted"), True)
-        os.rename(tmp, dst)
-        os.chmod(dst, 0o777 & ~umask())
-        made.append(dst)
-    return made
+        target = os.path.join(dest, stem or "Extracted")
+        os.chmod(tmp, 0o777 & ~umask())
+        final = put(job, clashes, "move", tmp, target, out, archive)
+        if final is not None:
+            out.ok.append([archive, final])
+        if os.path.isdir(tmp):
+            shutil.rmtree(tmp, ignore_errors=True)
 
 
-def extract(job, archive, dest, mode, strip, names):
+def extract(job, archive, dest, mode, strip, names, answers=None):
     archive = os.path.abspath(archive)
     stem = stem_of(os.path.basename(archive))
     try:
@@ -307,14 +307,18 @@ def extract(job, archive, dest, mode, strip, names):
     pw = password_state(job, lines)
     if code != 0 and (pw or not os.listdir(tmp)):
         return result(password=pw, failed=[] if pw else [{"path": archive, "error": problem(lines, "This archive cannot be read")}])
-    failed = [] if code == 0 else [{"path": archive, "error": problem(lines, "Some files could not be extracted")}]
     if not os.listdir(tmp):
         return result(failed=[{"path": archive, "error": "Nothing to extract"}])
-    made = place(tmp, dest, mode, stem)
-    job.temps.remove(tmp)
+    out = Outcome()
+    if code != 0:
+        out.fail(archive, problem(lines, "Some files could not be extracted"))
     job.done = job.total
     job.tick("", True)
-    return result(ok=[[archive, m] for m in made], failed=failed)
+    try:
+        place(job, Clashes(job, answers, "extract"), tmp, dest, mode, stem, archive, out)
+    except Cancelled:
+        out.cancelled = True
+    return result(**out.result())
 
 
 def level_option(name, level):
@@ -343,8 +347,22 @@ def sizes(base, names):
     return found
 
 
-def compress(job, out, level, base, names):
-    final = free_path(os.path.abspath(out), False)
+def compress(job, out, level, base, names, answers=None):
+    final = os.path.abspath(out)
+    replacing = False
+    clashes = Clashes(job, answers, "compress")
+    while os.path.lexists(final):
+        answer = clashes.decide("", final, base, {"dir": False, "size": -1, "time": 0, "count": 0}, ["replace", "skip", "both", "rename"])
+        if answer["do"] == "skip":
+            return result(skipped=[final])
+        if answer["do"] == "both":
+            final = free_path(final, False)
+        elif answer["do"] == "rename":
+            final = os.path.join(os.path.dirname(final), answer["name"])
+            continue
+        else:
+            replacing = True
+        break
     folder, name = os.path.split(final)
     tmp = os.path.join(folder, ".syl-%d-%s" % (os.getpid(), name))
     job.temps.append(tmp)
@@ -359,22 +377,18 @@ def compress(job, out, level, base, names):
     code, lines = run(job, ["bsdtar", "-a", "-c", "-v", "-f", tmp] + level_option(name, level) + ["-C", base, "--"] + names, on_line=added)
     if code != 0:
         return result(failed=[{"path": final, "error": problem(lines, "The archive could not be made")}])
+    out = Outcome()
+    if replacing:
+        bin_into(out, final)
     os.rename(tmp, final)
     job.temps.remove(tmp)
     job.done = job.total
     job.tick("", True)
-    return result(ok=[["", final]])
+    return result(ok=[["", final]], made=[final], trashed=out.trashed, binned=out.binned)
 
 
-def taken_in(job, archive, inner):
-    found = listing(job, archive)
-    prefix = inner + "/" if inner else ""
-    names = set()
-    for e in found.get("entries", []):
-        path = re.sub(r"^(\./|/)+", "", e["path"]).rstrip("/")
-        if path.startswith(prefix) and path != inner:
-            names.add(path[len(prefix):].split("/")[0])
-    return found, names
+def clean_path(path):
+    return re.sub(r"^(\./|/)+", "", path).rstrip("/")
 
 
 def rebuild(job, archive, extra):
@@ -403,34 +417,123 @@ def bre(text):
     return re.sub(r"([\\.\[\]*^$])", r"\\\1", text)
 
 
-def add(job, archive, inner, sources):
+class Inside:
+    def __init__(self, entries):
+        self.items = {}
+        self.raw = {}
+        for e in entries:
+            path = clean_path(e["path"])
+            if not path:
+                continue
+            self.raw.setdefault(path, []).append(e["path"])
+            self.items[path] = {"dir": e["dir"], "size": -1 if e["dir"] else e["size"], "time": e["mtime"]}
+            parts = path.split("/")
+            for i in range(1, len(parts)):
+                self.items.setdefault("/".join(parts[:i]), {"dir": True, "size": -1, "time": 0})
+
+    def has(self, path):
+        return path in self.items
+
+    def facts(self, path):
+        item = self.items[path]
+        prefix = path + "/"
+        count = sum(1 for p in self.items if p.startswith(prefix) and "/" not in p[len(prefix):]) if item["dir"] else 0
+        return {"dir": item["dir"], "size": item["size"], "time": item["time"], "count": count}
+
+    def drop(self, path):
+        prefix = path + "/"
+        gone = [p for p in self.items if p == path or p.startswith(prefix)]
+        raws = []
+        for p in gone:
+            del self.items[p]
+            raws += self.raw.pop(p, [])
+        return raws or [path]
+
+    def take(self, path, folder):
+        self.items[path] = {"dir": folder, "size": -1, "time": int(time.time() * 1000)}
+        parts = path.split("/")
+        for i in range(1, len(parts)):
+            self.items.setdefault("/".join(parts[:i]), {"dir": True, "size": -1, "time": 0})
+
+    def free(self, path, folder):
+        return clean_path(free_path("/" + path, folder, exists=lambda p: clean_path(p) in self.items))
+
+
+def add(job, archive, inner, sources, answers=None):
     archive = os.path.abspath(archive)
-    found, names = taken_in(job, archive, inner)
+    found = listing(job, archive)
     if found["password"] or found["failed"]:
         return result(failed=[{"path": archive, "error": "Archives with a password cannot be changed" if found["password"] else found["failed"][0]["error"]}])
+    inside = Inside(found["entries"])
+    clashes = Clashes(job, answers, "add")
+    out = Outcome()
+    plan = []
+    drops = []
+
+    def place(src, dest):
+        folder = os.path.isdir(src) and not os.path.islink(src)
+        while inside.has(dest):
+            mine = inside.facts(dest)
+            theirs = {"dir": folder, "size": -1 if folder else os.lstat(src).st_size, "time": int(os.lstat(src).st_mtime * 1000), "count": len(os.listdir(src)) if folder else 0}
+            answer = clashes.decide(src, archive + "/" + dest, os.path.dirname(src), theirs, None, mine, os.path.basename(inside.free(dest, folder)))
+            do = answer["do"]
+            if do == "skip":
+                out.skipped.append(src)
+                return None
+            if do == "both":
+                dest = inside.free(dest, folder)
+            elif do == "rename":
+                dest = (dest.rsplit("/", 1)[0] + "/" if "/" in dest else "") + answer["name"]
+            elif do == "merge" and folder and mine["dir"]:
+                for name in sorted(os.listdir(src)):
+                    place(os.path.join(src, name), dest + "/" + name)
+                return dest
+            else:
+                drops.extend(inside.drop(dest))
+                break
+        inside.take(dest, folder)
+        plan.append((src, dest))
+        return dest
+
+    try:
+        for src in sources:
+            src = os.path.abspath(src)
+            if not os.path.lexists(src):
+                continue
+            final = place(src, (inner + "/" if inner else "") + os.path.basename(src.rstrip("/")))
+            if final is not None:
+                out.ok.append([src, archive + "/" + final])
+    except Cancelled:
+        return result(cancelled=True, skipped=out.skipped)
+    if not plan:
+        if out.skipped:
+            return result(skipped=out.skipped)
+        return result(failed=[{"path": archive, "error": "Nothing to add"}])
     part = os.path.join(os.path.dirname(archive), ".syl-%d-part.tar" % os.getpid())
     job.temps.append(part)
-    pairs = []
-    for i, src in enumerate(sources):
-        src = os.path.abspath(src)
-        if not os.path.lexists(src):
-            continue
+    for src, dest in plan:
         parent, base = os.path.split(src.rstrip("/"))
-        free = os.path.basename(free_path(os.path.join("/", base), os.path.isdir(src) and not os.path.islink(src), exists=lambda p: os.path.basename(p) in names))
-        names.add(free)
-        dest = (inner + "/" if inner else "") + free
         rule = "\x01^%s\x01%s\x01" % (bre(base), dest.replace("\\", "\\\\").replace("&", "\\&"))
-        code, lines = run(job, ["bsdtar", "-c" if not pairs else "-r", "-f", part, "-C", parent, "-s", rule, "--", base])
+        code, lines = run(job, ["bsdtar", "-c" if not os.path.exists(part) else "-r", "-f", part, "-C", parent, "-s", rule, "--", base])
         if code != 0:
             return result(failed=[{"path": src, "error": problem(lines, "It could not be added")}])
-        pairs.append([src, archive + "/" + dest])
-    if not pairs:
-        return result(failed=[{"path": archive, "error": "Nothing to add"}])
-    done, lines = rebuild(job, archive, lambda a: ["@" + a, "@" + part])
+    sources_of = lambda a: ["@" + a, "@" + part]
+    if drops:
+        kept = os.path.join(os.path.dirname(archive), ".syl-%d-kept.tar" % os.getpid())
+        job.temps.append(kept)
+        rules = []
+        for d in drops:
+            rules += ["--exclude", pattern(d.rstrip("/"))]
+        code, lines = run(job, ["bsdtar", "-c", "-f", kept] + rules + ["@" + archive])
+        if code != 0:
+            return result(failed=[{"path": archive, "error": problem(lines, "The archive could not be changed")}])
+        sources_of = lambda a: ["@" + kept, "@" + part]
+    done, lines = rebuild(job, archive, sources_of)
     if not done:
         return result(failed=[{"path": archive, "error": problem(lines, "The archive could not be changed")}])
     job.tick("", True)
-    return result(ok=pairs)
+    out.made = [archive + "/" + d for _, d in plan]
+    return result(**out.result())
 
 
 def remove(job, archive, paths):
@@ -447,7 +550,7 @@ def remove(job, archive, paths):
     return result(ok=[[archive + "/" + p, ""] for p in paths])
 
 
-USAGE = "usage: archive.py [--ask] list ARCHIVE | extract ARCHIVE DEST smart|folder|into STRIP [NAME...] | compress OUT fast|normal|best BASE NAME... | add ARCHIVE INNER SRC... | remove ARCHIVE PATH...\n"
+USAGE = "usage: archive.py [--ask] [--clashes] list ARCHIVE | extract ARCHIVE DEST smart|folder|into STRIP [NAME...] | compress OUT fast|normal|best BASE NAME... | add ARCHIVE INNER SRC... | remove ARCHIVE PATH...\n"
 
 
 def main(argv, out, stdin=sys.stdin):
@@ -455,6 +558,10 @@ def main(argv, out, stdin=sys.stdin):
     job = Work(out)
     if args[:1] == ["--ask"]:
         job.secret = stdin.readline().rstrip("\n")
+        args = args[1:]
+    answers = None
+    if args[:1] == ["--clashes"]:
+        answers = stdin
         args = args[1:]
     if not args:
         out.write(USAGE)
@@ -469,11 +576,11 @@ def main(argv, out, stdin=sys.stdin):
         if verb == "list" and len(rest) == 1:
             outcome = listing(job, rest[0])
         elif verb == "extract" and len(rest) >= 4 and rest[2] in ("smart", "folder", "into") and rest[3].isdigit():
-            outcome = extract(job, rest[0], rest[1], rest[2], int(rest[3]), rest[4:])
+            outcome = extract(job, rest[0], rest[1], rest[2], int(rest[3]), rest[4:], answers)
         elif verb == "compress" and len(rest) >= 4 and rest[1] in ("fast", "normal", "best"):
-            outcome = compress(job, rest[0], rest[1], rest[2], rest[3:])
+            outcome = compress(job, rest[0], rest[1], rest[2], rest[3:], answers)
         elif verb == "add" and len(rest) >= 3:
-            outcome = add(job, rest[0], rest[1].strip("/"), rest[2:])
+            outcome = add(job, rest[0], rest[1].strip("/"), rest[2:], answers)
         elif verb == "remove" and len(rest) >= 2:
             outcome = remove(job, rest[0], rest[1:])
         else:

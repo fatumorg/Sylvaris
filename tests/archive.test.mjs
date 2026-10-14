@@ -3,7 +3,7 @@ import assert from "node:assert/strict"
 import {
     DEFAULT_ARCHIVE, validateArchive, ARCHIVE_ACTIONS, FORMATS, LEVELS, EXTRACTS,
     archiveExt, isArchive, stemOf, writable, formatLabel, treeOf, folderOf, crumbsOf, innerOf,
-    newName, countOf, extractNote, compressNote, joinInner, outName
+    newName, countOf, extractNote, compressNote, addNote, joinInner, outName
 } from "../shell/lib/archive.mjs"
 import { keymap, validateKeys } from "../shell/lib/files.mjs"
 
@@ -134,4 +134,17 @@ test("notes say what happened", () => {
     assert.equal(extractNote({ ok: [], failed: [], cancelled: true, password: "" }), "Stopped")
     assert.equal(compressNote({ ok: [["", "/a/b.zip"]], failed: [], cancelled: false }), "Packed into “b.zip”")
     assert.equal(compressNote({ ok: [], failed: [{ path: "/a/b.zip", error: "No space left on device" }], cancelled: false }), "b.zip: No space left on device")
+})
+
+test("notes count what was skipped or replaced in a clash", () => {
+    const base = { failed: [], cancelled: false, password: "" }
+    assert.equal(extractNote(Object.assign({ ok: [["/a/x.zip", "/a/x"]], skipped: ["/t/a"], trashed: ["/a/x/b"] }, base)), "Extracted to “x” · skipped 1 · replaced 1")
+    assert.equal(extractNote(Object.assign({ ok: [], skipped: ["/t/x"] }, base)), "Skipped “x”, nothing extracted")
+    assert.equal(compressNote(Object.assign({ ok: [], skipped: ["/a/b.zip"] }, base)), "Kept “b.zip”, nothing packed")
+    assert.equal(compressNote(Object.assign({ ok: [["", "/a/b.zip"]], trashed: ["/a/b.zip"] }, base)), "Packed into “b.zip” · the old one is in the trash")
+    assert.equal(addNote(Object.assign({ ok: [["/n/a", "/z.zip/a"]], skipped: [] }, base)), "Added “a”")
+    assert.equal(addNote(Object.assign({ ok: [["/n/a", "/z.zip/a"], ["/n/b", "/z.zip/b"]], skipped: ["/n/c"] }, base)), "Added 2 items · skipped 1")
+    assert.equal(addNote(Object.assign({ ok: [], skipped: ["/n/c", "/n/d"] }, base)), "Skipped 2 items, nothing added")
+    assert.equal(addNote(Object.assign({ ok: [], skipped: [] }, base, { failed: [{ path: "/n/a", error: "Nope" }] })), "a: Nope")
+    assert.equal(addNote(Object.assign({ ok: [] }, base, { cancelled: true })), "Stopped")
 })
