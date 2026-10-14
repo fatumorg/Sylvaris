@@ -78,11 +78,11 @@ def copy_any(job, src, dst):
         copy_file(job, src, dst)
 
 
-DOUBLE = (".tar.gz", ".tar.bz2", ".tar.xz", ".tar.zst", ".tar.lz", ".tar.lzma")
+DOUBLE = (".tar.gz", ".tar.bz2", ".tar.xz", ".tar.zst", ".tar.lz", ".tar.lzma", ".tar.lz4")
 
 
-def free_path(path, is_dir):
-    if not os.path.lexists(path):
+def free_path(path, is_dir, exists=os.path.lexists):
+    if not exists(path):
         return path
     folder, name = os.path.split(path)
     stem, ext = name, ""
@@ -98,7 +98,7 @@ def free_path(path, is_dir):
     m = re.match(r"^(.*) \((\d+)\)$", stem)
     if m:
         stem, n = m.group(1), int(m.group(2)) + 1
-    while os.path.lexists(os.path.join(folder, "%s (%d)%s" % (stem, n, ext))):
+    while exists(os.path.join(folder, "%s (%d)%s" % (stem, n, ext))):
         n += 1
     return os.path.join(folder, "%s (%d)%s" % (stem, n, ext))
 

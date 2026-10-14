@@ -38,6 +38,7 @@
                 pkgs.nodejs
                 pkgs.qt6.qtdeclarative
                 pkgs.findutils
+                pkgs.libarchive
                 (pkgs.python3.withPackages (ps: [ ps.cryptography ]))
               ];
             }
@@ -187,6 +188,7 @@
             pkgs.wtype
             pkgs.wlrctl
             pkgs.wayvnc
+            pkgs.libarchive
             (pkgs.python3.withPackages (ps: [
               ps.cryptography
               ps.vncdotool

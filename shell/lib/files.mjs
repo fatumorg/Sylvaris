@@ -128,11 +128,11 @@ function placePath(s) {
     return t.startsWith("/") ? pathFrom(t) : ""
 }
 
-export function validateKeys(raw) {
+export function validateKeys(raw, actions) {
     const out = {}
     if (!isObject(raw))
         return out
-    for (const a of FILE_ACTIONS) {
+    for (const a of actions || FILE_ACTIONS) {
         if (!Object.prototype.hasOwnProperty.call(raw, a.id))
             continue
         const v = raw[a.id]
@@ -179,14 +179,15 @@ export function validateFiles(raw) {
     })
 }
 
-export function keymap(overrides) {
-    const own = validateKeys(overrides)
+export function keymap(overrides, actions) {
+    const list = actions || FILE_ACTIONS
+    const own = validateKeys(overrides, list)
     const byAction = {}
     const byCombo = {}
-    for (const a of FILE_ACTIONS)
+    for (const a of list)
         byAction[a.id] = own[a.id] !== undefined ? own[a.id] : a.keys.map(normalize)
     for (const pass of [true, false])
-        for (const a of FILE_ACTIONS)
+        for (const a of list)
             if ((own[a.id] !== undefined) === pass)
                 for (const c of byAction[a.id])
                     if (byCombo[c] === undefined)
