@@ -213,12 +213,23 @@ export function niriReduce(state, event) {
     return s
 }
 
+const OWN_WINDOWS = [[" — SylFiles", "sylvaris-files"], [" — SylArchive", "sylvaris-archive"]]
+
+export function appOf(appId, title) {
+    const id = String(appId || "")
+    if (!/^(org\.)?quickshell$/i.test(id))
+        return id
+    const t = String(title || "")
+    const own = OWN_WINDOWS.find(o => t.endsWith(o[0]))
+    return own ? own[1] : id
+}
+
 export function niriWorkspaces(state) {
     const counts = {}
     const apps = {}
     for (const w of state.windows) {
         counts[w.workspace_id] = (counts[w.workspace_id] || 0) + 1
-        apps[w.workspace_id] = (apps[w.workspace_id] || []).concat([w.app_id || ""])
+        apps[w.workspace_id] = (apps[w.workspace_id] || []).concat([appOf(w.app_id, w.title)])
     }
     return state.workspaces.map(w => ({
         id: String(w.id),

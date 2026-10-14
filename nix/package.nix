@@ -148,6 +148,8 @@ stdenvNoCC.mkDerivation {
     install -Dm644 share/applications/sylvaris-viewer.desktop $out/share/applications/sylvaris-viewer.desktop
     install -Dm644 share/applications/sylvaris-files.desktop $out/share/applications/sylvaris-files.desktop
     install -Dm644 share/applications/sylvaris-archive.desktop $out/share/applications/sylvaris-archive.desktop
+    install -Dm644 share/icons/hicolor/scalable/apps/sylvaris-files.svg $out/share/icons/hicolor/scalable/apps/sylvaris-files.svg
+    install -Dm644 share/icons/hicolor/scalable/apps/sylvaris-archive.svg $out/share/icons/hicolor/scalable/apps/sylvaris-archive.svg
     wrapProgram $out/bin/sylvaris \
       --set-default SYLVARIS_DIR $out/share/sylvaris \
       --prefix PATH : ${lib.makeBinPath tools} \

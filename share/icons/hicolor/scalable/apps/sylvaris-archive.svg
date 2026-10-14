@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2d2018"/>
+      <stop offset="1" stop-color="#130e0b"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e0955c" stop-opacity="0.6"/>
+      <stop offset="0.45" stop-color="#e0955c" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#e0955c" stop-opacity="0.22"/>
+    </linearGradient>
+    <linearGradient id="back" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b8683a"/>
+      <stop offset="1" stop-color="#7c4224"/>
+    </linearGradient>
+    <linearGradient id="front" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0ab73"/>
+      <stop offset="0.5" stop-color="#d07a3a"/>
+      <stop offset="1" stop-color="#a85c32"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.38"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.62" r="0.5">
+      <stop offset="0" stop-color="#c9702f" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#c9702f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect x="12" y="12" width="232" height="232" rx="58" fill="url(#bg)"/>
+  <rect x="12" y="12" width="232" height="232" rx="58" fill="url(#glow)"/>
+  <rect x="13.5" y="13.5" width="229" height="229" rx="56.5" fill="none" stroke="url(#rim)" stroke-width="3"/>
+  <path d="M58 82a14 14 0 0 1 14-14h36a10 10 0 0 1 7 3l13 13h56a14 14 0 0 1 14 14v12H58z" fill="url(#back)"/>
+  <path d="M46 114a16 16 0 0 1 16-16h132a16 16 0 0 1 16 16v60a22 22 0 0 1-22 22H68a22 22 0 0 1-22-22z" fill="url(#front)"/>
+  <path d="M46 114a16 16 0 0 1 16-16h132a16 16 0 0 1 16 16v14H46z" fill="url(#sheen)"/>
+  <rect x="117" y="98" width="22" height="98" fill="#1a120d" fill-opacity="0.32"/>
+  <g fill="#f3e6d6">
+    <rect x="117" y="102" width="11" height="7" rx="2"/>
+    <rect x="128" y="113" width="11" height="7" rx="2"/>
+    <rect x="117" y="124" width="11" height="7" rx="2"/>
+    <rect x="128" y="135" width="11" height="7" rx="2"/>
+    <rect x="117" y="146" width="11" height="7" rx="2"/>
+  </g>
+  <rect x="113" y="158" width="30" height="30" rx="8" fill="#f3e6d6"/>
+  <rect x="121" y="167" width="14" height="12" rx="4" fill="#a85c32"/>
+</svg>

@@ -22,7 +22,7 @@ Singleton {
     readonly property bool usingLua: root.name === "hyprland" && Hyprland.usingLua
     readonly property var workspaces: root.name === "hyprland" ? root.hyprWorkspaces() : root.name === "sway" ? root.swayWorkspaces() : root.name === "niri" ? W.niriWorkspaces(root.niriState) : []
     readonly property var windows: Demo.enabled ? Demo.windows : ToplevelManager.toplevels.values.map(t => ({
-                appId: t.appId,
+                appId: W.appOf(t.appId, t.title),
                 title: t.title,
                 activated: t.activated,
                 minimized: t.minimized,
@@ -49,7 +49,7 @@ Singleton {
                 focused: w.focused,
                 urgent: w.urgent,
                 windows: live.length,
-                apps: live.map(t => t.wayland.appId)
+                apps: live.map(t => W.appOf(t.wayland.appId, t.wayland.title))
             };
         }).sort(W.order);
     }

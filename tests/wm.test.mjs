@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { translate, niriReduce, niriWorkspaces, bindSnippet } from "../shell/lib/wm.mjs"
+import { translate, niriReduce, niriWorkspaces, bindSnippet, appOf } from "../shell/lib/wm.mjs"
 
 test("Hyprland with a Lua config gets Lua dispatchers", () => {
     assert.deepEqual(translate("hyprland", true, "workspace", ["3"]), { via: "hyprland", command: "hl.dsp.focus({ workspace = 3 })" })
@@ -122,4 +122,22 @@ test("the capability table in docs/compositors.md is generated from lib/wm.mjs",
         table.push(l)
     }
     assert.equal(table.slice(0, capabilityTable().split("\n").length).join("\n"), capabilityTable(), "run: node -e 'import(\"./shell/lib/wm.mjs\").then(w => console.log(w.capabilityTable()))'")
+})
+
+test("appOf gives Sylvaris windows their own app instead of Quickshell", () => {
+    assert.equal(appOf("org.quickshell", "Downloads — SylFiles"), "sylvaris-files")
+    assert.equal(appOf("org.quickshell", "Open — SylFiles"), "sylvaris-files")
+    assert.equal(appOf("quickshell", "photos.zip — SylArchive"), "sylvaris-archive")
+    assert.equal(appOf("org.quickshell", "Something else"), "org.quickshell")
+    assert.equal(appOf("kitty", "notes — SylFiles"), "kitty")
+    assert.equal(appOf("", undefined), "")
+    assert.equal(appOf(undefined, "x — SylFiles"), "")
+})
+
+test("niri workspaces name Sylvaris windows by their own app", () => {
+    const ws = niriWorkspaces({
+        workspaces: [{ id: 1, idx: 1, output: "DP-1", is_active: true, is_focused: true, is_urgent: false }],
+        windows: [{ id: 7, workspace_id: 1, app_id: "org.quickshell", title: "Home — SylFiles" }, { id: 8, workspace_id: 1, app_id: "kitty", title: "zsh" }]
+    })
+    assert.deepEqual(ws[0].apps, ["sylvaris-files", "kitty"])
 })
