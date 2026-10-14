@@ -35,13 +35,13 @@ FaceTime has no Linux app. Only FaceTime calls opened at facetime.apple.com in a
 
 Messages and calls taken by the island skip the usual toasts.
 
-A voice chat you are already in sends no notification, so the island watches for a chat app (or a browser, for Meet and the web versions) using your microphone instead. The mute button mutes that app's microphone stream in PipeWire, so it works the same in every app; the app's own mute button may not show it. `calls` turns voice chats off along with incoming calls.
+A voice chat you are already in sends no notification, so the island watches for a chat app (or a browser, for Meet and the web versions) recording from your microphone instead. The timer belongs to the app, not to one stream: when the app reconnects its microphone or opens a second stream, the count goes on, and a call that drops for under 10 seconds keeps its time. The mute button mutes every microphone stream of that app in PipeWire, so it works the same in every app; the app's own mute button may not show it. `calls` turns voice chats off along with incoming calls.
 
 While a call rings or a voice chat is going, the island stays out on top: it does not tuck away in hover mode, and it shows over full-screen apps and games. `island.pinCalls = false` lets it behave as usual during calls.
 
 ## Microphone and camera
 
-Apps recording from a microphone show up from their PipeWire streams; sound captured from your speakers, such as a visualiser, does not count. Cameras show up from their PipeWire streams and from any process holding a `/dev/video*` device, checked every 3 seconds. Privacy mode replaces that row, since nothing can use them then. `island.privacy = false` hides both; `island.status = false` hides the switch alerts.
+An app shows up only while one of its PipeWire streams is linked to a real microphone; sound captured from your speakers, such as a visualiser or a screen recorder taking desktop audio, does not count, and neither do volume meters. Apps are named by what they are rather than by their stream: helper streams of GPU Screen Recorder show as GPU Screen Recorder, Discord's "WEBRTC VoiceEngine" as Discord, and plumbing that PipeWire or PulseAudio modules create on their own is left out. Cameras show up from their PipeWire streams and from any process holding a `/dev/video*` device, checked every 3 seconds. Privacy mode replaces that row, since nothing can use them then. `island.privacy = false` hides both; `island.status = false` hides the switch alerts.
 
 ## Shortcuts
 

@@ -31,7 +31,7 @@ Scope {
     property int lastNote: -1
     property var devicesBefore: []
     property int replyTo: -1
-    property var voiceSince: ({})
+    property var session: null
     property var cameraUsers: []
     readonly property bool performance: Settings.values.performance
     property string netAnnounced: ""
@@ -42,19 +42,26 @@ Scope {
         }
         return NetworkService.wiredConnected ? "Wired" : "";
     }
-    readonly property var inuse: root.cfg.privacy ? I.inUse(root.captures.map(n => ({
-                    app: n.properties["application.name"] || "",
-                    binary: n.properties["application.process.binary"] || "",
-                    video: !n.audio,
-                    monitor: n.properties["stream.capture.sink"] === "true"
-                })), root.cameraUsers, root.voiceBase === null ? "" : root.voiceBase.app) : null
     readonly property var captures: Demo.enabled || !root.cfg.calls && !root.cfg.privacy ? [] : Pipewire.nodes.values.filter(n => n.isStream && !n.isSink)
-    readonly property var voiceBase: I.voiceOf(root.captures.filter(n => n.audio).map(n => ({
-                    id: n.id,
-                    app: n.properties["application.name"] || "",
-                    binary: n.properties["application.process.binary"] || "",
-                    muted: n.audio.muted
-                })))
+    readonly property var feeds: {
+        const ids = root.captures.map(n => n.id);
+        return ids.length === 0 ? [] : Pipewire.linkGroups.values.filter(g => g.source !== null && g.target !== null && ids.indexOf(g.target.id) >= 0);
+    }
+    readonly property var streams: I.streamsOf(root.captures.map(n => ({
+                id: n.id,
+                props: n.properties,
+                audio: n.audio !== null,
+                muted: n.audio !== null && n.audio.muted
+            })), root.feeds.map(g => ({
+                target: g.target.id,
+                source: {
+                    stream: g.source.isStream,
+                    sink: g.source.isSink,
+                    props: g.source.properties
+                }
+            })))
+    readonly property var voiceNow: I.voiceOf(root.streams)
+    readonly property var inuse: root.cfg.privacy ? I.inUse(root.streams, root.cameraUsers, root.session === null ? [] : root.session.ids) : null
     readonly property var screenInfo: Compositor.screenFor(Compositor.focusedName())
     readonly property var capture: root.peers.capture === undefined ? null : root.peers.capture
     readonly property bool recording: root.capture !== null && root.capture.recording
@@ -76,9 +83,13 @@ Scope {
     }
     readonly property var items: I.activities({
         call: root.call,
-        voice: root.voiceBase === null ? null : Object.assign({}, root.voiceBase, {
-            elapsed: root.now - (root.voiceSince[root.voiceBase.id] || root.now)
-        }),
+        voice: root.session === null ? null : {
+            app: root.session.app,
+            glyph: root.session.glyph,
+            ids: root.session.ids,
+            muted: root.session.muted,
+            elapsed: root.now - root.session.since
+        },
         flash: root.flash,
         privacy: Privacy.active ? {
             combo: Keybinds.wanted["privacy toggle"] || Keybinds.external["privacy toggle"] || ""
@@ -296,19 +307,13 @@ Scope {
         if (a === null)
             return;
         if (what === "mute") {
-            const n = root.captures.find(x => x.id === a.id);
-            if (n !== undefined && n.audio)
-                n.audio.muted = !n.audio.muted;
+            const nodes = root.captures.filter(x => a.ids.indexOf(x.id) >= 0 && x.audio !== null);
+            const to = !nodes.every(x => x.audio.muted);
+            for (const n of nodes)
+                n.audio.muted = to;
             return;
         }
-        const w = Compositor.windows.find(x => {
-            const v = I.voiceOf([{
-                    id: 0,
-                    app: x.appId || "",
-                    binary: ""
-                }]);
-            return v !== null && v.app === a.app;
-        });
+        const w = I.voiceWindow(Compositor.windows, a.app);
         if (w !== undefined) {
             root.close();
             root.hotScreen = "";
@@ -363,7 +368,7 @@ Scope {
             docked: root.docked,
             calling: I.inCall(root.cfg, {
                 call: root.call,
-                voice: root.voiceBase
+                voice: root.session
             }),
             replying: root.replyTo >= 0,
             position: root.cfg.position,
@@ -377,19 +382,20 @@ Scope {
         };
     }
 
-    onVoiceBaseChanged: {
-        if (root.voiceBase === null) {
-            root.voiceSince = ({});
-        } else if (root.voiceSince[root.voiceBase.id] === undefined) {
-            const next = Object.assign({}, root.voiceSince);
-            root.now = Date.now();
-            next[root.voiceBase.id] = root.now;
-            root.voiceSince = next;
-        }
+    function syncVoice(): void {
+        const t = Date.now();
+        const next = I.nextSession(root.session, root.voiceNow, t);
+        if (JSON.stringify(next) === JSON.stringify(root.session))
+            return;
+        if (root.session === null && next !== null)
+            root.now = t;
+        root.session = next;
     }
 
+    onVoiceNowChanged: root.syncVoice()
+
     PwObjectTracker {
-        objects: root.captures
+        objects: root.captures.concat(root.feeds.map(g => g.source))
     }
 
     onFlashChanged: {
@@ -434,8 +440,12 @@ Scope {
     Timer {
         interval: 1000
         repeat: true
-        running: root.recording || root.voiceBase !== null || root.cfg.diver && (Diver.focusEnd > root.now || Diver.next !== null)
-        onTriggered: root.now = Date.now()
+        running: root.recording || root.session !== null || root.cfg.diver && (Diver.focusEnd > root.now || Diver.next !== null)
+        onTriggered: {
+            root.now = Date.now();
+            if (root.session !== null)
+                root.syncVoice();
+        }
     }
 
     Timer {
@@ -622,7 +632,7 @@ Scope {
             readonly property bool docked: root.avoid !== null && root.avoid.docked === true && root.avoid.corner === win.wcfg.position && root.avoid.screen === win.name
             readonly property bool calling: I.inCall(win.wcfg, {
                 call: root.call,
-                voice: root.voiceBase
+                voice: root.session
             })
             readonly property bool edge: win.wcfg.reveal === "hover"
             readonly property real inset: win.edge ? Tokens.edgeMargin : 0

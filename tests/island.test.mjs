@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { DEFAULT_ISLAND, validateIsland, activities, label, joined, custom, SHORTCUTS, shortcutsFor, placeOf, cardHeight, CHAT_APPS, chatOf, isCall, pickActions, takes, hiddenSite, voiceOf, tucked, inUse, status, inCall } from "../shell/lib/island.mjs"
+import { DEFAULT_ISLAND, validateIsland, activities, label, joined, custom, SHORTCUTS, shortcutsFor, placeOf, cardHeight, CHAT_APPS, chatOf, isCall, pickActions, takes, hiddenSite, voiceOf, tucked, inUse, status, inCall, ownerOf, nodeKind, streamsOf, nextSession, VOICE_GRACE, voiceWindow } from "../shell/lib/island.mjs"
 
 const idle = { flash: null, recording: { on: false }, alarm: null, focus: null, next: null, media: { title: "", playing: false } }
 
@@ -223,12 +223,90 @@ test("media from a hidden site stays out of the island", () => {
     assert.deepEqual(activities(s, Object.assign({}, DEFAULT_ISLAND, { hideSites: [] })).map(a => a.kind), ["media"])
 })
 
-test("voiceOf finds a voice chat from an app using the microphone", () => {
-    assert.deepEqual(voiceOf([{ id: 296, app: "vesktop", binary: "electron", muted: false }]), { id: 296, app: "Discord", glyph: "speech", muted: false })
-    assert.deepEqual(voiceOf([{ id: 1, app: "OBS Studio", binary: "obs", muted: false }, { id: 2, app: "Firefox", binary: "firefox", muted: true }]), { id: 2, app: "Firefox", glyph: "voice", muted: true })
-    assert.deepEqual(voiceOf([{ id: 3, app: "", binary: "signal-desktop", muted: false }]).app, "Signal")
-    assert.equal(voiceOf([{ id: 1, app: "OBS Studio", binary: "obs", muted: false }]), null)
+test("ownerOf names the app behind a stream and drops audio plumbing", () => {
+    const o = props => ownerOf(props).name
+    assert.equal(o({ "application.name": "gsr-combined-77", "application.process.binary": "pipewire-pulse", "node.name": "gsr-combined-77" }), "GPU Screen Recorder")
+    assert.equal(o({ "application.name": "gpu-screen-recorder", "application.process.binary": "gpu-screen-recorder" }), "GPU Screen Recorder")
+    assert.equal(o({ "application.name": "WEBRTC VoiceEngine", "application.process.binary": ".Discord-wrapped" }), "Discord")
+    assert.equal(o({ "application.name": "vesktop", "application.process.binary": "electron" }), "Discord")
+    assert.equal(o({ "application.name": "WEBRTC VoiceEngine", "application.process.binary": "electron", "node.name": "vesktop" }), "Discord")
+    assert.equal(o({ "application.id": "com.discordapp.Discord", "application.process.binary": "Discord" }), "Discord")
+    assert.equal(o({ "application.name": "Firefox", "application.process.binary": ".firefox-wrapped" }), "Firefox")
+    assert.equal(o({ "application.name": "ALSA plug-in [audacity]", "application.process.binary": "audacity" }), "Audacity")
+    assert.equal(o({ "application.name": "loopback-1234-56", "application.process.binary": "pipewire" }), "")
+    assert.equal(o({ "application.name": "Quickshell", "application.process.binary": ".quickshell-wrapped" }), "")
+    assert.equal(o({ "application.name": "", "application.process.binary": "" }), "")
+    assert.equal(o({ "application.name": "OBS", "application.process.binary": "obs" }), "OBS Studio")
+    assert.equal(ownerOf({ "application.name": "Firefox", "application.process.binary": "firefox" }).browser, true)
+    assert.equal(ownerOf({ "application.name": "vesktop", "application.process.binary": "electron" }).chat.id, "discord")
+})
+
+test("nodeKind tells a microphone from a speaker monitor, a virtual source and another stream", () => {
+    assert.equal(nodeKind({ stream: false, sink: false, props: { "media.class": "Audio/Source", "node.name": "alsa_input.usb-mic", "device.id": "51" } }), "mic")
+    assert.equal(nodeKind({ stream: false, sink: false, props: { "media.class": "Audio/Source", "node.name": "bluez_input.AA_BB" } }), "mic")
+    assert.equal(nodeKind({ stream: false, sink: false, props: { "media.class": "Audio/Source/Virtual", "node.name": "gsr-combined-77" } }), "virtual")
+    assert.equal(nodeKind({ stream: false, sink: true, props: { "media.class": "Audio/Sink", "node.name": "alsa_output.pci" } }), "monitor")
+    assert.equal(nodeKind({ stream: true, sink: false, props: { "media.class": "Stream/Output/Audio" } }), "stream")
+    assert.equal(nodeKind({ stream: false, sink: false, props: { "media.class": "Video/Source", "node.name": "v4l2_input.cam" } }), "camera")
+    assert.equal(nodeKind({ stream: false, sink: false, props: {} }), "other")
+})
+
+test("streamsOf marks only streams fed by a real microphone as using it", () => {
+    const mic = { stream: false, sink: false, props: { "media.class": "Audio/Source", "node.name": "alsa_input.mic", "device.id": "4" } }
+    const speakers = { stream: false, sink: true, props: { "media.class": "Audio/Sink", "node.name": "alsa_output.pci" } }
+    const virtual = { stream: false, sink: false, props: { "media.class": "Audio/Source/Virtual", "node.name": "gsr-combined-77" } }
+    const captures = [
+        { id: 10, audio: true, muted: false, props: { "application.name": "WEBRTC VoiceEngine", "application.process.binary": ".Discord-wrapped" } },
+        { id: 11, audio: true, muted: false, props: { "application.name": "gpu-screen-recorder", "application.process.binary": "gpu-screen-recorder" } },
+        { id: 12, audio: true, muted: false, props: { "application.name": "gsr-combined-77", "application.process.binary": "pipewire-pulse" } },
+        { id: 13, audio: true, muted: false, props: { "application.name": "pavucontrol", "application.process.binary": "pavucontrol", "stream.monitor": "true" } },
+        { id: 14, audio: false, muted: false, props: { "application.name": "Firefox", "application.process.binary": "firefox" } }
+    ]
+    const links = [{ target: 10, source: mic }, { target: 11, source: speakers }, { target: 11, source: virtual }, { target: 12, source: mic }, { target: 13, source: mic }]
+    assert.deepEqual(streamsOf(captures, links).map(s => [s.id, s.owner, s.mic, s.video, s.monitor, s.peak]), [
+        [10, "Discord", true, false, false, false],
+        [11, "GPU Screen Recorder", false, false, true, false],
+        [12, "GPU Screen Recorder", true, false, false, false],
+        [13, "Pavucontrol", true, false, false, true],
+        [14, "Firefox", false, true, false, false]
+    ])
+    assert.deepEqual(streamsOf(undefined, undefined), [])
+})
+
+test("voiceOf finds a call app and all of its streams in a fixed order", () => {
+    const s = (id, owner, extra) => Object.assign({ id: id, owner: owner, chat: null, browser: false, mic: true, video: false, monitor: false, peak: false, muted: false }, extra || {})
+    const discord = { id: "discord", label: "Discord", glyph: "speech" }
+    const zoom = { id: "zoom", label: "Zoom", glyph: "voice" }
+    assert.deepEqual(voiceOf([s(7, "Zoom", { chat: zoom }), s(3, "Discord", { chat: discord }), s(4, "Discord", { chat: discord, muted: true })]), { app: "Discord", glyph: "speech", ids: [3, 4], muted: false })
+    assert.deepEqual(voiceOf([s(4, "Discord", { chat: discord, muted: true })]), { app: "Discord", glyph: "speech", ids: [4], muted: true })
+    assert.deepEqual(voiceOf([s(2, "Firefox", { browser: true })]), { app: "Firefox", glyph: "voice", ids: [2], muted: false })
+    assert.equal(voiceOf([s(2, "Firefox", { browser: true, monitor: true })]), null)
+    assert.equal(voiceOf([s(5, "Discord", { chat: discord, peak: true })]), null)
+    assert.equal(voiceOf([s(1, "OBS Studio")]), null)
     assert.equal(voiceOf([]), null)
+})
+
+test("voiceWindow finds the window of the app in the call", () => {
+    const wins = [{ appId: "kitty", title: "zsh" }, { appId: "vesktop", title: "Discord | #general" }, { appId: "firefox", title: "Meet — Mozilla Firefox" }]
+    assert.equal(voiceWindow(wins, "Discord"), wins[1])
+    assert.equal(voiceWindow(wins, "Firefox"), wins[2])
+    assert.equal(voiceWindow(wins, "Zoom"), null)
+    assert.equal(voiceWindow(undefined, "Discord"), null)
+})
+
+test("nextSession keeps one start per call app and rides out a stream that drops for a moment", () => {
+    const v = { app: "Discord", glyph: "speech", ids: [3], muted: false }
+    const a = nextSession(null, v, 1000)
+    assert.deepEqual(a, { app: "Discord", glyph: "speech", ids: [3], muted: false, since: 1000, gone: 0 })
+    const b = nextSession(a, Object.assign({}, v, { ids: [9] }), 5000)
+    assert.equal(b.since, 1000)
+    const c = nextSession(b, null, 6000)
+    assert.deepEqual([c.since, c.gone, c.ids], [1000, 6000, []])
+    assert.equal(nextSession(c, null, 6000 + VOICE_GRACE - 1).since, 1000)
+    assert.equal(nextSession(nextSession(c, null, 7000), v, 8000).since, 1000)
+    assert.equal(nextSession(c, null, 6000 + VOICE_GRACE), null)
+    assert.equal(nextSession(a, Object.assign({}, v, { app: "Zoom" }), 9000).since, 9000)
+    assert.equal(nextSession(null, null, 1), null)
 })
 
 test("an ongoing voice chat comes right after an incoming call and follows the calls switch", () => {
@@ -260,17 +338,23 @@ test("privacy mode stays in the island with an undo and hides the apps-in-use ro
     assert.equal(validateIsland({ privacy: "yes" }).privacy, true)
 })
 
-test("inUse names the apps using the microphone or a camera", () => {
+test("inUse names the apps really using the microphone or a camera, once each", () => {
+    const s = (id, owner, extra) => Object.assign({ id: id, owner: owner, chat: null, browser: false, mic: false, video: false, monitor: false, peak: false, muted: false }, extra || {})
     const streams = [
-        { app: "Firefox", binary: "firefox", video: false, monitor: false },
-        { app: "cava", binary: "cava", video: false, monitor: true },
-        { app: "Quickshell", binary: ".quickshell-wrapped", video: false, monitor: false },
-        { app: "Vesktop", binary: "electron", video: false, monitor: false },
-        { app: "OBS", binary: "obs", video: true, monitor: false }
+        s(1, "Firefox", { mic: true }),
+        s(2, "cava", { monitor: true }),
+        s(3, "", { mic: true }),
+        s(4, "Discord", { mic: true }),
+        s(5, "OBS Studio", { video: true }),
+        s(6, "GPU Screen Recorder", { mic: true }),
+        s(7, "GPU Screen Recorder", { monitor: true }),
+        s(8, "Pavucontrol", { mic: true, peak: true }),
+        s(9, "Firefox", { mic: true })
     ]
-    assert.deepEqual(inUse(streams, ["zoom"], "Vesktop"), { apps: ["Firefox", "OBS", "zoom"], mic: true, camera: true })
-    assert.deepEqual(inUse([], ["Firefox"], ""), { apps: ["Firefox"], mic: false, camera: true })
-    assert.equal(inUse(streams.slice(1, 4), [], "Vesktop"), null)
+    assert.deepEqual(inUse(streams, ["zoom"], [4]), { apps: ["Firefox", "OBS Studio", "GPU Screen Recorder", "zoom"], mic: true, camera: true })
+    assert.deepEqual(inUse([], ["Firefox"], []), { apps: ["Firefox"], mic: false, camera: true })
+    assert.equal(inUse(streams.slice(1, 4), [], [4]), null)
+    assert.equal(inUse([s(7, "GPU Screen Recorder", { monitor: true })], [], []), null)
 })
 
 test("status flashes a switch change and privacy on is left to its own row", () => {

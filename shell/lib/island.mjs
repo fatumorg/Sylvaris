@@ -98,19 +98,103 @@ export function chatOf(n) {
     return CHAT_APPS.find(a => browser ? a.web !== undefined && a.web.test(text) : a.app.test(who)) || null
 }
 
+const PLUMBING = /^(pipewire|pipewire-pulse|wireplumber|pulseaudio)$/i
+const GENERIC = /^(WEBRTC VoiceEngine|Chromium input|RecordStream|ALSA Capture|PipeWire ALSA \[.*\])$/i
+const RECORDERS = [
+    { test: /^gsr([-_].*)?$|gpu-screen-recorder/i, name: "GPU Screen Recorder" },
+    { test: /^obs(-studio)?$|^obs /i, name: "OBS Studio" }
+]
+export const VOICE_GRACE = 10000
+
+function bare(name) {
+    return String(name || "").trim().replace(/^\./, "").replace(/-wrapped$/, "")
+}
+
+function pretty(name) {
+    const n = bare(name)
+    return n === n.toLowerCase() ? n.charAt(0).toUpperCase() + n.slice(1) : n
+}
+
+export function ownerOf(props) {
+    const p = props || {}
+    const app = String(p["application.name"] || "").trim()
+    const bin = bare(p["application.process.binary"])
+    const node = String(p["node.name"] || "").trim()
+    const flat = String(p["application.id"] || "").trim()
+    const none = { name: "", chat: null, browser: false }
+    if (SELF.test(bin) || SELF.test(app) || SELF.test(String(p["application.process.binary"] || "").trim()))
+        return none
+    const recorder = RECORDERS.find(r => [app, bin, node].some(x => x !== "" && r.test.test(x)))
+    if (recorder)
+        return { name: recorder.name, chat: null, browser: false }
+    const chat = CHAT_APPS.find(a => a.app.test([app, bin, node, flat].join(" ")))
+    if (chat)
+        return { name: chat.label, chat: chat, browser: false }
+    if (PLUMBING.test(bin))
+        return none
+    const alsa = /^ALSA plug-in \[(.+)\]$/.exec(app)
+    const raw = alsa ? alsa[1] : app === "" || GENERIC.test(app) ? bin : app
+    if (raw === "")
+        return none
+    return { name: pretty(raw), chat: null, browser: BROWSERS.test(raw) || BROWSERS.test(bin) }
+}
+
+export function nodeKind(node) {
+    const n = node || {}
+    const p = n.props || {}
+    const cls = String(p["media.class"] || "")
+    if (n.stream)
+        return "stream"
+    if (n.sink)
+        return "monitor"
+    if (cls.startsWith("Video/"))
+        return "camera"
+    if (!cls.startsWith("Audio/Source"))
+        return "other"
+    return p["device.id"] !== undefined || /^(alsa_input|bluez_input)\./.test(String(p["node.name"] || "")) ? "mic" : "virtual"
+}
+
+export function streamsOf(captures, links) {
+    const feeds = {}
+    for (const l of Array.isArray(links) ? links : [])
+        (feeds[l.target] = feeds[l.target] || []).push(nodeKind(l.source))
+    return (Array.isArray(captures) ? captures : []).map(c => {
+        const p = c.props || {}
+        const o = ownerOf(p)
+        const kinds = feeds[c.id] || []
+        const video = c.audio !== true
+        const mic = !video && kinds.includes("mic")
+        return { id: c.id, owner: o.name, chat: o.chat, browser: o.browser, video: video, mic: mic, monitor: p["stream.capture.sink"] === "true" || !mic && kinds.includes("monitor"), peak: p["stream.monitor"] === "true", muted: c.muted === true }
+    })
+}
+
 export function voiceOf(streams) {
-    const list = Array.isArray(streams) ? streams : []
-    for (const s of list) {
-        const chat = CHAT_APPS.find(a => a.app.test(String(s.app || "") + " " + String(s.binary || "")))
-        if (chat)
-            return { id: s.id, app: chat.label, glyph: chat.glyph, muted: s.muted === true }
+    const list = (Array.isArray(streams) ? streams : []).filter(s => !s.video && !s.monitor && !s.peak)
+    const pack = (app, glyph, mine) => ({ app: app, glyph: glyph, ids: mine.map(s => s.id), muted: mine.every(s => s.muted === true) })
+    for (const app of CHAT_APPS) {
+        const mine = list.filter(s => s.chat && s.chat.id === app.id)
+        if (mine.length > 0)
+            return pack(app.label, app.glyph, mine)
     }
-    for (const s of list) {
-        const name = String(s.app || "").trim() || String(s.binary || "").trim()
-        if (BROWSERS.test(String(s.app || "").trim()) || BROWSERS.test(String(s.binary || "").trim()))
-            return { id: s.id, app: name.charAt(0).toUpperCase() + name.slice(1), glyph: "voice", muted: s.muted === true }
-    }
-    return null
+    const web = list.filter(s => s.browser)
+    return web.length === 0 ? null : pack(web[0].owner, "voice", web.filter(s => s.owner === web[0].owner))
+}
+
+export function voiceWindow(windows, app) {
+    const list = Array.isArray(windows) ? windows : []
+    const chat = CHAT_APPS.find(c => c.label === app)
+    const test = chat ? chat.app : new RegExp(String(app || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i")
+    return list.find(w => app !== "" && test.test(String(w.appId || "") + " " + String(w.title || ""))) || null
+}
+
+export function nextSession(prev, voice, now) {
+    if (voice !== null && voice !== undefined)
+        return { app: voice.app, glyph: voice.glyph, ids: voice.ids, muted: voice.muted, since: prev && prev.app === voice.app ? prev.since : now, gone: 0 }
+    if (!prev)
+        return null
+    if (prev.gone === 0)
+        return Object.assign({}, prev, { ids: [], gone: now })
+    return now - prev.gone < VOICE_GRACE ? prev : null
 }
 
 export function status(id, on, name) {
@@ -120,20 +204,20 @@ export function status(id, on, name) {
     return { kind: "status", id: id, on: on === true, text: name || s.text, glyph: on || s.offGlyph === undefined ? s.glyph : s.offGlyph, state: on ? s.on || "On" : s.off || "Off" }
 }
 
-export function inUse(streams, cameraUsers, voiceApp) {
+export function inUse(streams, cameraUsers, skipIds) {
     const apps = []
+    const skip = Array.isArray(skipIds) ? skipIds : []
     let mic = false
     let camera = false
     for (const s of Array.isArray(streams) ? streams : []) {
-        const name = String(s.app || "").trim() || String(s.binary || "").trim()
-        if (s.monitor || name === "" || SELF.test(String(s.binary || "").trim()) || SELF.test(name) || name === voiceApp)
+        if (s.owner === "" || s.peak || skip.includes(s.id) || !s.video && !s.mic)
             continue
         if (s.video)
             camera = true
         else
             mic = true
-        if (!apps.includes(name))
-            apps.push(name)
+        if (!apps.includes(s.owner))
+            apps.push(s.owner)
     }
     for (const name of Array.isArray(cameraUsers) ? cameraUsers : []) {
         camera = true

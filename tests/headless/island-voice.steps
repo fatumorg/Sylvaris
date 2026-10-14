@@ -2,8 +2,20 @@ sleep 1.5
 syl set parts.island true
 sleep 2.5
 check sylvaris island | grep -q '"items":\[\]'
-bg pw-record -P '{ application.name = "vesktop" application.process.binary = "electron" }' "$OUT/mic.wav" > "$OUT/rec.log" 2>&1 & echo $! > "$OUT/rec.pid"; wait
+check pw-cli create-node adapter '{ factory.name=support.null-audio-sink node.name=alsa_input.test-mic node.description="Test mic" media.class=Audio/Source/Virtual audio.position=[MONO] object.linger=true }' > /dev/null
+check pw-cli create-node adapter '{ factory.name=support.null-audio-sink node.name=test-speakers node.description="Test speakers" media.class=Audio/Sink audio.position=[FL,FR] object.linger=true }' > /dev/null
+sleep 1.5
+bg pw-record -P '{ application.name = "WEBRTC VoiceEngine" application.process.binary = "electron" node.name = "vesktop" }' "$OUT/mic.wav" > "$OUT/rec.log" 2>&1 & echo $! > "$OUT/rec.pid"; wait
 wait sylvaris island | grep -q '"kind":"voice","label":"Discord · 0:0'
+check ! sylvaris island | grep -q 'WEBRTC\|"kind":"inuse"'
+sleep 3
+check sylvaris island | grep -qE '"label":"Discord · 0:0[2-6]"'
+check kill $(cat "$OUT/rec.pid")
+sleep 1
+bg pw-record -P '{ application.name = "WEBRTC VoiceEngine" application.process.binary = "electron" node.name = "vesktop" }' "$OUT/mic2.wav" > "$OUT/rec2.log" 2>&1 & echo $! > "$OUT/rec2.pid"; wait
+bg pw-record -P '{ application.name = "vesktop" application.process.binary = "electron" }' "$OUT/mic3.wav" > "$OUT/rec3.log" 2>&1 & echo $! > "$OUT/rec3.pid"; wait
+sleep 2
+check sylvaris island | grep -qE '"label":"Discord · 0:0[4-9]"'
 syl island open
 sleep 1
 shot island-voice
@@ -13,5 +25,14 @@ sleep 0.5
 shot island-voice-muted
 syl island mute
 wait sylvaris island | grep -q '"label":"Discord · 0:'
-check kill $(cat "$OUT/rec.pid")
+bg pw-record --target test-speakers -P '{ application.name = "gpu-screen-recorder" application.process.binary = "gpu-screen-recorder" stream.capture.sink = true }' "$OUT/desk.wav" > "$OUT/desk.log" 2>&1 & echo $! > "$OUT/desk.pid"; wait
+sleep 2
+check ! sylvaris island | grep -q '"kind":"inuse"'
+bg pw-record -P '{ application.name = "gsr-combined-77" application.process.binary = "pipewire-pulse" node.name = "gsr-combined-77" }' "$OUT/comb.wav" > "$OUT/comb.log" 2>&1 & echo $! > "$OUT/comb.pid"; wait
+wait sylvaris island | grep -q '"kind":"inuse","label":"GPU Screen Recorder · mic"'
+check ! sylvaris island | grep -q 'gsr-combined'
+shot island-inuse
+check kill $(cat "$OUT/comb.pid") $(cat "$OUT/desk.pid") $(cat "$OUT/rec2.pid") $(cat "$OUT/rec3.pid")
+sleep 3
+check sylvaris island | grep -q '"kind":"voice"'
 wait ! sylvaris island | grep -q '"kind":"voice"'
