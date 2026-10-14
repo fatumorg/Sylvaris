@@ -32,6 +32,8 @@ FocusScope {
     }
 
     Keys.onEscapePressed: ask.files.cancelAsk()
+    Keys.onReturnPressed: ask.submit()
+    Keys.onEnterPressed: ask.submit()
 
     Rectangle {
         anchors.fill: parent
@@ -128,7 +130,6 @@ FocusScope {
                 placeholder: ask.open ? ask.spec.placeholder || "" : ""
                 enabled: !ask.busy
                 opacity: ask.busy ? 0.6 : 1
-                onAccepted: ask.submit()
             }
 
             Segmented {
