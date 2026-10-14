@@ -6,7 +6,7 @@ import {
     kindOf, kindLabel, glyphOf, themeIcon, arrange, sizeText, whenText, summary,
     uniqueName, checkName, pick, invert, nextIndex, bandHits,
     visit, goBack, goForward, userDirs, places, gtkBookmarks, mounts, trashInfo,
-    pastePlan, inverse, openers, sidebarOf
+    pastePlan, inverse, openers, sidebarOf, pathsOfUris, urisOf, keyText, statInfo
 } from "../shell/lib/files.mjs"
 
 const CTRL = 0x04000000
@@ -345,4 +345,27 @@ test("sidebarOf merges Sylvaris and GTK bookmarks without repeats and marks the 
     assert.equal(s.filter(x => x.active).length, 1)
     assert.equal(s.find(x => x.active).path, "/srv")
     assert.equal(s[s.length - 1].label, "Trash")
+})
+
+test("pathsOfUris reads text/uri-list and plain paths, and urisOf writes them back", () => {
+    assert.deepEqual(pathsOfUris("# comment\r\nfile:///a/b%20c\r\n/plain/path\r\nhttps://x.org/y\r\n\r\n"), ["/a/b c", "/plain/path"])
+    assert.equal(urisOf(["/a/b c", "/x#1"]), "file:///a/b%20c\r\nfile:///x%231\r\n")
+    assert.deepEqual(pathsOfUris(urisOf(["/a/b c", "/x#1"])), ["/a/b c", "/x#1"])
+})
+
+test("keyText shows combos the way menus print them", () => {
+    assert.equal(keyText("CTRL+SHIFT+N"), "Ctrl+Shift+N")
+    assert.equal(keyText("CTRL+plus"), "Ctrl++")
+    assert.equal(keyText("SHIFT+Delete"), "Shift+Del")
+    assert.equal(keyText("ALT+Return"), "Alt+Enter")
+    assert.equal(keyText("slash"), "/")
+    assert.equal(keyText("CTRL+Next"), "Ctrl+PgDn")
+    assert.equal(keyText(""), "")
+})
+
+test("statInfo reads the details helper output for files and folders", () => {
+    assert.deepEqual(statInfo("-rw-r--r--|naxce|users\n"), { perm: "-rw-r--r--", owner: "naxce", group: "users", count: -1, bytes: -1 })
+    assert.deepEqual(statInfo("drwxr-xr-x|root|root\n12\n40960\n"), { perm: "drwxr-xr-x", owner: "root", group: "root", count: 12, bytes: 40960 })
+    assert.deepEqual(statInfo("drwx------|root|root\n3\n"), { perm: "drwx------", owner: "root", group: "root", count: 3, bytes: -1 })
+    assert.deepEqual(statInfo(""), { perm: "", owner: "", group: "", count: -1, bytes: -1 })
 })

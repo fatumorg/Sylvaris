@@ -1,4 +1,4 @@
-import { natural, pathFrom } from "./viewer.mjs"
+import { natural, pathFrom, uriOf } from "./viewer.mjs"
 import { normalize, keyName } from "./keys.mjs"
 
 const g = cp => String.fromCodePoint(cp)
@@ -660,4 +660,29 @@ export function sidebarOf(src) {
         lit = lit || active
         return Object.assign({}, x, { active: active })
     })
+}
+
+export function pathsOfUris(text) {
+    return String(text || "").split(/\r?\n/).map(l => l.trim()).filter(l => l !== "" && l.charAt(0) !== "#").map(pathFrom).filter(p => p !== "")
+}
+
+export function urisOf(paths) {
+    return paths.map(uriOf).join("\r\n") + "\r\n"
+}
+
+const KEY_TEXT = {
+    SUPER: "Super", CTRL: "Ctrl", ALT: "Alt", SHIFT: "Shift", plus: "+", minus: "-", equal: "=", slash: "/", period: ".", comma: ",",
+    backslash: "\\", semicolon: ";", apostrophe: "'", grave: "`", bracketleft: "[", bracketright: "]", Return: "Enter", BackSpace: "Backspace",
+    Delete: "Del", Insert: "Ins", Prior: "PgUp", Next: "PgDn", space: "Space"
+}
+
+export function keyText(combo) {
+    return combo === "" ? "" : combo.split("+").map(p => KEY_TEXT[p] || p).join("+")
+}
+
+export function statInfo(text) {
+    const lines = String(text || "").split("\n").map(l => l.trim())
+    const head = lines[0].split("|")
+    const num = s => /^\d+$/.test(s || "") ? Number(s) : -1
+    return { perm: head[0] || "", owner: head[1] || "", group: head[2] || "", count: num(lines[1]), bytes: num(lines[2]) }
 }
