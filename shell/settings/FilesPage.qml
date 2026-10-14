@@ -208,6 +208,16 @@ Column {
         }
 
         SettingRow {
+            title: "Open archives in SylArchive"
+            subtitle: "Off opens them in your default archive app; Extract and Compress stay in the menu either way"
+
+            Toggle {
+                checked: root.cfg.openArchives
+                onToggled: v => Settings.put("files.openArchives", v)
+            }
+        }
+
+        SettingRow {
             title: "Ask before moving to the trash"
             subtitle: "Undo brings things back either way"
 

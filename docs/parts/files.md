@@ -47,10 +47,16 @@ Mounting goes through udisks2 (`services.udisks2.enable = true` on NixOS), phone
 | Undo | Ctrl+Z, or Undo in the status bar: renames, moves, copies, new items and trashing |
 | Terminal here | F4, in the terminal from `terminal` in `config.json` |
 | Bookmark | Ctrl+D adds or removes the open folder |
+| Compress | Ctrl+Alt+C packs the selection into a zip, 7z, tar.gz, tar.xz, tar.zst or tar in the same folder; type the name, pick the format |
+| Extract | Ctrl+Alt+X unpacks the selected archives here; right-click › Extract to “name” always makes a folder |
 
 Right-click (or the Menu key, or Shift+F10) shows everything that applies, with its key. Nothing is ever overwritten: a pasted or dropped file whose name is taken gets a number, like `notes (2).txt`. Copies show their progress and can be stopped; a half-copied file is removed.
 
 In the trash, Restore puts items back where they came from and Empty trash deletes everything for good.
+
+## Archives
+
+Double-click a zip, rar, 7z, tar or any other archive and it opens in [SylArchive](archive.md), where you can look inside, open single files and drag them out. For the quick jobs the menu is enough: **Extract here** unpacks next to the archive (an archive that holds one folder gives that folder, loose files get a folder named after the archive), **Extract to “name”** always makes a folder, and **Compress…** packs the selection. Archives with a password ask for it. Compress and extract show their progress in the status bar, can be stopped, and Ctrl+Z takes back what they made. The format, compression level and what Extract here does live in SylSettings › Apps › Archive.
 
 ## Keys
 
@@ -60,7 +66,7 @@ Every key above can be changed in SylSettings › Files › Keys in SylFiles: cl
 { "files": { "keys": { "rename": ["CTRL+E"], "terminal": [] } } }
 ```
 
-The actions are `open`, `openTab`, `openWith`, `back`, `forward`, `up`, `home`, `reload`, `location`, `search`, `newFolder`, `newFile`, `rename`, `copy`, `cut`, `paste`, `copyPath`, `trash`, `delete`, `undo`, `selectAll`, `invert`, `hidden`, `grid`, `list`, `zoomIn`, `zoomOut`, `zoomReset`, `sidebar`, `details`, `bookmark`, `terminal`, `newTab`, `closeTab`, `nextTab`, `prevTab` and `quit`.
+The actions are `open`, `openTab`, `openWith`, `back`, `forward`, `up`, `home`, `reload`, `location`, `search`, `newFolder`, `newFile`, `rename`, `copy`, `cut`, `paste`, `copyPath`, `compress`, `extract`, `trash`, `delete`, `undo`, `selectAll`, `invert`, `hidden`, `grid`, `list`, `zoomIn`, `zoomOut`, `zoomReset`, `sidebar`, `details`, `bookmark`, `terminal`, `newTab`, `closeTab`, `nextTab`, `prevTab` and `quit`.
 
 ## Make it the default file manager
 
@@ -90,6 +96,7 @@ This needs `xdg.mimeApps.enable = true`. Without Home Manager, run `xdg-mime def
 | `files.typing` | `"filter"` | typing filters the folder, or `jump`s to the first match |
 | `files.start` | `"~"` | the folder a new window opens |
 | `files.confirmTrash` | `false` | ask before moving to the trash |
+| `files.openArchives` | `true` | open archives in SylArchive instead of your default archive app |
 | `files.bookmarks` | `[]` | bookmarked folders, like `"~/Code"` |
 | `files.keys` | `{}` | your own keys, see above |
 
@@ -100,6 +107,7 @@ sylvaris files select a.txt b.txt
 sylvaris files search draft
 sylvaris files act newFolder    # any action from the list above
 sylvaris files rename final.txt # the one selected item
+sylvaris files compress pack.zip  # the selection, without asking
 sylvaris files drives           # every drive SylFiles sees
 sylvaris files mount KINGSTON   # by label or device, then open it
 sylvaris files eject KINGSTON

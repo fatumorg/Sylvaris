@@ -1,0 +1,48 @@
+sleep 1.5
+check mkdir -p "$HOME/Pack/trip" && cd "$HOME/Pack" && printf 'sun' > trip/beach.txt && printf 'hello' > notes.txt && printf 'top secret' > s.txt && bsdtar -a -cf locked.zip --options zip:encryption=aes256 --passphrase hunter-2 s.txt && rm s.txt
+syl files open ~/Pack
+sleep 1.5
+syl files select notes.txt trip
+syl files act compress
+sleep 1
+check sylvaris files state | grep -q '"asking":"compress"'
+shot files-compress
+bg wtype -k Shift_L -s 400 -M ctrl -k a -m ctrl bundle -k Return
+sleep 2.5
+check test -f "$HOME/Pack/bundle.zip"
+check sylvaris files state | grep -q '"selected":\["bundle.zip"\]'
+check python3 -c 'import os, sys, zipfile; sys.exit(0 if sorted(zipfile.ZipFile(os.path.expanduser("~/Pack/bundle.zip")).namelist()) == ["notes.txt", "trip/", "trip/beach.txt"] else 1)'
+syl files select notes.txt
+syl files compress notes.tar.zst
+sleep 2
+check bsdtar -tf "$HOME/Pack/notes.tar.zst" | grep -qx notes.txt
+syl files select bundle.zip
+syl files act extract
+sleep 2.5
+check test -f "$HOME/Pack/bundle/trip/beach.txt" && test "$(cat "$HOME/Pack/bundle/notes.txt")" = hello
+check sylvaris files state | grep -q '"selected":\["bundle"\]'
+check sylvaris files state | grep -q 'Extracted to “bundle”'
+syl files act undo
+sleep 1.5
+check test ! -e "$HOME/Pack/bundle"
+syl files select locked.zip
+bg wtype -k Shift_L -s 400 -M ctrl -M alt -k x -m alt -m ctrl
+sleep 2.5
+check sylvaris files state | grep -q '"asking":"archivePassword"'
+shot files-archive-password
+bg wtype -k Shift_L -s 400 hunter-2 -k Return
+sleep 3
+check test "$(cat "$HOME/Pack/s.txt")" = "top secret"
+check ! grep -q 'hunter-2' "$OUT/qs.log"
+syl files select locked.zip
+bg wtype -k Shift_L -s 400 -k Menu
+sleep 0.8
+check sylvaris files state | grep -q '"menu":true'
+shot files-archive-menu
+bg wtype -k Shift_L -s 400 -k Escape
+sleep 0.5
+syl files select bundle.zip
+syl files act open
+sleep 2
+check sylvaris archive state | grep -q '"open":true,"archive":"[^"]*/Pack/bundle.zip"'
+syl archive close

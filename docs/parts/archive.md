@@ -6,7 +6,7 @@ An archive manager that works like [SylFiles](files.md): the same list and grid,
 sylvaris archive open ~/Downloads/photos.zip
 ```
 
-To open archives here from other apps, see [the default app](#make-it-the-default-archive-manager).
+SylFiles opens archives here when you double-click them, and its menu has Extract and Compress for the times you do not need to look inside. To open archives here from other apps too, see [the default app](#make-it-the-default-archive-manager).
 
 ## The window
 

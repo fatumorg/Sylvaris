@@ -26,6 +26,9 @@ test("validateFiles keeps good values, replaces bad ones with defaults and keeps
     assert.equal(v.click, "single")
     assert.equal(v.typing, "jump")
     assert.equal(v.start, "~/Projects")
+    assert.equal(DEFAULT_FILES.openArchives, true)
+    assert.equal(validateFiles({ openArchives: false }).openArchives, false)
+    assert.equal(validateFiles({ openArchives: "no" }).openArchives, true)
     const bad = validateFiles({ view: "tree", iconSize: 9000, sort: "colour", descending: "yes", start: "relative/dir", bookmarks: "x", keys: [] })
     assert.equal(bad.view, "grid")
     assert.equal(bad.iconSize, DEFAULT_FILES.iconSize)
@@ -309,6 +312,12 @@ test("openers puts apps for the file's kind first and filters by the query", () 
     assert.deepEqual(openers(apps, "image", "").map(a => a.id), ["feh", "gimp", "kate"])
     assert.deepEqual(openers(apps, "code", "").map(a => a.id), ["kate", "feh", "gimp"])
     assert.deepEqual(openers(apps, "image", "ka").map(a => a.id), ["kate"])
+})
+
+test("compress and extract have keys of their own", () => {
+    const k = keymap({})
+    assert.equal(k.byCombo["CTRL+ALT+C"], "compress")
+    assert.equal(k.byCombo["CTRL+ALT+X"], "extract")
 })
 
 test("sidebarOf merges Sylvaris and GTK bookmarks without repeats and marks the open folder", () => {

@@ -186,6 +186,13 @@ export function newName(names, folder, format, taken) {
     return uniqueName(base + "." + format, taken, false)
 }
 
+export function outName(text, format) {
+    const name = String(text || "").trim()
+    if (name === "" || name.indexOf("/") >= 0)
+        return ""
+    return WRITABLE.indexOf(archiveExt(name)) >= 0 ? name : name + "." + format
+}
+
 export function extractNote(r) {
     if (r.cancelled)
         return "Stopped"
@@ -193,7 +200,7 @@ export function extractNote(r) {
         return nameOf(r.failed[0].path) + ": " + r.failed[0].error
     if (r.ok.length === 1)
         return "Extracted to “" + nameOf(r.ok[0][1]) + "”"
-    return "Extracted " + r.ok.length + " archives"
+    return "Extracted " + r.ok.length + (r.ok.every(p => p[0] === r.ok[0][0]) ? " items" : " archives")
 }
 
 export function compressNote(r) {

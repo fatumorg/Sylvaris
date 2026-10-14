@@ -217,6 +217,7 @@
     "typing": "filter",
     "start": "~",
     "confirmTrash": false,
+    "openArchives": true,
     "bookmarks": [],
     "keys": {}
   },

@@ -910,6 +910,7 @@ ShellRoot {
                 select: (...names) => root.need("files").selectNames(names),
                 search: (...q) => root.need("files").search(q.join(" ")),
                 rename: (...n) => root.need("files").renameTo(n.join(" ")),
+                compress: (...n) => root.need("files").compressTo(n.join(" ")),
                 act: action => root.need("files").act(String(action || "")),
                 drives: () => root.need("files").drives,
                 mount: (...n) => root.need("files").driveVerb("open", n.join(" ")),

@@ -3,7 +3,7 @@ import assert from "node:assert/strict"
 import {
     DEFAULT_ARCHIVE, validateArchive, ARCHIVE_ACTIONS, FORMATS, LEVELS, EXTRACTS,
     archiveExt, isArchive, stemOf, writable, formatLabel, treeOf, folderOf, crumbsOf, innerOf,
-    newName, countOf, extractNote, compressNote, joinInner
+    newName, countOf, extractNote, compressNote, joinInner, outName
 } from "../shell/lib/archive.mjs"
 import { keymap, validateKeys } from "../shell/lib/files.mjs"
 
@@ -29,7 +29,7 @@ test("archive keys have their own defaults and can be rebound", () => {
     const own = keymap({ extract: ["Delete"] }, ARCHIVE_ACTIONS)
     assert.equal(own.byCombo["Delete"], "extract")
     assert.deepEqual(validateKeys({ remove: [], back: "alt+b" }, ARCHIVE_ACTIONS), { remove: [], back: ["ALT+B"] })
-    assert.deepEqual(validateKeys({ extract: ["F1"] }), {})
+    assert.deepEqual(validateKeys({ extractAll: ["F1"] }), {})
 })
 
 test("archiveExt knows every format libarchive reads, longest suffix first", () => {
@@ -115,9 +115,21 @@ test("newName suggests a free archive name from what is being packed", () => {
     assert.equal(newName(["a", "b"], "/", "zip", []), "Archive.zip")
 })
 
+test("outName adds the chosen format unless the name already has one", () => {
+    assert.equal(outName("photos", "zip"), "photos.zip")
+    assert.equal(outName(" photos ", "tar.zst"), "photos.tar.zst")
+    assert.equal(outName("photos.7z", "zip"), "photos.7z")
+    assert.equal(outName("backup.tar.gz", "zip"), "backup.tar.gz")
+    assert.equal(outName("v1.2", "zip"), "v1.2.zip")
+    assert.equal(outName("film.rar", "zip"), "film.rar.zip")
+    assert.equal(outName("", "zip"), "")
+    assert.equal(outName("a/b", "zip"), "")
+})
+
 test("notes say what happened", () => {
     assert.equal(extractNote({ ok: [["/a/x.zip", "/a/x"]], failed: [], cancelled: false, password: "" }), "Extracted to “x”")
     assert.equal(extractNote({ ok: [["/a/x.zip", "/a/x"], ["/a/y.zip", "/a/y"]], failed: [], cancelled: false, password: "" }), "Extracted 2 archives")
+    assert.equal(extractNote({ ok: [["/a/x.zip", "/a/p"], ["/a/x.zip", "/a/q"]], failed: [], cancelled: false, password: "" }), "Extracted 2 items")
     assert.equal(extractNote({ ok: [], failed: [{ path: "/a/x.rar", error: "Truncated input file" }], cancelled: false, password: "" }), "x.rar: Truncated input file")
     assert.equal(extractNote({ ok: [], failed: [], cancelled: true, password: "" }), "Stopped")
     assert.equal(compressNote({ ok: [["", "/a/b.zip"]], failed: [], cancelled: false }), "Packed into “b.zip”")

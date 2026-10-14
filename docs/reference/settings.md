@@ -279,6 +279,7 @@ Explained in [island](../parts/island.md).
 | `files.typing` | `"filter"` |  |
 | `files.start` | `"~"` |  |
 | `files.confirmTrash` | `false` |  |
+| `files.openArchives` | `true` |  |
 | `files.bookmarks` | `[]` |  |
 | `files.keys` | `{}` |  |
 

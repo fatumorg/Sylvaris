@@ -8,6 +8,7 @@ import qs.services
 import "../lib/files.mjs" as F
 import "../lib/viewer.mjs" as V
 import "../lib/drives.mjs" as D
+import "../lib/archive.mjs" as A
 
 Scope {
     id: root
@@ -24,6 +25,9 @@ Scope {
     readonly property string configHome: Quickshell.env("XDG_CONFIG_HOME") || root.home + "/.config"
     readonly property string trashPath: root.dataHome + "/Trash/files"
     readonly property string helper: Quickshell.shellDir + "/helpers/files.py"
+    readonly property string archiveHelper: Quickshell.shellDir + "/helpers/archive.py"
+    readonly property var packing: Settings.values.archive
+    readonly property bool archiveOn: Settings.values.parts.archive === true
     readonly property string title: (root.path === "" ? "Files" : root.path === root.home ? "Home" : F.nameOf(root.path)) + " — SylFiles"
 
     property var tabs: []
@@ -418,9 +422,90 @@ Scope {
                 root.go(p);
         } else if (root.inTrash) {
             root.say("Restore it first to open it", false);
+        } else if (root.cfg.openArchives && root.archiveOn && A.isArchive(name)) {
+            root.openArchive(p);
         } else {
             Quickshell.execDetached(["gio", "open", p]);
         }
+    }
+
+    function openArchive(p: string): void {
+        try {
+            Ipc.run(["archive", "open", p]);
+        } catch (e) {
+            root.say(String(e.message || e), false);
+        }
+    }
+
+    function archivesSelected(): var {
+        return root.itemsOf(root.selected).filter(i => !i.dir && A.isArchive(F.nameOf(i.path))).map(i => i.path);
+    }
+
+    function askCompress(): void {
+        const names = root.selected.slice();
+        if (root.inTrash || root.problem !== "")
+            return;
+        if (names.length === 0) {
+            root.say("Select what to pack first", false);
+            return;
+        }
+        const suggested = A.newName(names, root.path, root.packing.format, root.allNames());
+        root.asking = {
+            kind: "compress",
+            names: names,
+            title: "Compress " + (names.length === 1 ? "“" + names[0] + "”" : names.length + " items"),
+            text: "The archive is made in this folder. Pick a format, or type one after the name.",
+            glyph: F.GLYPH.compress,
+            password: false,
+            value: suggested.slice(0, suggested.length - root.packing.format.length - 1),
+            placeholder: "Name",
+            choices: A.FORMATS,
+            choice: root.packing.format,
+            button: "Compress",
+            error: "",
+            busy: false
+        };
+    }
+
+    function compressTo(text: string): void {
+        if (!root.wanted)
+            throw new Error("SylFiles is not open; open it with: sylvaris files open");
+        if (root.selected.length === 0)
+            throw new Error("select what to pack first, for example: sylvaris files select a.txt b.txt");
+        if (text.trim() === "") {
+            root.askCompress();
+            return;
+        }
+        const out = A.outName(text, root.packing.format);
+        if (out === "")
+            throw new Error("usage: files compress [name, like photos.zip]");
+        root.compress(root.selected.slice(), out);
+    }
+
+    function compress(names: var, out: string): void {
+        root.run({
+            kind: "compress",
+            out: F.joinPath(root.path, out),
+            names: names,
+            base: root.path,
+            level: root.packing.level
+        });
+    }
+
+    function extractSelected(mode: string): void {
+        const list = root.archivesSelected();
+        if (list.length === 0) {
+            root.say("Select an archive to extract", false);
+            return;
+        }
+        for (const a of list)
+            root.run({
+                kind: "extract",
+                archive: a,
+                dest: root.path,
+                mode: mode,
+                secret: ""
+            });
     }
 
     function openSelected(inTab: bool): void {
@@ -852,6 +937,29 @@ Scope {
         const a = root.asking;
         if (a === null || a.busy)
             return;
+        if (a.kind === "compress") {
+            const out = A.outName(value, choice);
+            if (out === "") {
+                root.asking = Object.assign({}, a, {
+                    error: "Type a name without a slash"
+                });
+                return;
+            }
+            if (choice !== root.packing.format)
+                Settings.put("archive.format", choice);
+            root.asking = null;
+            root.compress(a.names, out);
+            return;
+        }
+        if (a.kind === "archivePassword") {
+            if (value === "")
+                return;
+            root.asking = null;
+            root.run(Object.assign({}, a.op, {
+                secret: value
+            }));
+            return;
+        }
         if (a.kind === "unlock") {
             const d = root.driveOf(a.id);
             if (d === null || value === "")
@@ -947,6 +1055,8 @@ Scope {
             details: () => Settings.put("files.details", !root.cfg.details),
             bookmark: () => root.toggleBookmark(root.path),
             terminal: () => root.terminal(root.focusEntry !== null && root.focusEntry.dir ? F.joinPath(root.path, root.focusEntry.name) : root.path),
+            compress: () => root.askCompress(),
+            extract: () => root.extractSelected(root.packing.extract),
             newTab: () => root.newTab(root.path),
             closeTab: () => root.closeTab(root.tab),
             nextTab: () => root.selectTab((root.tab + 1) % root.tabs.length),
@@ -997,8 +1107,11 @@ Scope {
             touch: ["sh", "-c", "set -C; : > \"$1\"", "sh"].concat(op.paths || []),
             restore: ["python3", root.helper, "restore"].concat(op.paths || []),
             untrash: ["python3", root.helper, "untrash"].concat(op.paths || []),
-            empty: ["gio", "trash", "--empty"]
+            empty: ["gio", "trash", "--empty"],
+            compress: ["python3", root.archiveHelper, "compress", op.out, op.level, op.base].concat(op.names || []),
+            extract: ["python3", root.archiveHelper].concat(op.secret ? ["--ask"] : []).concat(["extract", op.archive, op.dest, op.mode, "0"])
         }[op.kind];
+        runner.stdinEnabled = op.secret ? true : false;
         runner.running = true;
     }
 
@@ -1007,7 +1120,55 @@ Scope {
             runner.signal(15);
     }
 
+    function packed(code: int): void {
+        const op = root.job;
+        const r = root.result || {
+            ok: [],
+            failed: code === 0 ? [] : [{
+                    path: op.archive || op.out,
+                    error: "The archive helper stopped"
+                }],
+            cancelled: false,
+            password: ""
+        };
+        if (r.password !== "") {
+            root.asking = {
+                kind: "archivePassword",
+                op: Object.assign({}, op, {
+                    secret: ""
+                }),
+                title: "“" + F.nameOf(op.archive) + "” has a password",
+                text: "Type it to unpack the files.",
+                glyph: F.GLYPH.lock,
+                password: true,
+                value: "",
+                placeholder: "Password",
+                button: "Extract",
+                error: r.password === "wrong" ? "Wrong password" : "",
+                busy: false
+            };
+            root.next();
+            return;
+        }
+        const made = r.cancelled ? [] : r.ok.map(p => p[1]);
+        if (made.length > 0)
+            root.history = root.history.concat([{
+                    kind: "create",
+                    paths: made
+                }]).slice(-30);
+        root.say(op.kind === "compress" ? A.compressNote(r) : A.extractNote(r), made.length > 0);
+        const here = made.filter(p => F.parentOf(p) === root.path).map(p => F.nameOf(p));
+        if (here.length > 0)
+            root.wanting = here;
+        root.rescanSoon();
+        root.next();
+    }
+
     function finish(code: int): void {
+        if (root.job.kind === "compress" || root.job.kind === "extract") {
+            root.packed(code);
+            return;
+        }
         const op = root.job;
         const r = root.result;
         const pairs = r !== null ? r.ok : code === 0 ? (op.paths || []).map(p => [p, p]) : [];
@@ -1191,6 +1352,15 @@ Scope {
                     root.total = msg.total;
                     root.done = msg.done;
                 }
+            }
+        }
+        onStarted: {
+            if (runner.stdinEnabled) {
+                runner.write(root.job.secret + "\n");
+                root.job = Object.assign({}, root.job, {
+                    secret: ""
+                });
+                runner.stdinEnabled = false;
             }
         }
         onExited: code => root.finish(code)

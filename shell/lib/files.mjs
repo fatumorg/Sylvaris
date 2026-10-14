@@ -26,6 +26,7 @@ export const DEFAULT_FILES = {
     typing: "filter",
     start: "~",
     confirmTrash: false,
+    openArchives: true,
     bookmarks: [],
     keys: {}
 }
@@ -92,6 +93,8 @@ export const FILE_ACTIONS = [
     { id: "cut", label: "Cut", keys: ["CTRL+X"] },
     { id: "paste", label: "Paste", keys: ["CTRL+V"] },
     { id: "copyPath", label: "Copy path", keys: ["CTRL+SHIFT+C"] },
+    { id: "compress", label: "Compress into an archive", keys: ["CTRL+ALT+C"] },
+    { id: "extract", label: "Extract here", keys: ["CTRL+ALT+X"] },
     { id: "trash", label: "Move to the trash", keys: ["Delete"] },
     { id: "delete", label: "Delete permanently", keys: ["SHIFT+Delete"] },
     { id: "undo", label: "Undo", keys: ["CTRL+Z"] },
@@ -177,6 +180,7 @@ export function validateFiles(raw) {
         typing: pick("typing", TYPING),
         start: start === "" ? DEFAULT_FILES.start : start,
         confirmTrash: bool("confirmTrash"),
+        openArchives: bool("openArchives"),
         bookmarks: marks,
         keys: validateKeys(v.keys)
     })

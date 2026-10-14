@@ -3,6 +3,7 @@ import qs
 import qs.services
 import qs.components
 import "../lib/files.mjs" as F
+import "../lib/archive.mjs" as A
 import "../lib/icons.mjs" as Icons
 
 FocusScope {
@@ -126,6 +127,17 @@ FocusScope {
                 run: () => f.paste(full)
             }));
         out.push(menu.item("Copy path", Icons.GLYPHS.link, "copyPath"), sep);
+        const archives = f.archivesSelected();
+        out.push(menu.item("Compress…", F.GLYPH.compress, "compress"));
+        if (archives.length > 0)
+            out.push(menu.item("Extract here", F.GLYPH.extract, "extract"), menu.item(archives.length === 1 ? "Extract to “" + A.stemOf(F.nameOf(archives[0])) + "”" : "Extract each into its own folder", F.GLYPH.folderOpen, "", {
+                run: () => f.extractSelected("folder")
+            }));
+        if (archives.length === 1 && f.archiveOn)
+            out.push(menu.item("Open in SylArchive", F.GLYPH.archive, "", {
+                run: () => f.openArchive(archives[0])
+            }));
+        out.push(sep);
         out.push(menu.item("Rename…", Icons.GLYPHS.pencil, "rename", {
             enabled: one !== null
         }), menu.item("Move to the trash", F.GLYPH.trash, "trash"), menu.item("Delete permanently", F.GLYPH.deleteForever, "delete", {
