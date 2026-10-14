@@ -25,6 +25,8 @@ Usage: sylvaris [command]
   set <key> <value>            change a setting (JSON or plain text)
   settings [open <section>]    open SylSettings
   pick [prompt]                choose one of the lines on stdin in SylPad, like dmenu
+  choose MULTI DIR SAVE PATH OUT
+                               open or save dialog in SylFiles, for xdg-desktop-portal-termfilechooser
   config                       print where the configuration lives
   reload                       reload the shell
   list                         print every part and its actions
@@ -113,6 +115,30 @@ pick)
     choice="$(cat "$tmp/out")"
     [ -n "$choice" ] || exit 1
     printf '%s\n' "$choice"
+    ;;
+choose)
+    out="${6:-}"
+    if [ -z "$out" ]; then
+        echo "usage: sylvaris choose MULTIPLE DIRECTORY SAVE PATH OUT" >&2
+        exit 2
+    fi
+    mode=open
+    [ "${3:-0}" = 1 ] && mode=folder
+    [ "${4:-0}" = 1 ] && mode=save
+    tmp="$(mktemp -d)"
+    trap 'rm -rf "$tmp"' EXIT
+    mkfifo "$tmp/answer"
+    exec 3<>"$tmp/answer"
+    : >"$out"
+    run files pick "$mode" "${2:-0}" "$tmp/answer" "${5:-}" >/dev/null
+    while :; do
+        if IFS= read -r -t 2 line <&3; then
+            [ -n "$line" ] || break
+            printf '%s\n' "$line" >>"$out"
+        elif [ "$(request files picking "$tmp/answer")" != true ]; then
+            break
+        fi
+    done
     ;;
 reload)
     run shell reload

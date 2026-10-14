@@ -28,7 +28,11 @@ Scope {
     readonly property string archiveHelper: Quickshell.shellDir + "/helpers/archive.py"
     readonly property var packing: Settings.values.archive
     readonly property bool archiveOn: Settings.values.parts.archive === true
-    readonly property string title: (root.path === "" ? "Files" : root.path === root.home ? "Home" : F.nameOf(root.path)) + " — SylFiles"
+    property bool picker: false
+    property var chooser: null
+    property string pickName: ""
+    property string pickError: ""
+    readonly property string title: (root.chooser !== null ? F.pickTitle(root.chooser.mode, root.chooser.multiple) : root.path === "" ? "Files" : root.path === root.home ? "Home" : F.nameOf(root.path)) + " — SylFiles"
 
     property var tabs: []
     property int tab: 0
@@ -149,7 +153,82 @@ Scope {
             root.open("");
     }
 
+    function startPick(mode: string, multiple: string, out: string, path: string): void {
+        if (["open", "save", "folder"].indexOf(mode) < 0 || out === "")
+            throw new Error("usage: files pick open|save|folder 0|1 <answer file> [suggested path]");
+        if (root.chooser !== null)
+            root.writePick(root.chooser.out, []);
+        const s = F.pickStart(mode, path, root.home);
+        root.chooser = {
+            mode: mode,
+            multiple: multiple === "1" || multiple === "true",
+            out: out
+        };
+        root.pickName = s.name;
+        root.pickError = "";
+        const target = mode === "save" ? s.folder : s.path;
+        if (root.wanted) {
+            root.go(target);
+            root.raise();
+        } else {
+            root.open(target);
+        }
+    }
+
+    function picking(out: string): bool {
+        return root.chooser !== null && root.chooser.out === out;
+    }
+
+    function writePick(out: string, paths: var): void {
+        Quickshell.execDetached(["sh", "-c", "out=$1; shift; { for p in \"$@\"; do printf '%s\\n' \"$p\"; done; printf '\\n'; } > \"$out\"", "sh", out].concat(paths));
+    }
+
+    function answerPick(paths: var): void {
+        if (root.chooser === null)
+            return;
+        root.writePick(root.chooser.out, paths);
+        root.chooser = null;
+        Qt.callLater(root.close);
+    }
+
+    function choosePick(): void {
+        if (root.chooser === null)
+            return;
+        const paths = F.pickChoice(root.chooser.mode, root.chooser.multiple, root.itemsOf(root.selected), root.path);
+        if (paths.length === 0)
+            root.say(root.chooser.multiple ? "Select the files first" : "Select a file first", false);
+        else
+            root.answerPick(paths);
+    }
+
+    function savePick(name: string): void {
+        if (root.chooser === null || root.chooser.mode !== "save")
+            return;
+        const problem = F.checkName(name, [], "");
+        if (problem !== "" || root.problem !== "") {
+            root.pickError = problem !== "" ? problem : "Pick a folder you can save in";
+            return;
+        }
+        root.pickError = "";
+        const e = root.entries.find(x => x.name === name) || null;
+        const full = F.joinPath(root.path, name);
+        if (e !== null && e.dir) {
+            root.go(full);
+            return;
+        }
+        if (e !== null) {
+            root.targets = [full];
+            root.dialog = "replace";
+            return;
+        }
+        root.answerPick([full]);
+    }
+
     function close(): void {
+        if (root.chooser !== null) {
+            root.writePick(root.chooser.out, []);
+            root.chooser = null;
+        }
         root.wanted = false;
         root.shown = false;
         root.menu = null;
@@ -415,6 +494,13 @@ Scope {
         if (e === null)
             return;
         const p = F.joinPath(root.path, name);
+        if (root.chooser !== null && !e.dir) {
+            if (root.chooser.mode === "save")
+                root.pickName = name;
+            else if (root.chooser.mode === "open")
+                root.chooser.multiple && root.selection[name] ? root.choosePick() : root.answerPick([p]);
+            return;
+        }
         if (e.dir) {
             if (inTab)
                 root.newTab(p);
@@ -510,6 +596,16 @@ Scope {
 
     function openSelected(inTab: bool): void {
         const list = root.selected.length > 0 ? root.selected : root.cursor !== "" ? [root.cursor] : [];
+        if (root.chooser !== null) {
+            const one = list.length === 1 ? root.entryOf(list[0]) : null;
+            if (one !== null && (one.dir || root.chooser.mode === "save"))
+                root.activate(list[0], false);
+            else if (root.chooser.mode === "save")
+                root.savePick(root.pickName);
+            else
+                root.choosePick();
+            return;
+        }
         if (list.length === 1) {
             root.activate(list[0], inTab);
             return;
@@ -734,6 +830,10 @@ Scope {
                 kind: "empty",
                 paths: []
             });
+        else if (d === "replace") {
+            root.answerPick(root.targets.slice(0, 1));
+            return;
+        }
         root.focusView();
     }
 
@@ -1223,6 +1323,12 @@ Scope {
     function state(): var {
         return {
             open: root.wanted,
+            pick: root.chooser === null ? null : {
+                mode: root.chooser.mode,
+                multiple: root.chooser.multiple,
+                name: root.pickName,
+                error: root.pickError
+            },
             path: root.path,
             tab: root.tab,
             tabs: root.tabs.map(t => t.path),

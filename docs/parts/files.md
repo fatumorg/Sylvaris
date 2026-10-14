@@ -58,6 +58,26 @@ In the trash, Restore puts items back where they came from and Empty trash delet
 
 Double-click a zip, rar, 7z, tar or any other archive and it opens in [SylArchive](archive.md), where you can look inside, open single files and drag them out. For the quick jobs the menu is enough: **Extract here** unpacks next to the archive (an archive that holds one folder gives that folder, loose files get a folder named after the archive), **Extract to “name”** always makes a folder, and **Compress…** packs the selection. Archives with a password ask for it. Compress and extract show their progress in the status bar, can be stopped, and Ctrl+Z takes back what they made. The format, compression level and what Extract here does live in SylSettings › Apps › Archive.
 
+## Open and save dialogs
+
+SylFiles can be the dialog apps show when you open or save a file: Firefox, Chromium and Electron apps, GTK apps and Flatpaks, anything that asks the desktop portal. It opens in its own window with everything above, plus a bar at the bottom: pick files and press Open (or double-click one), pick a folder and press Select, or type a name and press Save. Saving over a file asks first, and Esc or closing the window cancels.
+
+On NixOS:
+
+```nix
+programs.sylvaris.fileChooser.enable = true;
+```
+
+This adds the termfilechooser portal, points it at `sylvaris choose`, routes the portal's file chooser to it under Hyprland, sway and niri, and sets `GTK_USE_PORTAL=1` and `GDK_DEBUG=portals` so GTK apps and Firefox use the portal too. Log out and back in afterwards. Elsewhere, install xdg-desktop-portal-termfilechooser, set `org.freedesktop.impl.portal.FileChooser=termfilechooser` in your desktop's `portals.conf`, and write this to `~/.config/xdg-desktop-portal-termfilechooser/config`:
+
+```ini
+[filechooser]
+cmd=sylvaris choose
+create_help_file=0
+```
+
+If the shell is not running, the dialog fails instead of hanging; if it restarts while a dialog is open, the app gets a cancel.
+
 ## Keys
 
 Every key above can be changed in SylSettings › Files › Keys in SylFiles: click an action and press the new keys. They are stored in `files.keys` as action and keys, and an empty list turns a key off:
@@ -108,6 +128,7 @@ sylvaris files search draft
 sylvaris files act newFolder    # any action from the list above
 sylvaris files rename final.txt # the one selected item
 sylvaris files compress pack.zip  # the selection, without asking
+sylvaris files picker          # the open or save dialog, if one is up
 sylvaris files drives           # every drive SylFiles sees
 sylvaris files mount KINGSTON   # by label or device, then open it
 sylvaris files eject KINGSTON

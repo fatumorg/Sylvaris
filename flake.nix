@@ -57,6 +57,7 @@
               modules = [
                 self.nixosModules.sylvaris
                 {
+                  programs.sylvaris.fileChooser.enable = true;
                   programs.sylvaris.greeter = {
                     enable = true;
                     user = "ada";
@@ -86,6 +87,11 @@
             grep -q '"themeStateFile": "/var/lib/sylvaris-greet/shared/theme"' ${cfg.environment.etc."sylvaris-greet/sylvaris/config.json".source}
             grep -q '"greeterShare": ""' ${cfg.environment.etc."sylvaris-greet/sylvaris/config.json".source}
             test -n "${builtins.toString cfg.security.pam.services.sylvaris.unixAuth}"
+            grep -q "^cmd=/nix/store/.*/bin/sylvaris choose$" ${cfg.environment.etc."xdg/xdg-desktop-portal-termfilechooser/config".source}
+            grep -q "^create_help_file=0$" ${cfg.environment.etc."xdg/xdg-desktop-portal-termfilechooser/config".source}
+            grep -q "FileChooser=termfilechooser" ${cfg.environment.etc."xdg/xdg-desktop-portal/hyprland-portals.conf".source}
+            grep -q "FileChooser=termfilechooser" ${cfg.environment.etc."xdg/xdg-desktop-portal/niri-portals.conf".source}
+            test "${cfg.environment.sessionVariables.GTK_USE_PORTAL}" = 1
             touch $out
           '';
 

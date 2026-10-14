@@ -15,6 +15,10 @@ Rectangle {
         input.forceActiveFocus();
     }
 
+    function select(start: int, end: int): void {
+        input.select(start, end);
+    }
+
     implicitHeight: 44
     radius: Tokens.radiusRow
     color: "transparent"

@@ -76,6 +76,7 @@ imports = [ sylvaris.nixosModules.sylvaris ];
 |---|---|---|
 | `programs.sylvaris.lock.enable` | `true` | adds the `sylvaris` PAM service that SylLock checks passwords with |
 | `programs.sylvaris.cameraSwitch.enable` | `false` | lets members of `users` switch USB cameras off and on, which `sylvaris privacy` uses |
+| `programs.sylvaris.fileChooser.enable` | `false` | makes [SylFiles](parts/files.md#open-and-save-dialogs) the open and save dialog of apps that go through the desktop portal |
 | `programs.sylvaris.greeter.enable` | `false` | SylGreet as the greetd login screen, in sway on every screen |
 | `programs.sylvaris.greeter.user` | `""` | user picked on the first start; afterwards the last one who logged in |
 | `programs.sylvaris.greeter.session` | `""` | session file name, without `.desktop`, picked on the first start |

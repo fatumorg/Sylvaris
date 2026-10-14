@@ -685,3 +685,30 @@ export function statInfo(text) {
     const num = s => /^\d+$/.test(s || "") ? Number(s) : -1
     return { perm: head[0] || "", owner: head[1] || "", group: head[2] || "", count: num(lines[1]), bytes: num(lines[2]) }
 }
+
+export function pickStart(mode, path, home) {
+    const p = String(path || "")
+    const absolute = p.startsWith("/")
+    if (mode === "save") {
+        const name = absolute ? nameOf(p) : ""
+        return { folder: absolute ? parentOf(p) : home, name: name === "termfilechooser.tmp" ? "" : name, path: "" }
+    }
+    return { folder: "", name: "", path: absolute ? p : home }
+}
+
+export function pickTitle(mode, multiple) {
+    if (mode === "save")
+        return "Save as"
+    if (mode === "folder")
+        return multiple ? "Choose folders" : "Choose a folder"
+    return multiple ? "Open files" : "Open a file"
+}
+
+export function pickChoice(mode, multiple, items, folder) {
+    if (mode === "save")
+        return []
+    const fit = items.filter(i => mode === "folder" ? i.dir : !i.dir).map(i => i.path)
+    if (mode === "folder" && fit.length === 0)
+        return [folder]
+    return multiple ? fit : fit.slice(0, 1)
+}

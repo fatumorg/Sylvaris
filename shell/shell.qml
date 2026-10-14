@@ -122,6 +122,12 @@ ShellRoot {
         return p;
     }
 
+    function picker(): var {
+        if (pickerLoader.item === null)
+            throw new Error("SylFiles is off; turn it on with: sylvaris set parts.files true");
+        return pickerLoader.item;
+    }
+
     function solo(keep: var): void {
         for (const name of Object.keys(root.parts)) {
             if (root.parts[name] !== keep && root.parts[name].windowed !== true)
@@ -482,6 +488,15 @@ ShellRoot {
         SylFiles {
             id: filesPart
             onOpened: root.solo(filesPart)
+        }
+    }
+
+    LazyLoader {
+        id: pickerLoader
+        active: root.on("files")
+
+        SylFiles {
+            picker: true
         }
     }
 
@@ -913,6 +928,9 @@ ShellRoot {
                 compress: (...n) => root.need("files").compressTo(n.join(" ")),
                 act: action => root.need("files").act(String(action || "")),
                 drives: () => root.need("files").drives,
+                pick: (mode, multiple, out, ...p) => root.picker().startPick(String(mode || ""), String(multiple || "0"), String(out || ""), p.join(" ")),
+                picking: out => root.picker().picking(String(out || "")),
+                picker: () => root.picker().state(),
                 mount: (...n) => root.need("files").driveVerb("open", n.join(" ")),
                 eject: (...n) => root.need("files").driveVerb("eject", n.join(" ")),
                 state: () => root.need("files").state()

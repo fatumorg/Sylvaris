@@ -113,6 +113,8 @@ FocusScope {
         if (event.key === Qt.Key_Escape) {
             if (pane.files.query !== "")
                 pane.files.search("");
+            else if (pane.files.chooser && pane.files.selected.length === 0)
+                pane.files.close();
             else
                 pane.files.clearSelection();
             event.accepted = true;

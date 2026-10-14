@@ -6,7 +6,7 @@ import {
     kindOf, kindLabel, glyphOf, themeIcon, arrange, sizeText, whenText, summary,
     uniqueName, checkName, pick, invert, nextIndex, bandHits,
     visit, goBack, goForward, userDirs, places, gtkBookmarks, trashInfo,
-    pastePlan, inverse, openers, sidebarOf, pathsOfUris, urisOf, keyText, statInfo, GLYPH
+    pastePlan, inverse, openers, sidebarOf, pathsOfUris, urisOf, keyText, statInfo, GLYPH, pickStart, pickTitle, pickChoice
 } from "../shell/lib/files.mjs"
 
 const CTRL = 0x04000000
@@ -371,4 +371,32 @@ test("statInfo reads the details helper output for files and folders", () => {
     assert.deepEqual(statInfo("drwxr-xr-x|root|root\n12\n40960\n"), { perm: "drwxr-xr-x", owner: "root", group: "root", count: 12, bytes: 40960 })
     assert.deepEqual(statInfo("drwx------|root|root\n3\n"), { perm: "drwx------", owner: "root", group: "root", count: 3, bytes: -1 })
     assert.deepEqual(statInfo(""), { perm: "", owner: "", group: "", count: -1, bytes: -1 })
+})
+
+test("pickStart opens a save dialog in the suggested folder with the suggested name", () => {
+    assert.deepEqual(pickStart("save", "/home/n/Downloads/report.pdf", "/home/n"), { folder: "/home/n/Downloads", name: "report.pdf", path: "" })
+    assert.deepEqual(pickStart("save", "/home/n/Downloads/termfilechooser.tmp", "/home/n"), { folder: "/home/n/Downloads", name: "", path: "" })
+    assert.deepEqual(pickStart("save", "", "/home/n"), { folder: "/home/n", name: "", path: "" })
+    assert.deepEqual(pickStart("open", "/home/n/Pictures", "/home/n"), { folder: "", name: "", path: "/home/n/Pictures" })
+    assert.deepEqual(pickStart("folder", "relative/x", "/home/n"), { folder: "", name: "", path: "/home/n" })
+    assert.deepEqual(pickStart("open", "", "/home/n"), { folder: "", name: "", path: "/home/n" })
+})
+
+test("pickTitle says what the dialog is for", () => {
+    assert.equal(pickTitle("open", false), "Open a file")
+    assert.equal(pickTitle("open", true), "Open files")
+    assert.equal(pickTitle("save", false), "Save as")
+    assert.equal(pickTitle("folder", false), "Choose a folder")
+    assert.equal(pickTitle("folder", true), "Choose folders")
+})
+
+test("pickChoice returns what the dialog hands back to the app", () => {
+    const sel = [{ path: "/d/a.txt", dir: false }, { path: "/d/Sub", dir: true }, { path: "/d/b.txt", dir: false }]
+    assert.deepEqual(pickChoice("open", false, sel, "/d"), ["/d/a.txt"])
+    assert.deepEqual(pickChoice("open", true, sel, "/d"), ["/d/a.txt", "/d/b.txt"])
+    assert.deepEqual(pickChoice("open", true, [{ path: "/d/Sub", dir: true }], "/d"), [])
+    assert.deepEqual(pickChoice("folder", false, sel, "/d"), ["/d/Sub"])
+    assert.deepEqual(pickChoice("folder", false, [], "/d"), ["/d"])
+    assert.deepEqual(pickChoice("folder", true, [{ path: "/d/A", dir: true }, { path: "/d/B", dir: true }], "/d"), ["/d/A", "/d/B"])
+    assert.deepEqual(pickChoice("save", false, sel, "/d"), [])
 })

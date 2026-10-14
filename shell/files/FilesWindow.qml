@@ -57,7 +57,7 @@ FloatingWindow {
             x: 0
             width: win.sideW
             anchors.top: parent.top
-            anchors.bottom: status.top
+            anchors.bottom: pickBar.top
             files: win.files
             clip: true
             visible: width > 1
@@ -76,7 +76,7 @@ FloatingWindow {
             anchors.left: side.right
             anchors.right: info.left
             anchors.top: parent.top
-            anchors.bottom: status.top
+            anchors.bottom: pickBar.top
 
             TabStrip {
                 id: tabs
@@ -206,7 +206,7 @@ FloatingWindow {
             id: info
             anchors.right: parent.right
             anchors.top: parent.top
-            anchors.bottom: status.top
+            anchors.bottom: pickBar.top
             width: win.infoW
             files: win.files
             clip: true
@@ -219,6 +219,16 @@ FloatingWindow {
                     easing.bezierCurve: Tokens.moveCurve
                 }
             }
+        }
+
+        PickBar {
+            id: pickBar
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.bottom: status.top
+            height: win.files.chooser !== null ? implicitHeight : 0
+            visible: height > 0
+            files: win.files
         }
 
         StatusBar {

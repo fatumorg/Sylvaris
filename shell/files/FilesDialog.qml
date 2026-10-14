@@ -124,6 +124,7 @@ FocusScope {
                     text: ({
                             delete: "Delete permanently?",
                             remove: "Remove from the archive?",
+                            replace: "Replace " + dialog.what + "?",
                             trash: "Move to the trash?",
                             empty: "Empty the trash?",
                             openWith: "Open " + dialog.what + " with"
@@ -140,7 +141,7 @@ FocusScope {
                 width: parent.width
                 textFormat: Text.PlainText
                 wrapMode: Text.Wrap
-                text: dialog.kind === "delete" ? dialog.what + " will be gone for good. This cannot be undone." : dialog.kind === "remove" ? dialog.what + " will be taken out of the archive for good." : dialog.kind === "trash" ? dialog.what + " will go to the trash. You can restore or undo it." : "Everything in the trash will be deleted for good."
+                text: dialog.kind === "delete" ? dialog.what + " will be gone for good. This cannot be undone." : dialog.kind === "remove" ? dialog.what + " will be taken out of the archive for good." : dialog.kind === "replace" ? "Something with that name is already in this folder. Saving overwrites it." : dialog.kind === "trash" ? dialog.what + " will go to the trash. You can restore or undo it." : "Everything in the trash will be deleted for good."
                 color: Theme.textDim
                 font.family: Tokens.fontUi
                 font.pixelSize: Tokens.smallSize
@@ -308,6 +309,7 @@ FocusScope {
                     label: ({
                             delete: "Delete",
                             remove: "Remove",
+                            replace: "Replace",
                             trash: "Move to the trash",
                             empty: "Empty trash"
                         })[dialog.kind] || ""

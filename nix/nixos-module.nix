@@ -38,6 +38,8 @@ in
 
     cameraSwitch.enable = lib.mkEnableOption "switching USB cameras off and on for members of the users group, used by sylvaris privacy";
 
+    fileChooser.enable = lib.mkEnableOption "SylFiles as the open and save dialog of every app that asks the desktop portal, through xdg-desktop-portal-termfilechooser";
+
     greeter = {
       enable = lib.mkEnableOption "SylGreet as the greetd login screen, running in sway on every screen";
 
@@ -99,6 +101,27 @@ in
       services.udev.extraRules = ''
         ACTION=="add", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_interface", ATTR{bInterfaceClass}=="0e", RUN+="${lib.getExe' pkgs.coreutils "chgrp"} users /sys%p/../authorized", RUN+="${lib.getExe' pkgs.coreutils "chmod"} g+w /sys%p/../authorized"
       '';
+    })
+    (lib.mkIf cfg.fileChooser.enable {
+      xdg.portal = {
+        enable = true;
+        extraPortals = [ pkgs.xdg-desktop-portal-termfilechooser ];
+        config = lib.genAttrs [ "common" "hyprland" "sway" "niri" ] (_: {
+          "org.freedesktop.impl.portal.FileChooser" = [ "termfilechooser" ];
+        });
+      };
+      environment.etc."xdg/xdg-desktop-portal-termfilechooser/config".text = ''
+        [filechooser]
+        cmd=${lib.getExe' package "sylvaris"} choose
+        default_dir=$HOME
+        create_help_file=0
+        open_mode=suggested
+        save_mode=suggested
+      '';
+      environment.sessionVariables = {
+        GTK_USE_PORTAL = "1";
+        GDK_DEBUG = "portals";
+      };
     })
     (lib.mkIf greet.enable {
       services.displayManager.enable = true;

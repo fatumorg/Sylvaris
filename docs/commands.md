@@ -20,6 +20,7 @@ A command that fails prints `error: ...` and exits with 1, so scripts can rely o
 | `sylvaris watch [topic...]` | stream state changes as JSON lines |
 | `sylvaris view <name>` | open SylCenter on a view |
 | `sylvaris pick [prompt]` | choose one line from stdin in SylPad, like dmenu |
+| `sylvaris choose MULTIPLE DIRECTORY SAVE PATH OUT` | an open or save dialog in SylFiles, called by xdg-desktop-portal-termfilechooser; see [SylFiles](parts/files.md#open-and-save-dialogs) |
 | `sylvaris config` | where the configuration lives |
 | `sylvaris reload` | reload the shell |
 | `sylvaris doctor` | versions, missing tools and config problems, for bug reports |
