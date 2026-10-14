@@ -32,7 +32,7 @@ fi
 printf '%s\n' "$bg" >"$out/sway.conf"
 
 cleanup() {
-    kill "${qs_pid:-}" "${pw_pid:-}" "${sway_pid:-}" "${dbus_pid:-}" 2>/dev/null || true
+    kill "${qs_pid:-}" "${wp_pid:-}" "${pw_pid:-}" "${sway_pid:-}" "${dbus_pid:-}" 2>/dev/null || true
     wait 2>/dev/null || true
     rm -rf "$rt"
 }
@@ -86,6 +86,11 @@ if [ -n "${HL_PIPEWIRE:-}" ]; then
         [ -S "$rt/pipewire-0" ] && break
         sleep 0.1
     done
+    if command -v wireplumber >/dev/null 2>&1; then
+        "${hl_env[@]}" wireplumber >"$out/wireplumber.log" 2>&1 &
+        wp_pid=$!
+        sleep 1
+    fi
 fi
 
 "${hl_env[@]}" "$qs_bin" -p "$entry" >"$out/qs.log" 2>&1 &

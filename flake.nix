@@ -194,6 +194,11 @@
             pkgs.wlrctl
             pkgs.wayvnc
             pkgs.libarchive
+            pkgs.pipewire
+            pkgs.wireplumber
+            pkgs.wf-recorder
+            pkgs.wl-clipboard
+            pkgs.foot
             (pkgs.python3.withPackages (ps: [
               ps.cryptography
               ps.vncdotool
