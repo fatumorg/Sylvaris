@@ -2,14 +2,14 @@ sleep 1.5
 check mkdir -p "$HOME/Docs/Sub" && printf 'a' > "$HOME/Docs/a.txt" && printf 'b' > "$HOME/Docs/b.txt"
 bg sylvaris choose 0 0 0 "$HOME/Docs" "$OUT/open.out" > "$OUT/open.log" 2>&1; echo $? > "$OUT/open.rc"
 sleep 2
-check sylvaris files picker | grep -q '"open":true,"pick":{"mode":"open","multiple":false'
+check sylvaris files picker | grep -q '"open":true,"path":"[^"]*/Docs".*"pick":{"mode":"open","multiple":false'
 check sylvaris files picker | grep -q '"items":\["Sub","a.txt","b.txt"\]'
 shot files-pick-open
 bg wtype -k Shift_L -s 400 -k Right -k Right -k Return
 sleep 2
 check test "$(cat "$OUT/open.out")" = "$HOME/Docs/a.txt"
 check test "$(cat "$OUT/open.rc")" = 0
-check sylvaris files picker | grep -q '"open":false,"pick":null'
+check sylvaris files picker | grep -q '"open":false,.*"pick":null}'
 bg sylvaris choose 0 0 1 "$HOME/Docs/report.pdf" "$OUT/save.out" > "$OUT/save.log" 2>&1
 sleep 2
 check sylvaris files picker | grep -q '"pick":{"mode":"save","multiple":false,"name":"report.pdf"'

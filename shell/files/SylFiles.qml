@@ -1323,12 +1323,6 @@ Scope {
     function state(): var {
         return {
             open: root.wanted,
-            pick: root.chooser === null ? null : {
-                mode: root.chooser.mode,
-                multiple: root.chooser.multiple,
-                name: root.pickName,
-                error: root.pickError
-            },
             path: root.path,
             tab: root.tab,
             tabs: root.tabs.map(t => t.path),
@@ -1361,7 +1355,13 @@ Scope {
                 mode: root.clip.mode,
                 count: root.clip.items.length
             },
-            undo: root.history.length
+            undo: root.history.length,
+            pick: root.chooser === null ? null : {
+                mode: root.chooser.mode,
+                multiple: root.chooser.multiple,
+                name: root.pickName,
+                error: root.pickError
+            }
         };
     }
 
