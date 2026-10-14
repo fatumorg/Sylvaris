@@ -59,6 +59,12 @@ check sylvaris files state | grep -q '"tab":1'
 syl files act closeTab
 sleep 0.5
 check sylvaris files state | grep -q '"tab":0,"tabs":\["[^"]*"\]'
+syl files tab
+sleep 0.8
+check sylvaris files state | grep -q '"tab":1.*"count":7'
+syl files act closeTab
+sleep 0.8
+check sylvaris files state | grep -q '"tab":0.*"count":7'
 syl files select notes.txt
 bg wtype -k Shift_L -s 400 -k Menu
 sleep 0.8

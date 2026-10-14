@@ -118,6 +118,7 @@ Scope {
             }
         ];
         root.tab = 0;
+        root.entries = [];
         root.wanted = true;
         root.shown = true;
         root.arrived("");
@@ -171,7 +172,6 @@ Scope {
         root.filtering = false;
         root.locating = false;
         root.menu = null;
-        root.entries = [];
         root.problem = "";
         root.wanting = old !== "" && F.parentOf(old) === root.path ? [F.nameOf(old)] : [];
         probe.check(root.path);
@@ -217,7 +217,8 @@ Scope {
     }
 
     function newTab(p: string): void {
-        root.entries = [];
+        if (p !== root.path)
+            root.entries = [];
         root.tabs = root.tabs.concat([
             {
                 path: p,
@@ -242,7 +243,8 @@ Scope {
     function selectTab(i: int): void {
         if (i < 0 || i >= root.tabs.length || i === root.tab)
             return;
-        root.entries = [];
+        if (root.tabs[i].path !== root.path)
+            root.entries = [];
         root.tab = i;
         root.arrived("");
     }
@@ -255,9 +257,11 @@ Scope {
         const next = root.tabs.slice();
         next.splice(i, 1);
         const was = root.path;
-        root.entries = [];
+        const at = Math.min(i <= root.tab && root.tab > 0 ? root.tab - 1 : root.tab, next.length - 1);
+        if (next[at].path !== was)
+            root.entries = [];
         root.tabs = next;
-        root.tab = Math.min(i <= root.tab && root.tab > 0 ? root.tab - 1 : root.tab, next.length - 1);
+        root.tab = at;
         if (root.path !== was)
             root.arrived("");
     }
