@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+import json
+import os
+
+home = os.environ["HOME"]
+try:
+    with open(os.path.join(home, "fake-drives.json")) as f:
+        state = json.load(f)
+except OSError:
+    state = {"mounted": {}, "unlocked": False, "gone": []}
+
+
+def dev(name, kind, size, fstype=None, label=None, tran=None, rm=False, mounts=None, children=None, path=None, parttype=None, model=None):
+    d = {"name": name, "path": path or "/dev/" + name, "type": kind, "size": size, "fstype": fstype, "label": label, "mountpoints": mounts or [None], "rm": rm, "hotplug": rm, "tran": tran, "model": model, "parttype": parttype, "partlabel": None}
+    if children is not None:
+        d["children"] = children
+    return d
+
+
+def mounted(path):
+    m = state["mounted"].get(path)
+    return [m] if m else None
+
+
+vault = [dev("luks-vault", "crypt", 64000000000, "ext4", "Vault", path="/dev/mapper/luks-vault", mounts=mounted("/dev/mapper/luks-vault"))] if state["unlocked"] else []
+disks = [
+    dev("zram0", "disk", 8000000000, mounts=["[SWAP]"]),
+    dev("vda", "disk", 256000000000, tran="virtio", children=[
+        dev("vda1", "part", 255000000000, "ext4", mounts=["/"]),
+        dev("vda2", "part", 500000000, "vfat", parttype="c12a7328-f81f-11d2-ba4b-00a0c93ec93b", mounts=["/boot"]),
+    ]),
+    dev("nvme0n1", "disk", 1000000000000, tran="nvme", children=[
+        dev("nvme0n1p1", "part", 480000000000, "ntfs", "Windows", mounts=mounted("/dev/nvme0n1p1")),
+    ]),
+    dev("sdb", "disk", 32000000000, tran="usb", rm=True, model="DataTraveler", children=[
+        dev("sdb1", "part", 32000000000, "vfat", "KINGSTON", mounts=mounted("/dev/sdb1")),
+    ]),
+    dev("sdc", "disk", 64000000000, tran="usb", rm=True, model="Portable SSD", children=[
+        dev("sdc1", "part", 64000000000, "crypto_LUKS", "Vault", children=vault),
+    ]),
+    dev("sr0", "rom", 4000000000, "iso9660", "Install disc", rm=True),
+]
+with open(os.path.join(home, "fake-scans.log"), "a") as log:
+    log.write("scan\n")
+print(json.dumps({"blockdevices": [d for d in disks if d["path"] not in state["gone"]]}))

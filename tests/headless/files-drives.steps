@@ -1,0 +1,46 @@
+sleep 1.5
+check ! sylvaris files mount KINGSTON
+syl files open
+sleep 2.5
+check sylvaris files state | grep -q '"label":"KINGSTON","kind":"usb","mounted":false'
+check sylvaris files state | grep -q '"label":"Vault","kind":"usb","mounted":false,"path":"","locked":true'
+check sylvaris files state | grep -q '"label":"Install disc","kind":"optical"'
+check ! sylvaris files state | grep -qE '"/dev/(vda1|vda2|zram0)"'
+shot files-drives
+syl files mount KINGSTON
+sleep 2
+check sylvaris files state | grep -q '"open":true,"path":"[^"]*/home/media/KINGSTON"'
+check sylvaris files state | grep -q '"items":\["readme.txt"\]'
+check sylvaris files state | grep -q '"label":"KINGSTON","kind":"usb","mounted":true'
+syl files eject KINGSTON
+sleep 2
+check sylvaris files state | grep -q '“KINGSTON” can be unplugged now'
+check ! sylvaris files state | grep -q '"label":"KINGSTON"'
+check sylvaris files state | grep -q '"open":true,"path":"[^"]*/home"'
+check grep -q 'power-off /dev/sdb' "$HOME/fake-drives.log"
+syl files mount Windows
+sleep 1.5
+check sylvaris files state | grep -q '"note":"Cancelled"'
+syl files mount Vault
+sleep 1
+check sylvaris files state | grep -q '"asking":"unlock"'
+shot files-unlock
+bg wtype -k Shift_L -s 400 wrong -k Return
+sleep 1.5
+check sylvaris files state | grep -q '"askError":"Wrong passphrase"'
+bg wtype -k Shift_L -s 400 -M ctrl -k a -m ctrl tulip-7 -k Return
+sleep 2.5
+check sylvaris files state | grep -q '"asking":""'
+check sylvaris files state | grep -q '"open":true,"path":"[^"]*/home/media/Vault"'
+check sylvaris files state | grep -q '"label":"Vault","kind":"usb","mounted":true'
+check ! grep -rq 'tulip' "$HOME/fake-drives.log" "$OUT/qs.log" "$OUT/ipc.log"
+syl files eject Vault
+sleep 2
+check grep -q 'lock /dev/sdc1' "$HOME/fake-drives.log"
+check ! sylvaris files state | grep -q '"label":"Vault"'
+check test "$(wc -l < "$HOME/fake-scans.log")" -gt 3
+syl set parts.files false
+sleep 1
+check wc -l < "$HOME/fake-scans.log" > "$HOME/scans-before"
+sleep 4
+check test "$(wc -l < "$HOME/fake-scans.log")" = "$(cat "$HOME/scans-before")"

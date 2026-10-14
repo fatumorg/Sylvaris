@@ -60,6 +60,23 @@ FocusScope {
                         run: () => Ipc.run(["settings", "open", "files"])
                     })];
         }
+        if (menu.at.drive !== undefined) {
+            const d = f.driveOf(menu.at.drive);
+            if (d === null)
+                return [];
+            const out = d.locked ? [menu.item("Unlock…", F.GLYPH.lock, "", {
+                        run: () => f.openDrive(d, false)
+                    })] : [menu.item(d.mounted ? "Open" : "Mount and open", F.GLYPH.folderOpen, "", {
+                        run: () => f.openDrive(d, false)
+                    }), menu.item("Open in a new tab", F.GLYPH.newTab, "", {
+                        run: () => f.openDrive(d, true)
+                    })];
+            if (!d.locked && (d.mounted || d.drive !== ""))
+                out.push(sep, menu.item(d.drive !== "" ? "Safely remove" : "Unmount", F.GLYPH.eject, "", {
+                    run: () => f.ejectDrive(d)
+                }));
+            return out;
+        }
         const name = menu.at.name;
         const one = f.selected.length === 1 ? f.entryOf(f.selected[0]) : null;
         const dirOne = one !== null && one.dir;
@@ -133,7 +150,7 @@ FocusScope {
             e.run();
         else
             menu.files.act(e.id);
-        if (menu.files.dialog === "" && menu.files.renaming === "")
+        if (menu.files.dialog === "" && menu.files.renaming === "" && !menu.files.asking)
             menu.files.focusView();
     }
 

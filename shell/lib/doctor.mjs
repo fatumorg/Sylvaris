@@ -18,7 +18,7 @@ export const PART_PACKAGES = {
     clip: ["wl-clipboard"],
     island: ["wtype"],
     viewer: ["wl-clipboard", "glib"],
-    files: ["wl-clipboard", "glib", "python"],
+    files: ["wl-clipboard", "glib", "python", "udisks"],
     access: [],
     plugins: ["git"],
     sync: ["python", "procps"],
@@ -45,7 +45,8 @@ export const PACKAGE_BINS = {
     grim: ["grim"],
     slurp: ["slurp"],
     "wf-recorder": ["wf-recorder"],
-    ffmpeg: ["ffmpeg"]
+    ffmpeg: ["ffmpeg"],
+    udisks: ["udisksctl"]
 }
 
 export const CORE_BINS = ["qs", "socat"]

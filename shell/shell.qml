@@ -898,6 +898,9 @@ ShellRoot {
                 search: (...q) => root.need("files").search(q.join(" ")),
                 rename: (...n) => root.need("files").renameTo(n.join(" ")),
                 act: action => root.need("files").act(String(action || "")),
+                drives: () => root.need("files").drives,
+                mount: (...n) => root.need("files").driveVerb("open", n.join(" ")),
+                eject: (...n) => root.need("files").driveVerb("eject", n.join(" ")),
                 state: () => root.need("files").state()
             },
             viewer: {

@@ -45,7 +45,7 @@ FloatingWindow {
         focus: true
 
         Keys.onPressed: event => {
-            if (win.files.dialog === "" && win.files.key(F.comboOf(event.key, event.modifiers)))
+            if (win.files.dialog === "" && win.files.asking === null && win.files.key(F.comboOf(event.key, event.modifiers)))
                 event.accepted = true;
         }
 
@@ -236,6 +236,12 @@ FloatingWindow {
         FilesDialog {
             anchors.fill: parent
             z: 60
+            files: win.files
+        }
+
+        AskDialog {
+            anchors.fill: parent
+            z: 61
             files: win.files
         }
     }

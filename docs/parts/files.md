@@ -12,7 +12,7 @@ Bind `files open` to a key under SylSettings › Advanced › Key bindings (Supe
 
 ## The window
 
-- **Sidebar**: Home and your XDG folders, your bookmarks and GTK's, the root file system, drives under `/run/media`, `/media` and `/mnt`, and the trash. Middle-click opens a place in a new tab; × on a bookmark removes it.
+- **Sidebar**: Home and your XDG folders, your bookmarks and GTK's, every drive (see below) and the trash. Middle-click opens a place in a new tab; × on a bookmark removes it.
 - **Path bar**: click any part of the path to go there, or click the empty space (or press Ctrl+L) to type a location. `~`, relative paths and `file://` links work.
 - **Filter**: Ctrl+F, `/` or simply start typing. Esc clears it.
 - **Grid or list**: Ctrl+1 and Ctrl+2. The list has Size, Modified and Kind columns; click a heading to sort by it, again to reverse. Ctrl and the mouse wheel, or Ctrl+plus and Ctrl+minus, change the icon size.
@@ -21,6 +21,17 @@ Bind `files open` to a key under SylSettings › Advanced › Key bindings (Supe
 - **Status bar**: how many items, how much is selected, the free space, and the progress of copies and moves with a × to stop them.
 
 Pictures show themselves. Videos, PDFs and documents show the thumbnails other apps already made in `~/.cache/thumbnails`. Hidden files (Ctrl+H) and items you have cut look faded.
+
+## Drives
+
+Devices lists everything you can plug in or mount: USB sticks and disks, SD cards, CDs and DVDs, mounted disk images, partitions on your other drives (another Linux or Windows install), encrypted drives, phones and cameras, and network shares. The system's own partitions (`/`, `/boot`, `/nix`, swap, EFI and recovery partitions) stay out of the way.
+
+- **Click** a drive to mount it and open it; a drive that is not mounted yet looks faded. Internal drives may ask for your password through the authentication prompt.
+- **Encrypted** drives show a lock. Clicking one asks for its passphrase, unlocks it, mounts it and opens it. The passphrase goes straight to udisks and is never stored or logged.
+- **Eject** (the button next to the drive, or right-click › Safely remove) leaves any tab inside it, unmounts it, locks it again if it was encrypted and powers the stick off, so it can be unplugged. Internal drives are only unmounted.
+- **Phones and cameras** (MTP, PTP and iPhones) and shares mounted through GNOME's gvfs show up as well, and mount on click.
+
+Mounting goes through udisks2 (`services.udisks2.enable = true` on NixOS), phones and shares through gvfs (`services.gvfs.enable = true`). `sylvaris doctor` says when one is missing.
 
 ## Working with files
 
@@ -89,9 +100,12 @@ sylvaris files select a.txt b.txt
 sylvaris files search draft
 sylvaris files act newFolder    # any action from the list above
 sylvaris files rename final.txt # the one selected item
+sylvaris files drives           # every drive SylFiles sees
+sylvaris files mount KINGSTON   # by label or device, then open it
+sylvaris files eject KINGSTON
 sylvaris files state
 sylvaris files close
 sylvaris set parts.files false
 ```
 
-Copies, moves and restores run through a small Python helper; the trash goes through `gio`. Drives that are not mounted yet do not show up; mount them first, for example from your desktop's disk tool.
+Copies, moves and restores run through a small Python helper; the trash goes through `gio`, drives through `lsblk` and `udisksctl`.

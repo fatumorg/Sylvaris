@@ -5,8 +5,8 @@ import {
     joinPath, parentOf, nameOf, expand, pretty, crumbs,
     kindOf, kindLabel, glyphOf, themeIcon, arrange, sizeText, whenText, summary,
     uniqueName, checkName, pick, invert, nextIndex, bandHits,
-    visit, goBack, goForward, userDirs, places, gtkBookmarks, mounts, trashInfo,
-    pastePlan, inverse, openers, sidebarOf, pathsOfUris, urisOf, keyText, statInfo
+    visit, goBack, goForward, userDirs, places, gtkBookmarks, trashInfo,
+    pastePlan, inverse, openers, sidebarOf, pathsOfUris, urisOf, keyText, statInfo, GLYPH
 } from "../shell/lib/files.mjs"
 
 const CTRL = 0x04000000
@@ -273,24 +273,6 @@ test("gtkBookmarks keeps local folders with their labels", () => {
     ])
 })
 
-test("mounts lists the root and drives under /run/media, /media and /mnt once each", () => {
-    const text = [
-        "/dev/nvme0n1p2 / ext4 rw 0 0",
-        "/dev/nvme0n1p1 /boot vfat rw 0 0",
-        "tmpfs /tmp tmpfs rw 0 0",
-        "/dev/sda1 /run/media/n/My\\040Disk exfat rw 0 0",
-        "/dev/loop0 /mnt/iso iso9660 ro 0 0",
-        "/dev/sdb1 /mnt/data btrfs rw 0 0",
-        "/dev/sdb1 /mnt/data btrfs rw 0 0",
-        "/dev/nvme0n1p2 /nix/store ext4 ro 0 0"
-    ].join("\n")
-    assert.deepEqual(mounts(text), [
-        { path: "/", label: "File system", removable: false },
-        { path: "/run/media/n/My Disk", label: "My Disk", removable: true },
-        { path: "/mnt/data", label: "data", removable: false }
-    ])
-})
-
 test("trashInfo reads the original path and deletion date", () => {
     assert.deepEqual(trashInfo("[Trash Info]\nPath=/home/n/a%20b.txt\nDeletionDate=2026-10-13T10:00:00\n"), { path: "/home/n/a b.txt", date: "2026-10-13T10:00:00" })
     assert.deepEqual(trashInfo("junk"), { path: "", date: "" })
@@ -335,16 +317,28 @@ test("sidebarOf merges Sylvaris and GTK bookmarks without repeats and marks the 
         dirs: {},
         bookmarks: ["~/Code", "/srv"],
         gtk: [{ path: "/srv", label: "Server" }, { path: "/opt/x", label: "X" }],
-        mounts: [{ path: "/", label: "File system", removable: false }],
+        drives: [],
         trash: "/home/n/.local/share/Trash/files",
         current: "/srv"
     })
     assert.deepEqual(s.map(x => x.section), ["places", "places", "places", "places", "places", "places", "places", "bookmarks", "bookmarks", "bookmarks", "devices", "devices"])
+    assert.deepEqual([s[10].label, s[10].path, s[10].drive], ["File system", "/", null])
     const marks = s.filter(x => x.section === "bookmarks")
     assert.deepEqual(marks.map(x => [x.path, x.label, x.own]), [["/home/n/Code", "Code", true], ["/srv", "srv", true], ["/opt/x", "X", false]])
     assert.equal(s.filter(x => x.active).length, 1)
     assert.equal(s.find(x => x.active).path, "/srv")
     assert.equal(s[s.length - 1].label, "Trash")
+})
+
+test("sidebarOf lists every drive between the file system and the trash with a glyph for its kind", () => {
+    const d = (id, kind, extra) => Object.assign({ id: id, label: id, kind: kind, mounted: false, path: "", locked: false, ejectable: kind !== "disk" }, extra || {})
+    const list = [d("stick", "usb", { mounted: true, path: "/run/media/n/stick" }), d("vault", "usb", { locked: true }), d("cam", "card"), d("dvd", "optical"), d("pixel", "phone"), d("iso", "image"), d("win", "disk"), d("nas", "network")]
+    const s = sidebarOf({ home: "/home/n", dirs: {}, bookmarks: [], gtk: [], drives: list, trash: "/t", current: "/run/media/n/stick" }).filter(x => x.section === "devices")
+    assert.deepEqual(s.map(x => x.label), ["File system", "stick", "vault", "cam", "dvd", "pixel", "iso", "win", "nas", "Trash"])
+    assert.deepEqual(s.map(x => x.glyph), [GLYPH.drive, GLYPH.usb, GLYPH.lock, GLYPH.card, GLYPH.disc, GLYPH.phone, GLYPH.disc, GLYPH.drive, GLYPH.network, GLYPH.trash])
+    assert.equal(s[1].active, true)
+    assert.equal(s[1].drive.id, "stick")
+    assert.deepEqual([s[2].path, s[2].removable, s[7].removable], ["", true, false])
 })
 
 test("pathsOfUris reads text/uri-list and plain paths, and urisOf writes them back", () => {

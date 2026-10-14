@@ -8,6 +8,7 @@
   networkmanager,
   pulseaudio,
   wl-clipboard,
+  udisks,
   coreutils,
   procps,
   socat,
@@ -79,6 +80,7 @@ let
       wl-clipboard
       glib
       python
+      udisks
     ];
     access = [ ];
     fatest = [ ];

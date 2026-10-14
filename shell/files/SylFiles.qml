@@ -7,6 +7,7 @@ import qs
 import qs.services
 import "../lib/files.mjs" as F
 import "../lib/viewer.mjs" as V
+import "../lib/drives.mjs" as D
 
 Scope {
     id: root
@@ -79,7 +80,13 @@ Scope {
     property var targets: []
     property var dirs: ({})
     property var gtk: []
-    property var mountList: []
+    property string lsblkOut: ""
+    property string gioOut: ""
+    property string mountsOut: ""
+    readonly property var drives: D.drives(root.lsblkOut, root.gioOut, root.mountsOut)
+    property string driveBusy: ""
+    property var driveNext: null
+    property var asking: null
     property var info: F.statInfo("")
     property var thumbs: ({})
     property real thumbsAt: 0
@@ -88,7 +95,7 @@ Scope {
         dirs: root.dirs,
         bookmarks: root.cfg.bookmarks,
         gtk: root.gtk,
-        mounts: root.mountList,
+        drives: root.drives,
         trash: root.trashPath,
         current: root.path
     })
@@ -142,6 +149,7 @@ Scope {
         root.shown = false;
         root.menu = null;
         root.dialog = "";
+        root.asking = null;
         root.renaming = "";
     }
 
@@ -682,6 +690,184 @@ Scope {
         root.say(i >= 0 ? "Bookmark removed" : "Bookmarked " + F.nameOf(p), false);
     }
 
+    function driveOf(key: string): var {
+        const k = key.trim();
+        return root.drives.find(d => d.id === k) || root.drives.find(d => d.label === k) || root.drives.find(d => d.label.toLowerCase() === k.toLowerCase()) || null;
+    }
+
+    function scanDrives(): void {
+        if (!driveScan.running)
+            driveScan.running = true;
+        if (!gioScan.running)
+            gioScan.running = true;
+        mountsFile.reload();
+    }
+
+    function openDrive(d: var, inTab: bool): void {
+        if (d.locked)
+            root.asking = {
+                kind: "unlock",
+                id: d.id,
+                tab: inTab,
+                title: "Unlock “" + d.label + "”",
+                text: "It is encrypted. Type its passphrase to open it.",
+                glyph: F.GLYPH.lock,
+                password: true,
+                value: "",
+                placeholder: "Passphrase",
+                button: "Unlock",
+                error: "",
+                busy: false
+            };
+        else if (d.mounted && d.path !== "")
+            inTab ? root.newTab(d.path) : root.go(d.path);
+        else
+            root.runDrive(d, d.mounted ? "find" : "mount", inTab ? "tab" : "open", "");
+    }
+
+    function driveVerb(verb: string, key: string): void {
+        const d = root.driveOf(key);
+        if (!root.wanted)
+            throw new Error("SylFiles is not open; open it with: sylvaris files open");
+        if (d === null)
+            throw new Error("no drive called " + key + "; one of " + root.drives.map(x => x.label).join(", "));
+        if (verb === "eject")
+            root.ejectDrive(d);
+        else
+            root.openDrive(d, false);
+    }
+
+    function contextDrive(id: string, x: real, y: real): void {
+        root.menu = {
+            x: x,
+            y: y,
+            name: "",
+            drive: id
+        };
+    }
+
+    function leave(p: string): void {
+        const inside = q => q === p || q.startsWith(p + "/");
+        root.tabs = root.tabs.map((t, i) => i !== root.tab && inside(t.path) ? F.visit(t, root.home) : t);
+        if (inside(root.path))
+            root.go(root.home);
+    }
+
+    function ejectDrive(d: var): void {
+        if (d.path !== "")
+            root.leave(d.path);
+        root.runDrive(d, "eject", "", "");
+    }
+
+    function runDrive(d: var, verb: string, then: string, secret: string): void {
+        if (driveOp.running) {
+            root.say("Wait a moment, a drive is still busy", false);
+            return;
+        }
+        const cmd = D.driveCommand(d, verb, root.drives);
+        if (cmd.length === 0) {
+            root.say("Sylvaris cannot do that with “" + d.label + "”", false);
+            return;
+        }
+        root.driveBusy = d.id;
+        driveOp.drive = d;
+        driveOp.verb = verb;
+        driveOp.then = then;
+        driveOp.secret = secret;
+        driveOp.began = false;
+        driveOp.stdinEnabled = verb === "unlock";
+        driveOp.command = cmd;
+        driveOp.running = true;
+    }
+
+    function driveFailed(text: string): void {
+        if (driveOp.verb === "unlock" && root.asking !== null)
+            root.asking = Object.assign({}, root.asking, {
+                busy: false,
+                error: text
+            });
+        else
+            root.say(text, false);
+    }
+
+    function driveDone(code: int, out: string, err: string): void {
+        const d = driveOp.drive;
+        const verb = driveOp.verb;
+        const then = driveOp.then;
+        driveOp.secret = "";
+        root.driveBusy = "";
+        if (code !== 0 && !/AlreadyMounted/.test(err)) {
+            root.driveFailed(D.driveError(err));
+            root.scanDrives();
+            return;
+        }
+        if (verb === "unlock") {
+            root.asking = null;
+            root.driveNext = {
+                crypt: d.id,
+                then: then,
+                tries: 8
+            };
+        } else if (verb === "mount" && d.via === "gio") {
+            Qt.callLater(() => root.runDrive(d, "find", then, ""));
+        } else if (verb === "mount") {
+            root.driveNext = {
+                id: d.id,
+                then: then,
+                tries: 8
+            };
+        } else if (verb === "find") {
+            const p = D.localPath(out);
+            if (p === "")
+                root.say("“" + d.label + "” has no folder to open; gvfs needs its FUSE part for that", false);
+            else if (then === "tab")
+                root.newTab(p);
+            else
+                root.go(p);
+        } else if (verb === "eject") {
+            root.say(d.kind === "usb" || d.kind === "card" ? "“" + d.label + "” can be unplugged now" : "“" + d.label + "” is unmounted", false);
+        }
+        root.scanDrives();
+    }
+
+    function followDrive(): void {
+        const n = root.driveNext;
+        if (n === null)
+            return;
+        const d = n.crypt !== undefined ? root.drives.find(r => r.crypt === n.crypt) : root.drives.find(r => r.id === n.id);
+        if (d !== undefined && (n.crypt !== undefined || (d.mounted && d.path !== ""))) {
+            root.driveNext = null;
+            root.openDrive(d, n.then === "tab");
+            return;
+        }
+        root.driveNext = n.tries > 1 ? Object.assign({}, n, {
+            tries: n.tries - 1
+        }) : null;
+        if (root.driveNext !== null)
+            driveRetry.restart();
+    }
+
+    function answer(value: string, choice: string): void {
+        const a = root.asking;
+        if (a === null || a.busy)
+            return;
+        if (a.kind === "unlock") {
+            const d = root.driveOf(a.id);
+            if (d === null || value === "")
+                return;
+            root.asking = Object.assign({}, a, {
+                busy: true,
+                error: ""
+            });
+            root.runDrive(d, "unlock", a.tab ? "tab" : "open", value);
+        }
+    }
+
+    function cancelAsk(): void {
+        root.asking = null;
+        root.focusView();
+    }
+
     function zoom(d: int): void {
         const steps = [40, 48, 56, 64, 80, 96, 128, 160];
         const at = root.cfg.iconSize;
@@ -892,6 +1078,17 @@ Scope {
             note: root.note,
             menu: root.menu !== null,
             dialog: root.dialog,
+            asking: root.asking === null ? "" : root.asking.kind,
+            askError: root.asking === null ? "" : root.asking.error,
+            drives: root.drives.map(d => ({
+                        id: d.id,
+                        label: d.label,
+                        kind: d.kind,
+                        mounted: d.mounted,
+                        path: d.path,
+                        locked: d.locked
+                    })),
+            driveBusy: root.driveBusy,
             clip: {
                 mode: root.clip.mode,
                 count: root.clip.items.length
@@ -1085,14 +1282,78 @@ Scope {
         id: mountsFile
         path: root.shown ? "/proc/self/mounts" : ""
         printErrors: false
-        onLoaded: root.mountList = F.mounts(text())
+        onLoaded: root.mountsOut = text()
     }
 
     Timer {
-        interval: 4000
+        interval: 3000
         running: root.shown
         repeat: true
-        onTriggered: mountsFile.reload()
+        triggeredOnStart: true
+        onTriggered: root.scanDrives()
+    }
+
+    Timer {
+        id: driveRetry
+        interval: 400
+        onTriggered: root.scanDrives()
+    }
+
+    Process {
+        id: driveScan
+        command: D.LSBLK
+        stdout: StdioCollector {
+            onStreamFinished: {
+                root.lsblkOut = text;
+                root.followDrive();
+            }
+        }
+    }
+
+    Process {
+        id: gioScan
+        command: D.GIO_LIST
+        stdout: StdioCollector {
+            onStreamFinished: {
+                root.gioOut = text;
+                root.followDrive();
+            }
+        }
+    }
+
+    Process {
+        id: driveOp
+        property var drive: null
+        property string verb: ""
+        property string then: ""
+        property string secret: ""
+        property bool began: false
+        stdout: StdioCollector {
+            id: driveOut
+        }
+        stderr: StdioCollector {
+            id: driveErr
+        }
+        onStarted: {
+            driveOp.began = true;
+            if (driveOp.secret !== "") {
+                driveOp.write(driveOp.secret);
+                driveOp.secret = "";
+            }
+            if (driveOp.stdinEnabled)
+                driveOp.stdinEnabled = false;
+        }
+        onExited: code => root.driveDone(code, driveOut.text, driveErr.text)
+        onRunningChanged: {
+            if (!driveOp.running && !driveOp.began)
+                Qt.callLater(() => {
+                    if (driveOp.began || driveOp.running || root.driveBusy === "")
+                        return;
+                    driveOp.secret = "";
+                    root.driveBusy = "";
+                    root.driveFailed(driveOp.drive.via === "gio" ? "Phones and shares need gvfs, for example services.gvfs.enable = true on NixOS" : driveOp.drive.via === "udisks" ? D.driveError("udisks daemon") : "Could not run " + driveOp.command[0]);
+                });
+        }
     }
 
     Timer {

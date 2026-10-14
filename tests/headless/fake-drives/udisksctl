@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+import json
+import os
+import sys
+
+home = os.environ["HOME"]
+store = os.path.join(home, "fake-drives.json")
+try:
+    with open(store) as f:
+        state = json.load(f)
+except OSError:
+    state = {"mounted": {}, "unlocked": False, "gone": []}
+labels = {"/dev/sdb1": "KINGSTON", "/dev/nvme0n1p1": "Windows", "/dev/mapper/luks-vault": "Vault", "/dev/sr0": "Install disc"}
+verb = sys.argv[1] if len(sys.argv) > 1 else ""
+args = sys.argv[2:]
+device = args[args.index("-b") + 1] if "-b" in args else ""
+with open(os.path.join(home, "fake-drives.log"), "a") as log:
+    log.write(" ".join([verb, device]) + "\n")
+
+
+def save():
+    with open(store, "w") as f:
+        json.dump(state, f)
+
+
+def fail(text):
+    sys.stderr.write(text + "\n")
+    sys.exit(1)
+
+
+if verb == "mount":
+    if device == "/dev/nvme0n1p1":
+        fail("Error mounting %s: GDBus.Error:org.freedesktop.UDisks2.Error.NotAuthorizedDismissed: Not authorized to perform operation" % device)
+    if device not in labels or device in state["gone"]:
+        fail("Error looking up object for device " + device)
+    if device in state["mounted"]:
+        fail("Error mounting %s: GDBus.Error:org.freedesktop.UDisks2.Error.AlreadyMounted: Device %s is already mounted at `%s'." % (device, device, state["mounted"][device]))
+    target = os.path.join(home, "media", labels[device])
+    stash = os.path.join(home, ".stash", labels[device])
+    os.makedirs(os.path.dirname(target), exist_ok=True)
+    if os.path.isdir(stash):
+        os.rename(stash, target)
+    else:
+        os.makedirs(target)
+        with open(os.path.join(target, "readme.txt"), "w") as f:
+            f.write("on the drive\n")
+    state["mounted"][device] = target
+    save()
+    print("Mounted %s at %s" % (device, target))
+elif verb == "unmount":
+    if device not in state["mounted"]:
+        fail("Error unmounting %s: GDBus.Error:org.freedesktop.UDisks2.Error.NotMounted: Device is not mounted" % device)
+    os.makedirs(os.path.join(home, ".stash"), exist_ok=True)
+    os.rename(state["mounted"].pop(device), os.path.join(home, ".stash", labels[device]))
+    save()
+    print("Unmounted %s." % device)
+elif verb == "unlock":
+    key_file = args[args.index("--key-file") + 1] if "--key-file" in args else ""
+    with open(key_file) as f:
+        key = f.read()
+    if key != "tulip-7":
+        fail("Error unlocking %s: GDBus.Error:org.freedesktop.UDisks2.Error.Failed: Error unlocking %s: Failed to activate device: Incorrect passphrase." % (device, device))
+    state["unlocked"] = True
+    save()
+    print("Unlocked %s as /dev/dm-0." % device)
+elif verb == "lock":
+    state["unlocked"] = False
+    save()
+    print("Locked %s." % device)
+elif verb == "power-off":
+    state["gone"].append(device)
+    save()
+elif verb == "loop-delete":
+    pass
+else:
+    fail("Unknown command " + verb)

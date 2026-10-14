@@ -42,6 +42,11 @@ export const GLYPH = {
     videos: g(0xF19FA),
     drive: g(0xF02CA),
     usb: g(0xF129E),
+    card: g(0xF0479),
+    disc: g(0xF05EE),
+    phone: g(0xF011C),
+    network: g(0xF048D),
+    eject: g(0xF01EA),
     trash: g(0xF0A7A),
     bookmark: g(0xF00C0),
     forward: g(0xF0054),
@@ -546,23 +551,6 @@ export function gtkBookmarks(text) {
     return out
 }
 
-export function mounts(text) {
-    const out = []
-    for (const line of String(text || "").split("\n")) {
-        const f = line.split(" ")
-        if (f.length < 3 || !f[0].startsWith("/dev/") || f[0].startsWith("/dev/loop"))
-            continue
-        const dir = f[1].replace(/\\([0-7]{3})/g, (m, o) => String.fromCharCode(parseInt(o, 8)))
-        const removable = dir.startsWith("/run/media/") || dir.startsWith("/media/")
-        if (dir !== "/" && !removable && !dir.startsWith("/mnt/"))
-            continue
-        if (out.some(m => m.path === dir))
-            continue
-        out.push({ path: dir, label: dir === "/" ? "File system" : nameOf(dir), removable: removable })
-    }
-    return out
-}
-
 export function trashInfo(text) {
     const path = /^Path=(.*)$/m.exec(String(text || ""))
     const date = /^DeletionDate=(.*)$/m.exec(String(text || ""))
@@ -634,6 +622,8 @@ export function openers(apps, kind, query) {
     return usable.filter(fits).sort(byName).concat(usable.filter(a => !fits(a)).sort(byName))
 }
 
+const DRIVE_GLYPH = { usb: GLYPH.usb, card: GLYPH.card, optical: GLYPH.disc, phone: GLYPH.phone, image: GLYPH.disc, disk: GLYPH.drive, network: GLYPH.network }
+
 export function sidebarOf(src) {
     const out = []
     for (const p of places(src.home, src.dirs))
@@ -651,14 +641,15 @@ export function sidebarOf(src) {
             seen.push(b.path)
             out.push({ section: "bookmarks", label: b.label, path: b.path, glyph: GLYPH.bookmark, own: false, removable: false })
         }
-    for (const m of src.mounts)
-        out.push({ section: "devices", label: m.label, path: m.path, glyph: m.removable ? GLYPH.usb : GLYPH.drive, own: false, removable: m.removable })
+    out.push({ section: "devices", label: "File system", path: "/", glyph: GLYPH.drive, own: false, removable: false })
+    for (const d of src.drives)
+        out.push({ section: "devices", label: d.label, path: d.path, glyph: d.locked ? GLYPH.lock : DRIVE_GLYPH[d.kind] || GLYPH.drive, own: false, removable: d.ejectable, drive: d })
     out.push({ section: "devices", label: "Trash", path: src.trash, glyph: GLYPH.trash, own: false, removable: false })
     let lit = false
     return out.map(x => {
-        const active = !lit && x.path === src.current
+        const active = !lit && x.path !== "" && x.path === src.current
         lit = lit || active
-        return Object.assign({}, x, { active: active })
+        return Object.assign({ drive: null }, x, { active: active })
     })
 }
 
