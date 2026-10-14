@@ -221,7 +221,8 @@ ShellRoot {
             } : undefined,
             settingsPanel: settings !== null ? {
                 open: settings.wanted,
-                section: settings.section
+                section: settings.section,
+                group: settings.group
             } : undefined,
             sky: root.on("Sky") ? Sky.state() : undefined,
             weather: root.on("Weather") ? Weather.state() : undefined,

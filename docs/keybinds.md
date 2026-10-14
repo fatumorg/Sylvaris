@@ -1,6 +1,6 @@
 # Key bindings
 
-SylSettings › Features › Key bindings lists every action worth a key. Click one and press the keys: Sylvaris adds the binding to Hyprland or sway right away, and again after the compositor reloads its config. The same map lives in `keybinds`:
+SylSettings › Advanced › Key bindings lists every action worth a key. Click one and press the keys: Sylvaris adds the binding to Hyprland or sway right away, and again after the compositor reloads its config. The same map lives in `keybinds`:
 
 ```nix
 programs.sylvaris.keybinds = {

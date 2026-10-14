@@ -2,7 +2,7 @@
 
 The gear in SylCenter, `sylvaris settings` or `sylvaris settings open <section>` opens SylSettings over a starfield.
 
-Tabs at the top split the sections into Settings (general, appearance, motion, wallpaper, sound, displays), Apps (every Sylvaris panel) and Features (lock, authentication, accessibility, key bindings, app colours, plugins, commands). Tab and Shift+Tab switch between them. Every section is a star around the core; picking one shrinks the constellation to the top and opens the section below it.
+Tabs at the top split the sections into six groups: System (general, displays, sound, power, accessibility, and lighting once its plugin is on), Look (appearance, wallpaper, motion, app colours), Panels (bar, deck, Control Center, island, notifications, launcher, switcher, sky, weather), Apps (files, viewer, capture, clipboard, and Diver and FaTest once their plugins are on), Security (lock, authentication) and Advanced (key bindings, commands, plugins). Tab and Shift+Tab switch between them. Every section is a star around the core; picking one shrinks the constellation to the top and opens the section below it.
 
 On the left you tune the constellation itself (drift speed, ring, silk links, labels, starfield), which also changes SylCenter's orbits. On the right are statistics (uptime, the shell's memory, apps, themes, windows, workspaces, screens, notifications) and About.
 

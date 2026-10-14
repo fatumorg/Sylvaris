@@ -24,3 +24,21 @@ syl state settingsPanel
 syl center
 sleep 0.6
 shot center-gear
+syl settings close
+sleep 1
+syl settings open
+sleep 1.5
+check sylvaris state settingsPanel | grep -q '"section":"commands","group":"advanced"'
+bg wtype -k Shift_L -s 400 -k Escape
+sleep 1.2
+check sylvaris state settingsPanel | grep -q '"section":"","group":"advanced"'
+bg wtype -k Shift_L -s 400 -k Tab
+sleep 1
+check sylvaris state settingsPanel | grep -q '"group":"system"'
+shot settings-groups
+bg wtype -k Shift_L -s 400 -M shift -k Tab -m shift
+sleep 1
+check sylvaris state settingsPanel | grep -q '"group":"advanced"'
+syl settings open files
+sleep 1
+check sylvaris state settingsPanel | grep -q '"section":"files","group":"apps"'

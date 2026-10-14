@@ -10,6 +10,7 @@ import qs.components
 import "../lib/power.mjs" as Pw
 import "../lib/icons.mjs" as Icons
 import "../lib/version.mjs" as V
+import "../lib/sections.mjs" as Sec
 
 Scope {
     id: root
@@ -29,205 +30,11 @@ Scope {
     readonly property string version: V.VERSION
     readonly property bool hasBattery: UPower.displayDevice !== null && UPower.displayDevice.isLaptopBattery
     readonly property var cons: Settings.shown.constellation
-    readonly property var sections: [
-        {
-            key: "general",
-            label: "General",
-            glyph: Icons.GLYPHS.tune,
-            group: "settings"
-        },
-        {
-            key: "appearance",
-            label: "Appearance",
-            glyph: Icons.GLYPHS.theme,
-            group: "settings"
-        },
-        {
-            key: "motion",
-            label: "Motion",
-            glyph: Icons.GLYPHS.bolt,
-            group: "settings"
-        },
-        {
-            key: "wallpaper",
-            label: "Wallpaper",
-            glyph: Icons.GLYPHS.image,
-            group: "settings"
-        },
-        {
-            key: "bar",
-            label: "Bar",
-            glyph: Icons.GLYPHS.grid,
-            group: "apps"
-        },
-        {
-            key: "center",
-            label: "Control Center",
-            glyph: Icons.GLYPHS.toggle,
-            group: "apps"
-        },
-        {
-            key: "deck",
-            label: "Deck",
-            glyph: Icons.GLYPHS.pin,
-            group: "apps"
-        },
-        {
-            key: "launcher",
-            label: "Launcher",
-            glyph: Icons.GLYPHS.apps,
-            group: "apps"
-        },
-        {
-            key: "notifications",
-            label: "Notifications",
-            glyph: Icons.GLYPHS.bell,
-            group: "apps"
-        },
-        {
-            key: "sound",
-            label: "Sound",
-            glyph: Icons.GLYPHS.volume,
-            group: "settings"
-        },
-        {
-            key: "displays",
-            label: "Displays",
-            glyph: Icons.GLYPHS.displays,
-            group: "settings"
-        },
-        {
-            key: "clock",
-            label: "Sky",
-            glyph: Icons.GLYPHS.night,
-            group: "apps"
-        },
-        {
-            key: "weather",
-            label: "Weather",
-            glyph: Icons.GLYPHS.partlyCloudy,
-            group: "apps"
-        },
-        {
-            key: "power",
-            label: "Power",
-            glyph: Icons.GLYPHS.power,
-            group: "apps"
-        },
-        {
-            key: "diver",
-            label: "Diver",
-            glyph: Icons.GLYPHS.planner,
-            group: "apps"
-        },
-        {
-            key: "fatest",
-            label: "FaTest",
-            glyph: Icons.GLYPHS.speed,
-            group: "apps"
-        },
-        {
-            key: "rgb",
-            label: "Lighting",
-            glyph: Icons.GLYPHS.rgb,
-            group: "apps"
-        },
-        {
-            key: "switcher",
-            label: "Switcher",
-            glyph: Icons.GLYPHS.switcher,
-            group: "apps"
-        },
-        {
-            key: "lock",
-            label: "Lock",
-            glyph: Icons.GLYPHS.lock,
-            group: "features"
-        },
-        {
-            key: "polkit",
-            label: "Authentication",
-            glyph: Icons.GLYPHS.shield,
-            group: "features"
-        },
-        {
-            key: "island",
-            label: "Island",
-            glyph: Icons.GLYPHS.music,
-            group: "features"
-        },
-        {
-            key: "clip",
-            label: "Clipboard",
-            glyph: Icons.GLYPHS.clipboard,
-            group: "apps"
-        },
-        {
-            key: "capture",
-            label: "Capture",
-            glyph: Icons.GLYPHS.camera,
-            group: "apps"
-        },
-        {
-            key: "viewer",
-            label: "Viewer",
-            glyph: Icons.GLYPHS.image,
-            group: "apps"
-        },
-        {
-            key: "files",
-            label: "Files",
-            glyph: Icons.GLYPHS.folder,
-            group: "apps"
-        },
-        {
-            key: "access",
-            label: "Accessibility",
-            glyph: Icons.GLYPHS.accessibility,
-            group: "features"
-        },
-        {
-            key: "plugins",
-            label: "Plugins",
-            glyph: Icons.GLYPHS.puzzle,
-            group: "features"
-        },
-        {
-            key: "sync",
-            label: "App colours",
-            glyph: Icons.GLYPHS.sync,
-            group: "features"
-        },
-        {
-            key: "keybinds",
-            label: "Key bindings",
-            glyph: Icons.GLYPHS.keyboard,
-            group: "features"
-        },
-        {
-            key: "commands",
-            label: "Commands",
-            glyph: Icons.GLYPHS.code,
-            group: "features"
-        }
-    ]
-    readonly property var groups: [
-        {
-            key: "settings",
-            label: "Settings"
-        },
-        {
-            key: "apps",
-            label: "Apps"
-        },
-        {
-            key: "features",
-            label: "Features"
-        }
-    ]
-    property string group: "settings"
+    readonly property var sections: Sec.SECTIONS
+    readonly property var groups: Sec.GROUPS
+    property string group: "system"
     property real flip: 1
-    readonly property var shownSections: root.sections.filter(s => s.group === root.group && (s.key !== "diver" || Settings.shown.plugins.enabled.diver === true) && (s.key !== "fatest" || Settings.shown.plugins.enabled.fatest === true) && (s.key !== "rgb" || Settings.shown.plugins.enabled.rgb === true))
+    readonly property var shownSections: Sec.sectionsIn(root.group, Settings.shown.plugins.enabled)
     readonly property var corners: [
         {
             key: "top-left",
@@ -664,7 +471,7 @@ Scope {
                 Keys.onEscapePressed: root.back()
                 Keys.onLeftPressed: root.hovered = (root.hovered - 1 + root.shownSections.length) % root.shownSections.length
                 Keys.onRightPressed: root.hovered = (root.hovered + 1) % root.shownSections.length
-                Keys.onTabPressed: root.stepGroup(1)
+                Keys.onTabPressed: event => root.stepGroup(event.modifiers & Qt.ShiftModifier ? -1 : 1)
                 Keys.onBacktabPressed: root.stepGroup(-1)
                 Keys.onReturnPressed: {
                     if (root.hovered >= 0)
@@ -883,7 +690,7 @@ Scope {
                 y: win.height - 120
                 visible: root.dive < 0.99
                 opacity: root.phase(0.6, 1) * (1 - root.dive)
-                text: root.hovered >= 0 && root.hovered < root.shownSections.length ? "Open " + root.shownSections[root.hovered].label.toLowerCase() : "Pick a star · Tab switches between settings, apps and features"
+                text: root.hovered >= 0 && root.hovered < root.shownSections.length ? "Open " + root.shownSections[root.hovered].label.toLowerCase() : "Pick a star · Tab switches groups"
                 color: Theme.textSoft
                 font.family: Tokens.fontUi
                 font.pixelSize: 20
@@ -892,7 +699,7 @@ Scope {
             Segmented {
                 x: hub.cx - width / 2
                 y: win.height * 0.5 - hub.ry - 150
-                width: 420
+                width: Math.min(win.midW - 40, 760)
                 visible: root.dive < 0.99
                 opacity: root.phase(0.4, 0.9) * (1 - root.dive)
                 options: root.groups

@@ -1,6 +1,6 @@
 # SylSync
 
-Turn on SylSettings › Features › App colours and your theme's colours flow into other apps every time you switch themes:
+Turn on SylSettings › Look › App colours and your theme's colours flow into other apps every time you switch themes:
 
 - GTK 3 and 4, and Chromium, Brave or Vivaldi set to use the GTK theme
 - Qt through qt5ct and qt6ct
