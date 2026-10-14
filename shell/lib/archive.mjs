@@ -31,6 +31,8 @@ export const ARCHIVE_ACTIONS = [
     { id: "back", label: "Back", keys: ["ALT+Left", "BackSpace"] },
     { id: "forward", label: "Forward", keys: ["ALT+Right"] },
     { id: "up", label: "Parent folder", keys: ["ALT+Up"] },
+    { id: "location", label: "Type a location", keys: ["CTRL+L"] },
+    { id: "reload", label: "Reload", keys: ["F5", "CTRL+R"] },
     { id: "search", label: "Filter this folder", keys: ["CTRL+F", "slash"] },
     { id: "selectAll", label: "Select all", keys: ["CTRL+A"] },
     { id: "invert", label: "Invert selection", keys: ["CTRL+SHIFT+I"] },

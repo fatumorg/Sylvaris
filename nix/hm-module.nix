@@ -40,15 +40,17 @@ let
     else
       v;
   typed = prune (lib.getAttrs (builtins.attrNames schema) cfg);
-  viewerMimes = lib.filter (m: m != "") (
-    lib.splitString ";" (
-      lib.removePrefix "MimeType=" (
-        lib.findFirst (lib.hasPrefix "MimeType=") "" (
-          lib.splitString "\n" (builtins.readFile ../share/applications/sylvaris-viewer.desktop)
+  mimesOf =
+    file:
+    lib.filter (m: m != "") (
+      lib.splitString ";" (
+        lib.removePrefix "MimeType=" (
+          lib.findFirst (lib.hasPrefix "MimeType=") "" (lib.splitString "\n" (builtins.readFile file))
         )
       )
-    )
-  );
+    );
+  viewerMimes = mimesOf ../share/applications/sylvaris-viewer.desktop;
+  archiveMimes = mimesOf ../share/applications/sylvaris-archive.desktop;
 in
 {
   options.programs.sylvaris = lib.mapAttrs (k: optionsFor [ k ]) schema // {
@@ -89,6 +91,12 @@ in
       description = "Make SylFiles the default app for folders, through xdg.mimeApps.";
     };
 
+    defaultArchiveManager = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Make SylArchive the default app for zip, rar, 7z, tar and the other archives it opens, through xdg.mimeApps.";
+    };
+
     themes = lib.mkOption {
       type = lib.types.attrsOf json.type;
       default = { };
@@ -113,6 +121,9 @@ in
       (lib.mkIf (cfg.defaultFileManager && (parts.files or true)) {
         "inode/directory" = [ "sylvaris-files.desktop" ];
       })
+      (lib.mkIf (cfg.defaultArchiveManager && (parts.archive or true)) (
+        lib.genAttrs archiveMimes (_: [ "sylvaris-archive.desktop" ])
+      ))
     ];
 
     xdg.configFile = lib.mkMerge [

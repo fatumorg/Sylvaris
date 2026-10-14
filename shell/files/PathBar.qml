@@ -56,7 +56,7 @@ FocusScope {
         orientation: ListView.Horizontal
         interactive: false
         clip: true
-        model: bar.files.path === "" ? [] : F.crumbs(bar.files.path, bar.files.home)
+        model: bar.files.crumbs
         onCountChanged: Qt.callLater(crumbs.positionViewAtEnd)
         onWidthChanged: Qt.callLater(crumbs.positionViewAtEnd)
 

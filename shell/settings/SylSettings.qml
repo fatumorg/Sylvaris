@@ -852,6 +852,7 @@ Scope {
                                 clip: clipPage,
                                 viewer: viewerPage,
                                 files: filesPage,
+                                archive: archivePage,
                                 island: islandPage,
                                 capture: capturePage,
                                 access: accessPage,
@@ -912,6 +913,12 @@ Scope {
         id: filesPage
 
         FilesPage {}
+    }
+
+    Component {
+        id: archivePage
+
+        ArchivePage {}
     }
 
     Component {

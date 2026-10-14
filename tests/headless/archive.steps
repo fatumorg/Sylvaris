@@ -1,0 +1,70 @@
+sleep 1.5
+check mkdir -p "$HOME/Box" && cd "$HOME/Box" && python3 -c 'import zipfile; z = zipfile.ZipFile("photos.zip", "w"); z.writestr("photos/2024/beach.txt", "sun"); z.writestr("photos/notes.txt", "hello"); z.writestr("photos/map.md", "m"); z.close()' && printf 'add me' > extra.txt
+check ! sylvaris archive act extract
+syl archive open ~/Box/photos.zip
+sleep 2
+check sylvaris archive state | grep -q '"open":true,"archive":"[^"]*/Box/photos.zip","path":"","format":"ZIP archive","writable":true,"problem":"","count":1,"items":\["photos"\]'
+check sylvaris archive state | grep -q '"files":3,"folders":2,"bytes":9'
+shot archive-root
+syl archive go photos
+sleep 0.8
+check sylvaris archive state | grep -q '"path":"photos".*"items":\["2024","map.md","notes.txt"\]'
+shot archive-list
+syl archive act grid
+sleep 0.5
+shot archive-grid
+syl archive act list
+syl archive select notes.txt
+syl archive act extract
+sleep 2
+check test "$(cat "$HOME/Box/notes.txt")" = hello
+check sylvaris archive state | grep -q 'Extracted to “notes.txt”'
+syl files close
+syl archive act extractAll
+sleep 2.5
+check test "$(cat "$HOME/Box/photos/2024/beach.txt")" = sun
+check sylvaris files state | grep -q '"open":true,"path":"[^"]*/Box/photos"'
+syl files close
+syl archive add ~/Box/extra.txt
+sleep 2.5
+check sylvaris archive state | grep -q '"items":\["2024","extra.txt","map.md","notes.txt"\]'
+check python3 -c 'import os, sys, zipfile; sys.exit(0 if "photos/extra.txt" in zipfile.ZipFile(os.path.expanduser("~/Box/photos.zip")).namelist() else 1)'
+syl archive select extra.txt
+bg wtype -k Shift_L -s 400 -k Delete
+sleep 0.8
+check sylvaris archive state | grep -q '"dialog":"remove"'
+shot archive-remove
+bg wtype -k Shift_L -s 400 -k Return
+sleep 2.5
+check python3 -c 'import os, sys, zipfile; sys.exit(1 if "photos/extra.txt" in zipfile.ZipFile(os.path.expanduser("~/Box/photos.zip")).namelist() else 0)'
+check sylvaris archive state | grep -q '"items":\["2024","map.md","notes.txt"\]'
+check cd "$HOME/Box" && printf 'top secret' > s.txt && bsdtar -a -cf locked.zip --options zip:encryption=aes256 --passphrase hunter-2 s.txt && rm s.txt
+syl archive open ~/Box/locked.zip
+sleep 2
+check sylvaris archive state | grep -q '"archive":"[^"]*/locked.zip".*"items":\["s.txt"\]'
+syl archive select s.txt
+syl archive act extract
+sleep 2
+check sylvaris archive state | grep -q '"asking":"password"'
+shot archive-password
+bg wtype -k Shift_L -s 400 nope -k Return
+sleep 2.5
+check sylvaris archive state | grep -q '"askError":"Wrong password"'
+bg wtype -k Shift_L -s 400 -M ctrl -k a -m ctrl hunter-2 -k Return
+sleep 2.5
+check test "$(cat "$HOME/Box/s.txt")" = "top secret"
+check sylvaris archive state | grep -q '"asking":""'
+check ! grep -q 'hunter-2' "$OUT/qs.log"
+check printf 'garbage' > "$HOME/Box/bad.zip"
+syl archive open ~/Box/bad.zip
+sleep 2
+check sylvaris archive state | grep -q '"problem":"broken"'
+shot archive-broken
+syl settings open archive
+sleep 1.2
+shot archive-settings
+syl settings close
+syl archive close
+syl set parts.archive false
+sleep 1
+check ! sylvaris archive state

@@ -113,7 +113,7 @@ FocusScope {
 
                 Glyph {
                     anchors.verticalCenter: parent.verticalCenter
-                    text: dialog.choosing ? F.GLYPH.openWith : dialog.kind === "trash" ? F.GLYPH.trash : F.GLYPH.deleteForever
+                    text: dialog.choosing ? F.GLYPH.openWith : dialog.kind === "trash" ? F.GLYPH.trash : dialog.kind === "remove" ? F.GLYPH.archive : F.GLYPH.deleteForever
                     size: 24
                     color: dialog.choosing || dialog.kind === "trash" ? Theme.accent : Theme.danger
                 }
@@ -123,6 +123,7 @@ FocusScope {
                     textFormat: Text.PlainText
                     text: ({
                             delete: "Delete permanently?",
+                            remove: "Remove from the archive?",
                             trash: "Move to the trash?",
                             empty: "Empty the trash?",
                             openWith: "Open " + dialog.what + " with"
@@ -139,7 +140,7 @@ FocusScope {
                 width: parent.width
                 textFormat: Text.PlainText
                 wrapMode: Text.Wrap
-                text: dialog.kind === "delete" ? dialog.what + " will be gone for good. This cannot be undone." : dialog.kind === "trash" ? dialog.what + " will go to the trash. You can restore or undo it." : "Everything in the trash will be deleted for good."
+                text: dialog.kind === "delete" ? dialog.what + " will be gone for good. This cannot be undone." : dialog.kind === "remove" ? dialog.what + " will be taken out of the archive for good." : dialog.kind === "trash" ? dialog.what + " will go to the trash. You can restore or undo it." : "Everything in the trash will be deleted for good."
                 color: Theme.textDim
                 font.family: Tokens.fontUi
                 font.pixelSize: Tokens.smallSize
@@ -306,6 +307,7 @@ FocusScope {
                 PillButton {
                     label: ({
                             delete: "Delete",
+                            remove: "Remove",
                             trash: "Move to the trash",
                             empty: "Empty trash"
                         })[dialog.kind] || ""

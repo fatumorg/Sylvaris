@@ -55,6 +55,10 @@ Item {
         Drag.mimeData: ({
                 "text/uri-list": root.files.dragUris(root.entry.name)
             })
+        Drag.onDragStarted: {
+            if (root.files.dragging)
+                root.files.dragging(root.entry.name);
+        }
         Drag.onDragFinished: {
             proxy.x = 0;
             proxy.y = 0;

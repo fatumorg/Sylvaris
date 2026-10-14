@@ -271,8 +271,10 @@ def place(tmp, dest, mode, stem):
 def extract(job, archive, dest, mode, strip, names):
     archive = os.path.abspath(archive)
     stem = stem_of(os.path.basename(archive))
-    if not os.path.isdir(dest):
-        return result(failed=[{"path": archive, "error": "The folder to extract into is gone"}])
+    try:
+        os.makedirs(dest, exist_ok=True)
+    except OSError as e:
+        return result(failed=[{"path": archive, "error": e.strerror or str(e)}])
     tmp = tempfile.mkdtemp(prefix=".sylfiles-", dir=dest)
     job.temps.append(tmp)
     job.total = os.path.getsize(archive)

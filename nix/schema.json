@@ -220,6 +220,14 @@
     "bookmarks": [],
     "keys": {}
   },
+  "archive": {
+    "view": "list",
+    "format": "zip",
+    "level": "normal",
+    "extract": "smart",
+    "reveal": true,
+    "keys": {}
+  },
   "rgb": {
     "on": true,
     "color": "",

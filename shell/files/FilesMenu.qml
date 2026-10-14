@@ -12,7 +12,7 @@ FocusScope {
     readonly property var at: menu.files.menu
     readonly property bool open: menu.at !== null
     property int lit: -1
-    readonly property var entries: menu.open ? menu.build() : []
+    readonly property var entries: !menu.open ? [] : menu.files.menuOf ? menu.files.menuOf(menu.at, menu.item) : menu.build()
     readonly property var usable: menu.entries.map((e, i) => i).filter(i => !menu.entries[i].sep && menu.entries[i].enabled !== false)
 
     visible: panel.opacity > 0

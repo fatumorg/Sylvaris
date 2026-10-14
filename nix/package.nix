@@ -9,6 +9,7 @@
   pulseaudio,
   wl-clipboard,
   udisks,
+  libarchive,
   coreutils,
   procps,
   socat,
@@ -82,6 +83,10 @@ let
       python
       udisks
     ];
+    archive = [
+      libarchive
+      python
+    ];
     access = [ ];
     fatest = [ ];
     rgb = [ python ];
@@ -142,6 +147,7 @@ stdenvNoCC.mkDerivation {
     install -Dm755 bin/sylvaris $out/bin/sylvaris
     install -Dm644 share/applications/sylvaris-viewer.desktop $out/share/applications/sylvaris-viewer.desktop
     install -Dm644 share/applications/sylvaris-files.desktop $out/share/applications/sylvaris-files.desktop
+    install -Dm644 share/applications/sylvaris-archive.desktop $out/share/applications/sylvaris-archive.desktop
     wrapProgram $out/bin/sylvaris \
       --set-default SYLVARIS_DIR $out/share/sylvaris \
       --prefix PATH : ${lib.makeBinPath tools} \

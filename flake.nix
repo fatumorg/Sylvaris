@@ -124,6 +124,7 @@
                       settings.clock.corner = "top-left";
                       defaultViewer = true;
                       defaultFileManager = true;
+                      defaultArchiveManager = true;
                     };
                   };
                 }
@@ -140,6 +141,8 @@
             test ${lib.head eval.config.xdg.mimeApps.defaultApplications."image/png"} = sylvaris-viewer.desktop
             test ${lib.head eval.config.xdg.mimeApps.defaultApplications."video/x-matroska"} = sylvaris-viewer.desktop
             test ${lib.head eval.config.xdg.mimeApps.defaultApplications."inode/directory"} = sylvaris-files.desktop
+            test ${lib.head eval.config.xdg.mimeApps.defaultApplications."application/zip"} = sylvaris-archive.desktop
+            test ${lib.head eval.config.xdg.mimeApps.defaultApplications."application/vnd.rar"} = sylvaris-archive.desktop
             touch $out
           '';
 
@@ -154,6 +157,7 @@
                 capture = false;
                 viewer = false;
                 files = false;
+                archive = false;
               };
             };
           in
@@ -161,10 +165,11 @@
             grep -q wlr-randr ${full}/bin/sylvaris
             grep -q networkmanager ${full}/bin/sylvaris
             grep -q wl-clipboard ${full}/bin/sylvaris
+            grep -q libarchive ${full}/bin/sylvaris
             grep -q wlsunset ${lean}/bin/sylvaris
-            for tool in wlr-randr networkmanager wl-clipboard; do
+            for tool in wlr-randr networkmanager wl-clipboard libarchive; do
               if grep -q "$tool" ${lean}/bin/sylvaris; then
-                echo "$tool is still wrapped with center, media, clip, capture, viewer and files excluded"
+                echo "$tool is still wrapped with center, media, clip, capture, viewer, files and archive excluded"
                 exit 1
               fi
             done

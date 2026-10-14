@@ -516,12 +516,12 @@ FocusScope {
 
             QtObject {
                 id: empty
-                readonly property string kind: pane.files.problem !== "" ? pane.files.problem : pane.files.query !== "" ? "query" : pane.files.entries.length > 0 ? "hidden" : pane.files.inTrash ? "trash" : "empty"
+                readonly property string kind: pane.files.problem !== "" ? pane.files.problem : pane.files.query !== "" ? "query" : pane.files.entries.length > 0 ? "hidden" : pane.files.inTrash ? "trash" : pane.files.inArchive ? "inside" : "empty"
             }
 
             Glyph {
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: empty.kind === "denied" ? F.GLYPH.lock : empty.kind === "missing" ? F.GLYPH.alert : empty.kind === "query" ? Icons.GLYPHS.search : empty.kind === "trash" ? F.GLYPH.trash : empty.kind === "hidden" ? F.GLYPH.eyeOff : F.GLYPH.folderOpen
+                text: empty.kind === "denied" || empty.kind === "locked" ? F.GLYPH.lock : empty.kind === "missing" || empty.kind === "broken" ? F.GLYPH.alert : empty.kind === "loading" || empty.kind === "inside" ? F.GLYPH.archive : empty.kind === "query" ? Icons.GLYPHS.search : empty.kind === "trash" ? F.GLYPH.trash : empty.kind === "hidden" ? F.GLYPH.eyeOff : F.GLYPH.folderOpen
                 size: 56
                 color: Qt.alpha(Theme.accent, 0.8)
             }
@@ -536,7 +536,11 @@ FocusScope {
                         query: "Nothing here matches “" + pane.files.query + "”",
                         hidden: "Only hidden files here",
                         trash: "The trash is empty",
-                        empty: "This folder is empty"
+                        empty: "This folder is empty",
+                        loading: "Opening the archive…",
+                        broken: "This archive cannot be read",
+                        locked: "This archive has a password",
+                        inside: "Nothing in here"
                     })[empty.kind]
                 color: Theme.text
                 font.family: Tokens.fontUi
@@ -555,12 +559,25 @@ FocusScope {
                         query: "Esc clears the filter.",
                         hidden: "Press " + F.keyText((pane.files.keys.byAction.hidden || [""])[0]) + " to show them.",
                         trash: "Things you delete wait here until you empty it.",
-                        empty: "Drop files here, or press " + F.keyText((pane.files.keys.byAction.newFolder || [""])[0]) + " for a new folder."
+                        empty: "Drop files here, or press " + F.keyText((pane.files.keys.byAction.newFolder || [""])[0]) + " for a new folder.",
+                        loading: "Big archives take a moment.",
+                        broken: pane.files.problemText || "It may be damaged or only partly downloaded.",
+                        locked: "Type the password to see what is inside.",
+                        inside: pane.files.canChange ? "Drop files here to add them." : "This kind of archive can only be read."
                     })[empty.kind]
                 color: Theme.textDim
                 font.family: Tokens.fontUi
                 font.pixelSize: Tokens.smallSize
                 wrapMode: Text.Wrap
+            }
+
+            PillButton {
+                anchors.horizontalCenter: parent.horizontalCenter
+                visible: empty.kind === "locked"
+                label: "Type the password"
+                glyph: F.GLYPH.lock
+                primary: true
+                onClicked: pane.files.askPassword(false, null)
             }
         }
     }

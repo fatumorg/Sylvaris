@@ -23,6 +23,7 @@ import qs.polkit
 import qs.clip
 import qs.viewer
 import qs.files
+import qs.archive
 import qs.island
 import qs.capture
 import qs.access
@@ -59,6 +60,7 @@ ShellRoot {
             capture: captureLoader,
             viewer: viewerLoader,
             files: filesLoader,
+            archive: archiveLoader,
             access: accessLoader,
             plugins: pluginsLoader,
             sync: syncLoader
@@ -245,6 +247,7 @@ ShellRoot {
             capture: root.part("capture") !== null ? root.part("capture").state() : undefined,
             viewer: root.part("viewer") !== null ? root.part("viewer").state() : undefined,
             files: root.part("files") !== null ? root.part("files").state() : undefined,
+            archive: root.part("archive") !== null ? root.part("archive").state() : undefined,
             access: root.part("access") !== null ? root.part("access").state() : undefined,
             fatest: root.part("fatest") !== null ? root.part("fatest").state() : undefined,
             rgb: root.part("rgb") !== null ? root.part("rgb").state() : undefined,
@@ -479,6 +482,16 @@ ShellRoot {
         SylFiles {
             id: filesPart
             onOpened: root.solo(filesPart)
+        }
+    }
+
+    LazyLoader {
+        id: archiveLoader
+        active: root.on("archive")
+
+        SylArchive {
+            id: archivePart
+            onOpened: root.solo(archivePart)
         }
     }
 
@@ -902,6 +915,26 @@ ShellRoot {
                 mount: (...n) => root.need("files").driveVerb("open", n.join(" ")),
                 eject: (...n) => root.need("files").driveVerb("eject", n.join(" ")),
                 state: () => root.need("files").state()
+            },
+            archive: {
+                default: "state",
+                open: (...p) => root.need("archive").open(p.join(" ")),
+                close: () => root.need("archive").close(),
+                go: (...p) => root.need("archive").goTo(p.join(" ")),
+                select: (...names) => root.need("archive").selectNames(names),
+                search: (...q) => root.need("archive").search(q.join(" ")),
+                extract: (...dest) => {
+                    const a = root.need("archive");
+                    if (!a.wanted)
+                        throw new Error("SylArchive is not open; open an archive with: sylvaris archive open <file>");
+                    if (dest.length === 0)
+                        a.act(a.selected.length > 0 ? "extract" : "extractAll");
+                    else
+                        a.extractText(dest.join(" "));
+                },
+                add: (...p) => root.need("archive").addFiles(p),
+                act: action => root.need("archive").act(String(action || "")),
+                state: () => root.need("archive").state()
             },
             viewer: {
                 default: "state",

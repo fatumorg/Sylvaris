@@ -64,6 +64,7 @@ export const GLYPHS = {
     shield: g(0xF099D),
     puzzle: g(0xF0A66),
     folder: g(0xF024B),
+    archive: g(0xF05C4),
     sync: g(0xF04E6),
     web: g(0xF059F),
     code: g(0xF0169),

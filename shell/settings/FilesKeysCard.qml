@@ -9,8 +9,10 @@ Card {
     id: root
 
     property string capturing: ""
-    readonly property var own: Settings.shown.files.keys
-    readonly property var map: F.keymap(root.own)
+    property string part: "files"
+    property var actions: F.FILE_ACTIONS
+    readonly property var own: Settings.shown[root.part].keys
+    readonly property var map: F.keymap(root.own, root.actions)
 
     function assign(id: string, combos: var): void {
         const next = Object.assign({}, root.own);
@@ -18,11 +20,11 @@ Card {
             delete next[id];
         else
             next[id] = combos;
-        Settings.put("files.keys", next);
+        Settings.put(root.part + ".keys", next);
     }
 
     function labelOf(id: string): string {
-        const a = F.FILE_ACTIONS.find(x => x.id === id);
+        const a = root.actions.find(x => x.id === id);
         return a ? a.label : id;
     }
 
@@ -30,7 +32,7 @@ Card {
     note: "Click an action, then press the keys. Esc cancels, Backspace or × unbinds it, ↺ brings back the default. A key you set wins over a default that uses the same key."
 
     Repeater {
-        model: F.FILE_ACTIONS
+        model: root.actions
 
         delegate: SettingRow {
             id: row
@@ -42,7 +44,7 @@ Card {
             readonly property var lost: row.combos.filter(c => root.map.byCombo[c] !== row.modelData.id)
             title: row.modelData.label
             subtitle: row.lost.length > 0 ? F.keyText(row.lost[0]) + " is taken by “" + root.labelOf(root.map.byCombo[row.lost[0]]) + "”" : ""
-            last: row.index === F.FILE_ACTIONS.length - 1
+            last: row.index === root.actions.length - 1
 
             Row {
                 spacing: 8

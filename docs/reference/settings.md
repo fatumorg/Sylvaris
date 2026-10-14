@@ -282,6 +282,17 @@ Explained in [island](../parts/island.md).
 | `files.bookmarks` | `[]` |  |
 | `files.keys` | `{}` |  |
 
+## archive
+
+| Key | Default | Per screen |
+|---|---|:---:|
+| `archive.view` | `"list"` |  |
+| `archive.format` | `"zip"` |  |
+| `archive.level` | `"normal"` |  |
+| `archive.extract` | `"smart"` |  |
+| `archive.reveal` | `true` |  |
+| `archive.keys` | `{}` |  |
+
 ## rgb
 
 Explained in [plugins/rgb](../plugins/rgb.md).
@@ -433,6 +444,7 @@ Explained in [configuration](../configuration.md#turning-parts-off).
 | `parts.capture` | `true` |  |
 | `parts.viewer` | `true` |  |
 | `parts.files` | `true` |  |
+| `parts.archive` | `true` |  |
 | `parts.access` | `true` |  |
 | `parts.plugins` | `true` |  |
 | `parts.sync` | `true` |  |

@@ -19,6 +19,7 @@ export const PART_PACKAGES = {
     island: ["wtype"],
     viewer: ["wl-clipboard", "glib"],
     files: ["wl-clipboard", "glib", "python", "udisks"],
+    archive: ["libarchive", "python"],
     access: [],
     plugins: ["git"],
     sync: ["python", "procps"],
@@ -46,7 +47,8 @@ export const PACKAGE_BINS = {
     slurp: ["slurp"],
     "wf-recorder": ["wf-recorder"],
     ffmpeg: ["ffmpeg"],
-    udisks: ["udisksctl"]
+    udisks: ["udisksctl"],
+    libarchive: ["bsdtar", "bsdcat"]
 }
 
 export const CORE_BINS = ["qs", "socat"]

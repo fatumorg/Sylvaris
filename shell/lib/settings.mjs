@@ -3,6 +3,7 @@ import { DEFAULT_CLIP, validateClip } from "./clip.mjs"
 import { DEFAULT_ISLAND, validateIsland } from "./island.mjs"
 import { DEFAULT_VIEWER, validateViewer } from "./viewer.mjs"
 import { DEFAULT_FILES, validateFiles } from "./files.mjs"
+import { DEFAULT_ARCHIVE, validateArchive } from "./archive.mjs"
 import { DEFAULT_CAPTURE, validateCapture } from "./capture.mjs"
 import { DEFAULT_ACCESS, validateAccess } from "./access.mjs"
 import { EXTRAS } from "./center.mjs"
@@ -42,6 +43,7 @@ export const PARTS = {
     capture: [],
     viewer: [],
     files: [],
+    archive: [],
     access: [],
     plugins: ["Plugins"],
     sync: ["Sync"],
@@ -113,6 +115,7 @@ export const DEFAULT_SETTINGS = {
     island: DEFAULT_ISLAND,
     viewer: DEFAULT_VIEWER,
     files: DEFAULT_FILES,
+    archive: DEFAULT_ARCHIVE,
     rgb: DEFAULT_RGB,
     placement: DEFAULT_PLACEMENT,
     screens: {},
@@ -355,6 +358,7 @@ export function validateSettings(raw) {
     v.island = validateIsland(v.island)
     v.viewer = validateViewer(v.viewer)
     v.files = validateFiles(v.files)
+    v.archive = validateArchive(v.archive)
     v.rgb = validateRgb(v.rgb)
     const place = isObject(v.placement) ? v.placement : {}
     v.placement = Object.assign({}, place)

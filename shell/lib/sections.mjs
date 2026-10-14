@@ -30,6 +30,7 @@ export const SECTIONS = [
     { key: "clock", label: "Sky", glyph: GLYPHS.night, group: "panels" },
     { key: "weather", label: "Weather", glyph: GLYPHS.partlyCloudy, group: "panels" },
     { key: "files", label: "Files", glyph: GLYPHS.folder, group: "apps" },
+    { key: "archive", label: "Archive", glyph: GLYPHS.archive, group: "apps" },
     { key: "viewer", label: "Viewer", glyph: GLYPHS.image, group: "apps" },
     { key: "capture", label: "Capture", glyph: GLYPHS.camera, group: "apps" },
     { key: "clip", label: "Clipboard", glyph: GLYPHS.clipboard, group: "apps" },

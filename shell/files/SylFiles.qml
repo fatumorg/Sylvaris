@@ -35,6 +35,7 @@ Scope {
         })
     readonly property string path: root.current.path
     readonly property bool inTrash: root.path === root.trashPath
+    readonly property var crumbs: root.path === "" ? [] : F.crumbs(root.path, root.home)
     property bool reloading: false
     property var entries: []
     property string query: ""

@@ -19,6 +19,7 @@ Sylvaris is made of parts. Each one can be turned off, and a part that is off is
 - [SylCapture](capture.md), screenshots, recordings and an image editor
 - [SylViewer](viewer.md), images and videos
 - [SylFiles](files.md), a file manager with tabs, previews and undo
+- [SylArchive](archive.md), an archive manager for zip, rar, 7z, tar and the rest
 - [SylMedia](media.md), the player, an equalizer and device batteries
 - [SylPower](power.md), the power menu
 - [SylPaper](paper.md), wallpapers

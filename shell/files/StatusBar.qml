@@ -79,7 +79,12 @@ Item {
                         touch: "Creating",
                         restore: "Restoring",
                         untrash: "Restoring",
-                        empty: "Emptying the trash"
+                        empty: "Emptying the trash",
+                        extract: "Extracting",
+                        peek: "Unpacking",
+                        compress: "Packing",
+                        add: "Adding to the archive",
+                        remove: "Removing from the archive"
                     })[status.files.job.kind] + (status.files.total > 0 ? " · " + F.sizeText(status.files.done) + " of " + F.sizeText(status.files.total) : "…") + (status.files.queue.length > 0 ? " · " + status.files.queue.length + " waiting" : "") : status.files.note
             color: Theme.text
             elide: Text.ElideRight
@@ -110,7 +115,7 @@ Item {
         }
 
         Glyph {
-            visible: status.working && ["copy", "move"].indexOf(status.files.job.kind) >= 0
+            visible: status.working && ["copy", "move", "extract", "peek", "compress", "add", "remove"].indexOf(status.files.job.kind) >= 0
             anchors.verticalCenter: parent.verticalCenter
             text: Icons.GLYPHS.close
             size: 12
