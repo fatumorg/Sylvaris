@@ -264,7 +264,7 @@ Scope {
 
     function closeTab(i: int): void {
         if (root.tabs.length <= 1) {
-            root.close();
+            Qt.callLater(root.close);
             return;
         }
         const next = root.tabs.slice();
@@ -1061,7 +1061,7 @@ Scope {
             closeTab: () => root.closeTab(root.tab),
             nextTab: () => root.selectTab((root.tab + 1) % root.tabs.length),
             prevTab: () => root.selectTab((root.tab - 1 + root.tabs.length) % root.tabs.length),
-            quit: () => root.close()
+            quit: () => Qt.callLater(root.close)
         }[id];
         if (a === undefined)
             throw new Error("unknown action: " + id + "; one of " + F.FILE_ACTIONS.map(x => x.id).join(", "));

@@ -46,9 +46,10 @@ Item {
 
     Item {
         id: proxy
+        property bool lifted: false
         width: 1
         height: 1
-        Drag.active: area.drag.active
+        Drag.active: proxy.lifted
         Drag.dragType: Drag.Automatic
         Drag.supportedActions: Qt.CopyAction | Qt.MoveAction
         Drag.proposedAction: Qt.MoveAction
@@ -60,8 +61,24 @@ Item {
                 root.files.dragging(root.entry.name);
         }
         Drag.onDragFinished: {
+            proxy.lifted = false;
             proxy.x = 0;
             proxy.y = 0;
+        }
+    }
+
+    Connections {
+        target: area.drag
+
+        function onActiveChanged(): void {
+            if (!area.drag.active) {
+                proxy.lifted = false;
+                return;
+            }
+            root.grabToImage(r => {
+                proxy.Drag.imageSource = r.url;
+                proxy.lifted = area.drag.active;
+            }, Qt.size(Math.min(root.width, 220), Math.min(root.height, 220)));
         }
     }
 
@@ -76,8 +93,6 @@ Item {
             if (mouse.button === Qt.MiddleButton)
                 return;
             root.files.press(root.entry.name, mouse.button === Qt.RightButton ? 0 : mouse.modifiers);
-            if (mouse.button === Qt.LeftButton && !root.files.inTrash)
-                root.grabToImage(r => proxy.Drag.imageSource = r.url, Qt.size(Math.min(root.width, 220), Math.min(root.height, 220)));
         }
         onClicked: mouse => {
             if (mouse.button === Qt.RightButton) {

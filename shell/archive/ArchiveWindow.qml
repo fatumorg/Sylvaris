@@ -20,7 +20,10 @@ FloatingWindow {
     minimumSize: Qt.size(560, 380)
     color: "transparent"
     BackgroundEffect.blurRegion: Resin.enabled ? blur : null
-    onClosed: win.archive.close()
+    onClosed: {
+        const archive = win.archive;
+        Qt.callLater(() => archive.close());
+    }
 
     Region {
         id: blur

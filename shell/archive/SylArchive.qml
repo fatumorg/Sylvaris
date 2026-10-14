@@ -178,13 +178,26 @@ Scope {
     }
 
     function load(): void {
-        lister.running = false;
+        lister.again = true;
+        if (!lister.running)
+            root.startList();
+        if (!sizer.running)
+            root.startSize();
+    }
+
+    function startSize(): void {
+        sizer.target = root.archive;
+        sizer.command = ["stat", "-L", "-c", "%s", "--", root.archive];
+        sizer.running = true;
+    }
+
+    function startList(): void {
+        lister.again = false;
+        lister.target = root.archive;
+        lister.last = null;
         lister.command = ["python3", root.helper].concat(root.secret !== "" ? ["--ask"] : []).concat(["list", root.archive]);
         lister.stdinEnabled = root.secret !== "";
         lister.running = true;
-        sizer.running = false;
-        sizer.command = ["stat", "-L", "-c", "%s", "--", root.archive];
-        sizer.running = true;
     }
 
     function listed(r: var): void {
@@ -650,7 +663,7 @@ Scope {
             list: () => Settings.put("archive.view", "list"),
             reveal: () => root.reveal(),
             reload: () => root.load(),
-            quit: () => root.close()
+            quit: () => Qt.callLater(root.close)
         }[id];
         if (a === undefined)
             throw new Error("unknown action: " + id + "; one of " + A.ARCHIVE_ACTIONS.map(x => x.id).join(", "));
@@ -765,6 +778,8 @@ Scope {
     Process {
         id: lister
         property var last: null
+        property bool again: false
+        property string target: ""
         stdout: SplitParser {
             onRead: line => {
                 if (line.charAt(0) !== "{")
@@ -782,17 +797,26 @@ Scope {
                 lister.stdinEnabled = false;
             }
         }
-        onRunningChanged: {
-            if (lister.running)
-                lister.last = null;
+        onExited: {
+            if (lister.again || lister.target !== root.archive || !root.wanted) {
+                if (root.wanted)
+                    Qt.callLater(root.startList);
+                return;
+            }
+            root.listed(lister.last);
         }
-        onExited: root.listed(lister.last)
     }
 
     Process {
         id: sizer
+        property string target: ""
         stdout: StdioCollector {
-            onStreamFinished: root.archiveSize = /^\d+/.test(text) ? Number(text.trim()) : -1
+            onStreamFinished: {
+                if (sizer.target === root.archive)
+                    root.archiveSize = /^\d+/.test(text) ? Number(text.trim()) : -1;
+                else if (root.wanted)
+                    Qt.callLater(root.startSize);
+            }
         }
     }
 
