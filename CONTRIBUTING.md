@@ -7,7 +7,7 @@ Thanks for helping. Read [ARCHITECTURE.md](ARCHITECTURE.md) first; it explains h
 With Nix, everything you need is in the dev shell:
 
 ```sh
-git clone https://github.com/ifatum/Sylvaris
+git clone https://github.com/fatumorg/Sylvaris
 cd Sylvaris
 nix develop
 ```

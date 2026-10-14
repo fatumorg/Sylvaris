@@ -7,7 +7,7 @@ Sylvaris is a desktop shell for Hyprland, niri and sway: a bar, a control center
 With Nix, add the flake and turn it on in Home Manager. Everything is described in [Nix and Home Manager](nix.md).
 
 ```nix
-inputs.sylvaris.url = "github:ifatum/Sylvaris";
+inputs.sylvaris.url = "github:fatumorg/Sylvaris";
 ```
 
 On Arch, Fedora, Debian, Ubuntu, Linux Mint, openSUSE, Void, Gentoo and any other distribution, follow [install.md](install.md). It has the commands for each one, a Nix route for distributions whose Qt is too old, and `sylvaris doctor` to check the result.

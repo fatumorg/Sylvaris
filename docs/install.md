@@ -140,7 +140,7 @@ sh <(curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install) --daemon
 On a distribution without systemd (Void, Alpine, Artix and others), use `--no-daemon` instead of `--daemon`. Open a new terminal, then:
 
 ```sh
-nix --extra-experimental-features 'nix-command flakes' profile install github:ifatum/Sylvaris
+nix --extra-experimental-features 'nix-command flakes' profile install github:fatumorg/Sylvaris
 nix --extra-experimental-features 'nix-command flakes' profile install --impure github:nix-community/nixGL
 ```
 
@@ -157,7 +157,7 @@ Skip [install Sylvaris](#install-sylvaris) below; the Nix command already did it
 ## Install Sylvaris
 
 ```sh
-git clone https://github.com/ifatum/Sylvaris
+git clone https://github.com/fatumorg/Sylvaris
 cd Sylvaris
 sudo make install install-pam
 ```

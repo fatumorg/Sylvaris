@@ -115,7 +115,7 @@
         <button type="button" role="tab" id="tab-other" aria-controls="panel-other" aria-selected="false" tabindex="-1">Mint and others</button>
       </div>
       <div class="tab-panel" role="tabpanel" id="panel-nix" aria-labelledby="tab-nix">
-<pre data-lang="nix"><code>inputs.sylvaris.url = "github:ifatum/Sylvaris";
+<pre data-lang="nix"><code>inputs.sylvaris.url = "github:fatumorg/Sylvaris";
 
 # in your Home Manager modules
 imports = [ inputs.sylvaris.homeManagerModules.sylvaris ];
@@ -159,7 +159,7 @@ cd Sylvaris &amp;&amp; sudo make install install-pam</code></pre>
 # whose Qt is older than 6.9: Nix brings its own
 sh &lt;(curl -L https://nixos.org/nix/install) --daemon
 nix --extra-experimental-features 'nix-command flakes' \
-  profile install github:ifatum/Sylvaris
+  profile install github:fatumorg/Sylvaris
 sylvaris doctor</code></pre>
       </div>
     </div>

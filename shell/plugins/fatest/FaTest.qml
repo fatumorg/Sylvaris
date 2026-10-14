@@ -80,7 +80,7 @@ Popup {
             else
                 root.st = F.reduce(F.INITIAL, {
                     event: "error",
-                    message: "FaTest is not installed; get it from github.com/ifatum/FaTest"
+                    message: "FaTest is not installed; get it from github.com/fatumorg/FaTest"
                 });
         }
     }

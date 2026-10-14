@@ -1,4 +1,4 @@
-export const REPO = "https://github.com/ifatum/Sylvaris"
+export const REPO = "https://github.com/fatumorg/Sylvaris"
 
 export const NAV = [
     {

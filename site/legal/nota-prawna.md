@@ -8,11 +8,11 @@ Stronę prowadzi prywatnie autor Sylvaris, naxce. To projekt hobbystyczny: stron
 
 Kontakt: {{email}}
 
-Możesz pisać po polsku lub po angielsku. Błędy w samym oprogramowaniu najłatwiej zgłosić publicznie na [GitHubie](https://github.com/ifatum/Sylvaris/issues).
+Możesz pisać po polsku lub po angielsku. Błędy w samym oprogramowaniu najłatwiej zgłosić publicznie na [GitHubie](https://github.com/fatumorg/Sylvaris/issues).
 
 ## Licencje
 
-- Kod Sylvaris i ta dokumentacja są dostępne na [licencji MIT](https://github.com/ifatum/Sylvaris/blob/main/LICENSE). Prawa autorskie: naxce, 2026.
+- Kod Sylvaris i ta dokumentacja są dostępne na [licencji MIT](https://github.com/fatumorg/Sylvaris/blob/main/LICENSE). Prawa autorskie: naxce, 2026.
 - Czcionki Fraunces, Atkinson Hyperlegible Next i JetBrains Mono są udostępnione na licencji SIL Open Font License 1.1. Pełny tekst licencji i informacje o autorach są w pliku [OFL.txt](../assets/fonts/OFL.txt).
 
 ## Znaki towarowe

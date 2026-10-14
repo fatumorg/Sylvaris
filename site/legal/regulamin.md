@@ -32,7 +32,7 @@ Obowiązuje od {{updated}}.
 ## § 6. Zagrożenia związane z korzystaniem z internetu
 
 1. Korzystanie z internetu wiąże się z typowymi zagrożeniami, takimi jak złośliwe oprogramowanie, phishing czy strony podszywające się pod inne.
-2. Pobieraj Sylvaris tylko z oficjalnego repozytorium: https://github.com/ifatum/Sylvaris.
+2. Pobieraj Sylvaris tylko z oficjalnego repozytorium: https://github.com/fatumorg/Sylvaris.
 3. Wtyczki od osób trzecich działają z pełnymi uprawnieniami Twojego konta: mogą czytać i zmieniać Twoje pliki oraz uruchamiać programy. Instaluj tylko te, którym ufasz, i przeczytaj ich kod.
 
 ## § 7. Zgłaszanie problemów

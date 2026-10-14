@@ -1,6 +1,6 @@
 # FaTest
 
-Internet speed tests with [FaTest](https://github.com/ifatum/FaTest) 2.1 or newer, which must be on your `PATH`.
+Internet speed tests with [FaTest](https://github.com/fatumorg/FaTest) 2.1 or newer, which must be on your `PATH`.
 
 Turn it on in SylSettings › Plugins or with `sylvaris plugins enable fatest`, then:
 

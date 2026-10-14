@@ -76,7 +76,7 @@
 
 ```nix
 {
-  inputs.sylvaris.url = "github:ifatum/Sylvaris";
+  inputs.sylvaris.url = "github:fatumorg/Sylvaris";
 
   outputs = { sylvaris, ... }: {
     homeConfigurations.me = home-manager.lib.homeManagerConfiguration {

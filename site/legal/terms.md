@@ -32,7 +32,7 @@ In force from {{updated}}. The Polish version of these terms is the binding one;
 ## 6. Risks of using the internet
 
 1. Using the internet carries the usual risks, such as malware, phishing and sites that pretend to be others.
-2. Download Sylvaris only from the official repository: https://github.com/ifatum/Sylvaris.
+2. Download Sylvaris only from the official repository: https://github.com/fatumorg/Sylvaris.
 3. Third-party plugins run with your account's full permissions: they can read and change your files and run programs. Install only plugins you trust, and read their code.
 
 ## 7. Reporting problems

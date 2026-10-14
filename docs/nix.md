@@ -6,7 +6,7 @@ Sylvaris is a flake. It provides a package, a Home Manager module for the shell,
 
 ```nix
 {
-  inputs.sylvaris.url = "github:ifatum/Sylvaris";
+  inputs.sylvaris.url = "github:fatumorg/Sylvaris";
 
   outputs = { sylvaris, ... }: {
     homeConfigurations.me = home-manager.lib.homeManagerConfiguration {
@@ -90,4 +90,4 @@ See [SylGreet](parts/greet.md) for a full example.
 
 ## Just the package
 
-`sylvaris.packages.${system}.sylvaris` is the shell with every runtime tool on its `PATH`. `nix run github:ifatum/Sylvaris` starts it once to try it out.
+`sylvaris.packages.${system}.sylvaris` is the shell with every runtime tool on its `PATH`. `nix run github:fatumorg/Sylvaris` starts it once to try it out.

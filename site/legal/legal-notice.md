@@ -10,11 +10,11 @@ The author of Sylvaris, naxce, runs this site privately. It is a hobby project: 
 
 Contact: {{email}}
 
-You can write in English or Polish. Bugs in the software itself are easiest to report publicly on [GitHub](https://github.com/ifatum/Sylvaris/issues).
+You can write in English or Polish. Bugs in the software itself are easiest to report publicly on [GitHub](https://github.com/fatumorg/Sylvaris/issues).
 
 ## Licences
 
-- The Sylvaris code and this documentation are available under the [MIT licence](https://github.com/ifatum/Sylvaris/blob/main/LICENSE). Copyright naxce, 2026.
+- The Sylvaris code and this documentation are available under the [MIT licence](https://github.com/fatumorg/Sylvaris/blob/main/LICENSE). Copyright naxce, 2026.
 - The fonts Fraunces, Atkinson Hyperlegible Next and JetBrains Mono are available under the SIL Open Font License 1.1. The full licence text and author notices are in [OFL.txt](../assets/fonts/OFL.txt).
 
 ## Trademarks

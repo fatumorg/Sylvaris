@@ -1,7 +1,7 @@
 # Working on Sylvaris
 
 ```sh
-git clone https://github.com/ifatum/Sylvaris
+git clone https://github.com/fatumorg/Sylvaris
 cd Sylvaris
 bin/install-hooks
 nix develop
