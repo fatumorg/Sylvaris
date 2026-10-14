@@ -152,6 +152,7 @@
                 clip = false;
                 capture = false;
                 viewer = false;
+                files = false;
               };
             };
           in
@@ -162,7 +163,7 @@
             grep -q wlsunset ${lean}/bin/sylvaris
             for tool in wlr-randr networkmanager wl-clipboard; do
               if grep -q "$tool" ${lean}/bin/sylvaris; then
-                echo "$tool is still wrapped with center, media, clip, capture and viewer excluded"
+                echo "$tool is still wrapped with center, media, clip, capture, viewer and files excluded"
                 exit 1
               fi
             done
