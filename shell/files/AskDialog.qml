@@ -23,6 +23,7 @@ FocusScope {
         } else {
             field.text = "";
             card.opacity = 0;
+            ask.files.focusView();
         }
     }
 
