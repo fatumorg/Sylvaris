@@ -2,6 +2,7 @@
 import errno
 import json
 import os
+import re
 import shutil
 import signal
 import sys
@@ -77,6 +78,31 @@ def copy_any(job, src, dst):
         copy_file(job, src, dst)
 
 
+DOUBLE = (".tar.gz", ".tar.bz2", ".tar.xz", ".tar.zst", ".tar.lz", ".tar.lzma")
+
+
+def free_path(path, is_dir):
+    if not os.path.lexists(path):
+        return path
+    folder, name = os.path.split(path)
+    stem, ext = name, ""
+    if not is_dir:
+        low = name.lower()
+        double = [d for d in DOUBLE if low.endswith(d) and len(name) > len(d)]
+        dot = name.rfind(".")
+        if double:
+            stem, ext = name[: -len(double[0])], name[-len(double[0]):]
+        elif dot > 0:
+            stem, ext = name[:dot], name[dot:]
+    n = 2
+    m = re.match(r"^(.*) \((\d+)\)$", stem)
+    if m:
+        stem, n = m.group(1), int(m.group(2)) + 1
+    while os.path.lexists(os.path.join(folder, "%s (%d)%s" % (stem, n, ext))):
+        n += 1
+    return os.path.join(folder, "%s (%d)%s" % (stem, n, ext))
+
+
 def remove_any(path):
     if os.path.islink(path) or not os.path.isdir(path):
         os.unlink(path)
@@ -89,14 +115,16 @@ def transfer(job, mode, pairs):
     failed = []
     slow = []
     for src, dst in pairs:
+        if mode != "rename" and os.path.lexists(src):
+            dst = free_path(dst, os.path.isdir(src) and not os.path.islink(src))
         if not os.path.lexists(src):
             failed.append({"path": src, "error": "It is gone"})
         elif os.path.lexists(dst):
             failed.append({"path": src, "error": "Something with that name is already there"})
-        elif mode == "move":
+        elif mode != "copy":
             try:
                 os.rename(src, dst)
-                ok.append(dst)
+                ok.append([src, dst])
             except OSError as e:
                 if e.errno == errno.EXDEV:
                     slow.append((src, dst))
@@ -113,19 +141,19 @@ def transfer(job, mode, pairs):
         try:
             copy_any(job, src, dst)
             copied = True
-            if mode == "move":
+            if mode != "copy":
                 remove_any(src)
-            ok.append(dst)
+            ok.append([src, dst])
         except Cancelled:
             cancelled = True
             if copied:
-                ok.append(dst)
+                ok.append([src, dst])
             elif os.path.lexists(dst):
                 remove_any(dst)
             break
         except OSError as e:
             if copied:
-                ok.append(dst)
+                ok.append([src, dst])
                 failed.append({"path": src, "error": "Copied, but the original could not be removed: " + (e.strerror or str(e))})
             else:
                 failed.append({"path": src, "error": e.strerror or str(e)})
@@ -177,7 +205,7 @@ def restore(names):
             os.makedirs(os.path.dirname(target), exist_ok=True)
             shutil.move(item, target)
             os.unlink(info_path)
-            ok.append(target)
+            ok.append([name, target])
         except OSError as e:
             failed.append({"path": name, "error": e.strerror or str(e)})
     return {"ok": ok, "failed": failed, "cancelled": False}
@@ -200,13 +228,14 @@ def untrash(originals):
                 newest[info["path"]] = (entry[: -len(".trashinfo")], info["date"])
     names = [newest[p][0] for p in originals if p in newest]
     out = restore(names)
+    out["ok"] = [[target, target] for _, target in out["ok"]]
     out["failed"] += [{"path": p, "error": "Not in the trash"} for p in originals if p not in newest]
     return out
 
 
 def main(argv, out):
     if len(argv) < 2:
-        out.write("usage: files.py copy|move SRC DST [SRC DST ...] | restore NAME... | untrash PATH...\n")
+        out.write("usage: files.py copy|move|rename SRC DST [SRC DST ...] | restore NAME... | untrash PATH...\n")
         return 2
     verb, args = argv[1], argv[2:]
     job = Job(out)
@@ -215,9 +244,9 @@ def main(argv, out):
         raise Cancelled()
 
     signal.signal(signal.SIGTERM, stop)
-    if verb in ("copy", "move"):
+    if verb in ("copy", "move", "rename"):
         if len(args) % 2 != 0:
-            out.write("copy and move take pairs of paths\n")
+            out.write("copy, move and rename take pairs of paths\n")
             return 2
         result = transfer(job, verb, list(zip(args[0::2], args[1::2])))
     elif verb == "restore":

@@ -50,26 +50,34 @@ class TransferTest(unittest.TestCase):
         self.assertEqual(os.readlink(self.p("tree2", "link")), "deep/b.txt")
         self.assertEqual(lines[0], {"done": 0, "total": 3005, "name": "a.txt"})
         self.assertEqual(lines[-2]["done"], 3005)
-        self.assertEqual(lines[-1], {"ok": [self.p("a copy.txt"), self.p("tree2")], "failed": [], "cancelled": False})
+        self.assertEqual(lines[-1], {"ok": [[self.p("src", "a.txt"), self.p("a copy.txt")], [self.p("src", "tree"), self.p("tree2")]], "failed": [], "cancelled": False})
         self.assertTrue(os.path.exists(self.p("src", "a.txt")))
 
-    def test_never_overwrites_and_reports_missing_sources(self):
+    def test_never_overwrites_picks_free_names_and_reports_missing_sources(self):
         write(self.p("a"), "new")
-        write(self.p("b"), "old")
-        code, lines = run("copy", self.p("a"), self.p("b"), self.p("gone"), self.p("c"))
+        write(self.p("b.tar.gz"), "old")
+        write(self.p("b (2).tar.gz"), "old2")
+        os.makedirs(self.p("D"))
+        code, lines = run("copy", self.p("a"), self.p("b.tar.gz"), self.p("gone"), self.p("c"), self.p("D"), self.p("D"))
         self.assertEqual(code, 1)
-        self.assertEqual(read(self.p("b")), "old")
-        self.assertEqual([f["error"] for f in lines[-1]["failed"]], ["Something with that name is already there", "It is gone"])
-        code, lines = run("move", self.p("a"), self.p("b"))
-        self.assertEqual(read(self.p("b")), "old")
-        self.assertTrue(os.path.exists(self.p("a")))
+        self.assertEqual(read(self.p("b.tar.gz")), "old")
+        self.assertEqual(read(self.p("b (3).tar.gz")), "new")
+        self.assertTrue(os.path.isdir(self.p("D (2)")))
+        self.assertEqual(lines[-1]["ok"], [[self.p("a"), self.p("b (3).tar.gz")], [self.p("D"), self.p("D (2)")]])
+        self.assertEqual([f["error"] for f in lines[-1]["failed"]], ["It is gone"])
+        code, lines = run("rename", self.p("a"), self.p("b.tar.gz"))
+        self.assertEqual(code, 1)
+        self.assertEqual(read(self.p("b.tar.gz")), "old")
+        self.assertEqual(lines[-1]["failed"], [{"path": self.p("a"), "error": "Something with that name is already there"}])
+        code, lines = run("rename", self.p("a"), self.p("z"))
+        self.assertEqual(lines[-1]["ok"], [[self.p("a"), self.p("z")]])
 
     def test_moves_by_renaming_and_falls_back_to_copying_across_devices(self):
         write(self.p("a"), "1")
         code, lines = run("move", self.p("a"), self.p("b"))
         self.assertEqual(code, 0)
         self.assertFalse(os.path.exists(self.p("a")))
-        self.assertEqual(lines, [{"ok": [self.p("b")], "failed": [], "cancelled": False}])
+        self.assertEqual(lines, [{"ok": [[self.p("a"), self.p("b")]], "failed": [], "cancelled": False}])
         write(self.p("d", "x"), "22")
         real = os.rename
 
@@ -83,7 +91,7 @@ class TransferTest(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertFalse(os.path.exists(self.p("d")))
         self.assertEqual(read(self.p("e", "x")), "22")
-        self.assertEqual(lines[-1]["ok"], [self.p("e")])
+        self.assertEqual(lines[-1]["ok"], [[self.p("d"), self.p("e")]])
 
     def test_cancelling_removes_the_half_copied_item_and_keeps_the_source(self):
         write(self.p("big"), "y" * (files.CHUNK * 3))
@@ -132,7 +140,7 @@ class TrashTest(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertEqual(read(target), "t")
         self.assertFalse(os.path.exists(os.path.join(self.trash, "info", "a b.txt.trashinfo")))
-        self.assertEqual(lines[-1]["ok"], [target])
+        self.assertEqual(lines[-1]["ok"], [["a b.txt", target]])
         self.assertEqual([f["path"] for f in lines[-1]["failed"]], ["x", "../etc", "missing"])
         self.assertEqual(read(os.path.join(self.dir, "home", "x")), "here")
 
@@ -143,7 +151,7 @@ class TrashTest(unittest.TestCase):
         code, lines = run("untrash", target, os.path.join(self.dir, "never"))
         self.assertEqual(read(target), "new")
         self.assertTrue(os.path.exists(os.path.join(self.trash, "files", "n.txt")))
-        self.assertEqual(lines[-1]["ok"], [target])
+        self.assertEqual(lines[-1]["ok"], [[target, target]])
         self.assertEqual(lines[-1]["failed"], [{"path": os.path.join(self.dir, "never"), "error": "Not in the trash"}])
 
 
