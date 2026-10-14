@@ -12,7 +12,7 @@ export const NAV = [
     {
         title: "Parts",
         items: [["parts/README.md", "All parts"], ["parts/bar.md", "SylBar"], ["parts/center.md", "SylCenter"], ["parts/clock.md", "SylClock"], ["parts/notify.md", "SylNotify"],
-            ["parts/island.md", "SylIsland"], ["parts/deck.md", "SylDeck"], ["parts/pad.md", "SylPad"], ["parts/switcher.md", "SylSwitch"], ["parts/clip.md", "SylClip"], ["parts/viewer.md", "SylViewer"],
+            ["parts/island.md", "SylIsland"], ["parts/deck.md", "SylDeck"], ["parts/pad.md", "SylPad"], ["parts/switcher.md", "SylSwitch"], ["parts/clip.md", "SylClip"], ["parts/viewer.md", "SylViewer"], ["parts/files.md", "SylFiles"],
             ["parts/capture.md", "SylCapture"], ["parts/media.md", "SylMedia"], ["parts/power.md", "SylPower"], ["parts/paper.md", "SylPaper"], ["parts/settings.md", "SylSettings"],
             ["parts/theme.md", "SylTheme"], ["parts/sync.md", "SylSync"], ["parts/access.md", "SylAccessibility"], ["parts/lock.md", "SylLock"], ["parts/greet.md", "SylGreet"],
             ["parts/polkit.md", "SylPolkit"]]
@@ -37,6 +37,7 @@ export const PARTS = [
     { id: "pad", name: "SylPad", group: "every day", page: "parts/pad.md", text: "Your apps across the screen over a blurred wallpaper, or a compact list. Start typing to search." },
     { id: "switcher", name: "SylSwitch", group: "tools", page: "parts/switcher.md", text: "Alt+Tab that works the same on Hyprland, niri and sway, with live previews where the compositor allows." },
     { id: "viewer", name: "SylViewer", group: "tools", page: "parts/viewer.md", text: "Images and videos over the desktop. Step through the folder, play, copy, trash or make one the wallpaper." },
+    { id: "files", name: "SylFiles", group: "tools", page: "parts/files.md", text: "A file manager in a real window: tabs, previews, drag and drop, rename in place, undo, and every key yours to change." },
     { id: "clip", name: "SylClip", group: "tools", page: "parts/clip.md", text: "Clipboard history with search and pins. Anything a password manager marks as secret is never kept." },
     { id: "capture", name: "SylCapture", group: "tools", page: "parts/capture.md", text: "Screenshots, screen recordings that upload anywhere, and an editor with arrows, text, pixelate and crop." },
     { id: "media", name: "SylMedia", group: "tools", page: "parts/media.md", text: "The player for any MPRIS app, a 10-band equalizer for everything you hear, and the battery of every device." },

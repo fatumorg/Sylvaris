@@ -2,6 +2,7 @@ import { DEFAULT_LOCK, validateLock } from "./lock.mjs"
 import { DEFAULT_CLIP, validateClip } from "./clip.mjs"
 import { DEFAULT_ISLAND, validateIsland } from "./island.mjs"
 import { DEFAULT_VIEWER, validateViewer } from "./viewer.mjs"
+import { DEFAULT_FILES, validateFiles } from "./files.mjs"
 import { DEFAULT_CAPTURE, validateCapture } from "./capture.mjs"
 import { DEFAULT_ACCESS, validateAccess } from "./access.mjs"
 import { EXTRAS } from "./center.mjs"
@@ -40,6 +41,7 @@ export const PARTS = {
     island: ["Media", "Audio", "Notifications", "BluetoothService", "Diver", "NetworkService", "NightLight", "Dnd", "Apps"],
     capture: [],
     viewer: [],
+    files: [],
     access: [],
     plugins: ["Plugins"],
     sync: ["Sync"],
@@ -110,6 +112,7 @@ export const DEFAULT_SETTINGS = {
     clip: DEFAULT_CLIP,
     island: DEFAULT_ISLAND,
     viewer: DEFAULT_VIEWER,
+    files: DEFAULT_FILES,
     rgb: DEFAULT_RGB,
     placement: DEFAULT_PLACEMENT,
     screens: {},
@@ -351,6 +354,7 @@ export function validateSettings(raw) {
     v.clip = validateClip(v.clip)
     v.island = validateIsland(v.island)
     v.viewer = validateViewer(v.viewer)
+    v.files = validateFiles(v.files)
     v.rgb = validateRgb(v.rgb)
     const place = isObject(v.placement) ? v.placement : {}
     v.placement = Object.assign({}, place)

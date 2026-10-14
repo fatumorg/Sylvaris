@@ -175,6 +175,12 @@ Scope {
             group: "apps"
         },
         {
+            key: "files",
+            label: "Files",
+            glyph: Icons.GLYPHS.folder,
+            group: "apps"
+        },
+        {
             key: "access",
             label: "Accessibility",
             glyph: Icons.GLYPHS.accessibility,
@@ -1038,6 +1044,7 @@ Scope {
                                 polkit: polkitPage,
                                 clip: clipPage,
                                 viewer: viewerPage,
+                                files: filesPage,
                                 island: islandPage,
                                 capture: capturePage,
                                 access: accessPage,
@@ -1092,6 +1099,12 @@ Scope {
         id: viewerPage
 
         ViewerPage {}
+    }
+
+    Component {
+        id: filesPage
+
+        FilesPage {}
     }
 
     Component {

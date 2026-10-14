@@ -261,6 +261,27 @@ Explained in [island](../parts/island.md).
 | `viewer.loop` | `true` |  |
 | `viewer.muted` | `false` |  |
 
+## files
+
+| Key | Default | Per screen |
+|---|---|:---:|
+| `files.view` | `"grid"` |  |
+| `files.iconSize` | `64` |  |
+| `files.sort` | `"name"` |  |
+| `files.descending` | `false` |  |
+| `files.foldersFirst` | `true` |  |
+| `files.hidden` | `false` |  |
+| `files.thumbnails` | `true` |  |
+| `files.icons` | `"glyphs"` |  |
+| `files.sidebar` | `true` |  |
+| `files.details` | `false` |  |
+| `files.click` | `"double"` |  |
+| `files.typing` | `"filter"` |  |
+| `files.start` | `"~"` |  |
+| `files.confirmTrash` | `false` |  |
+| `files.bookmarks` | `[]` |  |
+| `files.keys` | `{}` |  |
+
 ## rgb
 
 Explained in [plugins/rgb](../plugins/rgb.md).
@@ -411,6 +432,7 @@ Explained in [configuration](../configuration.md#turning-parts-off).
 | `parts.island` | `false` |  |
 | `parts.capture` | `true` |  |
 | `parts.viewer` | `true` |  |
+| `parts.files` | `true` |  |
 | `parts.access` | `true` |  |
 | `parts.plugins` | `true` |  |
 | `parts.sync` | `true` |  |

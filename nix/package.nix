@@ -75,6 +75,11 @@ let
       wl-clipboard
       glib
     ];
+    files = [
+      wl-clipboard
+      glib
+      python
+    ];
     access = [ ];
     fatest = [ ];
     rgb = [ python ];
@@ -134,6 +139,7 @@ stdenvNoCC.mkDerivation {
     printf '%s\n' ${lib.escapeShellArg commit} > $out/share/sylvaris/COMMIT
     install -Dm755 bin/sylvaris $out/bin/sylvaris
     install -Dm644 share/applications/sylvaris-viewer.desktop $out/share/applications/sylvaris-viewer.desktop
+    install -Dm644 share/applications/sylvaris-files.desktop $out/share/applications/sylvaris-files.desktop
     wrapProgram $out/bin/sylvaris \
       --set-default SYLVARIS_DIR $out/share/sylvaris \
       --prefix PATH : ${lib.makeBinPath tools} \

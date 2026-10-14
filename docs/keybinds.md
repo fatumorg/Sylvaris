@@ -6,6 +6,7 @@ SylSettings › Features › Key bindings lists every action worth a key. Click 
 programs.sylvaris.keybinds = {
   "switcher next" = "ALT+Tab";
   "clip toggle" = "SUPER+V";
+  "files open" = "SUPER+E";
   "capture shot area" = "SUPER+SHIFT+S";
   "lock now" = "SUPER+L";
 };

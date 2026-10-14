@@ -20,6 +20,7 @@ export const MODULES = {
     island: { label: "Island", section: "island", glyph: "music" },
     capture: { label: "Screenshots", section: "capture", glyph: "camera" },
     viewer: { label: "Viewer", section: "viewer", glyph: "image" },
+    files: { label: "Files", section: "files", glyph: "folder" },
     access: { label: "Accessibility", section: "access", glyph: "accessibility" },
     plugins: { label: "Plugins", section: "plugins", glyph: "puzzle" },
     sync: { label: "App colours", section: "sync", glyph: "sync" }
@@ -28,7 +29,7 @@ export const MODULES = {
 export const PRODUCT = {
     bar: "SylBar", deck: "SylDeck", center: "SylCenter", theme: "SylTheme", clock: "SylClock", notify: "SylNotify",
     pad: "SylPad", media: "SylMedia", settings: "SylSettings", power: "SylPower", paper: "SylPaper", diver: "SylDiver", fatest: "FaTest", rgb: "SylRGB",
-    switcher: "SylSwitch", lock: "SylLock", polkit: "SylPolkit", clip: "SylClip", island: "SylIsland", capture: "SylCapture", viewer: "SylViewer", access: "SylAccessibility", plugins: "SylPlugins", sync: "SylSync"
+    switcher: "SylSwitch", lock: "SylLock", polkit: "SylPolkit", clip: "SylClip", island: "SylIsland", capture: "SylCapture", viewer: "SylViewer", files: "SylFiles", access: "SylAccessibility", plugins: "SylPlugins", sync: "SylSync"
 }
 
 export function tiles() {

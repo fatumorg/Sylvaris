@@ -22,6 +22,7 @@ import qs.lock
 import qs.polkit
 import qs.clip
 import qs.viewer
+import qs.files
 import qs.island
 import qs.capture
 import qs.access
@@ -57,6 +58,7 @@ ShellRoot {
             island: islandLoader,
             capture: captureLoader,
             viewer: viewerLoader,
+            files: filesLoader,
             access: accessLoader,
             plugins: pluginsLoader,
             sync: syncLoader
@@ -120,7 +122,7 @@ ShellRoot {
 
     function solo(keep: var): void {
         for (const name of Object.keys(root.parts)) {
-            if (root.parts[name] !== keep)
+            if (root.parts[name] !== keep && root.parts[name].windowed !== true)
                 root.parts[name].close();
         }
     }
@@ -241,6 +243,7 @@ ShellRoot {
             island: root.part("island") !== null ? root.part("island").state() : undefined,
             capture: root.part("capture") !== null ? root.part("capture").state() : undefined,
             viewer: root.part("viewer") !== null ? root.part("viewer").state() : undefined,
+            files: root.part("files") !== null ? root.part("files").state() : undefined,
             access: root.part("access") !== null ? root.part("access").state() : undefined,
             fatest: root.part("fatest") !== null ? root.part("fatest").state() : undefined,
             rgb: root.part("rgb") !== null ? root.part("rgb").state() : undefined,
@@ -465,6 +468,16 @@ ShellRoot {
         SylViewer {
             id: viewerPart
             onOpened: root.solo(viewerPart)
+        }
+    }
+
+    LazyLoader {
+        id: filesLoader
+        active: root.on("files")
+
+        SylFiles {
+            id: filesPart
+            onOpened: root.solo(filesPart)
         }
     }
 
@@ -872,6 +885,19 @@ ShellRoot {
                 decline: () => root.need("island").act("call", "decline"),
                 reply: (...words) => root.need("island").act("message", words.length === 0 ? "reply" : "send:" + words.join(" ")),
                 state: () => root.need("island").state()
+            },
+            files: {
+                default: "state",
+                open: (...p) => root.need("files").open(p.join(" ")),
+                toggle: () => root.need("files").toggle(),
+                close: () => root.need("files").close(),
+                go: (...p) => root.need("files").goTo(p.join(" ")),
+                tab: (...p) => root.need("files").openTab(p.join(" ")),
+                select: (...names) => root.need("files").selectNames(names),
+                search: (...q) => root.need("files").search(q.join(" ")),
+                rename: (...n) => root.need("files").renameTo(n.join(" ")),
+                act: action => root.need("files").act(String(action || "")),
+                state: () => root.need("files").state()
             },
             viewer: {
                 default: "state",

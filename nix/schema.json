@@ -202,6 +202,24 @@
     "loop": true,
     "muted": false
   },
+  "files": {
+    "view": "grid",
+    "iconSize": 64,
+    "sort": "name",
+    "descending": false,
+    "foldersFirst": true,
+    "hidden": false,
+    "thumbnails": true,
+    "icons": "glyphs",
+    "sidebar": true,
+    "details": false,
+    "click": "double",
+    "typing": "filter",
+    "start": "~",
+    "confirmTrash": false,
+    "bookmarks": [],
+    "keys": {}
+  },
   "rgb": {
     "on": true,
     "color": "",

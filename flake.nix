@@ -122,6 +122,7 @@
                       deck.hide = "windows";
                       settings.clock.corner = "top-left";
                       defaultViewer = true;
+                      defaultFileManager = true;
                     };
                   };
                 }
@@ -137,6 +138,7 @@
             test "$(jq -r '.pad // "unset"' $f)" = unset
             test ${lib.head eval.config.xdg.mimeApps.defaultApplications."image/png"} = sylvaris-viewer.desktop
             test ${lib.head eval.config.xdg.mimeApps.defaultApplications."video/x-matroska"} = sylvaris-viewer.desktop
+            test ${lib.head eval.config.xdg.mimeApps.defaultApplications."inode/directory"} = sylvaris-files.desktop
             touch $out
           '';
 

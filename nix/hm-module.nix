@@ -83,6 +83,12 @@ in
       description = "Make SylViewer the default app for the images and videos it opens, through xdg.mimeApps.";
     };
 
+    defaultFileManager = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Make SylFiles the default app for folders, through xdg.mimeApps.";
+    };
+
     themes = lib.mkOption {
       type = lib.types.attrsOf json.type;
       default = { };
@@ -100,9 +106,14 @@ in
 
     home.packages = [ (cfg.package.override { sylvarisParts = parts; }) ];
 
-    xdg.mimeApps.defaultApplications = lib.mkIf (cfg.defaultViewer && (parts.viewer or true)) (
-      lib.genAttrs viewerMimes (_: [ "sylvaris-viewer.desktop" ])
-    );
+    xdg.mimeApps.defaultApplications = lib.mkMerge [
+      (lib.mkIf (cfg.defaultViewer && (parts.viewer or true)) (
+        lib.genAttrs viewerMimes (_: [ "sylvaris-viewer.desktop" ])
+      ))
+      (lib.mkIf (cfg.defaultFileManager && (parts.files or true)) {
+        "inode/directory" = [ "sylvaris-files.desktop" ];
+      })
+    ];
 
     xdg.configFile = lib.mkMerge [
       {

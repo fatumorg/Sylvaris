@@ -6,6 +6,7 @@ export const ACTIONS = [
     { id: "clock toggle", label: "Calendar and weather" },
     { id: "notify toggle", label: "Notifications" },
     { id: "clip toggle", label: "Clipboard history" },
+    { id: "files open", label: "Files" },
     { id: "capture toggle", label: "Capture panel" },
     { id: "capture shot area", label: "Screenshot of an area" },
     { id: "capture shot window", label: "Screenshot of a window" },
@@ -110,7 +111,7 @@ export function diff(applied, wanted) {
     return { unbind: unbind, bind: bind }
 }
 
-const SHORT = { lock: "lock now", switcher: "switcher next" }
+const SHORT = { lock: "lock now", switcher: "switcher next", files: "files open" }
 
 export function actionFor(command) {
     const words = String(command || "").trim().split(/\s+/)

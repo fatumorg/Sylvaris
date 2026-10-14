@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=SylFiles
+GenericName=File manager
+Comment=Browse and manage your files in Sylvaris
+Exec=sylvaris files open %u
+Icon=system-file-manager
+Terminal=false
+NoDisplay=false
+Categories=System;FileTools;FileManager;Utility;
+Keywords=folder;files;explorer;directory;
+MimeType=inode/directory;

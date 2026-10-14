@@ -1,0 +1,94 @@
+sleep 1.5
+check mkdir -p "$HOME/Docs/Projects" "$HOME/Docs/Music" && printf 'hello' > "$HOME/Docs/notes.txt" && printf 'x' > "$HOME/Docs/b10.md" && printf 'y' > "$HOME/Docs/b2.md" && printf 'z' > "$HOME/Docs/.hidden" && cp "$SYLVARIS_DIR/../tests/fixtures/viewer/shot 1.png" "$HOME/Docs/"
+check ! sylvaris files act copy
+syl files open ~/Docs
+sleep 1.5
+check sylvaris files state | grep -q '"items":\["Music","Projects","b2.md","b10.md","notes.txt","shot 1.png"\]'
+shot files-grid
+syl files act newFolder
+sleep 1
+check sylvaris files state | grep -q '"renaming":"New folder"'
+bg wtype -k Shift_L -s 500 Inbox -k Return
+sleep 1.5
+check test -d "$HOME/Docs/Inbox"
+check sylvaris files state | grep -q '"selected":\["Inbox"\]'
+bg wtype -k Shift_L -s 400 -M ctrl -k h -m ctrl
+sleep 0.6
+check sylvaris files state | grep -q '"hidden":true.*"count":8'
+bg wtype -k Shift_L -s 400 -M ctrl -k h -m ctrl
+sleep 0.6
+syl files select notes.txt b2.md
+syl files act copy
+syl files go ~/Docs/Projects
+sleep 0.8
+syl files act paste
+sleep 1.5
+check test -f "$HOME/Docs/Projects/notes.txt" && test -f "$HOME/Docs/Projects/b2.md" && test -f "$HOME/Docs/notes.txt"
+check sylvaris files state | grep -q '"selected":\["b2.md","notes.txt"\]'
+syl files act paste
+sleep 1.5
+check test -f "$HOME/Docs/Projects/notes (2).txt"
+syl files act undo
+sleep 1.5
+check test ! -e "$HOME/Docs/Projects/notes (2).txt" && test -f "$HOME/Docs/Projects/notes.txt"
+syl files act back
+sleep 1
+check sylvaris files state | grep -q '"selected":\["Projects"\]'
+syl files select b10.md
+syl files act trash
+sleep 1.5
+check test ! -e "$HOME/Docs/b10.md"
+check sylvaris files state | grep -q 'moved to the trash'
+syl files act undo
+sleep 1.5
+check test -f "$HOME/Docs/b10.md"
+syl files search md
+sleep 0.5
+check sylvaris files state | grep -q '"query":"md".*"count":2'
+syl files search
+syl files act list
+syl files act details
+syl files select notes.txt
+sleep 1
+shot files-list
+syl files act details
+syl files act grid
+syl files tab ~/Docs/Music
+sleep 0.8
+check sylvaris files state | grep -q '"tab":1'
+syl files act closeTab
+sleep 0.5
+check sylvaris files state | grep -q '"tab":0,"tabs":\["[^"]*"\]'
+syl files select notes.txt
+bg wtype -k Shift_L -s 400 -k Menu
+sleep 0.8
+check sylvaris files state | grep -q '"menu":true'
+shot files-menu
+bg wtype -k Shift_L -s 400 -k Escape
+sleep 0.5
+check sylvaris files state | grep -q '"menu":false'
+syl files act delete
+sleep 0.6
+check sylvaris files state | grep -q '"dialog":"delete"'
+shot files-delete
+bg wtype -k Shift_L -s 400 -k Return
+sleep 1.2
+check test ! -e "$HOME/Docs/notes.txt"
+check sylvaris files state | grep -q '"dialog":""'
+syl files go /nonexistent/place
+sleep 0.8
+check sylvaris files state | grep -q '"problem":"missing"'
+syl files tab ~/Docs/b2.md
+sleep 1.2
+check sylvaris files state | grep -q '"selected":\["b2.md"\]'
+syl settings open files
+sleep 1.5
+check sylvaris files state | grep -q '"open":true'
+shot files-settings
+syl settings close
+syl files close
+sleep 0.5
+check sylvaris files state | grep -q '"open":false'
+syl set parts.files false
+sleep 0.5
+check ! sylvaris files state

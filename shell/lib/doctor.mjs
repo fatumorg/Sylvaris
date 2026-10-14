@@ -18,6 +18,7 @@ export const PART_PACKAGES = {
     clip: ["wl-clipboard"],
     island: ["wtype"],
     viewer: ["wl-clipboard", "glib"],
+    files: ["wl-clipboard", "glib", "python"],
     access: [],
     plugins: ["git"],
     sync: ["python", "procps"],
