@@ -549,7 +549,7 @@ Scope {
     }
 
     function addSources(dest: string, list: var): void {
-        const sources = list.filter(p => !root.inside(p) && p !== root.archive);
+        const sources = list.filter(p => !root.inside(p) && p !== root.archive && !p.startsWith(root.cacheDir + "/"));
         if (sources.length === 0)
             return;
         if (!root.canChange) {

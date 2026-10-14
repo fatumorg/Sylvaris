@@ -25,6 +25,10 @@ sleep 2.5
 check test "$(cat "$HOME/Box/photos/2024/beach.txt")" = sun
 check sylvaris files state | grep -q '"open":true,"path":"[^"]*/Box/photos"'
 syl files close
+check mkdir -p "$HOME/.cache/sylvaris/archive/x/drag-1" && printf 'copy' > "$HOME/.cache/sylvaris/archive/x/drag-1/notes.txt"
+syl archive add ~/.cache/sylvaris/archive/x/drag-1/notes.txt
+sleep 1.5
+check sylvaris archive state | grep -q '"busy":false'
 syl archive add ~/Box/extra.txt
 sleep 2.5
 check sylvaris archive state | grep -q '"items":\["2024","extra.txt","map.md","notes.txt"\]'
