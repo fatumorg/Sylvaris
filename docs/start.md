@@ -25,14 +25,16 @@ Sylvaris is also your notification daemon, wallpaper and (if you want) polkit ag
 
 ## 3. Let it draw its own glass
 
-Sylvaris asks the compositor for blur shaped exactly like each panel, rounded corners included, and animates every panel itself. The only rule you want turns off the compositor's own layer animation:
+Sylvaris asks the compositor for blur shaped exactly like each panel, rounded corners included, and animates every panel itself. Turn off the compositor's own layer animation for Sylvaris, and for slurp so its fading overlay never ends up in a screenshot:
 
 ```lua
 hl.layer_rule({ name = "sylvaris", match = { namespace = "^syl" }, no_anim = true })
+hl.layer_rule({ name = "slurp", match = { namespace = "^selection$" }, no_anim = true })
 ```
 
 ```ini
 layerrule = noanim, ^syl
+layerrule = noanim, ^(selection)$
 ```
 
 Do not add `blur` or `ignore_alpha` layer rules: they blur by transparency instead of by shape, which leaves jagged edges around the corners. On niri, leave out `background-effect { blur true }` for the same reason. sway has no blur, so there the glass is translucent only. More in [compositors](compositors.md).

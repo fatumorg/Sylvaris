@@ -20,14 +20,16 @@ Resin Glass blurs behind panels through the `ext-background-effect-v1` protocol 
 
 ## Layer rules
 
-Sylvaris animates its own panels, so turn off the compositor's layer animation for them:
+Sylvaris animates its own panels, so turn off the compositor's layer animation for them. Turn it off for slurp too, or its fading overlay ends up in region and window screenshots:
 
 ```lua
 hl.layer_rule({ name = "sylvaris", match = { namespace = "^syl" }, no_anim = true })
+hl.layer_rule({ name = "slurp", match = { namespace = "^selection$" }, no_anim = true })
 ```
 
 ```ini
 layerrule = noanim, ^syl
+layerrule = noanim, ^(selection)$
 ```
 
 Do not add `blur` or `ignore_alpha` layer rules, and on niri leave out `background-effect { blur true }`. They blur by transparency instead of by shape, which leaves jagged edges around rounded corners.
