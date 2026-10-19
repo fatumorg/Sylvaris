@@ -22,6 +22,7 @@ FocusScope {
             Qt.callLater(field.focusInput);
         } else {
             field.text = "";
+            showAnim.stop();
             card.opacity = 0;
             ask.files.focusView();
         }

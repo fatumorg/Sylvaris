@@ -19,6 +19,7 @@ FocusScope {
         if (clash.open) {
             showAnim.restart();
         } else {
+            showAnim.stop();
             card.opacity = 0;
             clash.all = false;
             clash.files.focusView();

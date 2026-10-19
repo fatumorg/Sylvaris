@@ -23,6 +23,7 @@ FocusScope {
             showAnim.restart();
             menu.forceActiveFocus();
         } else {
+            showAnim.stop();
             panel.opacity = 0;
         }
     }

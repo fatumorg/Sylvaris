@@ -85,6 +85,12 @@ bg wtype -k Shift_L -s 400 -k Return
 sleep 1.2
 check test ! -e "$HOME/Docs/notes.txt"
 check sylvaris files state | grep -q '"dialog":""'
+syl files select b2.md
+syl files act delete
+bg wtype -k Shift_L -s 60 -k Escape
+sleep 0.8
+check sylvaris files state | grep -q '"dialog":""'
+shot files-dialog-quick-close
 syl files go /nonexistent/place
 sleep 0.8
 check sylvaris files state | grep -q '"problem":"missing"'

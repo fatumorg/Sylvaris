@@ -36,6 +36,7 @@ FocusScope {
             else
                 dialog.forceActiveFocus();
         } else {
+            showAnim.stop();
             card.opacity = 0;
         }
     }
