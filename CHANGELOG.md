@@ -4,6 +4,64 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Added
+
+- Add SylIsland, an opt-in dynamic island for media, recordings, Diver and alerts, on every screen
+- Show messages and calls from Discord, Signal, Telegram, WhatsApp and more in the island, and reply to web chats from it
+- Show the voice chat you are in with a mic mute, and keep the island over full-screen apps during calls
+- Show privacy mode, apps using the microphone or camera, and status changes in the island
+- Add island rows per activity, shortcuts, position and idle modes, an edge tuck that opens on hover, and hidden sites
+- Keep paused music in the island so it can be resumed from there
+- Grow panels out of the island and dock them under it while it stays visible
+- Add a privacy action that mutes every microphone and switches cameras off
+- Add SylFiles, a file manager window with tabs, previews, undo, drives, mounting, unlocking and ejecting
+- Ask to merge, replace, skip, keep both or rename on every name clash in SylFiles
+- Open and save files for every app through the desktop portal with SylFiles
+- Add SylArchive, an archive window that lists, extracts, packs and edits anything libarchive reads, with compress and extract in SylFiles
+- Add SylViewer for images and videos over the desktop
+- Add SylRGB, lighting for every OpenRGB device as a built-in plugin, with vivid theme colours, a theme's own LED colour, a click flash and an OpenRGB restart
+- Set volume and mute per app in the sound output view
+- Add per-screen settings for the bar, dock, panel spots, island and wallpaper look
+- Pick where media, clipboard, capture, accessibility, Diver and FaTest open
+- Sort settings into system, look, panels, apps, security and advanced
+- Report missing fonts in sylvaris doctor
+- Add a static website with the docs, a live model of the shell and a page for every part, plugin, command and Nix option
+- Add tested install steps for every major distribution
+
+### Changed
+
+- Bring the Diver planner up to date with the web app
+- Remove the grain from every surface
+- Keep island alerts up longer
+- Point every link at the fatumorg organization
+
+### Fixed
+
+- Make recordings uploadable with standard colour range, a 60 fps cap, faststart and file copy
+- Keep panels opened from the island clickable across their whole area, and the island clickable while a panel is docked under it
+- Hand out island blur only while the island is on screen
+- Name the real app on the microphone and keep one call timer per app in the island
+- Never trap the keyboard in an island reply when its message goes away
+- Make room in the island and toasts for every placed panel, not only five
+- Make app volume sliders follow drags and show clean names for ALSA apps
+- Use a device's static mode at full brightness for plain lighting colours
+- Keep SylFiles prompts from staying on screen when closed mid-fade, keep Enter in the prompt and hand the keys back to the folder on close
+- Keep tab listings and path checks right when several SylFiles tabs show the same folder
+- Stop SylFiles and SylArchive from closing inside their own handlers, and ignore unpacked copies dropped back on an archive
+- Write the keybinds file atomically so the compositor never reloads half of it
+- Write theme sync atomically through symlinks and skip Nix-managed files
+- Restart the clipboard, logind and niri watchers when they exit
+- Keep constellation labels readable while a settings page is open, and show power action chips in menu order
+- Teach doctor and the Home Manager schema about wtype and island seconds
+- Point the PKGBUILD and demo text at ifatum/Sylvaris
+
+### Security
+
+- Show outside text as plain text so titles and names cannot load remote images
+- Ignore prototype keys when merging settings
+- Keep clipboard history, images and the weather cache private
+- Never send the lock password to PAM without a user name
+
 ## [0.2.0] - 2026-09-28
 
 ### Added
