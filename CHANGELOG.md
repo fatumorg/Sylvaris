@@ -4,6 +4,8 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-10-20
+
 ### Changed
 
 - Auto performance mode only pauses ambient movement and keeps the look; dropping blur and sheen is left to `on`
@@ -241,7 +243,8 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - Relock a lock screen that is still closing and report locks that fail
 - Never prompt or hang on plugin clones and unfreeze settings once the file is gone
 
-[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v0.4.1...HEAD
+[0.4.1]: https://github.com/fatumorg/Sylvaris/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/fatumorg/Sylvaris/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/fatumorg/Sylvaris/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/fatumorg/Sylvaris/releases/tag/v0.2.0
