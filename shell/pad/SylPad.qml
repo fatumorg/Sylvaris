@@ -22,7 +22,8 @@ Scope {
     property real wheelAcc: 0
     property var tiles: []
     readonly property int columns: Settings.values.pad.columns
-    readonly property int rows: Settings.values.pad.rows
+    property int fitRows: 8
+    readonly property int rows: Math.max(1, Math.min(Settings.values.pad.rows, root.fitRows))
     readonly property int perPage: root.columns * root.rows
     property var pickItems: null
     property string pickOut: ""
@@ -346,6 +347,10 @@ Scope {
 
                 ListView {
                     id: pagesView
+                    onHeightChanged: {
+                        if (height > 0)
+                            root.fitRows = Math.max(1, Math.floor(height / Tokens.padCellHeight));
+                    }
                     anchors.top: searchBox.bottom
                     anchors.topMargin: Math.round(parent.height * 0.05)
                     anchors.bottom: dots.top
