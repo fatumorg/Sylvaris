@@ -17,8 +17,9 @@ Rectangle {
 
     Behavior on scale {
         NumberAnimation {
-            duration: 120
-            easing.type: Easing.OutCubic
+            duration: Tokens.ms(120)
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Tokens.enterCurve
         }
     }
     color: "transparent"

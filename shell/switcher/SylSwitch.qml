@@ -116,7 +116,8 @@ Scope {
         property: "phase"
         to: 1
         duration: Math.round(220 * Tokens.pace)
-        easing.type: Easing.OutCubic
+        easing.type: Easing.BezierSpline
+        easing.bezierCurve: Tokens.enterCurve
     }
 
     NumberAnimation {
@@ -125,7 +126,8 @@ Scope {
         property: "phase"
         to: 0
         duration: Math.round(140 * Tokens.pace)
-        easing.type: Easing.InCubic
+        easing.type: Easing.BezierSpline
+        easing.bezierCurve: Tokens.exitCurve
     }
 
     onLiveChanged: {

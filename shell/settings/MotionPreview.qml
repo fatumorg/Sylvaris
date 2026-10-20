@@ -14,7 +14,7 @@ MiniScreen {
         running: root.visible
         loops: Animation.Infinite
         PauseAnimation {
-            duration: 500
+            duration: Tokens.loopMs(500)
         }
         NumberAnimation {
             target: root
@@ -26,7 +26,7 @@ MiniScreen {
             easing.bezierCurve: Tokens.enterCurve
         }
         PauseAnimation {
-            duration: 1100
+            duration: Tokens.loopMs(1100)
         }
         NumberAnimation {
             target: root

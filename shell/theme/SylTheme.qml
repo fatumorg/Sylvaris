@@ -148,7 +148,7 @@ Scope {
         target: root
         property: "reveal"
         to: 1
-        duration: 1500
+        duration: Tokens.ms(1500)
     }
 
     NumberAnimation {
@@ -156,7 +156,7 @@ Scope {
         target: root
         property: "reveal"
         to: 0
-        duration: 1100
+        duration: Tokens.ms(1100)
     }
 
     Timer {
@@ -219,14 +219,15 @@ Scope {
                         target: nameColumn
                         property: "slide"
                         to: 40
-                        duration: 140
-                        easing.type: Easing.InCubic
+                        duration: Tokens.ms(140)
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Tokens.exitCurve
                     }
                     NumberAnimation {
                         target: nameColumn
                         property: "opacity"
                         to: 0
-                        duration: 140
+                        duration: Tokens.ms(140)
                     }
                 }
                 ScriptAction {
@@ -241,14 +242,15 @@ Scope {
                         property: "slide"
                         from: 40
                         to: 0
-                        duration: 300
-                        easing.type: Easing.OutCubic
+                        duration: Tokens.ms(300)
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Tokens.enterCurve
                     }
                     NumberAnimation {
                         target: nameColumn
                         property: "opacity"
                         to: 1
-                        duration: 300
+                        duration: Tokens.ms(300)
                     }
                 }
             }
@@ -300,7 +302,7 @@ Scope {
 
                             Behavior on opacity {
                                 NumberAnimation {
-                                    duration: 400
+                                    duration: Tokens.ms(400)
                                 }
                             }
 
@@ -613,11 +615,11 @@ Scope {
                                 loops: Animation.Infinite
                                 NumberAnimation {
                                     to: 0
-                                    duration: 500
+                                    duration: Tokens.loopMs(500)
                                 }
                                 NumberAnimation {
                                     to: 1
-                                    duration: 500
+                                    duration: Tokens.loopMs(500)
                                 }
                             }
                         }
@@ -710,8 +712,9 @@ Scope {
 
                     Behavior on scale {
                         NumberAnimation {
-                            duration: 140
-                            easing.type: Easing.OutCubic
+                            duration: Tokens.ms(140)
+                            easing.type: Easing.BezierSpline
+                            easing.bezierCurve: Tokens.enterCurve
                         }
                     }
 

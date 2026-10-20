@@ -790,12 +790,12 @@ Popup {
                     loops: Animation.Infinite
                     NumberAnimation {
                         to: -3
-                        duration: 1800
+                        duration: Tokens.loopMs(1800)
                         easing.type: Easing.InOutSine
                     }
                     NumberAnimation {
                         to: 3
-                        duration: 1800
+                        duration: Tokens.loopMs(1800)
                         easing.type: Easing.InOutSine
                     }
                 }

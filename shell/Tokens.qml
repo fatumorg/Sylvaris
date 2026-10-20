@@ -61,6 +61,14 @@ Singleton {
     readonly property int colorDuration: Math.round(400 * root.pace)
     readonly property int stateDuration: Math.round(160 * root.pace)
     readonly property int previewDelay: 500
+
+    function ms(base: real): int {
+        return Math.max(1, Math.round(base * root.pace));
+    }
+
+    function loopMs(base: real): int {
+        return Math.max(1, Math.round(base * (root.motion < 0.05 ? 1 : root.motion) * root.curves.pace));
+    }
     readonly property int themeCardWidth: 560
     readonly property int themeCardHeight: 760
     readonly property int themeRingX: 900

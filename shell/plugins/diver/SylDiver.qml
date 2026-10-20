@@ -158,12 +158,13 @@ Scope {
                         NumberAnimation {
                             from: 0.92
                             to: 1.12
-                            duration: 700
-                            easing.type: Easing.OutCubic
+                            duration: Tokens.loopMs(700)
+                            easing.type: Easing.BezierSpline
+                            easing.bezierCurve: Tokens.enterCurve
                         }
                         NumberAnimation {
                             to: 0.92
-                            duration: 700
+                            duration: Tokens.loopMs(700)
                             easing.type: Easing.InOutSine
                         }
                     }
@@ -174,11 +175,11 @@ Scope {
                         NumberAnimation {
                             from: 1
                             to: 0.35
-                            duration: 700
+                            duration: Tokens.loopMs(700)
                         }
                         NumberAnimation {
                             to: 1
-                            duration: 700
+                            duration: Tokens.loopMs(700)
                         }
                     }
                 }

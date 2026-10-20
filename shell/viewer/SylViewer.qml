@@ -357,7 +357,8 @@ Scope {
                         property: "opacity"
                         to: 1
                         duration: Tokens.fadeDuration
-                        easing.type: Easing.OutCubic
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Tokens.enterCurve
                     }
 
                     MouseArea {

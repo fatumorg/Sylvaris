@@ -31,15 +31,17 @@ Item {
 
     Behavior on leanX {
         NumberAnimation {
-            duration: 260
-            easing.type: Easing.OutCubic
+            duration: Tokens.ms(260)
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Tokens.enterCurve
         }
     }
 
     Behavior on leanY {
         NumberAnimation {
-            duration: 260
-            easing.type: Easing.OutCubic
+            duration: Tokens.ms(260)
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Tokens.enterCurve
         }
     }
 

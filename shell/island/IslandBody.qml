@@ -53,7 +53,8 @@ Item {
     Behavior on opacity {
         NumberAnimation {
             duration: Tokens.fadeDuration
-            easing.type: Easing.OutCubic
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Tokens.enterCurve
         }
     }
 
@@ -269,11 +270,11 @@ Item {
                 loops: Animation.Infinite
                 NumberAnimation {
                     to: 0.3
-                    duration: 700
+                    duration: Tokens.loopMs(700)
                 }
                 NumberAnimation {
                     to: 1
-                    duration: 700
+                    duration: Tokens.loopMs(700)
                 }
             }
         }
@@ -315,12 +316,12 @@ Item {
                     loops: Animation.Infinite
                     NumberAnimation {
                         to: 1
-                        duration: 260 + bar.index * 90
+                        duration: Tokens.loopMs(260 + bar.index * 90)
                         easing.type: Easing.InOutSine
                     }
                     NumberAnimation {
                         to: 0.25 + 0.1 * bar.index
-                        duration: 300 + bar.index * 70
+                        duration: Tokens.loopMs(300 + bar.index * 70)
                         easing.type: Easing.InOutSine
                     }
                 }
@@ -352,7 +353,8 @@ Item {
         Behavior on scale {
             NumberAnimation {
                 duration: Tokens.stateDuration
-                easing.type: Easing.OutCubic
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Tokens.enterCurve
             }
         }
 

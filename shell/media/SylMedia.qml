@@ -350,7 +350,7 @@ Popup {
 
                                 Behavior on scale {
                                     NumberAnimation {
-                                        duration: 120
+                                        duration: Tokens.ms(120)
                                     }
                                 }
                             }

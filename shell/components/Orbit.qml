@@ -49,7 +49,8 @@ Item {
         from: 0
         to: 1
         duration: Tokens.nodeMoveDuration
-        easing.type: Easing.OutCubic
+        easing.type: Easing.BezierSpline
+        easing.bezierCurve: Tokens.enterCurve
     }
 
     Shape {

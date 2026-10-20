@@ -50,7 +50,8 @@ Item {
         property: "leave"
         to: 1
         duration: Tokens.stateDuration + 60
-        easing.type: Easing.InCubic
+        easing.type: Easing.BezierSpline
+        easing.bezierCurve: Tokens.exitCurve
         onFinished: {
             if (then)
                 then();

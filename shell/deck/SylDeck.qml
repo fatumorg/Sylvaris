@@ -182,7 +182,8 @@ Scope {
                     Behavior on width {
                         NumberAnimation {
                             duration: Tokens.stateDuration
-                            easing.type: Easing.OutCubic
+                            easing.type: Easing.BezierSpline
+                            easing.bezierCurve: Tokens.enterCurve
                         }
                     }
 
@@ -270,7 +271,8 @@ Scope {
                                 enabled: deck.pointer < 0
                                 NumberAnimation {
                                     duration: Tokens.stateDuration
-                                    easing.type: Easing.OutCubic
+                                    easing.type: Easing.BezierSpline
+                                    easing.bezierCurve: Tokens.enterCurve
                                 }
                             }
 

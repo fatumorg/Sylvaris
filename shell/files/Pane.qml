@@ -90,7 +90,8 @@ FocusScope {
         id: glide
         property: "contentY"
         duration: Math.round(Tokens.fadeDuration * 0.9)
-        easing.type: Easing.OutCubic
+        easing.type: Easing.BezierSpline
+        easing.bezierCurve: Tokens.enterCurve
     }
 
     Keys.onPressed: event => {
@@ -591,6 +592,7 @@ FocusScope {
         from: 0
         to: 1
         duration: Tokens.fadeDuration
-        easing.type: Easing.OutCubic
+        easing.type: Easing.BezierSpline
+        easing.bezierCurve: Tokens.enterCurve
     }
 }

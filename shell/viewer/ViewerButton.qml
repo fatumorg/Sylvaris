@@ -25,7 +25,8 @@ Item {
     Behavior on scale {
         NumberAnimation {
             duration: Tokens.stateDuration
-            easing.type: Easing.OutCubic
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Tokens.enterCurve
         }
     }
 

@@ -59,14 +59,16 @@ MiniScreen {
             Behavior on x {
                 NumberAnimation {
                     duration: Tokens.moveDuration
-                    easing.type: Easing.OutCubic
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Tokens.enterCurve
                 }
             }
 
             Behavior on y {
                 NumberAnimation {
                     duration: Tokens.moveDuration
-                    easing.type: Easing.OutCubic
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Tokens.enterCurve
                 }
             }
 

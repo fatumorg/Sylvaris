@@ -22,7 +22,8 @@ Item {
         from: 0
         to: 1
         duration: Math.round(900 * Tokens.pace)
-        easing.type: Easing.OutCubic
+        easing.type: Easing.BezierSpline
+        easing.bezierCurve: Tokens.enterCurve
     }
 
     Connections {

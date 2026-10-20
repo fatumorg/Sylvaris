@@ -56,7 +56,7 @@ Item {
             property: "shake"
             from: 0
             to: 1
-            duration: 420
+            duration: Tokens.ms(420)
             easing.type: Easing.Linear
         }
         ScriptAction {
@@ -182,11 +182,11 @@ Item {
                                 NumberAnimation {
                                     from: 0.25
                                     to: 1
-                                    duration: 300
+                                    duration: Tokens.loopMs(300)
                                 }
                                 NumberAnimation {
                                     to: 0.25
-                                    duration: 300
+                                    duration: Tokens.loopMs(300)
                                 }
                                 PauseAnimation {
                                     duration: (2 - index) * 140

@@ -54,7 +54,8 @@ Column {
                         Behavior on width {
                             NumberAnimation {
                                 duration: Tokens.moveDuration
-                                easing.type: Easing.OutCubic
+                                easing.type: Easing.BezierSpline
+                                easing.bezierCurve: Tokens.enterCurve
                             }
                         }
 

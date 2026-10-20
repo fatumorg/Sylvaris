@@ -270,11 +270,11 @@ Popup {
                             onStopped: recDot.opacity = 1
                             NumberAnimation {
                                 to: 0.3
-                                duration: 700
+                                duration: Tokens.loopMs(700)
                             }
                             NumberAnimation {
                                 to: 1
-                                duration: 700
+                                duration: Tokens.loopMs(700)
                             }
                         }
                     }
@@ -462,7 +462,8 @@ Popup {
                     Behavior on scale {
                         NumberAnimation {
                             duration: Tokens.stateDuration
-                            easing.type: Easing.OutCubic
+                            easing.type: Easing.BezierSpline
+                            easing.bezierCurve: Tokens.enterCurve
                         }
                     }
 

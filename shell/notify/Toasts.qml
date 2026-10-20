@@ -105,7 +105,8 @@ Scope {
                 NumberAnimation {
                     properties: "y"
                     duration: Tokens.stateDuration + 80
-                    easing.type: Easing.OutCubic
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Tokens.enterCurve
                 }
             }
 
@@ -153,7 +154,8 @@ Scope {
                         from: 0
                         to: 1
                         duration: Tokens.openDuration + 80
-                        easing.type: Easing.OutCubic
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Tokens.enterCurve
                     }
                 }
             }
