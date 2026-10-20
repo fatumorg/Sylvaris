@@ -4,6 +4,10 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Fixed
+
+- Night light shows as unavailable on Hyprland without wlsunset again
+
 ## [0.4.0] - 2026-10-20
 
 ### Added

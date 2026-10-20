@@ -11,7 +11,7 @@ Singleton {
 
     readonly property bool demo: Demo.enabled
     property bool installed: false
-    readonly property bool available: root.demo || root.installed || root.shaderOwner && Compositor.name === "hyprland"
+    readonly property bool available: root.demo || root.installed
     readonly property bool enabled: Settings.values.nightLight.enabled
     readonly property int temperature: Settings.values.nightLight.temperature
     property string error: ""
