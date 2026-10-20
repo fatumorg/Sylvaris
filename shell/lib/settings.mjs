@@ -46,7 +46,7 @@ export const PARTS = {
     viewer: [],
     files: [],
     archive: [],
-    access: [],
+    access: ["NightLight"],
     plugins: ["Plugins"],
     sync: ["Sync"],
     switcher: ["Apps"],

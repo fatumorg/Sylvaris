@@ -16,6 +16,10 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - The recording dot stops pulsing in lite mode
 - Every animation, including hovers, pulses and spinners, follows the motion style and speed; loops keep a steady pace with Reduce motion on
 
+### Fixed
+
+- Night light reaches mirrored monitors on Hyprland, such as a TV mirroring a desktop screen
+
 ## [0.3.0] - 2026-10-20
 
 ### Added

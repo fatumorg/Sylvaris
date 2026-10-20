@@ -12,8 +12,8 @@ export function validateAccess(raw) {
     })
 }
 
-export function hyprCommands(usingLua, a, shaderDir) {
-    const shader = a.filter === "none" ? "" : shaderDir + "/" + a.filter + ".frag"
+export function hyprCommands(usingLua, a, shaderDir, tintPath) {
+    const shader = tintPath ? tintPath : a.filter === "none" ? "" : shaderDir + "/" + a.filter + ".frag"
     if (usingLua)
         return [
             ["eval", "hl.config({ cursor = { zoom_factor = " + a.zoom + " } })"],
@@ -28,4 +28,13 @@ export function hyprCommands(usingLua, a, shaderDir) {
 export function supports(name) {
     const hypr = name === "hyprland"
     return { zoom: hypr, filter: hypr }
+}
+
+const PLAIN = "#version 300 es\nprecision highp float;\nin vec2 v_texcoord;\nuniform sampler2D tex;\nout vec4 fragColor;\nvoid main() {\n    fragColor = texture(tex, v_texcoord);\n}\n"
+
+export function tintShader(source, rgb) {
+    const src = source === "" ? PLAIN : source
+    const end = src.lastIndexOf("}")
+    const line = "    fragColor.rgb *= vec3(" + rgb.map(c => c.toFixed(4)).join(", ") + ");\n"
+    return src.slice(0, end) + line + src.slice(end)
 }

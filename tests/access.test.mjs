@@ -1,6 +1,7 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { DEFAULT_ACCESS, FILTERS, validateAccess, hyprCommands, supports } from "../shell/lib/access.mjs"
+import { readFileSync } from "node:fs"
+import { DEFAULT_ACCESS, FILTERS, validateAccess, hyprCommands, supports, tintShader } from "../shell/lib/access.mjs"
 
 test("validateAccess keeps values in range", () => {
     assert.deepEqual(validateAccess({}), DEFAULT_ACCESS)
@@ -32,4 +33,23 @@ test("supports tells which compositor can zoom and filter", () => {
     assert.deepEqual(supports("hyprland"), { zoom: true, filter: true })
     assert.deepEqual(supports("sway"), { zoom: false, filter: false })
     assert.deepEqual(supports("niri"), { zoom: false, filter: false })
+})
+
+test("tintShader warms the plain screen or any filter by multiplying the final colour", () => {
+    const plain = tintShader("", [1, 0.8, 0.6])
+    assert.ok(plain.startsWith("#version 300 es"))
+    assert.ok(plain.includes("fragColor.rgb *= vec3(1.0000, 0.8000, 0.6000);"))
+    for (const f of FILTERS.filter(f => f !== "none")) {
+        const src = readFileSync(new URL("../shell/assets/shaders/" + f + ".frag", import.meta.url), "utf8")
+        const out = tintShader(src, [1, 0.5, 0.25])
+        assert.ok(out.includes("fragColor.rgb *= vec3(1.0000, 0.5000, 0.2500);"), f)
+        assert.ok(out.trimEnd().endsWith("}"), f)
+        assert.ok(out.indexOf("fragColor.rgb *=") > out.lastIndexOf("fragColor ="), f)
+    }
+})
+
+test("hyprCommands points the screen shader at the tinted file when night light needs it", () => {
+    const a = Object.assign({}, DEFAULT_ACCESS, { filter: "grayscale" })
+    assert.deepEqual(hyprCommands(true, a, "/s", "/run/night.frag")[1], ["eval", "hl.config({ decoration = { screen_shader = \"/run/night.frag\" } })"])
+    assert.deepEqual(hyprCommands(false, DEFAULT_ACCESS, "/s", "/run/night.frag")[1], ["keyword", "decoration:screen_shader", "/run/night.frag"])
 })

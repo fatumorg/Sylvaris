@@ -180,6 +180,8 @@ ShellRoot {
                 available: NightLight.available,
                 enabled: NightLight.enabled,
                 temperature: NightLight.temperature,
+                mirrored: NightLight.mirrored,
+                viaShader: NightLight.viaShader,
                 error: NightLight.error
             } : undefined,
             dnd: root.on("Dnd") ? {

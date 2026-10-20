@@ -19,6 +19,7 @@ Popup {
     property var tools: ({})
     property var applied: []
     property real quietUntil: 0
+    readonly property string tintPath: (Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris/night.frag"
 
     namespace: "sylaccess"
     corner: root.local.placement.access
@@ -28,11 +29,17 @@ Popup {
     function apply(): void {
         if (Demo.enabled || Compositor.name !== "hyprland")
             return;
-        const cmds = A.hyprCommands(Compositor.usingLua, root.cfg, root.shaderDir);
+        const tint = NightLight.tint;
+        const cmds = A.hyprCommands(Compositor.usingLua, root.cfg, root.shaderDir, tint === null ? "" : root.tintPath);
         root.applied = cmds;
         root.quietUntil = Date.now() + 2000;
-        for (const c of cmds)
-            Quickshell.execDetached(["hyprctl"].concat(c));
+        Quickshell.execDetached(["hyprctl"].concat(cmds[0]));
+        if (tint === null)
+            Quickshell.execDetached(["hyprctl"].concat(cmds[1]));
+        else {
+            filterSource.path = root.cfg.filter === "none" ? "" : root.shaderDir + "/" + root.cfg.filter + ".frag";
+            Quickshell.execDetached(["sh", "-c", "mkdir -p \"$(dirname \"$1\")\" && printf %s \"$2\" > \"$1.part\" && mv -f \"$1.part\" \"$1\" && shift 2 && exec hyprctl \"$@\"", "sh", root.tintPath, A.tintShader(root.cfg.filter === "none" ? "" : filterSource.text(), tint)].concat(cmds[1]));
+        }
         if (root.cfg.cursor > 0)
             Quickshell.execDetached(["hyprctl", "setcursor", Quickshell.env("XCURSOR_THEME") || "default", String(root.cfg.cursor)]);
     }
@@ -73,8 +80,25 @@ Popup {
 
     Component.onCompleted: {
         root.started = true;
-        if (root.cfg.zoom !== 1 || root.cfg.filter !== "none" || root.cfg.cursor > 0)
+        NightLight.shaderOwner = true;
+        if (root.cfg.zoom !== 1 || root.cfg.filter !== "none" || root.cfg.cursor > 0 || NightLight.tint !== null)
             root.apply();
+    }
+
+    Component.onDestruction: NightLight.shaderOwner = false
+
+    Connections {
+        target: NightLight
+        function onTintChanged() {
+            if (root.started)
+                root.apply();
+        }
+    }
+
+    FileView {
+        id: filterSource
+        blockLoading: true
+        printErrors: false
     }
 
     Connections {

@@ -27,6 +27,8 @@ SylSettings › Control Center picks what the panel shows.
 
 The night light tile warms the screen with `wlsunset`. `nightLight.temperature` sets how warm (4000 K by default).
 
+Hyprland does not pass gamma on to mirrored outputs, so while a monitor mirrors another, Sylvaris warms the picture with a screen shader instead, and the mirror gets it too. It combines with any SylAccessibility colour filter and needs the access part on. Screenshots and recordings stay untinted.
+
 ## Hotspot
 
 Share your connection over Wi-Fi. `hotspot.ssid` names the network (1 to 32 characters) and `hotspot.band` picks `bg` (2.4 GHz) or `a` (5 GHz). If the card or your country's rules do not allow 5 GHz, the hotspot falls back to 2.4 GHz. The password is passed to NetworkManager without landing in any file or process list.
