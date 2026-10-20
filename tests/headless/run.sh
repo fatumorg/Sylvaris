@@ -23,7 +23,7 @@ if [ -n "$seed" ]; then
     cp -r "$seed"/. "$home/.config/"
 fi
 
-bg="output HEADLESS-1 resolution 2560x1440"
+bg="output HEADLESS-1 resolution ${HL_RESOLUTION:-2560x1440} scale ${HL_SCALE:-1}"
 if [ -n "${HL_WALLPAPER:-}" ]; then
     bg="$bg bg $HL_WALLPAPER fill"
 else
