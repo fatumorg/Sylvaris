@@ -4,6 +4,8 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-20
+
 ### Added
 
 - Add SylIsland, an opt-in dynamic island for media, recordings, Diver and alerts, on every screen
@@ -54,6 +56,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - Keep constellation labels readable while a settings page is open, and show power action chips in menu order
 - Teach doctor and the Home Manager schema about wtype and island seconds
 - Point the PKGBUILD and demo text at ifatum/Sylvaris
+- Mark every script executable so a fresh clone runs the CLI, helpers and tests
 
 ### Security
 
@@ -211,5 +214,6 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - Relock a lock screen that is still closing and report locks that fail
 - Never prompt or hang on plugin clones and unfreeze settings once the file is gone
 
-[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/fatumorg/Sylvaris/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/fatumorg/Sylvaris/releases/tag/v0.2.0
