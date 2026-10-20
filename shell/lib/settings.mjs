@@ -19,6 +19,7 @@ import { DEFAULT_RGB, validateRgb } from "./rgb.mjs"
 
 export const CORNERS = ["top-left", "top-center", "top-right"]
 export const REVEALS = ["edges", "center", "fade"]
+export const PERFORMANCE = ["off", "auto", "on"]
 export const PLACES = CORNERS.concat("center")
 export const DEFAULT_PLACEMENT = { media: "auto", clip: "top-center", capture: "top-center", access: "top-center", diver: "center", fatest: "top-right", rgb: "top-right" }
 export const CENTER_TILES = ["wifi", "bluetooth", "night", "dnd", "hotspot"]
@@ -124,7 +125,7 @@ export const DEFAULT_SETTINGS = {
     keybinds: {},
     plugins: DEFAULT_PLUGINS,
     sync: DEFAULT_SYNC,
-    performance: false,
+    performance: "auto",
     iconTint: true,
     parts: partFlags({})
 }
@@ -330,7 +331,7 @@ export function validateSettings(raw) {
         reduced: motion.reduced === true,
         reveal: REVEALS.indexOf(motion.reveal) >= 0 ? motion.reveal : d.motion.reveal
     })
-    v.performance = v.performance === true
+    v.performance = v.performance === true ? "on" : v.performance === false ? "off" : PERFORMANCE.indexOf(v.performance) >= 0 ? v.performance : d.performance
     v.iconTint = v.iconTint !== false
     v.power = validatePower(v.power)
     v.paper = validatePaper(v.paper)

@@ -161,6 +161,7 @@ ShellRoot {
         const theme = root.part("theme");
         const out = {
             version: 1,
+            lite: Tokens.lite,
             compositor: Compositor.state(),
             audio: root.on("Audio") ? {
                 available: Audio.available,
@@ -1150,7 +1151,7 @@ ShellRoot {
     Binding {
         target: Tokens
         property: "lite"
-        value: Settings.values.performance || Config.values.toggles.some(t => t.id === "performance") && Settings.values.toggleState.performance === true
+        value: Toggles.lite
     }
 
     Binding {

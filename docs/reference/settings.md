@@ -410,7 +410,7 @@ Explained in [look](../look.md#motion-and-performance).
 
 | Key | Default | Per screen |
 |---|---|:---:|
-| `performance` | `false` |  |
+| `performance` | `"auto"` |  |
 
 ## iconTint
 

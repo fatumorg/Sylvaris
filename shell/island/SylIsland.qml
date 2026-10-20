@@ -33,7 +33,7 @@ Scope {
     property int replyTo: -1
     property var session: null
     property var cameraUsers: []
-    readonly property bool performance: Settings.values.performance
+    readonly property bool performance: Settings.values.performance === "on"
     property string netAnnounced: ""
     readonly property string netName: {
         for (const i of NetworkService.items) {

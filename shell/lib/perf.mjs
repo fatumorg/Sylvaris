@@ -11,3 +11,11 @@ export function perfArgs(compositor, usingLua, on) {
         return on ? ["swaymsg", "gaps inner all set 0, gaps outer all set 0"] : ["swaymsg", "reload"]
     return null
 }
+
+export function liteFor(mode, toggleOn, windows) {
+    if (mode === "on" || toggleOn)
+        return true
+    if (mode !== "auto")
+        return false
+    return windows.some(w => w.fullscreen && w.activated && !w.minimized)
+}

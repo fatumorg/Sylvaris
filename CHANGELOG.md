@@ -4,6 +4,15 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Added
+
+- Add an auto performance mode, now the default: Sylvaris goes lite while a full-screen window such as a game has focus and comes back when it leaves
+
+### Changed
+
+- `performance` takes `off`, `auto` or `on` instead of `true` or `false`; old `true` and `false` still read as `on` and `off`, but the Home Manager option `programs.sylvaris.performance` now wants one of the strings
+- Only `on` trims the compositor; the SylCenter Performance tile switches between `on` and `auto`
+
 ## [0.3.0] - 2026-10-20
 
 ### Added

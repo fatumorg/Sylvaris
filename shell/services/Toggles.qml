@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import "../lib/icons.mjs" as Icons
+import "../lib/perf.mjs" as P
 
 Singleton {
     id: root
@@ -11,12 +12,14 @@ Singleton {
     readonly property var defs: Config.values.toggles
     property var status: ({})
     readonly property bool ownPerformance: root.defs.some(d => d.id === "performance")
+    readonly property bool customPerformance: root.ownPerformance && Settings.values.toggleState.performance === true
+    readonly property bool lite: P.liteFor(Settings.values.performance, root.customPerformance, Compositor.windows)
     readonly property var items: (root.ownPerformance ? [] : [
             {
                 id: "performance",
                 label: "Performance",
                 icon: Icons.GLYPHS.performance,
-                on: Settings.values.performance
+                on: Settings.values.performance === "on"
             }
         ]).concat(root.defs.map(d => ({
                     id: d.id,
@@ -33,7 +36,7 @@ Singleton {
 
     function set(id: string, on: bool): void {
         if (id === "performance" && !root.ownPerformance) {
-            Settings.set("performance", on);
+            Settings.set("performance", on ? "on" : "auto");
             return;
         }
         let def = null;

@@ -65,16 +65,31 @@ Column {
 
     Card {
         title: "Performance"
-        note: "Also a tile in SylCenter. Nothing to install: Sylvaris trims itself and, on Hyprland and sway, the compositor too."
+        note: "Also a tile in SylCenter. Nothing to install: Sylvaris trims itself and, when on, the compositor too on Hyprland and sway."
 
         SettingRow {
             title: "Performance mode"
-            subtitle: "Drops blur, sheen and ambient movement and shortens animations; turns off compositor animations, blur, shadows and gaps until you turn it off"
+            subtitle: "Auto drops blur, sheen and ambient movement while a full-screen window has focus, such as a game. On does it always and also turns off compositor animations, blur, shadows and gaps"
             last: true
 
-            Toggle {
-                checked: Settings.shown.performance
-                onToggled: v => Settings.put("performance", v)
+            Segmented {
+                width: 240
+                options: [
+                    {
+                        key: "off",
+                        label: "Off"
+                    },
+                    {
+                        key: "auto",
+                        label: "Auto"
+                    },
+                    {
+                        key: "on",
+                        label: "On"
+                    }
+                ]
+                current: Settings.shown.performance
+                onPicked: key => Settings.put("performance", key)
             }
         }
     }

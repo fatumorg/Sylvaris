@@ -20,7 +20,7 @@ Singleton {
     readonly property string file: K.bindsPath(Compositor.name, Compositor.usingLua, root.configHome)
     readonly property string include: K.includeLine(Compositor.name, Compositor.usingLua)
     readonly property string dir: Compositor.name === "hyprland" ? root.configHome + "/hypr" : root.configHome + "/sway"
-    readonly property bool lite: Settings.values.performance || Config.values.toggles.some(t => t.id === "performance") && Settings.values.toggleState.performance === true
+    readonly property bool lite: P.liteFor(Settings.values.performance, Toggles.customPerformance, [])
 
     function apply(force: bool): void {
         if (Demo.enabled || !root.supported) {

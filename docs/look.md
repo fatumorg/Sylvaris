@@ -58,6 +58,6 @@ Every panel opens, moves and closes with one set of curves.
 | `motion.scale` | `1` | stretches or shortens every animation; `0.5` is twice as fast |
 | `motion.reduced` | `false` | panels appear without moving |
 | `iconTint` | `true` | app icons in the bar, deck, launcher, switcher and notifications take the accent colour |
-| `performance` | `false` | drops blurred backdrops, sheen and ambient movement, and shortens every animation |
+| `performance` | `auto` | `off`, `auto` or `on`. Lite mode drops blurred backdrops, sheen and ambient movement, and shortens every animation. `auto` turns it on only while a full-screen window has focus, such as a game; `on` keeps it on |
 
-On Hyprland and sway, `performance` also turns off the compositor's animations, blur, shadows and gaps, and turning it off reloads the compositor config to bring them back. The Performance tile in SylCenter switches it.
+With `on`, Hyprland and sway also lose their animations, blur, shadows and gaps, and leaving `on` reloads the compositor config to bring them back. `auto` never touches the compositor. The Performance tile in SylCenter switches between `on` and `auto`. Older `true` and `false` values read as `on` and `off`.

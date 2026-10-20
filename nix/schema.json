@@ -297,7 +297,7 @@
       "firefox": false
     }
   },
-  "performance": false,
+  "performance": "auto",
   "iconTint": true,
   "glass": {
     "enabled": true,

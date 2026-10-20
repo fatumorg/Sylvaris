@@ -363,3 +363,13 @@ test("deepMerge ignores __proto__, constructor and prototype keys", () => {
     assert.equal(Object.prototype.hasOwnProperty.call(r.bar, "constructor"), false)
     assert.deepEqual(r, { bar: { position: "top" } })
 })
+
+test("performance is off, auto or on, and old true and false keep their meaning", () => {
+    assert.equal(DEFAULT_SETTINGS.performance, "auto")
+    assert.equal(validateSettings({}).performance, "auto")
+    assert.equal(validateSettings({ performance: true }).performance, "on")
+    assert.equal(validateSettings({ performance: false }).performance, "off")
+    assert.equal(validateSettings({ performance: "auto" }).performance, "auto")
+    assert.equal(validateSettings({ performance: "off" }).performance, "off")
+    assert.equal(validateSettings({ performance: "fast" }).performance, "auto")
+})
