@@ -331,7 +331,7 @@ export function validateSettings(raw) {
         reduced: motion.reduced === true,
         reveal: REVEALS.indexOf(motion.reveal) >= 0 ? motion.reveal : d.motion.reveal
     })
-    v.performance = v.performance === true ? "on" : v.performance === false ? "off" : PERFORMANCE.indexOf(v.performance) >= 0 ? v.performance : d.performance
+    v.performance = v.performance === true ? "on" : PERFORMANCE.indexOf(v.performance) >= 0 ? v.performance : d.performance
     v.iconTint = v.iconTint !== false
     v.power = validatePower(v.power)
     v.paper = validatePaper(v.paper)

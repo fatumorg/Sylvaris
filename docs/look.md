@@ -60,4 +60,4 @@ Every panel opens, moves and closes with one set of curves.
 | `iconTint` | `true` | app icons in the bar, deck, launcher, switcher and notifications take the accent colour |
 | `performance` | `auto` | `off`, `auto` or `on`. Lite mode drops blurred backdrops, sheen and ambient movement, and shortens every animation. `auto` turns it on only while a full-screen window has focus, such as a game; `on` keeps it on |
 
-With `on`, Hyprland and sway also lose their animations, blur, shadows and gaps, and leaving `on` reloads the compositor config to bring them back. `auto` never touches the compositor. The Performance tile in SylCenter switches between `on` and `auto`. Older `true` and `false` values read as `on` and `off`.
+With `on`, Hyprland and sway also lose their animations, blur, shadows and gaps, and leaving `on` reloads the compositor config to bring them back. `auto` never touches the compositor. The Performance tile in SylCenter switches between `on` and `auto`. An older `true` reads as `on` and an older `false` as `auto`.
