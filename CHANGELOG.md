@@ -12,6 +12,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 - `performance` takes `off`, `auto` or `on` instead of `true` or `false`; an old `true` reads as `on` and an old `false` as `auto`, but the Home Manager option `programs.sylvaris.performance` now wants one of the strings
 - Only `on` trims the compositor; the SylCenter Performance tile switches between `on` and `auto`
+- The recording dot stops pulsing in lite mode
 
 ## [0.3.0] - 2026-10-20
 

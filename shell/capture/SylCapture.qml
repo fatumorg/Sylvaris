@@ -257,6 +257,7 @@ Popup {
                     spacing: 10
 
                     Rectangle {
+                        id: recDot
                         anchors.verticalCenter: parent.verticalCenter
                         width: 10
                         height: 10
@@ -264,8 +265,9 @@ Popup {
                         color: Theme.danger
 
                         SequentialAnimation on opacity {
-                            running: root.recording
+                            running: root.recording && !Tokens.lite
                             loops: Animation.Infinite
+                            onStopped: recDot.opacity = 1
                             NumberAnimation {
                                 to: 0.3
                                 duration: 700
