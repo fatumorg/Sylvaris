@@ -1,0 +1,10 @@
+write sylvaris/settings.json {"displays":{"virtual":{"enabled":true,"width":2388,"height":1668}}}
+sleep 2
+syl center view displays
+sleep 1.2
+shot virtual-display
+syl state
+check sylvaris state | tr -d " \n" | grep -q "\"virtualDisplay\":{\"available\":true,\"active\":true"
+pointer move 2249 404 click 1
+sleep 0.8
+shot virtual-selected

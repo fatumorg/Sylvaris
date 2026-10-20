@@ -63,6 +63,7 @@ Scope {
         Hotspot.refresh();
         BluetoothService.refreshProfiles();
         Displays.refresh();
+        VirtualDisplay.refresh();
     }
 
     function show(initial: string): void {

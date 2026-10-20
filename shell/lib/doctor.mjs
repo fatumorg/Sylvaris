@@ -2,7 +2,7 @@ import { parseJson, validateConfig, effectiveSettings, liveParts, PARTS, migrate
 
 export const PART_PACKAGES = {
     bar: ["pulseaudio", "pipewire", "python", "libnotify"],
-    center: ["wlr-randr", "networkmanager", "wlsunset", "pulseaudio", "pipewire", "python", "libnotify", "wl-clipboard"],
+    center: ["wlr-randr", "wayvnc", "openssl", "iproute2", "networkmanager", "wlsunset", "pulseaudio", "pipewire", "python", "libnotify", "wl-clipboard"],
     clock: ["pipewire", "python", "libnotify", "curl"],
     deck: [],
     diver: ["pipewire", "python", "libnotify"],
@@ -36,6 +36,9 @@ export const PACKAGE_BINS = {
     python: ["python3"],
     libnotify: ["notify-send"],
     "wlr-randr": ["wlr-randr"],
+    wayvnc: ["wayvnc"],
+    openssl: ["openssl"],
+    iproute2: ["ip"],
     networkmanager: ["nmcli"],
     wlsunset: ["wlsunset"],
     "wl-clipboard": ["wl-copy", "wl-paste"],

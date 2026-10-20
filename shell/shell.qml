@@ -91,6 +91,7 @@ ShellRoot {
             NetworkService: () => NetworkService,
             Hotspot: () => Hotspot,
             Displays: () => Displays,
+            VirtualDisplay: () => VirtualDisplay,
             Plugins: () => Plugins,
             Sync: () => Sync
         })
@@ -220,6 +221,13 @@ ShellRoot {
                 countdown: Displays.countdown,
                 enabled: Object.keys(Displays.current).filter(k => Displays.current[k].enabled),
                 error: Displays.error
+            } : undefined,
+            virtualDisplay: root.on("VirtualDisplay") ? {
+                available: VirtualDisplay.available,
+                active: VirtualDisplay.active,
+                width: VirtualDisplay.width,
+                height: VirtualDisplay.height,
+                error: VirtualDisplay.error
             } : undefined,
             parts: root.live.filter(name => root.services[name] === undefined),
             center: center !== null ? {

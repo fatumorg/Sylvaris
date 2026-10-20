@@ -51,6 +51,11 @@ Singleton {
         query.running = true;
     }
 
+    function restore(): void {
+        root.restored = false;
+        root.refresh();
+    }
+
     function run(snap: var): void {
         if (root.demo) {
             root.current = snap;

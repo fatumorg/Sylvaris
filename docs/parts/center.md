@@ -36,3 +36,5 @@ Share your connection over Wi-Fi. `hotspot.ssid` names the network (1 to 32 char
 ## Displays
 
 The displays view arranges your screens: drag them into place and pick the mode and scale for each. `displays.layouts` remembers a layout for each set of connected screens.
+
+**Virtual display** (Hyprland only) adds an extra screen named `virtual` that a tablet such as an iPad shows through any VNC app. Press **Virtual display** under the screens, then drag, scale and save it like any other screen. Pick its size from the presets (`displays.virtual.width` and `height`); it comes back on at login while `displays.virtual.enabled` is true. The view shows the addresses, user and password to connect with. Sylvaris uses wayvnc's own config, `~/.config/wayvnc/config`, and creates it on first use with a random password and RSA-AES encryption. Allow TCP port 5900 in your firewall, and keep the tablet on a fast network: a 5 GHz hotspot from SylCenter works well.

@@ -27,7 +27,7 @@ export const CENTER_TILES = ["wifi", "bluetooth", "night", "dnd", "hotspot"]
 
 export const PARTS = {
     bar: ["Apps", "Audio", "BluetoothService", "NetworkService", "Diver", "Dnd", "Media", "Notifications", "Plugins"],
-    center: ["Audio", "BluetoothService", "NetworkService", "Hotspot", "Displays", "NightLight", "Diver", "Dnd", "Toggles", "Media", "Headphones"],
+    center: ["Audio", "BluetoothService", "NetworkService", "Hotspot", "Displays", "VirtualDisplay", "NightLight", "Diver", "Dnd", "Toggles", "Media", "Headphones"],
     clock: ["Diver", "Weather", "Sky"],
     deck: ["Apps"],
     diver: ["Diver"],
@@ -50,7 +50,7 @@ export const PARTS = {
     plugins: ["Plugins"],
     sync: ["Sync"],
     switcher: ["Apps"],
-    settings: ["Audio", "Equalizer", "NightLight", "Diver", "Weather", "Sky", "Dnd", "Apps", "Notifications", "Plugins", "Sync", "Media"],
+    settings: ["Audio", "Equalizer", "NightLight", "VirtualDisplay", "Diver", "Weather", "Sky", "Dnd", "Apps", "Notifications", "Plugins", "Sync", "Media"],
     theme: ["ThemePreview"]
 }
 
@@ -58,6 +58,7 @@ export const SERVICE_DEPS = {
     Audio: ["Equalizer"],
     Headphones: ["BluetoothService"],
     Hotspot: ["NetworkService"],
+    VirtualDisplay: ["Displays"],
     Dnd: ["Notifications"],
     Weather: ["Sky"]
 }
@@ -97,7 +98,7 @@ export const DEFAULT_SETTINGS = {
     center: { corner: "top-right", hidden: [], extra: [], volume: true, media: true },
     clock: { corner: "top-center" },
     nightLight: { enabled: false, temperature: 4000 },
-    displays: { layouts: {} },
+    displays: { layouts: {}, virtual: { enabled: false, width: 2388, height: 1668 } },
     toggleState: {},
     hotspot: { ssid: "Sylvaris", band: "bg" },
     notifications: { dnd: false, timeout: 5000, corner: "top-right" },
@@ -292,7 +293,16 @@ export function validateSettings(raw) {
     })
 
     const displays = isObject(v.displays) ? v.displays : {}
-    v.displays = Object.assign({}, displays, { layouts: isObject(displays.layouts) ? displays.layouts : {} })
+    const virt = isObject(displays.virtual) ? displays.virtual : {}
+    const side = n => Number.isInteger(n) && n >= 640 && n <= 7680
+    v.displays = Object.assign({}, displays, {
+        layouts: isObject(displays.layouts) ? displays.layouts : {},
+        virtual: {
+            enabled: virt.enabled === true,
+            width: side(virt.width) ? virt.width : d.displays.virtual.width,
+            height: side(virt.height) ? virt.height : d.displays.virtual.height
+        }
+    })
 
     const ts = isObject(v.toggleState) ? v.toggleState : {}
     const toggleState = {}

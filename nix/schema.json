@@ -31,7 +31,12 @@
     "temperature": 4000
   },
   "displays": {
-    "layouts": {}
+    "layouts": {},
+    "virtual": {
+      "enabled": false,
+      "width": 2388,
+      "height": 1668
+    }
   },
   "hotspot": {
     "ssid": "Sylvaris",

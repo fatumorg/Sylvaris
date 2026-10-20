@@ -40,6 +40,9 @@ Explained in [center](../parts/center.md#displays).
 | Key | Default | Per screen |
 |---|---|:---:|
 | `displays.layouts` | `{}` |  |
+| `displays.virtual.enabled` | `false` |  |
+| `displays.virtual.width` | `2388` |  |
+| `displays.virtual.height` | `1668` |  |
 
 ## toggleState
 

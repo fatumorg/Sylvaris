@@ -4,6 +4,9 @@
   makeWrapper,
   quickshell,
   wlr-randr,
+  wayvnc,
+  openssl,
+  iproute2,
   wlsunset,
   networkmanager,
   pulseaudio,
@@ -40,6 +43,9 @@ let
     ];
     center = [
       wlr-randr
+      wayvnc
+      openssl
+      iproute2
       networkmanager
       wlsunset
       pulseaudio

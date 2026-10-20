@@ -272,13 +272,24 @@ export const CAPABILITY_LABELS = {
     windowShot: "Screenshot of a single window",
     zoom: "Screen zoom in SylAccessibility",
     filters: "Colour filters in SylAccessibility",
-    performance: "Performance mode also trims the compositor"
+    performance: "Performance mode also trims the compositor",
+    virtualDisplay: "Virtual display for a tablet over VNC"
 }
 
 export const CAPABILITIES = {
-    hyprland: { keybinds: true, previews: true, minimize: true, windowShot: true, zoom: true, filters: true, performance: true },
-    niri: { keybinds: false, previews: false, minimize: false, windowShot: false, zoom: false, filters: false, performance: false },
-    sway: { keybinds: true, previews: false, minimize: true, windowShot: true, zoom: false, filters: false, performance: true }
+    hyprland: { keybinds: true, previews: true, minimize: true, windowShot: true, zoom: true, filters: true, performance: true, virtualDisplay: true },
+    niri: { keybinds: false, previews: false, minimize: false, windowShot: false, zoom: false, filters: false, performance: false, virtualDisplay: false },
+    sway: { keybinds: true, previews: false, minimize: true, windowShot: true, zoom: false, filters: false, performance: true, virtualDisplay: false }
+}
+
+export function virtualOutput(name, action, output) {
+    if (!/^[A-Za-z0-9_-]+$/.test(String(output)))
+        throw new Error("expected an output name")
+    if (action !== "create" && action !== "remove")
+        throw new Error("expected create or remove")
+    if (name !== "hyprland")
+        return null
+    return action === "create" ? ["hyprctl", "output", "create", "headless", output] : ["hyprctl", "output", "remove", output]
 }
 
 export function can(name, capability) {

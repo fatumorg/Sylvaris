@@ -86,7 +86,7 @@ test("validateSettings fixes invalid values field by field", () => {
     })
     assert.deepEqual(v.center, { corner: "top-right", other: 1, hidden: [], extra: [], volume: true, media: true })
     assert.deepEqual(v.nightLight, { enabled: false, temperature: 4000 })
-    assert.deepEqual(v.displays, { layouts: {} })
+    assert.deepEqual(v.displays, { layouts: {}, virtual: { enabled: false, width: 2388, height: 1668 } })
     assert.deepEqual(v.toggleState, { a: true })
     assert.deepEqual(v.hotspot, { ssid: "Sylvaris", band: "bg" })
     assert.equal(v.unknown, 7)
@@ -379,4 +379,11 @@ test("motion.preset is one of the presets and falls back to smooth", () => {
     assert.equal(validateSettings({ motion: { preset: "playful" } }).motion.preset, "playful")
     assert.equal(validateSettings({ motion: { preset: "wild" } }).motion.preset, "smooth")
     assert.equal(validateSettings({ motion: { preset: 3 } }).motion.preset, "smooth")
+})
+
+test("validateSettings checks the virtual display size", () => {
+    const ok = validateSettings({ displays: { virtual: { enabled: true, width: 1920, height: 1080 } } })
+    assert.deepEqual(ok.displays.virtual, { enabled: true, width: 1920, height: 1080 })
+    const bad = validateSettings({ displays: { virtual: { enabled: 1, width: 100, height: 99999.5 } } })
+    assert.deepEqual(bad.displays.virtual, { enabled: false, width: 2388, height: 1668 })
 })

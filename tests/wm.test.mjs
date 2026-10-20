@@ -89,7 +89,7 @@ test("minimize parks the window where each compositor can bring it back", () => 
 })
 
 test("the capability table matches what each compositor's code path can do", async () => {
-    const { CAPABILITIES, COMPOSITORS, can } = await import("../shell/lib/wm.mjs")
+    const { CAPABILITIES, COMPOSITORS, can, virtualOutput } = await import("../shell/lib/wm.mjs")
     const { perfArgs } = await import("../shell/lib/perf.mjs")
     const { supports } = await import("../shell/lib/access.mjs")
     const { bindArgs, bindsFile } = await import("../shell/lib/keys.mjs")
@@ -102,6 +102,7 @@ test("the capability table matches what each compositor's code path can do", asy
         assert.equal(can(name, "filters"), supports(name).filter, name)
         assert.equal(can(name, "minimize"), translate(name, false, "minimize", []).command !== null, name)
         assert.equal(can(name, "windowShot"), rectsCommand(name) !== null, name)
+        assert.equal(can(name, "virtualDisplay"), virtualOutput(name, "create", "virtual") !== null, name)
     }
     assert.equal(can("unknown", "keybinds"), false)
     for (const caps of Object.values(CAPABILITIES))
@@ -140,4 +141,13 @@ test("niri workspaces name Sylvaris windows by their own app", () => {
         windows: [{ id: 7, workspace_id: 1, app_id: "org.quickshell", title: "Home — SylFiles" }, { id: 8, workspace_id: 1, app_id: "kitty", title: "zsh" }]
     })
     assert.deepEqual(ws[0].apps, ["sylvaris-files", "kitty"])
+})
+
+test("virtualOutput builds hyprctl calls and rejects odd names", async () => {
+    const { virtualOutput } = await import("../shell/lib/wm.mjs")
+    assert.deepEqual(virtualOutput("hyprland", "create", "virtual"), ["hyprctl", "output", "create", "headless", "virtual"])
+    assert.deepEqual(virtualOutput("hyprland", "remove", "virtual"), ["hyprctl", "output", "remove", "virtual"])
+    assert.equal(virtualOutput("niri", "create", "virtual"), null)
+    assert.throws(() => virtualOutput("hyprland", "create", "x y"))
+    assert.throws(() => virtualOutput("hyprland", "boom", "virtual"))
 })

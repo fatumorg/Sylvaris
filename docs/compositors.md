@@ -15,6 +15,7 @@ This table is generated from `CAPABILITIES` in `shell/lib/wm.mjs`, and a test ke
 | Screen zoom in SylAccessibility | yes | no | no |
 | Colour filters in SylAccessibility | yes | no | no |
 | Performance mode also trims the compositor | yes | no | yes |
+| Virtual display for a tablet over VNC | yes | no | no |
 
 Resin Glass blurs behind panels through the `ext-background-effect-v1` protocol when the compositor offers it. Hyprland 0.56 and newer and niri do; sway does not, so panels there are tinted glass without blur.
 

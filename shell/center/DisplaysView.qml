@@ -2,7 +2,9 @@ import QtQuick
 import qs
 import qs.services
 import qs.components
+import qs.settings
 import "../lib/displays.mjs" as D
+import "../lib/virtual.mjs" as V
 import "../lib/icons.mjs" as Icons
 
 Item {
@@ -19,6 +21,20 @@ Item {
     readonly property var selectedDraft: root.draft[root.selected] === undefined ? null : root.draft[root.selected]
     readonly property var modes: root.selectedOutput === null ? [] : D.uniqueModes(root.selectedOutput.modes).slice(0, 6)
     readonly property var scales: [1, 1.25, 1.5, 1.75, 2]
+    readonly property bool virtualSelected: root.selected === VirtualDisplay.name && VirtualDisplay.active
+    property bool reveal: false
+
+    Connections {
+        target: Displays
+
+        function onKeyChanged(): void {
+            root.draft = JSON.parse(JSON.stringify(Displays.current));
+            if (VirtualDisplay.active && root.draft[VirtualDisplay.name] !== undefined)
+                root.selected = VirtualDisplay.name;
+            else if (root.draft[root.selected] === undefined)
+                root.selected = root.firstEnabled();
+        }
+    }
 
     function firstEnabled(): string {
         const keys = Object.keys(root.draft).sort();
@@ -231,6 +247,16 @@ Item {
                     }
                 }
             }
+
+            Chip {
+                visible: VirtualDisplay.available && !VirtualDisplay.active
+                anchors.verticalCenter: parent.verticalCenter
+                glyph: Icons.GLYPHS.plus
+                text: VirtualDisplay.busy ? "Starting…" : "Virtual display"
+                enabled: !VirtualDisplay.busy
+                opacity: enabled ? 1 : 0.6
+                onClicked: VirtualDisplay.start()
+            }
         }
 
         Segmented {
@@ -247,13 +273,62 @@ Item {
                 }
             ]
             current: root.selectedDraft !== null && root.selectedDraft.enabled ? "on" : "off"
-            onPicked: key => root.setEnabled(root.selected, key === "on")
+            onPicked: key => {
+                if (root.virtualSelected && key === "off")
+                    VirtualDisplay.stop();
+                else
+                    root.setEnabled(root.selected, key === "on");
+            }
         }
 
         Flow {
             width: parent.width
             spacing: 8
-            visible: root.selectedDraft !== null && root.selectedDraft.enabled
+            visible: root.virtualSelected
+
+            Repeater {
+                model: V.PRESETS
+                delegate: Chip {
+                    required property var modelData
+                    text: modelData.label
+                    lit: VirtualDisplay.width === modelData.width && VirtualDisplay.height === modelData.height
+                    onClicked: VirtualDisplay.setSize(modelData.width, modelData.height)
+                }
+            }
+        }
+
+        Text {
+            textFormat: Text.PlainText
+            width: parent.width
+            visible: root.virtualSelected
+            wrapMode: Text.WordWrap
+            text: "VNC " + (VirtualDisplay.addresses.length > 0 ? VirtualDisplay.addresses.map(a => a + ":" + VirtualDisplay.vnc.port).join("  ·  ") : "port " + VirtualDisplay.vnc.port) + (VirtualDisplay.vnc.username !== "" ? "  ·  user " + VirtualDisplay.vnc.username : "") + (VirtualDisplay.vnc.password !== "" ? "  ·  password " + (root.reveal ? VirtualDisplay.vnc.password : "••••••  (click to show)") : "")
+            color: Theme.textSoft
+            font.family: Tokens.fontUi
+            font.pixelSize: Tokens.smallSize
+
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.reveal = !root.reveal
+            }
+        }
+
+        Text {
+            textFormat: Text.PlainText
+            width: parent.width
+            visible: VirtualDisplay.error !== ""
+            wrapMode: Text.WordWrap
+            text: VirtualDisplay.error
+            color: Theme.danger
+            font.family: Tokens.fontUi
+            font.pixelSize: Tokens.smallSize
+        }
+
+        Flow {
+            width: parent.width
+            spacing: 8
+            visible: root.selectedDraft !== null && root.selectedDraft.enabled && !root.virtualSelected
 
             Repeater {
                 model: root.modes
