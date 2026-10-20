@@ -407,10 +407,11 @@ Scope {
             WlrLayershell.namespace: "sylsettings"
             WlrLayershell.keyboardFocus: root.wanted ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
-            readonly property real side: Math.min(400, Math.max(300, width * 0.17))
+            readonly property bool roomy: win.width >= 1200
+            readonly property real side: win.roomy ? Math.min(400, Math.max(300, width * 0.17)) : 0
             readonly property real gutter: Math.max(24, width * 0.018)
-            readonly property real midX: win.gutter * 2 + win.side
-            readonly property real midW: win.width - (win.gutter * 2 + win.side) * 2
+            readonly property real midX: win.roomy ? win.gutter * 2 + win.side : win.gutter
+            readonly property real midW: win.roomy ? win.width - (win.gutter * 2 + win.side) * 2 : win.width - win.gutter * 2
 
             onVisibleChanged: {
                 if (visible)
@@ -709,6 +710,7 @@ Scope {
 
             SidePanel {
                 id: leftPanel
+                visible: win.roomy
                 x: win.gutter - (1 - root.phase(0.3, 0.8)) * 60
                 y: win.gutter
                 width: win.side
@@ -724,6 +726,7 @@ Scope {
 
             SidePanel {
                 id: rightPanel
+                visible: win.roomy
                 x: win.width - win.gutter - win.side + (1 - root.phase(0.35, 0.85)) * 60
                 y: win.gutter
                 width: win.side
