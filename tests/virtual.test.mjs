@@ -32,5 +32,6 @@ test("rightOf places a new screen right of the rightmost one", () => {
     }
     assert.deepEqual(rightOf(snap), { x: 4480, y: 0 })
     assert.deepEqual(rightOf({}), { x: 0, y: 0 })
+    assert.deepEqual(rightOf(Object.assign({ virtual: { enabled: true, x: 6400, y: 0, scale: 2, width: 2388, height: 1668 } }, snap), "virtual"), { x: 4480, y: 0 })
     assert.deepEqual(rightOf({ a: { enabled: true, x: 0, y: 0, scale: 2, width: 2388, height: 1668 } }), { x: 1194, y: 0 })
 })

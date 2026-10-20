@@ -41,11 +41,11 @@ export function parseAddresses(text) {
     return out
 }
 
-export function rightOf(snap) {
+export function rightOf(snap, skip) {
     let x = 0
     for (const name of Object.keys(snap || {})) {
         const s = snap[name]
-        if (s && s.enabled === true)
+        if (name !== skip && s && s.enabled === true)
             x = Math.max(x, s.x + Math.round(s.width / s.scale))
     }
     return { x: x, y: 0 }

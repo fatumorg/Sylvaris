@@ -50,7 +50,7 @@ Singleton {
         if (root.demo) {
             root.demoActive = true;
             root.addresses = ["192.168.0.20"];
-            const pos = V.rightOf(Displays.current);
+            const pos = V.rightOf(Displays.current, root.name);
             Displays.ingest(JSON.stringify(Demo.outputs.concat([{
                     name: root.name,
                     enabled: true,
@@ -75,7 +75,7 @@ Singleton {
     }
 
     function launch(): void {
-        const pos = V.rightOf(Displays.current);
+        const pos = V.rightOf(Displays.current, root.name);
         server.command = ["sh", "-c", root.script, "sylvaris", root.name, root.mode(root.width, root.height), root.width >= 2200 ? "2" : "1", pos.x + "," + pos.y, root.configFile].concat(W.virtualOutput(Compositor.name, "create", root.name));
         server.running = true;
     }
