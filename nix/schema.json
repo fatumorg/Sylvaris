@@ -104,7 +104,8 @@
   "motion": {
     "scale": 1,
     "reduced": false,
-    "reveal": "edges"
+    "reveal": "edges",
+    "preset": "smooth"
   },
   "power": {
     "actions": [

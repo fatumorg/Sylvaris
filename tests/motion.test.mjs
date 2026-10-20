@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { origin, scaledRect, rise, stagger, grow } from "../shell/lib/motion.mjs"
+import { origin, scaledRect, rise, stagger, grow, PRESETS, presetTokens } from "../shell/lib/motion.mjs"
 
 test("panels grow out of the corner they are anchored to", () => {
     assert.deepEqual(origin("top-right"), { h: 1, v: 0 })
@@ -25,4 +25,25 @@ test("a panel opened from the island grows out of it from far smaller", () => {
     assert.equal(grow(0, true), 0.3)
     assert.equal(grow(1, true), 1)
     assert.ok(grow(0.5, true) < grow(0.5, false))
+})
+
+test("smooth keeps today's motion and every preset has a full set of curves", () => {
+    assert.deepEqual(PRESETS, ["calm", "smooth", "snappy", "playful"])
+    assert.deepEqual(presetTokens("smooth"), {
+        pace: 1,
+        enter: [0.05, 0.7, 0.1, 1, 1, 1],
+        exit: [0.3, 0, 0.8, 0.15, 1, 1],
+        move: [0.2, 0, 0, 1, 1, 1],
+        spring: [0.34, 1.4, 0.64, 1, 1, 1]
+    })
+    for (const name of PRESETS) {
+        const t = presetTokens(name)
+        assert.ok(t.pace > 0, name)
+        for (const k of ["enter", "exit", "move", "spring"])
+            assert.equal(t[k].length, 6, name + " " + k)
+    }
+    assert.ok(presetTokens("calm").pace > 1)
+    assert.ok(presetTokens("snappy").pace < 1)
+    assert.ok(presetTokens("playful").enter[1] > 1)
+    assert.deepEqual(presetTokens("nope"), presetTokens("smooth"))
 })

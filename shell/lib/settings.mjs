@@ -10,6 +10,7 @@ import { EXTRAS } from "./center.mjs"
 import { validateKeybinds } from "./keys.mjs"
 import { DEFAULT_PLUGINS, validatePlugins, BUILTIN, builtinOn } from "./plugins.mjs"
 import { DEFAULT_SYNC, validateSync } from "./sync.mjs"
+import { PRESETS } from "./motion.mjs"
 import { DEFAULT_BAR, DEFAULT_DECK, validateBar, validateDeck } from "./bar.mjs"
 import { DEFAULT_EQ, validateEq } from "./eq.mjs"
 import { DEFAULT_POWER, validatePower } from "./power.mjs"
@@ -104,7 +105,7 @@ export const DEFAULT_SETTINGS = {
     bar: DEFAULT_BAR,
     deck: DEFAULT_DECK,
     media: { eq: DEFAULT_EQ, airpods: "" },
-    motion: { scale: 1, reduced: false, reveal: "edges" },
+    motion: { scale: 1, reduced: false, reveal: "edges", preset: "smooth" },
     power: DEFAULT_POWER,
     paper: DEFAULT_PAPER,
     weather: DEFAULT_WEATHER,
@@ -329,7 +330,8 @@ export function validateSettings(raw) {
     v.motion = Object.assign({}, motion, {
         scale: typeof motion.scale === "number" && motion.scale >= 0.25 && motion.scale <= 2 ? motion.scale : d.motion.scale,
         reduced: motion.reduced === true,
-        reveal: REVEALS.indexOf(motion.reveal) >= 0 ? motion.reveal : d.motion.reveal
+        reveal: REVEALS.indexOf(motion.reveal) >= 0 ? motion.reveal : d.motion.reveal,
+        preset: PRESETS.indexOf(motion.preset) >= 0 ? motion.preset : d.motion.preset
     })
     v.performance = v.performance === true ? "on" : PERFORMANCE.indexOf(v.performance) >= 0 ? v.performance : d.performance
     v.iconTint = v.iconTint !== false

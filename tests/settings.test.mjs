@@ -373,3 +373,10 @@ test("performance is off, auto or on; old true means on and old false means auto
     assert.equal(validateSettings({ performance: "off" }).performance, "off")
     assert.equal(validateSettings({ performance: "fast" }).performance, "auto")
 })
+
+test("motion.preset is one of the presets and falls back to smooth", () => {
+    assert.equal(DEFAULT_SETTINGS.motion.preset, "smooth")
+    assert.equal(validateSettings({ motion: { preset: "playful" } }).motion.preset, "playful")
+    assert.equal(validateSettings({ motion: { preset: "wild" } }).motion.preset, "smooth")
+    assert.equal(validateSettings({ motion: { preset: 3 } }).motion.preset, "smooth")
+})

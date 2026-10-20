@@ -1173,6 +1173,12 @@ ShellRoot {
     }
 
     Binding {
+        target: Tokens
+        property: "preset"
+        value: Settings.values.motion.preset
+    }
+
+    Binding {
         target: Ipc
         property: "commands"
         value: root.commands

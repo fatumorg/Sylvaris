@@ -27,3 +27,23 @@ export function stagger(phase, index, count, spread) {
     const t = (phase - start) / (1 - s)
     return Math.max(0, Math.min(1, t))
 }
+
+export const PRESETS = ["calm", "smooth", "snappy", "playful"]
+
+const SMOOTH = {
+    pace: 1,
+    enter: [0.05, 0.7, 0.1, 1, 1, 1],
+    exit: [0.3, 0, 0.8, 0.15, 1, 1],
+    move: [0.2, 0, 0, 1, 1, 1],
+    spring: [0.34, 1.4, 0.64, 1, 1, 1]
+}
+
+const TUNED = {
+    calm: { pace: 1.35, enter: [0.25, 0.1, 0.25, 1, 1, 1], exit: [0.4, 0, 0.6, 1, 1, 1], move: [0.4, 0, 0.2, 1, 1, 1], spring: [0.3, 1.15, 0.6, 1, 1, 1] },
+    snappy: { pace: 0.7, enter: [0.2, 0.9, 0.1, 1, 1, 1], exit: [0.4, 0, 1, 1, 1, 1], move: [0.3, 0, 0, 1, 1, 1], spring: [0.3, 1.25, 0.6, 1, 1, 1] },
+    playful: { pace: 1.1, enter: [0.34, 1.32, 0.64, 1, 1, 1], exit: [0.36, 0, 0.66, -0.3, 1, 1], move: [0.34, 1.2, 0.64, 1, 1, 1], spring: [0.34, 1.6, 0.64, 1, 1, 1] }
+}
+
+export function presetTokens(name) {
+    return Object.assign({}, SMOOTH, TUNED[name] || {})
+}

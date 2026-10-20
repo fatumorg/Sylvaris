@@ -132,6 +132,7 @@ Explained in [look](../look.md#motion-and-performance).
 | `motion.scale` | `1` |  |
 | `motion.reduced` | `false` |  |
 | `motion.reveal` | `"edges"` |  |
+| `motion.preset` | `"smooth"` |  |
 
 ## power
 

@@ -2,23 +2,26 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
+import "lib/motion.mjs" as M
 
 Singleton {
     id: root
 
     property real motion: 1
+    property string preset: "smooth"
+    readonly property var curves: M.presetTokens(root.preset)
     property bool lite: false
     property bool iconTint: true
     property real textScale: 1
-    readonly property real pace: root.lite ? 0.55 : root.motion
+    readonly property real pace: root.lite ? 0.55 : root.motion * root.curves.pace
     readonly property int enterDuration: Math.round(340 * root.pace)
     readonly property int exitDuration: Math.round(190 * root.pace)
     readonly property int moveDuration: Math.round(420 * root.pace)
     readonly property int staggerStep: Math.round(22 * root.pace)
-    readonly property var enterCurve: [0.05, 0.7, 0.1, 1, 1, 1]
-    readonly property var exitCurve: [0.3, 0, 0.8, 0.15, 1, 1]
-    readonly property var moveCurve: [0.2, 0, 0, 1, 1, 1]
-    readonly property var springCurve: [0.34, 1.4, 0.64, 1, 1, 1]
+    readonly property var enterCurve: root.curves.enter
+    readonly property var exitCurve: root.curves.exit
+    readonly property var moveCurve: root.curves.move
+    readonly property var springCurve: root.curves.spring
     readonly property int centerCompactWidth: 460
     readonly property int centerExpandedWidth: 620
     readonly property int centerHeight: 660

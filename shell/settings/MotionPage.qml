@@ -27,6 +27,35 @@ Column {
         }
 
         SettingRow {
+            title: "Style"
+            subtitle: "How every panel moves: calm and slow, smooth, quick and tight, or springy with a little overshoot"
+
+            Segmented {
+                width: 340
+                options: [
+                    {
+                        key: "calm",
+                        label: "Calm"
+                    },
+                    {
+                        key: "smooth",
+                        label: "Smooth"
+                    },
+                    {
+                        key: "snappy",
+                        label: "Snappy"
+                    },
+                    {
+                        key: "playful",
+                        label: "Playful"
+                    }
+                ]
+                current: Settings.shown.motion.preset
+                onPicked: key => Settings.put("motion.preset", key)
+            }
+        }
+
+        SettingRow {
             title: "Background reveal"
             subtitle: "How the blurred background of SylSettings, SylPad and SylPower spreads when they open and close"
 

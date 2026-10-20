@@ -55,6 +55,7 @@ Every panel opens, moves and closes with one set of curves.
 | Key | Default | Meaning |
 |---|---|---|
 | `motion.reveal` | `edges` | how full-screen backgrounds (SylSettings, SylPad, SylPower) open: `edges`, `center` or `fade` |
+| `motion.preset` | `smooth` | the feel of every animation: `calm` (slower, gentle), `smooth`, `snappy` (quicker, tighter) or `playful` (springy overshoot) |
 | `motion.scale` | `1` | stretches or shortens every animation; `0.5` is twice as fast |
 | `motion.reduced` | `false` | panels appear without moving |
 | `iconTint` | `true` | app icons in the bar, deck, launcher, switcher and notifications take the accent colour |

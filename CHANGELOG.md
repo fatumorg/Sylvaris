@@ -6,6 +6,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Added
 
+- Add motion styles: calm, smooth, snappy and playful, picked in SylSettings › Motion or with `motion.preset`
 - Add an auto performance mode, now the default: Sylvaris goes lite while a full-screen window such as a game has focus and comes back when it leaves
 
 ### Changed
