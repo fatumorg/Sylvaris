@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { unused, shift, validateBar, validateDeck, deckItems, nextWindow, togglePin, magnify, DEFAULT_BAR, vertical, drawerArrow, placeCorner, deckHidden, screenBusy, workspaceLook, WORKSPACE_ICONS, workspaceApps, workspaceTicks } from "../shell/lib/bar.mjs"
+import { unused, shift, validateBar, validateDeck, deckItems, nextWindow, togglePin, magnify, DEFAULT_BAR, vertical, drawerArrow, placeCorner, deckHidden, screenBusy, workspaceLook, WORKSPACE_ICONS, workspaceApps, workspaceTicks, middleSlot } from "../shell/lib/bar.mjs"
 
 test("validateBar keeps known modules once and falls back per side", () => {
     const b = validateBar({ left: ["clock", "nope", "clock", "pad"], floating: false })
@@ -139,4 +139,12 @@ test("workspace pills show each app once and at most three ticks", () => {
     assert.deepEqual(workspaceApps(undefined, 3), { shown: [], more: 0 })
     assert.equal(workspaceTicks(-1), 0)
     assert.equal(workspaceTicks(7), 3)
+})
+
+test("middleSlot centres the middle group, slides it into the free gap, or gives up", () => {
+    assert.equal(middleSlot(1000, 200, 100, 200, 12), 450)
+    assert.equal(middleSlot(1000, 500, 100, 200, 12), 512)
+    assert.equal(middleSlot(1000, 200, 100, 500, 12), 388)
+    assert.equal(middleSlot(1000, 450, 100, 450, 12), -1)
+    assert.equal(middleSlot(1000, 0, 100, 0, 12), 450)
 })

@@ -126,13 +126,17 @@ Scope {
 
             BarGroup {
                 id: middleGroup
+                readonly property real slot: root.vertical
+                    ? B.middleSlot(parent.height, startGroup.visible ? startGroup.y + startGroup.height : 0, height, endGroup.visible ? parent.height - endGroup.y : 0, Tokens.gap)
+                    : B.middleSlot(parent.width, startGroup.visible ? startGroup.x + startGroup.width : 0, width, endGroup.visible ? parent.width - endGroup.x : 0, Tokens.gap)
                 list: root.cfg.center
                 side: "center"
                 islands: root.islands
                 vertical: root.vertical
                 barWindow: bar
-                x: (parent.width - width) / 2
-                y: (parent.height - height) / 2
+                room: slot >= 0
+                x: root.vertical ? (parent.width - width) / 2 : Math.max(0, slot)
+                y: root.vertical ? Math.max(0, slot) : (parent.height - height) / 2
                 moduleFor: root.moduleFor
             }
 

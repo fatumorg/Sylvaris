@@ -177,3 +177,11 @@ export function screenBusy(workspaces, windows, output) {
         return true
     return shown.some(w => w.windows < 0) && windows.some(w => !w.minimized)
 }
+
+export function middleSlot(total, startLen, centerLen, endLen, gap) {
+    const lo = startLen > 0 ? startLen + gap : 0
+    const hi = total - centerLen - (endLen > 0 ? endLen + gap : 0)
+    if (hi < lo)
+        return -1
+    return Math.max(lo, Math.min(hi, (total - centerLen) / 2))
+}

@@ -22,7 +22,8 @@ Item {
         radius: Tokens.barRadius - 1
     }
 
-    visible: root.list.length > 0 && (root.vertical ? grid.implicitHeight : grid.implicitWidth) > 0
+    property bool room: true
+    visible: root.room && root.list.length > 0 && (root.vertical ? grid.implicitHeight : grid.implicitWidth) > 0
     width: root.vertical ? (root.parent ? root.parent.width : 0) : grid.implicitWidth + root.pad * 2
     height: root.vertical ? grid.implicitHeight + root.pad * 2 : (root.parent ? root.parent.height : 0)
 
