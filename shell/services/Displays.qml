@@ -20,8 +20,18 @@ Singleton {
     readonly property string key: D.layoutKey(root.outputs)
     readonly property var saved: Settings.values.displays.layouts[root.key] === undefined ? null : Settings.values.displays.layouts[root.key]
 
+    function sizes(): var {
+        const out = {};
+        for (const s of Quickshell.screens)
+            out[s.name] = {
+                width: Math.round(s.width * s.devicePixelRatio),
+                height: Math.round(s.height * s.devicePixelRatio)
+            };
+        return out;
+    }
+
     function ingest(text: string): void {
-        root.outputs = D.parseOutputs(text);
+        root.outputs = D.parseOutputs(text, root.sizes());
         root.current = D.snapshot(root.outputs);
         if (root.restored)
             return;

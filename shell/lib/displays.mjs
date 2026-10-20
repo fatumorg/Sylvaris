@@ -6,7 +6,7 @@ function num(v, fallback) {
     return typeof v === "number" && isFinite(v) ? v : fallback
 }
 
-export function parseOutputs(text) {
+export function parseOutputs(text, sizes) {
     let raw
     try {
         raw = JSON.parse(text)
@@ -25,6 +25,9 @@ export function parseOutputs(text) {
             if (m.current === true)
                 current = { width: m.width, height: m.height, refresh: m.refresh }
         }
+        const size = isObject(sizes) && isObject(sizes[o.name]) ? sizes[o.name] : null
+        if (current === null && o.enabled === true && size !== null && size.width > 0 && size.height > 0)
+            current = { width: size.width, height: size.height, refresh: 60, custom: true }
         out.push({
             name: o.name,
             description: typeof o.description === "string" ? o.description : "",
@@ -52,6 +55,8 @@ export function snapshot(outputs) {
                 enabled: true, x: o.x, y: o.y, scale: o.scale,
                 width: o.current.width, height: o.current.height, refresh: o.current.refresh
             }
+            if (o.current.custom === true)
+                snap[o.name].custom = true
         } else {
             snap[o.name] = { enabled: false }
         }
@@ -88,7 +93,7 @@ export function applyArgs(snap) {
     for (const name of Object.keys(snap).sort()) {
         const s = snap[name]
         if (s.enabled) {
-            args.push("--output", name, "--on", "--mode", formatMode(s.width, s.height, s.refresh),
+            args.push("--output", name, "--on", s.custom === true ? "--custom-mode" : "--mode", formatMode(s.width, s.height, s.refresh),
                 "--pos", s.x + "," + s.y, "--scale", String(s.scale))
         } else {
             args.push("--output", name, "--off")

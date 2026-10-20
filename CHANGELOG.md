@@ -4,6 +4,10 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Fixed
+
+- Displays no longer treats a screen running a custom mode as off, so Apply keeps it on
+
 ## [0.4.2] - 2026-10-20
 
 ### Fixed

@@ -93,3 +93,17 @@ test("canApply refuses layouts with every output off", () => {
     assert.equal(canApply({}), false)
     assert.equal(canApply(null), false)
 })
+
+const customText = JSON.stringify([{ name: "virtual", description: "", enabled: true, position: { x: 4480, y: 0 }, scale: 2, transform: "normal", modes: [{ width: 1920, height: 1080, refresh: 60, preferred: true, current: false }] }])
+
+test("parseOutputs keeps an enabled output with a custom mode", () => {
+    const [v] = parseOutputs(customText, { virtual: { width: 2388, height: 1668 } })
+    assert.deepEqual(v.current, { width: 2388, height: 1668, refresh: 60, custom: true })
+    assert.deepEqual(snapshot([v]).virtual, { enabled: true, x: 4480, y: 0, scale: 2, width: 2388, height: 1668, refresh: 60, custom: true })
+    assert.equal(parseOutputs(customText)[0].current, null)
+})
+
+test("applyArgs sets a custom mode with --custom-mode", () => {
+    const snap = snapshot(parseOutputs(customText, { virtual: { width: 2388, height: 1668 } }))
+    assert.deepEqual(applyArgs(snap), ["--output", "virtual", "--on", "--custom-mode", "2388x1668@60.000Hz", "--pos", "4480,0", "--scale", "2"])
+})
