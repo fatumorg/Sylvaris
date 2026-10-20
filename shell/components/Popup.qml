@@ -5,6 +5,7 @@ import qs
 import qs.services
 import "../lib/motion.mjs" as M
 import "../lib/bar.mjs" as B
+import "../lib/screens.mjs" as Sc
 
 Scope {
     id: root
@@ -17,6 +18,7 @@ Scope {
     readonly property string placed: root.from !== "" ? root.from : B.placeCorner(root.corner, root.local.parts.bar ? root.local.bar.position : "top")
     property int panelWidth: Tokens.centerCompactWidth
     property int panelHeight: Tokens.centerHeight
+    readonly property int room: root.screenInfo ? Math.max(1, Sc.roomHeight(root.screenInfo.height, root.local.parts.bar ? root.local.bar : null, Tokens.barHeight, Tokens.barMargin, Tokens.edgeMargin) - Math.round(root.fromInset)) : root.panelHeight
     property real radius: Tokens.radiusPanel
     property bool keyboard: true
     property real dim: 0
@@ -179,7 +181,7 @@ Scope {
                 right: Tokens.edgeMargin
             }
             implicitWidth: root.panelWidth
-            implicitHeight: root.panelHeight
+            implicitHeight: Math.min(root.panelHeight, root.room)
             color: "transparent"
             exclusionMode: ExclusionMode.Normal
             exclusiveZone: 0
@@ -238,10 +240,15 @@ Scope {
                     offBorder: Theme.line
                 }
 
-                Item {
+                Flickable {
                     id: slot
                     anchors.fill: parent
-                    Component.onCompleted: body.parent = slot
+                    contentWidth: width
+                    contentHeight: Math.max(height, root.panelHeight)
+                    interactive: contentHeight > height + 0.5
+                    boundsBehavior: Flickable.StopAtBounds
+                    clip: interactive
+                    Component.onCompleted: body.parent = slot.contentItem
                 }
             }
         }

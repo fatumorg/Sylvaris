@@ -4,6 +4,10 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Fixed
+
+- SylCenter and every panel fit short screens and scroll instead of running off the bottom
+
 ## [0.4.1] - 2026-10-20
 
 ### Changed

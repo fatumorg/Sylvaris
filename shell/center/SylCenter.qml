@@ -6,6 +6,7 @@ import qs.services
 import qs.components
 import "../lib/motion.mjs" as M
 import "../lib/bar.mjs" as B
+import "../lib/screens.mjs" as Sc
 
 Scope {
     id: root
@@ -23,7 +24,8 @@ Scope {
     property var detailItem: null
     readonly property string placed: root.corner
     readonly property int panelWidth: root.expanded ? Tokens.centerExpandedWidth : Tokens.centerCompactWidth
-    readonly property int panelHeight: Tokens.centerHeight
+    readonly property int room: root.screenInfo ? Math.max(1, Sc.roomHeight(root.screenInfo.height, root.local.parts.bar ? root.local.bar : null, Tokens.barHeight, Tokens.barMargin, Tokens.edgeMargin) - Math.round(root.fromInset)) : Tokens.centerHeight
+    readonly property int panelHeight: Math.min(Tokens.centerHeight, root.room)
     readonly property real grow: M.grow(root.phase, root.from !== "")
     readonly property var local: Settings.at(root.screenInfo ? root.screenInfo.name : Compositor.focusedName())
     readonly property string corner: root.from !== "" ? root.from : B.placeCorner(root.local.center.corner, root.local.parts.bar ? root.local.bar.position : "top")
@@ -274,7 +276,7 @@ Scope {
                 right: Tokens.edgeMargin
             }
             implicitWidth: Tokens.centerExpandedWidth
-            implicitHeight: Math.max(Tokens.centerHeight, compact.implicitHeight)
+            implicitHeight: Math.min(Math.max(Tokens.centerHeight, compact.implicitHeight), root.room)
             color: "transparent"
             exclusionMode: ExclusionMode.Normal
             exclusiveZone: 0
@@ -316,7 +318,7 @@ Scope {
                 id: panel
 
                 width: root.expanded ? Tokens.centerExpandedWidth : Tokens.centerCompactWidth
-                height: root.expanded ? Tokens.centerHeight : compact.implicitHeight
+                height: Math.min(root.expanded ? Tokens.centerHeight : compact.implicitHeight, root.room)
                 x: (win.width - width) * root.origin.h
                 y: (win.height - height) * root.origin.v
                 opacity: Math.min(1, root.phase * 1.6)
@@ -355,22 +357,31 @@ Scope {
                     offBorder: Theme.line
                 }
 
-                CompactView {
-                    id: compact
+                Flickable {
                     width: Tokens.centerCompactWidth
+                    height: panel.height
                     x: (panel.width - width) * root.origin.h
+                    contentHeight: compact.implicitHeight
+                    interactive: contentHeight > height
+                    boundsBehavior: Flickable.StopAtBounds
+                    clip: true
                     opacity: root.expanded ? 0 : 1
                     visible: opacity > 0
                     enabled: !root.expanded
-                    peers: root.peers
-                    onOpenView: name => name === "theme" || name === "media" || name === "settings" ? root.handOff(name) : root.applyView(name)
-                    onDismiss: root.close()
 
                     Behavior on opacity {
                         enabled: root.settled
                         NumberAnimation {
                             duration: Tokens.fadeDuration
                         }
+                    }
+
+                    CompactView {
+                        id: compact
+                        width: Tokens.centerCompactWidth
+                        peers: root.peers
+                        onOpenView: name => name === "theme" || name === "media" || name === "settings" ? root.handOff(name) : root.applyView(name)
+                        onDismiss: root.close()
                     }
                 }
 

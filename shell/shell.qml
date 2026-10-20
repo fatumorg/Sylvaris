@@ -104,7 +104,7 @@ ShellRoot {
                     corner: p.placed,
                     docked: p.from !== undefined && p.from !== "",
                     width: p.panelWidth,
-                    height: p.panelHeight,
+                    height: p.room !== undefined ? Math.min(p.panelHeight, p.room) : p.panelHeight,
                     screen: p.screenInfo.name
                 };
         }
