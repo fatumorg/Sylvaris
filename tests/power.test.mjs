@@ -15,7 +15,7 @@ test("commands come from overrides, the lock command or the defaults", () => {
     const p = validatePower({ commands: { reboot: "doas reboot" } })
     assert.equal(commandFor("reboot", p, "hyprlock"), "doas reboot")
     assert.equal(commandFor("lock", p, "hyprlock"), "hyprlock")
-    assert.equal(commandFor("shutdown", p, "hyprlock"), "systemctl poweroff")
+    assert.equal(commandFor("shutdown", p, "hyprlock"), "systemctl poweroff 2>/dev/null || loginctl poweroff")
     assert.equal(commandFor("logout", p, "hyprlock"), "")
 })
 
@@ -31,4 +31,11 @@ test("confirmation, key shortcuts, ring layout and uptime", () => {
     assert.equal(uptime(59), "0m")
     assert.equal(uptime(3 * 3600 + 120), "3h 2m")
     assert.equal(uptime(2 * 86400 + 5 * 3600), "2d 5h")
+})
+
+test("suspend, hibernate, restart and shut down fall back to elogind's loginctl without systemd", () => {
+    const p = validatePower({})
+    assert.equal(commandFor("suspend", p, ""), "systemctl suspend 2>/dev/null || loginctl suspend")
+    assert.equal(commandFor("hibernate", p, ""), "systemctl hibernate 2>/dev/null || loginctl hibernate")
+    assert.equal(commandFor("reboot", p, ""), "systemctl reboot 2>/dev/null || loginctl reboot")
 })

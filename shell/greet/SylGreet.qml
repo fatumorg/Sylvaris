@@ -98,7 +98,7 @@ Scope {
             root.launched = action;
             return;
         }
-        Quickshell.execDetached(["systemctl", action]);
+        Quickshell.execDetached(["sh", "-c", "systemctl \"$1\" 2>/dev/null || loginctl \"$1\"", "sh", action]);
     }
 
     function state(): var {

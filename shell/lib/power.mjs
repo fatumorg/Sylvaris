@@ -1,11 +1,11 @@
 export const ACTIONS = {
     lock: { label: "Lock", verb: "Locking", about: "Lock the session and keep everything open", glyph: "lock", key: "l", confirm: false, command: "" },
-    suspend: { label: "Suspend", verb: "Suspending", about: "Sleep in memory and wake up in a second", glyph: "sleep", key: "s", confirm: false, command: "systemctl suspend" },
-    hibernate: { label: "Hibernate", verb: "Hibernating", about: "Save everything to disk and power off", glyph: "hibernate", key: "h", confirm: true, command: "systemctl hibernate" },
+    suspend: { label: "Suspend", verb: "Suspending", about: "Sleep in memory and wake up in a second", glyph: "sleep", key: "s", confirm: false, command: "systemctl suspend 2>/dev/null || loginctl suspend" },
+    hibernate: { label: "Hibernate", verb: "Hibernating", about: "Save everything to disk and power off", glyph: "hibernate", key: "h", confirm: true, command: "systemctl hibernate 2>/dev/null || loginctl hibernate" },
     logout: { label: "Log out", verb: "Logging out", about: "Close every window and end the session", glyph: "logout", key: "o", confirm: true, command: "" },
-    reboot: { label: "Restart", verb: "Restarting", about: "Close everything and start again", glyph: "restart", key: "r", confirm: true, command: "systemctl reboot" },
+    reboot: { label: "Restart", verb: "Restarting", about: "Close everything and start again", glyph: "restart", key: "r", confirm: true, command: "systemctl reboot 2>/dev/null || loginctl reboot" },
     firmware: { label: "Firmware", verb: "Restarting into firmware", about: "Restart into the UEFI setup", glyph: "firmware", key: "f", confirm: true, command: "systemctl reboot --firmware-setup" },
-    shutdown: { label: "Shut down", verb: "Shutting down", about: "Close everything and power off", glyph: "power", key: "p", confirm: true, command: "systemctl poweroff" }
+    shutdown: { label: "Shut down", verb: "Shutting down", about: "Close everything and power off", glyph: "power", key: "p", confirm: true, command: "systemctl poweroff 2>/dev/null || loginctl poweroff" }
 }
 
 export const DEFAULT_POWER = { actions: ["lock", "suspend", "logout", "reboot", "shutdown"], confirm: true, countdown: 3, commands: {} }

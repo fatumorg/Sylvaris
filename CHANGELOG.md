@@ -11,6 +11,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - SylSettings drops its side columns on narrow screens so pages keep their full width
 - SylPad shows as many full rows as fit and pages the rest
 - SylSwitch keeps its cards inside the panel when they do not all fit
+- Suspend, hibernate, restart and shut down fall back to `loginctl` on systems without systemd, such as Void Linux with elogind
 
 ## [0.4.1] - 2026-10-20
 

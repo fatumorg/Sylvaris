@@ -106,6 +106,8 @@ sudo xbps-install -S quickshell socat pipewire python3-cryptography libnotify wl
 
 No compositor yet? `sudo xbps-install sway`. `nerd-fonts-ttf` holds every Nerd Font; if you prefer only the one Sylvaris uses, leave it out and [install it by hand](#fonts-by-hand). For the login screen, also install `greetd`, and enable services with `sudo ln -s /etc/sv/<name> /var/service/` instead of `systemctl`.
 
+Without systemd, SylPower and the login screen suspend, hibernate, restart and shut down through `loginctl`, so install `elogind` and enable the `dbus` and `elogind` services. Restarting into the firmware setup still needs systemd.
+
 ## Gentoo
 
 Quickshell, wlsunset, wlr-randr and Inter are in the GURU overlay and marked as testing:
