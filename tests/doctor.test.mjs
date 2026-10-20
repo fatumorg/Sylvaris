@@ -47,7 +47,7 @@ test("problems reports values the validator replaced or dropped", () => {
 })
 
 const facts = {
-    version: "0.4.1",
+    version: "0.4.2",
     commit: "abc1234",
     quickshell: "quickshell 0.3.1",
     compositor: "hyprland 0.51.0",
@@ -59,7 +59,7 @@ const facts = {
 
 test("report covers versions, parts, tools and both files", () => {
     const r = report(facts)
-    assert.match(r, /^Sylvaris 0\.4\.1 \(commit abc1234\)$/m)
+    assert.match(r, /^Sylvaris 0\.4\.2 \(commit abc1234\)$/m)
     assert.match(r, /^Quickshell: quickshell 0\.3\.1$/m)
     assert.match(r, /^Compositor: hyprland 0\.51\.0$/m)
     assert.match(r, /^GPU: NVIDIA \(nvidia\)$/m)
