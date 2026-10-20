@@ -230,6 +230,7 @@ Scope {
                     id: strip
                     anchors.fill: parent
                     anchors.margins: 18
+                    clip: true
                     orientation: ListView.Horizontal
                     spacing: 12
                     interactive: false

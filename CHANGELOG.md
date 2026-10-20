@@ -10,6 +10,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - The bar's middle group slides aside or hides instead of overlapping the side groups
 - SylSettings drops its side columns on narrow screens so pages keep their full width
 - SylPad shows as many full rows as fit and pages the rest
+- SylSwitch keeps its cards inside the panel when they do not all fit
 
 ## [0.4.1] - 2026-10-20
 
