@@ -36,7 +36,7 @@ Item {
     readonly property real bodyWidth: root.open ? root.cardWidth : root.compactWidth
     readonly property real bodyHeight: root.open ? root.cardHeight : root.pillHeight
     readonly property bool bubble: root.second !== null && !root.open
-    readonly property bool calm: Tokens.lite || Tokens.motion < 0.05
+    readonly property bool calm: Tokens.paused || Tokens.motion < 0.05
     readonly property Item pill: body
     readonly property Item side: bubbleItem
 

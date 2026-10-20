@@ -265,7 +265,7 @@ Popup {
                         color: Theme.danger
 
                         SequentialAnimation on opacity {
-                            running: root.recording && !Tokens.lite
+                            running: root.recording && !Tokens.paused
                             loops: Animation.Infinite
                             onStopped: recDot.opacity = 1
                             NumberAnimation {

@@ -38,7 +38,7 @@ Item {
     }
 
     FrameAnimation {
-        running: root.visible && !hover.hovered && !Tokens.lite && Settings.values.constellation.speed > 0
+        running: root.visible && !hover.hovered && !Tokens.paused && Settings.values.constellation.speed > 0
         onTriggered: root.t += frameTime * Settings.values.constellation.speed
     }
 

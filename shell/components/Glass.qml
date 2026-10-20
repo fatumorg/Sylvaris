@@ -36,7 +36,7 @@ Item {
     }
 
     FrameAnimation {
-        running: root.visible && root.shiny && (root.chasing || root.drifting)
+        running: root.visible && root.shiny && !Tokens.paused && (root.chasing || root.drifting)
         onTriggered: {
             if (root.drifting)
                 root.drift += frameTime * Resin.flow;

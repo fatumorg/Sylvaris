@@ -13,7 +13,7 @@ Singleton {
     property var status: ({})
     readonly property bool ownPerformance: root.defs.some(d => d.id === "performance")
     readonly property bool customPerformance: root.ownPerformance && Settings.values.toggleState.performance === true
-    readonly property bool lite: P.liteFor(Settings.values.performance, root.customPerformance, Compositor.windows)
+    readonly property bool paused: P.liteFor(Settings.values.performance, root.customPerformance, Compositor.windows)
     readonly property var items: (root.ownPerformance ? [] : [
             {
                 id: "performance",

@@ -786,7 +786,7 @@ Popup {
                 color: Theme.accent
 
                 SequentialAnimation on anchors.topMargin {
-                    running: root.shown && !Tokens.lite
+                    running: root.shown && !Tokens.paused
                     loops: Animation.Infinite
                     NumberAnimation {
                         to: -3

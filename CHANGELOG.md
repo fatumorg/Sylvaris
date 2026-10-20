@@ -4,9 +4,14 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Changed
+
+- Auto performance mode only pauses ambient movement and keeps the look; dropping blur and sheen is left to `on`
+
 ### Fixed
 
 - Night light shows as unavailable on Hyprland without wlsunset again
+- The bar's glow no longer flickers when a full-screen window on another screen gains or loses focus
 
 ## [0.4.0] - 2026-10-20
 

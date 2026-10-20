@@ -11,6 +11,7 @@ Singleton {
     property string preset: "smooth"
     readonly property var curves: M.presetTokens(root.preset)
     property bool lite: false
+    property bool paused: false
     property bool iconTint: true
     property real textScale: 1
     readonly property real pace: root.lite ? 0.55 : root.motion * root.curves.pace

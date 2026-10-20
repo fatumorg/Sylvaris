@@ -98,7 +98,7 @@ Column {
 
         SettingRow {
             title: "Performance mode"
-            subtitle: "Auto drops blur, sheen and ambient movement while a full-screen window has focus, such as a game. On does it always and also turns off compositor animations, blur, shadows and gaps"
+            subtitle: "Auto pauses ambient movement while a full-screen window has focus, such as a game, and keeps the look. On also drops blur and sheen, shortens animations and turns off compositor animations, blur, shadows and gaps"
             last: true
 
             Segmented {

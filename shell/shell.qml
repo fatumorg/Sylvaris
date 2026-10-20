@@ -162,6 +162,7 @@ ShellRoot {
         const out = {
             version: 1,
             lite: Tokens.lite,
+            paused: Tokens.paused,
             compositor: Compositor.state(),
             audio: root.on("Audio") ? {
                 available: Audio.available,
@@ -1153,7 +1154,13 @@ ShellRoot {
     Binding {
         target: Tokens
         property: "lite"
-        value: Toggles.lite
+        value: Keybinds.lite
+    }
+
+    Binding {
+        target: Tokens
+        property: "paused"
+        value: Toggles.paused
     }
 
     Binding {

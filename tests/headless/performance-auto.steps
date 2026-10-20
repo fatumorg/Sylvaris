@@ -1,14 +1,15 @@
 sleep 1.5
-check sylvaris state | python3 -c 'import json,sys; assert json.load(sys.stdin)["lite"] is False'
+check sylvaris state | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d["lite"] is False and d["paused"] is False'
 bg foot -a autotest sleep 60
 wait sylvaris state | grep -q autotest
 sway [app_id=autotest] fullscreen enable
-wait sylvaris state | python3 -c 'import json,sys; assert json.load(sys.stdin)["lite"] is True'
+wait sylvaris state | python3 -c 'import json,sys; assert json.load(sys.stdin)["paused"] is True'
+check sylvaris state | python3 -c 'import json,sys; assert json.load(sys.stdin)["lite"] is False'
 sway [app_id=autotest] fullscreen disable
-wait sylvaris state | python3 -c 'import json,sys; assert json.load(sys.stdin)["lite"] is False'
+wait sylvaris state | python3 -c 'import json,sys; assert json.load(sys.stdin)["paused"] is False'
 syl set performance on
-wait sylvaris state | python3 -c 'import json,sys; assert json.load(sys.stdin)["lite"] is True'
+wait sylvaris state | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d["lite"] is True and d["paused"] is True'
 syl set performance off
 sway [app_id=autotest] fullscreen enable
 sleep 0.5
-check sylvaris state | python3 -c 'import json,sys; assert json.load(sys.stdin)["lite"] is False'
+check sylvaris state | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d["lite"] is False and d["paused"] is False'
