@@ -12,7 +12,7 @@ Bind `files open` to a key under SylSettings › Advanced › Key bindings (Supe
 
 ## The window
 
-- **Sidebar**: Home and your XDG folders, your bookmarks and GTK's, every drive (see below) and the trash. Middle-click opens a place in a new tab; × on a bookmark removes it, and dragging one up or down reorders it.
+- **Sidebar**: Home and your XDG folders, your bookmarks and GTK's, every drive (see below) and the trash. Middle-click opens a place in a new tab; × on a bookmark removes it, and dragging one up or down reorders it (GTK bookmarks are saved back to `~/.config/gtk-3.0/bookmarks`).
 - **Path bar**: click any part of the path to go there, or click the empty space (or press Ctrl+L) to type a location. `~`, relative paths and `file://` links work.
 - **Filter**: Ctrl+F, `/` or simply start typing. Esc clears it.
 - **Grid or list**: Ctrl+1 and Ctrl+2. The list has Size, Modified and Kind columns; click a heading to sort by it, again to reverse. Ctrl and the mouse wheel, or Ctrl+plus and Ctrl+minus, change the icon size.

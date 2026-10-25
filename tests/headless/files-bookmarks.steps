@@ -1,5 +1,5 @@
 sleep 1.5
-check mkdir -p /tmp/bm-a /tmp/bm-b /tmp/bm-c
+check mkdir -p /tmp/bm-a /tmp/bm-b /tmp/bm-c /tmp/bm-g1 /tmp/bm-g2 && mkdir -p "$HOME/.config/gtk-3.0" && printf 'file:///tmp/bm-g1 One\nfile:///tmp/bm-g2 Two\n' > "$HOME/.config/gtk-3.0/bookmarks"
 syl files open /tmp/bm-a
 sleep 1.5
 syl files act bookmark
@@ -20,3 +20,8 @@ pointer move 77 500 mousedown 1 move 77 490 move 77 450 move 77 420 mouseup 1
 sleep 1
 check tr -d '\n ' < "$HOME/.config/sylvaris/settings.json" | grep -q '"bookmarks":\["/tmp/bm-a","/tmp/bm-b","/tmp/bm-c"\]'
 check sylvaris files state | grep -q '"path":"/tmp/bm-c"'
+pointer move 77 572 mousedown 1 move 77 565 move 77 545 move 77 530 mouseup 1
+sleep 1
+check test "$(cat "$HOME/.config/gtk-3.0/bookmarks")" = "$(printf 'file:///tmp/bm-g2 Two\nfile:///tmp/bm-g1 One')"
+check tr -d '\n ' < "$HOME/.config/sylvaris/settings.json" | grep -q '"bookmarks":\["/tmp/bm-a","/tmp/bm-b","/tmp/bm-c"\]'
+shot files-bookmarks-gtk

@@ -569,6 +569,17 @@ export function gtkBookmarks(text) {
     return out
 }
 
+export function gtkMoved(text, fromPath, toPath) {
+    const lines = String(text || "").split("\n")
+    const at = path => lines.findIndex(line => {
+        const t = line.trim()
+        return t.startsWith("file://") && pathFrom(t.split(" ")[0]) === path
+    })
+    const from = at(fromPath)
+    const to = at(toPath)
+    return from < 0 || to < 0 ? String(text || "") : moved(lines, from, to).join("\n")
+}
+
 export function trashInfo(text) {
     const path = /^Path=(.*)$/m.exec(String(text || ""))
     const date = /^DeletionDate=(.*)$/m.exec(String(text || ""))

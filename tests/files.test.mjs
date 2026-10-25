@@ -1,7 +1,7 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
 import {
-    DEFAULT_FILES, SECTIONS, moved, validateFiles, FILE_ACTIONS, validateKeys, keymap, comboOf,
+    DEFAULT_FILES, SECTIONS, moved, gtkMoved, validateFiles, FILE_ACTIONS, validateKeys, keymap, comboOf,
     joinPath, parentOf, nameOf, expand, pretty, crumbs,
     kindOf, kindLabel, glyphOf, themeIcon, arrange, sizeText, whenText, summary,
     uniqueName, checkName, pick, invert, nextIndex, bandHits,
@@ -468,4 +468,11 @@ test("moved takes one entry to a new place and ignores bad indexes", () => {
     assert.deepEqual(moved(["a", "b"], 1, 1), ["a", "b"])
     assert.deepEqual(moved(["a", "b"], -1, 1), ["a", "b"])
     assert.deepEqual(moved(["a", "b"], 0, 5), ["a", "b"])
+})
+
+test("gtkMoved reorders GTK bookmark lines by path and keeps every other line", () => {
+    const text = "file:///home/n/NixOS NixOS\nsftp://host/x Remote\nfile:///data Data\nfile:///home/n/a%20b\n"
+    assert.equal(gtkMoved(text, "/home/n/NixOS", "/home/n/a b"), "sftp://host/x Remote\nfile:///data Data\nfile:///home/n/a%20b\nfile:///home/n/NixOS NixOS\n")
+    assert.equal(gtkMoved(text, "/home/n/a b", "/home/n/NixOS"), "file:///home/n/a%20b\nfile:///home/n/NixOS NixOS\nsftp://host/x Remote\nfile:///data Data\n")
+    assert.equal(gtkMoved(text, "/home/n/NixOS", "/nope"), text)
 })

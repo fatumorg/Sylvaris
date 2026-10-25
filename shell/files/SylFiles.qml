@@ -911,6 +911,12 @@ Scope {
         Settings.put("files.bookmarks", F.moved(root.cfg.bookmarks, from, to));
     }
 
+    function moveGtkBookmark(from: string, to: string): void {
+        const text = F.gtkMoved(gtkFile.text(), from, to);
+        gtkFile.setText(text);
+        root.gtk = F.gtkBookmarks(text);
+    }
+
     function driveOf(key: string): var {
         const k = key.trim();
         return root.drives.find(d => d.id === k) || root.drives.find(d => d.label === k) || root.drives.find(d => d.label.toLowerCase() === k.toLowerCase()) || null;
@@ -1608,6 +1614,7 @@ Scope {
     }
 
     FileView {
+        id: gtkFile
         path: root.shown ? root.configHome + "/gtk-3.0/bookmarks" : ""
         printErrors: false
         watchChanges: true

@@ -10,6 +10,7 @@ Item {
 
     required property var files
     readonly property int ownCount: side.files.sidebar.filter(x => x.own).length
+    readonly property int markCount: side.files.sidebar.filter(x => x.section === "bookmarks").length
     property int dragFrom: -1
     property int dragTo: -1
     property real dragY: 0
@@ -84,7 +85,8 @@ Item {
                             id: place
                             required property var modelData
                             required property int index
-                            readonly property int shift: side.dragFrom < 0 || place.index === side.dragFrom || !place.modelData.own ? 0 : side.dragFrom < side.dragTo && place.index > side.dragFrom && place.index <= side.dragTo ? -36 : side.dragFrom > side.dragTo && place.index >= side.dragTo && place.index < side.dragFrom ? 36 : 0
+                            readonly property bool dragging: place.modelData.section === "bookmarks" && place.index === side.dragFrom
+                            readonly property int shift: side.dragFrom < 0 || place.dragging || place.modelData.section !== "bookmarks" ? 0 : side.dragFrom < side.dragTo && place.index > side.dragFrom && place.index <= side.dragTo ? -36 : side.dragFrom > side.dragTo && place.index >= side.dragTo && place.index < side.dragFrom ? 36 : 0
                             readonly property var drive: place.modelData.drive
                             readonly property bool waiting: place.drive !== null && side.files.driveBusy === place.drive.id
                             readonly property bool away: place.drive !== null && (!place.drive.mounted || place.drive.locked)
@@ -93,18 +95,18 @@ Item {
                             width: section.width
                             height: 34
                             Component.onDestruction: {
-                                if (side.dragFrom === place.index) {
+                                if (place.dragging) {
                                     side.dragFrom = -1;
                                     side.dragTo = -1;
                                     side.dragY = 0;
                                 }
                             }
-                            z: place.index === side.dragFrom ? 1 : 0
+                            z: place.dragging ? 1 : 0
                             transform: Translate {
-                                y: place.index === side.dragFrom ? side.dragY : place.shift
+                                y: place.dragging ? side.dragY : place.shift
 
                                 Behavior on y {
-                                    enabled: place.index !== side.dragFrom
+                                    enabled: !place.dragging
                                     NumberAnimation {
                                         duration: Tokens.stateDuration
                                     }
@@ -178,19 +180,27 @@ Item {
                                 cursorShape: Qt.PointingHandCursor
                                 property real pressY: 0
                                 property bool moved: false
+                                preventStealing: place.modelData.section === "bookmarks"
+                                onCanceled: {
+                                    side.dragFrom = -1;
+                                    side.dragTo = -1;
+                                    side.dragY = 0;
+                                }
                                 onPressed: mouse => {
                                     area.pressY = area.mapToItem(col, mouse.x, mouse.y).y;
                                     area.moved = false;
                                 }
                                 onPositionChanged: mouse => {
-                                    if (!area.pressed || !place.modelData.own || !(mouse.buttons & Qt.LeftButton))
+                                    if (!area.pressed || place.modelData.section !== "bookmarks" || !(mouse.buttons & Qt.LeftButton))
                                         return;
                                     const dy = area.mapToItem(col, mouse.x, mouse.y).y - area.pressY;
                                     if (!area.moved && Math.abs(dy) < 6)
                                         return;
                                     area.moved = true;
                                     side.dragFrom = place.index;
-                                    side.dragY = Math.max(-place.index * 36, Math.min((side.ownCount - 1 - place.index) * 36, dy));
+                                    const lo = place.modelData.own ? 0 : side.ownCount;
+                                    const hi = place.modelData.own ? side.ownCount - 1 : side.markCount - 1;
+                                    side.dragY = Math.max((lo - place.index) * 36, Math.min((hi - place.index) * 36, dy));
                                     side.dragTo = place.index + Math.round(side.dragY / 36);
                                 }
                                 onReleased: {
@@ -199,8 +209,12 @@ Item {
                                     side.dragFrom = -1;
                                     side.dragTo = -1;
                                     side.dragY = 0;
-                                    if (from >= 0 && to !== from)
+                                    if (from < 0 || to === from)
+                                        return;
+                                    if (place.modelData.own)
                                         side.files.moveBookmark(from, to);
+                                    else
+                                        side.files.moveGtkBookmark(section.rows[from].path, section.rows[to].path);
                                 }
                                 onClicked: mouse => {
                                     if (area.moved)
