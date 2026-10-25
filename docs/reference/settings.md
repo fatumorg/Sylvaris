@@ -279,6 +279,8 @@ Explained in [island](../parts/island.md).
 | `files.icons` | `"glyphs"` |  |
 | `files.sidebar` | `true` |  |
 | `files.sections` | `["places","bookmarks","devices"]` |  |
+| `files.placeOrder` | `[]` |  |
+| `files.deviceOrder` | `[]` |  |
 | `files.details` | `false` |  |
 | `files.click` | `"double"` |  |
 | `files.typing` | `"filter"` |  |

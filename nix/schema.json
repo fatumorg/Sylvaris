@@ -219,6 +219,8 @@
     "icons": "glyphs",
     "sidebar": true,
     "sections": ["places", "bookmarks", "devices"],
+    "placeOrder": [],
+    "deviceOrder": [],
     "details": false,
     "click": "double",
     "typing": "filter",

@@ -7,6 +7,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 ### Added
 
 - SylFiles: drag a bookmark up or down in the sidebar to reorder it, GTK bookmarks included
+- SylFiles: places and devices in the sidebar can be dragged into a new order too, saved in `files.placeOrder` and `files.deviceOrder`
 - SylFiles: `files.sections` and a "Sidebar order" setting choose the order of Places, Bookmarks and Devices
 - SylFiles answers "Show in folder" from other apps over `org.freedesktop.FileManager1` (Home Manager `defaultFileManager`)
 - Virtual display in SylCenter Displays: an extra screen for a tablet over VNC, with size presets and the login shown in the panel (Hyprland)

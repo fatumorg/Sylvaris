@@ -25,3 +25,7 @@ sleep 1
 check test "$(cat "$HOME/.config/gtk-3.0/bookmarks")" = "$(printf 'file:///tmp/bm-g2 Two\nfile:///tmp/bm-g1 One')"
 check tr -d '\n ' < "$HOME/.config/sylvaris/settings.json" | grep -q '"bookmarks":\["/tmp/bm-a","/tmp/bm-b","/tmp/bm-c"\]'
 shot files-bookmarks-gtk
+pointer move 77 141 mousedown 1 move 77 150 move 77 190 move 77 215 mouseup 1
+sleep 1
+check tr -d '\n ' < "$HOME/.config/sylvaris/settings.json" | grep -q '"placeOrder":\["[^"]*/Desktop","[^"]*/Documents","[^"]*/home"'
+shot files-places-moved

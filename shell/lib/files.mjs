@@ -23,6 +23,8 @@ export const DEFAULT_FILES = {
     icons: "glyphs",
     sidebar: true,
     sections: SECTIONS.slice(),
+    placeOrder: [],
+    deviceOrder: [],
     details: false,
     click: "double",
     typing: "filter",
@@ -173,6 +175,13 @@ export function validateFiles(raw) {
     for (const k of SECTIONS)
         if (order.indexOf(k) < 0)
             order.push(k)
+    const keys = list => {
+        const out = []
+        for (const k of Array.isArray(list) ? list : [])
+            if (typeof k === "string" && k !== "" && out.indexOf(k) < 0)
+                out.push(k)
+        return out
+    }
     const start = placePath(v.start)
     return Object.assign({}, v, {
         view: pick("view", VIEWS),
@@ -185,6 +194,8 @@ export function validateFiles(raw) {
         icons: pick("icons", ICON_STYLES),
         sidebar: bool("sidebar"),
         sections: order,
+        placeOrder: keys(v.placeOrder),
+        deviceOrder: keys(v.deviceOrder),
         details: bool("details"),
         click: pick("click", CLICKS),
         typing: pick("typing", TYPING),
@@ -722,27 +733,37 @@ export function moved(list, from, to) {
     return out
 }
 
+export function savedOrder(saved, keys, from, to) {
+    return moved(keys, from, to).concat(saved.filter(k => keys.indexOf(k) < 0))
+}
+
+function inOrder(rows, order) {
+    const known = rows.filter(r => order.indexOf(r.key) >= 0).sort((a, b) => order.indexOf(a.key) - order.indexOf(b.key))
+    return known.concat(rows.filter(r => order.indexOf(r.key) < 0))
+}
+
 export function sidebarOf(src) {
-    const out = []
-    for (const p of places(src.home, src.dirs))
-        out.push({ section: "places", label: p.label, path: p.path, glyph: p.glyph, own: false, removable: false })
+    const placeRows = places(src.home, src.dirs).map(p => ({ section: "places", key: p.path, label: p.label, path: p.path, glyph: p.glyph, own: false, removable: false }))
+    const out = inOrder(placeRows, src.placeOrder || [])
     const seen = []
     for (const b of src.bookmarks) {
         const path = b === "~" ? src.home : b.startsWith("~/") ? src.home + b.slice(1) : b
         if (seen.indexOf(path) < 0) {
             seen.push(path)
-            out.push({ section: "bookmarks", label: nameOf(path), path: path, glyph: GLYPH.bookmark, own: true, removable: false })
+            out.push({ section: "bookmarks", key: path, label: nameOf(path), path: path, glyph: GLYPH.bookmark, own: true, removable: false })
         }
     }
     for (const b of src.gtk)
         if (seen.indexOf(b.path) < 0) {
             seen.push(b.path)
-            out.push({ section: "bookmarks", label: b.label, path: b.path, glyph: GLYPH.bookmark, own: false, removable: false })
+            out.push({ section: "bookmarks", key: b.path, label: b.label, path: b.path, glyph: GLYPH.bookmark, own: false, removable: false })
         }
-    out.push({ section: "devices", label: "File system", path: "/", glyph: GLYPH.drive, own: false, removable: false })
+    const deviceRows = [{ section: "devices", key: "/", label: "File system", path: "/", glyph: GLYPH.drive, own: false, removable: false }]
     for (const d of src.drives)
-        out.push({ section: "devices", label: d.label, path: d.path, glyph: d.locked ? GLYPH.lock : DRIVE_GLYPH[d.kind] || GLYPH.drive, own: false, removable: d.ejectable, drive: d })
-    out.push({ section: "devices", label: "Trash", path: src.trash, glyph: GLYPH.trash, own: false, removable: false })
+        deviceRows.push({ section: "devices", key: d.id, label: d.label, path: d.path, glyph: d.locked ? GLYPH.lock : DRIVE_GLYPH[d.kind] || GLYPH.drive, own: false, removable: d.ejectable, drive: d })
+    deviceRows.push({ section: "devices", key: "trash", label: "Trash", path: src.trash, glyph: GLYPH.trash, own: false, removable: false })
+    for (const r of inOrder(deviceRows, src.deviceOrder || []))
+        out.push(r)
     let lit = false
     return out.map(x => {
         const active = !lit && x.path !== "" && x.path === src.current

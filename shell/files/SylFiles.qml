@@ -107,7 +107,9 @@ Scope {
         gtk: root.gtk,
         drives: root.drives,
         trash: root.trashPath,
-        current: root.path
+        current: root.path,
+        placeOrder: root.cfg.placeOrder,
+        deviceOrder: root.cfg.deviceOrder
     })
     readonly property var focusEntry: root.selected.length === 1 ? root.entryOf(root.selected[0]) : null
 
@@ -909,6 +911,11 @@ Scope {
 
     function moveBookmark(from: int, to: int): void {
         Settings.put("files.bookmarks", F.moved(root.cfg.bookmarks, from, to));
+    }
+
+    function moveRow(section: string, from: int, to: int): void {
+        const key = section === "places" ? "placeOrder" : "deviceOrder";
+        Settings.put("files." + key, F.savedOrder(root.cfg[key], root.sidebar.filter(x => x.section === section).map(x => x.key), from, to));
     }
 
     function moveGtkBookmark(from: string, to: string): void {

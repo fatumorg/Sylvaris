@@ -12,7 +12,7 @@ Bind `files open` to a key under SylSettings › Advanced › Key bindings (Supe
 
 ## The window
 
-- **Sidebar**: Home and your XDG folders, your bookmarks and GTK's, every drive (see below) and the trash. Middle-click opens a place in a new tab; × on a bookmark removes it, and dragging one up or down reorders it (GTK bookmarks are saved back to `~/.config/gtk-3.0/bookmarks`).
+- **Sidebar**: Home and your XDG folders, your bookmarks and GTK's, every drive (see below) and the trash. Middle-click opens a place in a new tab; × on a bookmark removes it. Drag a place, bookmark or device up or down to reorder it; the order is remembered (GTK bookmarks are saved back to `~/.config/gtk-3.0/bookmarks`).
 - **Path bar**: click any part of the path to go there, or click the empty space (or press Ctrl+L) to type a location. `~`, relative paths and `file://` links work.
 - **Filter**: Ctrl+F, `/` or simply start typing. Esc clears it.
 - **Grid or list**: Ctrl+1 and Ctrl+2. The list has Size, Modified and Kind columns; click a heading to sort by it, again to reverse. Ctrl and the mouse wheel, or Ctrl+plus and Ctrl+minus, change the icon size.
@@ -131,6 +131,8 @@ It also makes SylFiles answer "Show in folder" from other apps such as Firefox (
 | `files.icons` | `"glyphs"` | Sylvaris glyphs, or `theme` for your icon theme |
 | `files.sidebar` | `true` | show the sidebar |
 | `files.sections` | `["places", "bookmarks", "devices"]` | order of the sidebar sections |
+| `files.placeOrder` | `[]` | order of the places, as paths; set by dragging them |
+| `files.deviceOrder` | `[]` | order of the devices, as drive ids, `/` and `trash`; set by dragging them |
 | `files.details` | `false` | show the details pane |
 | `files.click` | `"double"` | `double` or `single` click opens |
 | `files.typing` | `"filter"` | typing filters the folder, or `jump`s to the first match |

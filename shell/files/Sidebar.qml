@@ -11,6 +11,7 @@ Item {
     required property var files
     readonly property int ownCount: side.files.sidebar.filter(x => x.own).length
     readonly property int markCount: side.files.sidebar.filter(x => x.section === "bookmarks").length
+    property string dragSection: ""
     property int dragFrom: -1
     property int dragTo: -1
     property real dragY: 0
@@ -85,8 +86,8 @@ Item {
                             id: place
                             required property var modelData
                             required property int index
-                            readonly property bool dragging: place.modelData.section === "bookmarks" && place.index === side.dragFrom
-                            readonly property int shift: side.dragFrom < 0 || place.dragging || place.modelData.section !== "bookmarks" ? 0 : side.dragFrom < side.dragTo && place.index > side.dragFrom && place.index <= side.dragTo ? -36 : side.dragFrom > side.dragTo && place.index >= side.dragTo && place.index < side.dragFrom ? 36 : 0
+                            readonly property bool dragging: place.modelData.section === side.dragSection && place.index === side.dragFrom
+                            readonly property int shift: side.dragFrom < 0 || place.dragging || place.modelData.section !== side.dragSection ? 0 : side.dragFrom < side.dragTo && place.index > side.dragFrom && place.index <= side.dragTo ? -36 : side.dragFrom > side.dragTo && place.index >= side.dragTo && place.index < side.dragFrom ? 36 : 0
                             readonly property var drive: place.modelData.drive
                             readonly property bool waiting: place.drive !== null && side.files.driveBusy === place.drive.id
                             readonly property bool away: place.drive !== null && (!place.drive.mounted || place.drive.locked)
@@ -180,7 +181,7 @@ Item {
                                 cursorShape: Qt.PointingHandCursor
                                 property real pressY: 0
                                 property bool moved: false
-                                preventStealing: place.modelData.section === "bookmarks"
+                                preventStealing: true
                                 onCanceled: {
                                     side.dragFrom = -1;
                                     side.dragTo = -1;
@@ -191,15 +192,17 @@ Item {
                                     area.moved = false;
                                 }
                                 onPositionChanged: mouse => {
-                                    if (!area.pressed || place.modelData.section !== "bookmarks" || !(mouse.buttons & Qt.LeftButton))
+                                    if (!area.pressed || !(mouse.buttons & Qt.LeftButton))
                                         return;
                                     const dy = area.mapToItem(col, mouse.x, mouse.y).y - area.pressY;
                                     if (!area.moved && Math.abs(dy) < 6)
                                         return;
                                     area.moved = true;
+                                    side.dragSection = place.modelData.section;
                                     side.dragFrom = place.index;
-                                    const lo = place.modelData.own ? 0 : side.ownCount;
-                                    const hi = place.modelData.own ? side.ownCount - 1 : side.markCount - 1;
+                                    const marks = place.modelData.section === "bookmarks";
+                                    const lo = !marks || place.modelData.own ? 0 : side.ownCount;
+                                    const hi = !marks ? section.rows.length - 1 : place.modelData.own ? side.ownCount - 1 : side.markCount - 1;
                                     side.dragY = Math.max((lo - place.index) * 36, Math.min((hi - place.index) * 36, dy));
                                     side.dragTo = place.index + Math.round(side.dragY / 36);
                                 }
@@ -211,7 +214,9 @@ Item {
                                     side.dragY = 0;
                                     if (from < 0 || to === from)
                                         return;
-                                    if (place.modelData.own)
+                                    if (place.modelData.section !== "bookmarks")
+                                        side.files.moveRow(place.modelData.section, from, to);
+                                    else if (place.modelData.own)
                                         side.files.moveBookmark(from, to);
                                     else
                                         side.files.moveGtkBookmark(section.rows[from].path, section.rows[to].path);

@@ -142,6 +142,20 @@ Column {
         }
 
         SettingRow {
+            title: "Places and devices order"
+            subtitle: "Drag them in the sidebar to reorder"
+
+            RowButton {
+                icon: Icons.GLYPHS.restart
+                label: "Reset"
+                onClicked: {
+                    Settings.put("files.placeOrder", []);
+                    Settings.put("files.deviceOrder", []);
+                }
+            }
+        }
+
+        SettingRow {
             title: "Details pane"
             subtitle: "A big preview, size, date and permissions of what you select"
             last: true

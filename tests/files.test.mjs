@@ -1,7 +1,7 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
 import {
-    DEFAULT_FILES, SECTIONS, moved, gtkMoved, validateFiles, FILE_ACTIONS, validateKeys, keymap, comboOf,
+    DEFAULT_FILES, SECTIONS, moved, gtkMoved, savedOrder, validateFiles, FILE_ACTIONS, validateKeys, keymap, comboOf,
     joinPath, parentOf, nameOf, expand, pretty, crumbs,
     kindOf, kindLabel, glyphOf, themeIcon, arrange, sizeText, whenText, summary,
     uniqueName, checkName, pick, invert, nextIndex, bandHits,
@@ -475,4 +475,34 @@ test("gtkMoved reorders GTK bookmark lines by path and keeps every other line", 
     assert.equal(gtkMoved(text, "/home/n/NixOS", "/home/n/a b"), "sftp://host/x Remote\nfile:///data Data\nfile:///home/n/a%20b\nfile:///home/n/NixOS NixOS\n")
     assert.equal(gtkMoved(text, "/home/n/a b", "/home/n/NixOS"), "file:///home/n/a%20b\nfile:///home/n/NixOS NixOS\nsftp://host/x Remote\nfile:///data Data\n")
     assert.equal(gtkMoved(text, "/home/n/NixOS", "/nope"), text)
+})
+
+test("place and device order is validated to unique strings", () => {
+    assert.deepEqual(DEFAULT_FILES.placeOrder, [])
+    assert.deepEqual(DEFAULT_FILES.deviceOrder, [])
+    assert.deepEqual(validateFiles({ placeOrder: ["/a", "/a", 3, "", "/b"], deviceOrder: "x" }).placeOrder, ["/a", "/b"])
+    assert.deepEqual(validateFiles({ deviceOrder: "x" }).deviceOrder, [])
+})
+
+test("sidebarOf puts places and devices in the saved order and keeps new ones after them", () => {
+    const s = sidebarOf({
+        home: "/home/n",
+        dirs: {},
+        bookmarks: [],
+        gtk: [],
+        drives: [{ id: "sdb1", label: "USB", path: "/run/media/n/USB", kind: "usb", locked: false, ejectable: true }],
+        trash: "/home/n/.local/share/Trash/files",
+        current: "",
+        placeOrder: ["/home/n/Music", "/gone", "/home/n"],
+        deviceOrder: ["trash", "sdb1"]
+    })
+    const places = s.filter(x => x.section === "places").map(x => x.label)
+    assert.deepEqual(places.slice(0, 2), ["Music", "Home"])
+    assert.equal(places.length, 7)
+    assert.deepEqual(s.filter(x => x.section === "devices").map(x => x.key), ["trash", "sdb1", "/"])
+})
+
+test("savedOrder moves one key and keeps saved keys that are not shown now", () => {
+    assert.deepEqual(savedOrder(["usb", "/", "trash"], ["/", "trash"], 1, 0), ["trash", "/", "usb"])
+    assert.deepEqual(savedOrder([], ["a", "b", "c"], 0, 2), ["b", "c", "a"])
 })
