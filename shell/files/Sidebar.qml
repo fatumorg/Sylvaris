@@ -9,6 +9,10 @@ Item {
     id: side
 
     required property var files
+    readonly property int ownCount: side.files.sidebar.filter(x => x.own).length
+    property int dragFrom: -1
+    property int dragTo: -1
+    property real dragY: 0
 
     Glass {
         anchors.fill: parent
@@ -36,16 +40,13 @@ Item {
             spacing: 2
 
             Repeater {
-                model: side.files.cfg.sections.map(k => ({ key: k, title: ({ places: "Places", bookmarks: "Bookmarks", devices: "Devices" })[k] }))
+                model: F.SECTIONS.length
 
                 delegate: Column {
                     id: section
-                    required property var modelData
                     required property int index
-                    readonly property var rows: side.files.sidebar.filter(x => x.section === section.modelData.key)
-                    readonly property int ownCount: section.rows.filter(x => x.own).length
-                    property int dragFrom: -1
-                    property int dragTo: -1
+                    readonly property string key: side.files.cfg.sections[section.index]
+                    readonly property var rows: side.files.sidebar.filter(x => x.section === section.key)
                     width: col.width
                     spacing: 2
 
@@ -54,7 +55,7 @@ Item {
                         topPadding: section.index === 0 ? 4 : 14
                         bottomPadding: 4
                         textFormat: Text.PlainText
-                        text: section.modelData.title
+                        text: ({ places: "Places", bookmarks: "Bookmarks", devices: "Devices" })[section.key]
                         color: Theme.textDim
                         font.family: Tokens.fontUi
                         font.pixelSize: Tokens.tinySize
@@ -83,8 +84,7 @@ Item {
                             id: place
                             required property var modelData
                             required property int index
-                            property real dragY: 0
-                            readonly property int shift: section.dragFrom < 0 || place.index === section.dragFrom || !place.modelData.own ? 0 : section.dragFrom < section.dragTo && place.index > section.dragFrom && place.index <= section.dragTo ? -36 : section.dragFrom > section.dragTo && place.index >= section.dragTo && place.index < section.dragFrom ? 36 : 0
+                            readonly property int shift: side.dragFrom < 0 || place.index === side.dragFrom || !place.modelData.own ? 0 : side.dragFrom < side.dragTo && place.index > side.dragFrom && place.index <= side.dragTo ? -36 : side.dragFrom > side.dragTo && place.index >= side.dragTo && place.index < side.dragFrom ? 36 : 0
                             readonly property var drive: place.modelData.drive
                             readonly property bool waiting: place.drive !== null && side.files.driveBusy === place.drive.id
                             readonly property bool away: place.drive !== null && (!place.drive.mounted || place.drive.locked)
@@ -92,12 +92,19 @@ Item {
                             readonly property bool hot: area.containsMouse
                             width: section.width
                             height: 34
-                            z: place.index === section.dragFrom ? 1 : 0
+                            Component.onDestruction: {
+                                if (side.dragFrom === place.index) {
+                                    side.dragFrom = -1;
+                                    side.dragTo = -1;
+                                    side.dragY = 0;
+                                }
+                            }
+                            z: place.index === side.dragFrom ? 1 : 0
                             transform: Translate {
-                                y: place.index === section.dragFrom ? place.dragY : place.shift
+                                y: place.index === side.dragFrom ? side.dragY : place.shift
 
                                 Behavior on y {
-                                    enabled: place.index !== section.dragFrom
+                                    enabled: place.index !== side.dragFrom
                                     NumberAnimation {
                                         duration: Tokens.stateDuration
                                     }
@@ -172,26 +179,28 @@ Item {
                                 property real pressY: 0
                                 property bool moved: false
                                 onPressed: mouse => {
-                                    area.pressY = mouse.y;
+                                    area.pressY = area.mapToItem(col, mouse.x, mouse.y).y;
                                     area.moved = false;
                                 }
                                 onPositionChanged: mouse => {
                                     if (!area.pressed || !place.modelData.own || !(mouse.buttons & Qt.LeftButton))
                                         return;
-                                    const dy = mouse.y - area.pressY;
+                                    const dy = area.mapToItem(col, mouse.x, mouse.y).y - area.pressY;
                                     if (!area.moved && Math.abs(dy) < 6)
                                         return;
                                     area.moved = true;
-                                    section.dragFrom = place.index;
-                                    place.dragY = Math.max(-place.index * 36, Math.min((section.ownCount - 1 - place.index) * 36, dy));
-                                    section.dragTo = place.index + Math.round(place.dragY / 36);
+                                    side.dragFrom = place.index;
+                                    side.dragY = Math.max(-place.index * 36, Math.min((side.ownCount - 1 - place.index) * 36, dy));
+                                    side.dragTo = place.index + Math.round(side.dragY / 36);
                                 }
                                 onReleased: {
-                                    if (section.dragFrom >= 0 && section.dragTo !== section.dragFrom)
-                                        side.files.moveBookmark(section.dragFrom, section.dragTo);
-                                    section.dragFrom = -1;
-                                    section.dragTo = -1;
-                                    place.dragY = 0;
+                                    const from = side.dragFrom;
+                                    const to = side.dragTo;
+                                    side.dragFrom = -1;
+                                    side.dragTo = -1;
+                                    side.dragY = 0;
+                                    if (from >= 0 && to !== from)
+                                        side.files.moveBookmark(from, to);
                                 }
                                 onClicked: mouse => {
                                     if (area.moved)

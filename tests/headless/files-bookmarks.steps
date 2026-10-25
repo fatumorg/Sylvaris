@@ -1,0 +1,22 @@
+sleep 1.5
+check mkdir -p /tmp/bm-a /tmp/bm-b /tmp/bm-c
+syl files open /tmp/bm-a
+sleep 1.5
+syl files act bookmark
+syl files go /tmp/bm-b
+sleep 0.5
+syl files act bookmark
+syl files go /tmp/bm-c
+sleep 0.5
+syl files act bookmark
+sleep 1
+shot files-bookmarks-before
+pointer move 77 429 mousedown 1 move 77 440 move 77 480 move 77 505 mouseup 1
+sleep 1
+check tr -d '\n ' < "$HOME/.config/sylvaris/settings.json" | grep -q '"bookmarks":\["/tmp/bm-b","/tmp/bm-c","/tmp/bm-a"\]'
+check sylvaris files state | grep -q '"path":"/tmp/bm-c"'
+shot files-bookmarks-after
+pointer move 77 500 mousedown 1 move 77 490 move 77 450 move 77 420 mouseup 1
+sleep 1
+check tr -d '\n ' < "$HOME/.config/sylvaris/settings.json" | grep -q '"bookmarks":\["/tmp/bm-a","/tmp/bm-b","/tmp/bm-c"\]'
+check sylvaris files state | grep -q '"path":"/tmp/bm-c"'
