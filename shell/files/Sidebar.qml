@@ -43,6 +43,9 @@ Item {
                     required property var modelData
                     required property int index
                     readonly property var rows: side.files.sidebar.filter(x => x.section === section.modelData.key)
+                    readonly property int ownCount: section.rows.filter(x => x.own).length
+                    property int dragFrom: -1
+                    property int dragTo: -1
                     width: col.width
                     spacing: 2
 
@@ -79,6 +82,9 @@ Item {
                         delegate: Item {
                             id: place
                             required property var modelData
+                            required property int index
+                            property real dragY: 0
+                            readonly property int shift: section.dragFrom < 0 || place.index === section.dragFrom || !place.modelData.own ? 0 : section.dragFrom < section.dragTo && place.index > section.dragFrom && place.index <= section.dragTo ? -36 : section.dragFrom > section.dragTo && place.index >= section.dragTo && place.index < section.dragFrom ? 36 : 0
                             readonly property var drive: place.modelData.drive
                             readonly property bool waiting: place.drive !== null && side.files.driveBusy === place.drive.id
                             readonly property bool away: place.drive !== null && (!place.drive.mounted || place.drive.locked)
@@ -86,6 +92,17 @@ Item {
                             readonly property bool hot: area.containsMouse
                             width: section.width
                             height: 34
+                            z: place.index === section.dragFrom ? 1 : 0
+                            transform: Translate {
+                                y: place.index === section.dragFrom ? place.dragY : place.shift
+
+                                Behavior on y {
+                                    enabled: place.index !== section.dragFrom
+                                    NumberAnimation {
+                                        duration: Tokens.stateDuration
+                                    }
+                                }
+                            }
 
                             Glass {
                                 anchors.fill: parent
@@ -152,7 +169,33 @@ Item {
                                 hoverEnabled: true
                                 acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
                                 cursorShape: Qt.PointingHandCursor
+                                property real pressY: 0
+                                property bool moved: false
+                                onPressed: mouse => {
+                                    area.pressY = mouse.y;
+                                    area.moved = false;
+                                }
+                                onPositionChanged: mouse => {
+                                    if (!area.pressed || !place.modelData.own || !(mouse.buttons & Qt.LeftButton))
+                                        return;
+                                    const dy = mouse.y - area.pressY;
+                                    if (!area.moved && Math.abs(dy) < 6)
+                                        return;
+                                    area.moved = true;
+                                    section.dragFrom = place.index;
+                                    place.dragY = Math.max(-place.index * 36, Math.min((section.ownCount - 1 - place.index) * 36, dy));
+                                    section.dragTo = place.index + Math.round(place.dragY / 36);
+                                }
+                                onReleased: {
+                                    if (section.dragFrom >= 0 && section.dragTo !== section.dragFrom)
+                                        side.files.moveBookmark(section.dragFrom, section.dragTo);
+                                    section.dragFrom = -1;
+                                    section.dragTo = -1;
+                                    place.dragY = 0;
+                                }
                                 onClicked: mouse => {
+                                    if (area.moved)
+                                        return;
                                     if (mouse.button === Qt.RightButton) {
                                         if (place.drive !== null) {
                                             const p = area.mapToItem(null, mouse.x, mouse.y);

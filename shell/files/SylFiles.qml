@@ -907,6 +907,10 @@ Scope {
         root.say(i >= 0 ? "Bookmark removed" : "Bookmarked " + F.nameOf(p), false);
     }
 
+    function moveBookmark(from: int, to: int): void {
+        Settings.put("files.bookmarks", F.moved(root.cfg.bookmarks, from, to));
+    }
+
     function driveOf(key: string): var {
         const k = key.trim();
         return root.drives.find(d => d.id === k) || root.drives.find(d => d.label === k) || root.drives.find(d => d.label.toLowerCase() === k.toLowerCase()) || null;

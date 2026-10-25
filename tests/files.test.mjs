@@ -1,7 +1,7 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
 import {
-    DEFAULT_FILES, SECTIONS, validateFiles, FILE_ACTIONS, validateKeys, keymap, comboOf,
+    DEFAULT_FILES, SECTIONS, moved, validateFiles, FILE_ACTIONS, validateKeys, keymap, comboOf,
     joinPath, parentOf, nameOf, expand, pretty, crumbs,
     kindOf, kindLabel, glyphOf, themeIcon, arrange, sizeText, whenText, summary,
     uniqueName, checkName, pick, invert, nextIndex, bandHits,
@@ -460,4 +460,12 @@ test("sidebar sections keep a valid order and fill in what is missing", () => {
     assert.deepEqual(validateFiles({ sections: ["devices", "devices", "foo"] }).sections, ["devices", "places", "bookmarks"])
     assert.deepEqual(validateFiles({ sections: ["bookmarks"] }).sections, ["bookmarks", "places", "devices"])
     assert.deepEqual(validateFiles({ sections: "devices" }).sections, SECTIONS)
+})
+
+test("moved takes one entry to a new place and ignores bad indexes", () => {
+    assert.deepEqual(moved(["a", "b", "c", "d"], 0, 2), ["b", "c", "a", "d"])
+    assert.deepEqual(moved(["a", "b", "c", "d"], 3, 1), ["a", "d", "b", "c"])
+    assert.deepEqual(moved(["a", "b"], 1, 1), ["a", "b"])
+    assert.deepEqual(moved(["a", "b"], -1, 1), ["a", "b"])
+    assert.deepEqual(moved(["a", "b"], 0, 5), ["a", "b"])
 })

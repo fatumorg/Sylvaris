@@ -703,6 +703,14 @@ export function openers(apps, kind, query) {
 
 const DRIVE_GLYPH = { usb: GLYPH.usb, card: GLYPH.card, optical: GLYPH.disc, phone: GLYPH.phone, image: GLYPH.disc, disk: GLYPH.drive, network: GLYPH.network }
 
+export function moved(list, from, to) {
+    const out = list.slice()
+    if (from === to || from < 0 || to < 0 || from >= out.length || to >= out.length)
+        return out
+    out.splice(to, 0, out.splice(from, 1)[0])
+    return out
+}
+
 export function sidebarOf(src) {
     const out = []
     for (const p of places(src.home, src.dirs))
