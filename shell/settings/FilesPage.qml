@@ -120,6 +120,28 @@ Column {
         }
 
         SettingRow {
+            title: "Sidebar order"
+            subtitle: "Click one to put it first"
+
+            Flow {
+                width: 420
+                spacing: 6
+
+                Repeater {
+                    model: root.cfg.sections
+
+                    delegate: Chip {
+                        required property string modelData
+                        required property int index
+                        text: ({ places: "Places", bookmarks: "Bookmarks", devices: "Devices" })[modelData]
+                        lit: index === 0
+                        onClicked: Settings.put("files.sections", [modelData].concat(root.cfg.sections.filter(k => k !== modelData)))
+                    }
+                }
+            }
+        }
+
+        SettingRow {
             title: "Details pane"
             subtitle: "A big preview, size, date and permissions of what you select"
             last: true

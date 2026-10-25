@@ -36,20 +36,7 @@ Item {
             spacing: 2
 
             Repeater {
-                model: [
-                    {
-                        key: "places",
-                        title: "Places"
-                    },
-                    {
-                        key: "bookmarks",
-                        title: "Bookmarks"
-                    },
-                    {
-                        key: "devices",
-                        title: "Devices"
-                    }
-                ]
+                model: side.files.cfg.sections.map(k => ({ key: k, title: ({ places: "Places", bookmarks: "Bookmarks", devices: "Devices" })[k] }))
 
                 delegate: Column {
                     id: section

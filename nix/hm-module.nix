@@ -88,7 +88,7 @@ in
     defaultFileManager = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "Make SylFiles the default app for folders, through xdg.mimeApps.";
+      description = "Make SylFiles the default app for folders, through xdg.mimeApps, and the app that \"Show in folder\" opens, through org.freedesktop.FileManager1.";
     };
 
     defaultArchiveManager = lib.mkOption {
@@ -113,6 +113,14 @@ in
     ];
 
     home.packages = [ (cfg.package.override { sylvarisParts = parts; }) ];
+
+    xdg.dataFile."dbus-1/services/org.freedesktop.FileManager1.service" = lib.mkIf (cfg.defaultFileManager && (parts.files or true)) {
+      text = ''
+        [D-BUS Service]
+        Name=org.freedesktop.FileManager1
+        Exec=${lib.getExe' (cfg.package.override { sylvarisParts = parts; }) "sylvaris"} filemanager1
+      '';
+    };
 
     xdg.mimeApps.defaultApplications = lib.mkMerge [
       (lib.mkIf (cfg.defaultViewer && (parts.viewer or true)) (

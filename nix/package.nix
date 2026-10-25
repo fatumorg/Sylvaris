@@ -33,7 +33,10 @@
 }:
 
 let
-  python = python3.withPackages (ps: [ ps.cryptography ]);
+  python = python3.withPackages (ps: [
+    ps.cryptography
+    ps.pygobject3
+  ]);
   partTools = {
     bar = [
       pulseaudio

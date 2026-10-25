@@ -115,6 +115,8 @@ programs.sylvaris.defaultFileManager = true;
 
 This needs `xdg.mimeApps.enable = true`. Without Home Manager, run `xdg-mime default sylvaris-files.desktop inode/directory`.
 
+It also makes SylFiles answer "Show in folder" from other apps such as Firefox (`org.freedesktop.FileManager1`).
+
 ## Settings
 
 | Key | Default | Meaning |
@@ -128,6 +130,7 @@ This needs `xdg.mimeApps.enable = true`. Without Home Manager, run `xdg-mime def
 | `files.thumbnails` | `true` | show pictures and cached thumbnails |
 | `files.icons` | `"glyphs"` | Sylvaris glyphs, or `theme` for your icon theme |
 | `files.sidebar` | `true` | show the sidebar |
+| `files.sections` | `["places", "bookmarks", "devices"]` | order of the sidebar sections |
 | `files.details` | `false` | show the details pane |
 | `files.click` | `"double"` | `double` or `single` click opens |
 | `files.typing` | `"filter"` | typing filters the folder, or `jump`s to the first match |

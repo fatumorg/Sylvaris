@@ -37,7 +37,7 @@ Then start `sylvaris` from your compositor (see [getting started](start.md#2-sta
 | `programs.sylvaris.package` | the package to use; defaults to this flake's |
 | `programs.sylvaris.parts` | parts to keep (`true`) or leave out (`false`); tools only the left-out parts need stay off the package's `PATH`. `island` is off unless you set it `true` |
 | `programs.sylvaris.defaultViewer` | make [SylViewer](parts/viewer.md) the default app for images and videos (needs `xdg.mimeApps.enable`) |
-| `programs.sylvaris.defaultFileManager` | make [SylFiles](parts/files.md) the default app for folders (needs `xdg.mimeApps.enable`) |
+| `programs.sylvaris.defaultFileManager` | make [SylFiles](parts/files.md) the default app for folders and for "Show in folder" (`org.freedesktop.FileManager1`) (needs `xdg.mimeApps.enable`) |
 | `programs.sylvaris.defaultArchiveManager` | make [SylArchive](parts/archive.md) the default app for zip, rar, 7z, tar and other archives (needs `xdg.mimeApps.enable`) |
 | `programs.sylvaris.themes.<id>` | theme bundles, written to `~/.config/sylvaris/themes/<id>.json` ([format](look.md#theme-bundles)) |
 | `programs.sylvaris.settings` | any JSON for `config.json`, merged over the typed options below |

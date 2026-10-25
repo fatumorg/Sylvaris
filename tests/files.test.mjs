@@ -1,7 +1,7 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
 import {
-    DEFAULT_FILES, validateFiles, FILE_ACTIONS, validateKeys, keymap, comboOf,
+    DEFAULT_FILES, SECTIONS, validateFiles, FILE_ACTIONS, validateKeys, keymap, comboOf,
     joinPath, parentOf, nameOf, expand, pretty, crumbs,
     kindOf, kindLabel, glyphOf, themeIcon, arrange, sizeText, whenText, summary,
     uniqueName, checkName, pick, invert, nextIndex, bandHits,
@@ -451,4 +451,13 @@ test("pickChoice returns what the dialog hands back to the app", () => {
     assert.deepEqual(pickChoice("folder", false, [], "/d"), ["/d"])
     assert.deepEqual(pickChoice("folder", true, [{ path: "/d/A", dir: true }, { path: "/d/B", dir: true }], "/d"), ["/d/A", "/d/B"])
     assert.deepEqual(pickChoice("save", false, sel, "/d"), [])
+})
+
+test("sidebar sections keep a valid order and fill in what is missing", () => {
+    assert.deepEqual(DEFAULT_FILES.sections, ["places", "bookmarks", "devices"])
+    assert.deepEqual(validateFiles({}).sections, SECTIONS)
+    assert.deepEqual(validateFiles({ sections: ["bookmarks", "devices", "places"] }).sections, ["bookmarks", "devices", "places"])
+    assert.deepEqual(validateFiles({ sections: ["devices", "devices", "foo"] }).sections, ["devices", "places", "bookmarks"])
+    assert.deepEqual(validateFiles({ sections: ["bookmarks"] }).sections, ["bookmarks", "places", "devices"])
+    assert.deepEqual(validateFiles({ sections: "devices" }).sections, SECTIONS)
 })

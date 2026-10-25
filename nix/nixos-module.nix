@@ -107,7 +107,7 @@ in
         enable = true;
         extraPortals = [ pkgs.xdg-desktop-portal-termfilechooser ];
         config = lib.genAttrs [ "common" "hyprland" "sway" "niri" ] (_: {
-          "org.freedesktop.impl.portal.FileChooser" = [ "termfilechooser" ];
+          "org.freedesktop.impl.portal.FileChooser" = lib.mkForce [ "termfilechooser" ];
         });
       };
       environment.etc."xdg/xdg-desktop-portal-termfilechooser/config".text = ''

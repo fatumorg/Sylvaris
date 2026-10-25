@@ -278,6 +278,7 @@ Explained in [island](../parts/island.md).
 | `files.thumbnails` | `true` |  |
 | `files.icons` | `"glyphs"` |  |
 | `files.sidebar` | `true` |  |
+| `files.sections` | `["places","bookmarks","devices"]` |  |
 | `files.details` | `false` |  |
 | `files.click` | `"double"` |  |
 | `files.typing` | `"filter"` |  |

@@ -12,6 +12,7 @@ optdepends=(
   'pipewire-pulse: volume and output switching'
   'libpulse: pactl for audio and screen recording with sound'
   'python-cryptography: AirPods and Diver helpers'
+  'python-gobject: "Show in folder" from other apps'
   'libnotify: notifications from capture, Diver and settings'
   'networkmanager: Wi-Fi and hotspot in SylCenter'
   'wlr-randr: display layouts'

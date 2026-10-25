@@ -16,6 +16,7 @@ Usage: sylvaris [command]
 
   (no command)                 start the shell
   greet                        start the SylGreet login screen (for greetd)
+  filemanager1                 answer "Show in folder" from other apps over D-Bus (started by D-Bus)
   <part> [action] [args...]    run an action; `sylvaris list` shows them all
   center [toggle|open|close]   control SylCenter
   center view <name>           open SylCenter on a view
@@ -102,6 +103,9 @@ version | -V | --version)
     ;;
 greet)
     exec qs -p "$dir/greet.qml" -n
+    ;;
+filemanager1)
+    exec python3 "$dir/helpers/filemanager1.py" "$(readlink -f "$0")"
     ;;
 view)
     run center view "${@:2}"

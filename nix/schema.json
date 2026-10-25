@@ -218,6 +218,7 @@
     "thumbnails": true,
     "icons": "glyphs",
     "sidebar": true,
+    "sections": ["places", "bookmarks", "devices"],
     "details": false,
     "click": "double",
     "typing": "filter",

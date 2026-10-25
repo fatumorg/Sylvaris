@@ -8,6 +8,7 @@ export const SORTS = ["name", "modified", "size", "kind"]
 export const ICON_STYLES = ["glyphs", "theme"]
 export const CLICKS = ["double", "single"]
 export const TYPING = ["filter", "jump"]
+export const SECTIONS = ["places", "bookmarks", "devices"]
 export const ICON_MIN = 40
 export const ICON_MAX = 160
 
@@ -21,6 +22,7 @@ export const DEFAULT_FILES = {
     thumbnails: true,
     icons: "glyphs",
     sidebar: true,
+    sections: SECTIONS.slice(),
     details: false,
     click: "double",
     typing: "filter",
@@ -164,6 +166,13 @@ export function validateFiles(raw) {
         if (p !== "" && marks.indexOf(p) < 0)
             marks.push(p)
     }
+    const order = []
+    for (const k of Array.isArray(v.sections) ? v.sections : [])
+        if (SECTIONS.indexOf(k) >= 0 && order.indexOf(k) < 0)
+            order.push(k)
+    for (const k of SECTIONS)
+        if (order.indexOf(k) < 0)
+            order.push(k)
     const start = placePath(v.start)
     return Object.assign({}, v, {
         view: pick("view", VIEWS),
@@ -175,6 +184,7 @@ export function validateFiles(raw) {
         thumbnails: bool("thumbnails"),
         icons: pick("icons", ICON_STYLES),
         sidebar: bool("sidebar"),
+        sections: order,
         details: bool("details"),
         click: pick("click", CLICKS),
         typing: pick("typing", TYPING),
