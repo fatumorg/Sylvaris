@@ -1,6 +1,7 @@
 #include "scope.h"
 
 #include "model.h"
+#include "stack.h"
 
 #include <QJSValue>
 #include <QQmlContext>
@@ -207,6 +208,7 @@ void LazyLoader::sync()
         m_item = nullptr;
         emit itemChanged();
         gone->deleteLater();
+        Stack::instance()->trimSoon();
     }
 }
 

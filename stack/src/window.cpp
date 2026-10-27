@@ -158,23 +158,11 @@ void BackgroundEffect::setBlurRegion(Region *region)
 
 WindowBase::WindowBase(QObject *parent)
     : QObject(parent)
-    , m_window(new QQuickWindow())
+    , m_content(new QQuickItem())
 {
-    m_window->setColor(Qt::white);
-    connect(m_window, &QWindow::widthChanged, this, &WindowBase::widthChanged);
-    connect(m_window, &QWindow::heightChanged, this, &WindowBase::heightChanged);
-    connect(m_window, &QWindow::visibleChanged, this, [this] {
-        if (!m_window->isVisible() && m_visible && m_shown) {
-            m_shown = false;
-            m_visible = false;
-            emit visibleChanged();
-        }
-    });
-    connect(m_window, &QQuickWindow::closing, this, [this] { emit closed(); });
-    connect(m_window, &QQuickWindow::afterAnimating, this, [this] {
-        if ((m_mask && m_mask->dynamic()) || (m_effect && m_effect->blurRegion() && m_effect->blurRegion()->dynamic()))
-            refreshRegions();
-    });
+    QQmlEngine::setObjectOwnership(m_content, QQmlEngine::CppOwnership);
+    m_content->setParent(this);
+    m_window = makeWindow();
 }
 
 WindowBase::~WindowBase()
@@ -184,7 +172,40 @@ WindowBase::~WindowBase()
         ext_background_effect_surface_v1_destroy(m_blurSurface);
         m_blurSurface = nullptr;
     }
+    disconnect(m_window, nullptr, this, nullptr);
+    m_content->setParentItem(nullptr);
     delete m_window;
+}
+
+QQuickWindow *WindowBase::makeWindow()
+{
+    auto *w = new QQuickWindow();
+    w->setColor(m_color);
+    if (m_screen && m_screen->screen())
+        w->setScreen(m_screen->screen());
+    m_content->setParentItem(w->contentItem());
+    m_content->setSize(w->size());
+    connect(w, &QWindow::widthChanged, this, [this](int width) {
+        m_content->setWidth(width);
+        emit widthChanged();
+    });
+    connect(w, &QWindow::heightChanged, this, [this](int height) {
+        m_content->setHeight(height);
+        emit heightChanged();
+    });
+    connect(w, &QWindow::visibleChanged, this, [this] {
+        if (!m_window->isVisible() && m_visible && m_shown) {
+            m_visible = false;
+            hideWindow();
+            emit visibleChanged();
+        }
+    });
+    connect(w, &QQuickWindow::closing, this, [this] { emit closed(); });
+    connect(w, &QQuickWindow::afterAnimating, this, [this] {
+        if ((m_mask && m_mask->dynamic()) || (m_effect && m_effect->blurRegion() && m_effect->blurRegion()->dynamic()))
+            refreshRegions();
+    });
+    return w;
 }
 
 bool WindowBase::wayland() const
@@ -221,8 +242,9 @@ void WindowBase::setImplicitHeight(int h)
 
 void WindowBase::setColor(const QColor &color)
 {
-    if (color == m_window->color())
+    if (color == m_color)
         return;
+    m_color = color;
     m_window->setColor(color);
     emit colorChanged();
 }
@@ -265,7 +287,7 @@ void WindowBase::dataAppend(QQmlListProperty<QObject> *list, QObject *object)
     if (!object)
         return;
     self->m_data.append(object);
-    QQmlListReference(self->m_window->contentItem(), "data").append(object);
+    QQmlListReference(self->m_content, "data").append(object);
 }
 
 qsizetype WindowBase::dataCount(QQmlListProperty<QObject> *list)
@@ -327,20 +349,47 @@ void WindowBase::syncVisible()
         refreshRegions();
         m_window->setVisible(true);
     } else if (!m_visible && m_shown) {
-        m_shown = false;
-        m_window->setVisible(false);
+        hideWindow();
     }
+}
+
+void WindowBase::hideWindow()
+{
+    m_shown = false;
+    if (releaseOnHide())
+        releaseWindow();
+    else
+        m_window->setVisible(false);
+}
+
+void WindowBase::releaseWindow()
+{
+    QQuickWindow *old = m_window;
+    disconnect(old, nullptr, this, nullptr);
+    old->setVisible(false);
+    surfaceDestroyed();
+    m_hasMask = false;
+    m_lastMask = QRegion();
+    m_window = makeWindow();
+    old->deleteLater();
+    Stack::instance()->trimSoon();
+    applySize();
+    emit windowChanged();
 }
 
 void WindowBase::recreate()
 {
     const bool was = m_shown;
     m_shown = false;
-    m_window->setVisible(false);
-    surfaceDestroyed();
-    m_window->destroy();
-    if (m_screen && m_screen->screen())
-        m_window->setScreen(m_screen->screen());
+    if (releaseOnHide()) {
+        releaseWindow();
+    } else {
+        m_window->setVisible(false);
+        surfaceDestroyed();
+        m_window->destroy();
+        if (m_screen && m_screen->screen())
+            m_window->setScreen(m_screen->screen());
+    }
     if (was)
         syncVisible();
 }

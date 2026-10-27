@@ -21,6 +21,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - A copy of the shell in `~/.config/quickshell/sylvaris` is no longer picked up; set `SYLVARIS_DIR` to run another copy
 - Install routes build SylStack from source, so Fedora and Ubuntu no longer need a COPR or PPA
 - The Nix examples add `inputs.sylvaris.inputs.nixpkgs.follows`, which SylLock needs to load your system's PAM modules
+- Closed panels and popups free their window at once, and SylStack hands unused memory back to the system after a panel unloads, so Sylvaris now uses less memory and CPU than it did on Quickshell; the README has the new numbers
 
 ### Fixed
 

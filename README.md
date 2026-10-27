@@ -122,15 +122,15 @@ sylvaris list             # everything else
 
 ## 🪶 Only what you enable
 
-Parts you turn off in `parts` are never loaded, and their tools stay off your `PATH`. Panels are built when you open them and freed 20 seconds after they close.
+Parts you turn off in `parts` are never loaded, and their tools stay off your `PATH`. Panels are built when you open them; their windows are freed the moment they close and the rest 20 seconds later.
 
 | Measured in the headless harness | Software rendering | GPU (NVIDIA) |
 |---|---:|---:|
-| Idle, all 20 parts | 170 MB · 1.0 % CPU | 293 MB · 0.8 % CPU |
-| After opening every panel once, 25 s later | 192 MB | 368 MB |
-| Idle, only the bar and notifications | 110 MB · 0.8 % CPU | 251 MB · 2.6 % CPU |
+| Idle, every part on | 150 MB · 0.5 % CPU | 270 MB · 0.5 % CPU |
+| After opening every panel once, 25 s later | 168 MB | 348 MB |
+| Idle, only the bar and notifications | 101 MB · 0.4 % CPU | 243 MB · 1.6 % CPU |
 
-Resident memory of the Sylvaris process, including Quickshell, Qt and, with a GPU, the driver's mappings; CPU is a share of one core over 20 idle seconds. Demo data on one 2560×1440 output with Quickshell 0.3.1. Run `tests/bench/bench.sh` to measure on your machine (`BENCH_SETTINGS` takes a `settings.json` to compare setups; set `HL_RENDERER=gles2 HL_QT_BACKEND=rhi` for GPU rendering).
+Resident memory of the Sylvaris process, including SylStack, Qt and, with a GPU, the driver's mappings; CPU is a share of one core over 20 idle seconds. Demo data on one 2560×1440 output with SylStack 1.0.0 and Qt 6.11. Run `tests/bench/bench.sh` to measure on your machine (`BENCH_SETTINGS` takes a `settings.json` to compare setups; set `HL_RENDERER=gles2 HL_QT_BACKEND=rhi` for GPU rendering).
 
 ## 📖 Learn more
 

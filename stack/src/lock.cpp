@@ -133,7 +133,7 @@ LockIntegration *integration()
 WlSessionLockSurface::WlSessionLockSurface(QObject *parent)
     : WindowBase(parent)
 {
-    m_window->setColor(Qt::black);
+    setColor(Qt::black);
 }
 
 void WlSessionLockSurface::configure()

@@ -11,7 +11,12 @@
 #include <QProcess>
 #include <QSettings>
 #include <QStandardPaths>
+#include <QTimer>
 #include <QUrl>
+
+#ifdef __GLIBC__
+#include <malloc.h>
+#endif
 
 namespace stack {
 
@@ -135,6 +140,19 @@ void Stack::setClipboardText(const QString &text)
 qint64 Stack::processId() const
 {
     return QCoreApplication::applicationPid();
+}
+
+void Stack::trimSoon()
+{
+#ifdef __GLIBC__
+    if (!m_trim) {
+        m_trim = new QTimer(this);
+        m_trim->setSingleShot(true);
+        m_trim->setInterval(3000);
+        connect(m_trim, &QTimer::timeout, this, [] { malloc_trim(0); });
+    }
+    m_trim->start();
+#endif
 }
 
 void Stack::whenReady(QObject *context, std::function<void()> fn)

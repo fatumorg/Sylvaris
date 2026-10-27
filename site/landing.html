@@ -180,12 +180,12 @@ sylvaris doctor</code></pre>
     <div class="weigh"><div class="table"><table>
       <thead><tr><th>Situation</th><th class="r">Software rendering</th><th class="r">GPU (NVIDIA)</th></tr></thead>
       <tbody>
-        <tr><td>Idle, every part on</td><td class="r">170 MB · 1.0 % CPU</td><td class="r">293 MB · 0.8 % CPU</td></tr>
-        <tr><td>After opening every panel once, 25 s later</td><td class="r">192 MB</td><td class="r">368 MB</td></tr>
-        <tr><td>Idle, only the bar and notifications</td><td class="r">110 MB · 0.8 % CPU</td><td class="r">251 MB · 2.6 % CPU</td></tr>
+        <tr><td>Idle, every part on</td><td class="r">150 MB · 0.5 % CPU</td><td class="r">270 MB · 0.5 % CPU</td></tr>
+        <tr><td>After opening every panel once, 25 s later</td><td class="r">168 MB</td><td class="r">348 MB</td></tr>
+        <tr><td>Idle, only the bar and notifications</td><td class="r">101 MB · 0.4 % CPU</td><td class="r">243 MB · 1.6 % CPU</td></tr>
       </tbody>
     </table></div></div>
-    <p class="weight-note">Panels are built when you open them and freed 20 seconds after they close. <code>tests/bench/bench.sh</code> measures your own machine the same way.</p>
+    <p class="weight-note">Panels are built when you open them; their windows are freed the moment they close and the rest 20 seconds later. <code>tests/bench/bench.sh</code> measures your own machine the same way.</p>
   </section>
 
   <section class="make" aria-labelledby="make-title">

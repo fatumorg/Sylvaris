@@ -9,6 +9,8 @@
 
 #include <functional>
 
+class QTimer;
+
 namespace stack {
 
 class ShellScreen : public QObject
@@ -73,6 +75,7 @@ public:
     void whenReady(QObject *context, std::function<void()> fn);
     bool isReady() const { return m_ready; }
     void setReady(bool ready);
+    void trimSoon();
 
     Q_INVOKABLE QVariant env(const QString &name) const;
     Q_INVOKABLE void execDetached(const QJSValue &command) const;
@@ -93,6 +96,7 @@ private:
     QString m_shellDir;
     bool m_ready = false;
     QList<QPair<QPointer<QObject>, std::function<void()>>> m_pending;
+    QTimer *m_trim = nullptr;
 };
 
 }

@@ -203,7 +203,7 @@ class WindowBase : public QObject, public QQmlParserStatus
     Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
     Q_PROPERTY(stack::ShellScreen *screen READ screen WRITE setScreen NOTIFY screenChanged)
     Q_PROPERTY(QQuickItem *contentItem READ contentItem CONSTANT)
-    Q_PROPERTY(QQuickWindow *window READ window CONSTANT)
+    Q_PROPERTY(QQuickWindow *window READ window NOTIFY windowChanged)
     Q_PROPERTY(stack::Region *mask READ mask WRITE setMask NOTIFY maskChanged)
     Q_PROPERTY(QQmlListProperty<QObject> data READ data)
     Q_CLASSINFO("DefaultProperty", "data")
@@ -220,11 +220,11 @@ public:
     void setImplicitWidth(int w);
     int implicitHeight() const { return m_implicitHeight; }
     void setImplicitHeight(int h);
-    QColor color() const { return m_window->color(); }
+    QColor color() const { return m_color; }
     void setColor(const QColor &color);
     ShellScreen *screen() const { return m_screen; }
     void setScreen(ShellScreen *screen);
-    QQuickItem *contentItem() const { return m_window->contentItem(); }
+    QQuickItem *contentItem() const { return m_content; }
     QQuickWindow *window() const { return m_window; }
     Region *mask() const { return m_mask; }
     void setMask(Region *mask);
@@ -242,17 +242,19 @@ signals:
     void colorChanged();
     void screenChanged();
     void maskChanged();
+    void windowChanged();
     void closed();
 
 protected:
     virtual void configure() {}
     virtual void applySize();
+    virtual bool releaseOnHide() const { return false; }
     void recreate();
     void syncVisible();
     void refreshRegions();
     bool wayland() const;
 
-    QQuickWindow *m_window;
+    QQuickWindow *m_window = nullptr;
     bool m_visible = true;
     bool m_complete = false;
     bool m_shown = false;
@@ -261,6 +263,9 @@ protected:
     QPointer<ShellScreen> m_screen;
 
 private:
+    QQuickWindow *makeWindow();
+    void hideWindow();
+    void releaseWindow();
     void attachEffect();
     void surfaceCreated();
     void surfaceDestroyed();
@@ -271,6 +276,8 @@ private:
     static QObject *dataAt(QQmlListProperty<QObject> *list, qsizetype index);
     static void dataClear(QQmlListProperty<QObject> *list);
 
+    QQuickItem *m_content;
+    QColor m_color = Qt::white;
     QPointer<Region> m_mask;
     QPointer<BackgroundEffect> m_effect;
     QRegion m_lastMask;
@@ -308,6 +315,7 @@ signals:
 protected:
     void configure() override;
     void applySize() override;
+    bool releaseOnHide() const override { return true; }
 
 private:
     void layerChanged();
@@ -429,6 +437,7 @@ signals:
 
 protected:
     void configure() override;
+    bool releaseOnHide() const override { return true; }
 
 private:
     PopupAnchor *m_anchor;
