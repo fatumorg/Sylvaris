@@ -9,6 +9,7 @@
 #include <QJsonObject>
 
 #include <climits>
+#include <memory>
 
 namespace stack {
 
@@ -91,16 +92,18 @@ void Hyprland::request(const QByteArray &req, std::function<void(const QByteArra
     if (!m_valid)
         return;
     auto *socket = new QLocalSocket(this);
-    auto *reply = new QByteArray();
-    connect(socket, &QLocalSocket::connected, socket, [socket, req] { socket->write(req); });
+    auto reply = std::make_shared<QByteArray>();
+    auto finished = std::make_shared<bool>(false);
     connect(socket, &QLocalSocket::readyRead, socket, [socket, reply] { reply->append(socket->readAll()); });
-    auto finish = [socket, reply, done] {
-        reply->append(socket->readAll());
-        const QByteArray out = *reply;
-        delete reply;
+    auto finish = [socket, reply, finished, done] {
+        if (*finished)
+            return;
+        *finished = true;
+        if (socket->isOpen())
+            reply->append(socket->readAll());
         socket->deleteLater();
         if (done)
-            done(out);
+            done(*reply);
     };
     connect(socket, &QLocalSocket::disconnected, socket, finish);
     connect(socket, &QLocalSocket::errorOccurred, socket, [socket, finish](QLocalSocket::LocalSocketError e) {
@@ -108,6 +111,10 @@ void Hyprland::request(const QByteArray &req, std::function<void(const QByteArra
             finish();
     });
     socket->connectToServer(m_dir + QStringLiteral("/.socket.sock"));
+    if (socket->waitForConnected(1000)) {
+        socket->write(req);
+        socket->flush();
+    }
 }
 
 void Hyprland::connectEvents()

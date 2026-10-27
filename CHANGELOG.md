@@ -37,6 +37,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - Theme `links` no longer delete a real file or folder of yours at the target path: it is moved to `<name>.before-sylvaris` first, or left alone and reported if that backup already exists
 - `make install` puts the SylFiles, SylViewer and SylArchive desktop entries and icons in place, so "Open with" and default apps work outside Nix too
 - The shell ships a hidden `sylvaris.desktop`, so the desktop portal recognises its app id instead of logging a warning at start
+- On Hyprland, requests sent while the shell is still loading are no longer dropped, so a Lua config is recognised and early window commands go through
 - `sylvaris` sends commands to the shell on standard input, so a Diver pairing code or a reply typed into `sylvaris island reply` no longer shows up in the process list
 
 ## [0.4.2] - 2026-10-20
