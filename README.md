@@ -23,6 +23,22 @@
   <img src="docs/demo/center.gif" width="840" alt="SylCenter and SylClock">
 </p>
 
+## 🧪 Try it
+
+From a Hyprland, niri or sway session with Nix, start it once without installing anything:
+
+```sh
+nix run github:fatumorg/Sylvaris
+```
+
+## 🌿 Why Sylvaris
+
+- **One process.** Twenty parts run together on SylStack, Sylvaris's own Qt runtime.
+- **Only what you enable.** A part you turn off is never loaded, and its tools stay off your `PATH`.
+- **Three compositors.** The same shell runs on Hyprland, niri and sway.
+- **Scriptable and declarative.** Every switch is a `sylvaris` command, and every setting is a typed Home Manager option.
+- **One look everywhere.** Themes preview live, and SylSync makes GTK, Qt, terminals and editors follow them.
+
 ## ✨ What's inside
 
 <table>
