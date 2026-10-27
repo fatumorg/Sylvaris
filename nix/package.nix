@@ -134,7 +134,7 @@ let
 in
 stdenvNoCC.mkDerivation {
   pname = "sylvaris";
-  version = "0.4.2";
+  version = "1.0.0";
 
   src = lib.fileset.toSource {
     root = ../.;
