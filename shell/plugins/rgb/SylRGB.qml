@@ -14,7 +14,7 @@ Popup {
     readonly property string helper: Stack.shellDir + "/helpers/rgb.py"
     readonly property string accent: R.hex(Theme.accent.toString())
     readonly property string themeRgb: Theme.theme.colors.rgb || ""
-    readonly property string shown: R.shared(root.cfg, root.accent, root.themeRgb)
+    readonly property string sharedColor: R.shared(root.cfg, root.accent, root.themeRgb)
     readonly property string reactTargets: root.armed && root.error === "" ? JSON.stringify(R.reactTargets(root.devices, root.cfg, root.accent, root.themeRgb)) : "[]"
     property bool reactUp: true
     property int reactRetries: 0
@@ -149,7 +149,7 @@ Popup {
         return {
             open: root.shown,
             on: root.cfg.on,
-            color: root.shown,
+            color: root.sharedColor,
             follow: root.cfg.follow,
             vivid: root.cfg.vivid,
             brightness: root.cfg.brightness,
@@ -401,7 +401,7 @@ Popup {
                     anchors.verticalCenter: parent.verticalCenter
                     text: Icons.GLYPHS.rgb
                     size: 20
-                    color: root.cfg.on ? (root.shown !== "" ? root.shown : Theme.accent) : Theme.textDim
+                    color: root.cfg.on ? (root.sharedColor !== "" ? root.sharedColor : Theme.accent) : Theme.textDim
                 }
 
                 Column {
