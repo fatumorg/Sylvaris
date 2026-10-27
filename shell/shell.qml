@@ -82,6 +82,7 @@ ShellRoot {
             Headphones: () => Headphones,
             ThemePreview: () => ThemePreview,
             Audio: () => Audio,
+            Awake: () => Awake,
             Battery: () => Battery,
             Media: () => Media,
             NightLight: () => NightLight,
@@ -1085,6 +1086,13 @@ ShellRoot {
                 state: () => Headphones.state(),
                 noise: mode => Headphones.setNoise(mode),
                 awareness: v => Headphones.setAwareness(v === undefined ? !Headphones.awareness : v === "on")
+            },
+            awake: {
+                default: "toggle",
+                toggle: () => Awake.set(!Awake.on),
+                on: () => Awake.set(true),
+                off: () => Awake.set(false),
+                state: () => Awake.state()
             },
             privacy: {
                 default: "toggle",

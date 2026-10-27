@@ -19,7 +19,7 @@ export const NAV = [
     },
     {
         title: "Plugins",
-        items: [["plugins/README.md", "SylPlugins"], ["plugins/diver.md", "Diver"], ["plugins/airpods.md", "AirPods"], ["plugins/fatest.md", "FaTest"], ["plugins/rgb.md", "SylRGB"]]
+        items: [["plugins/README.md", "SylPlugins"], ["plugins/diver.md", "Diver"], ["plugins/airpods.md", "AirPods"], ["plugins/fatest.md", "FaTest"], ["plugins/awake.md", "Keep Awake"], ["plugins/rgb.md", "SylRGB"]]
     },
     {
         title: "Reference",
@@ -50,7 +50,7 @@ export const PARTS = [
     { id: "access", name: "SylAccessibility", group: "system", page: "parts/access.md", text: "Zoom, colour filters for colour-weak vision, bigger text and pointer, less motion and less transparency." },
     { id: "lock", name: "SylLock", group: "system", page: "parts/lock.md", text: "A lock screen in its own process, so a crash elsewhere can never leave your session open. Experimental." },
     { id: "greet", name: "SylGreet", group: "system", page: "parts/greet.md", text: "A login screen for greetd that always looks like your desktop. Experimental." },
-    { id: "plugins", name: "SylPlugins", group: "system", page: "plugins/README.md", text: "Your own widgets, panels and helpers, plus Diver, AirPods, FaTest and SylRGB built in." }
+    { id: "plugins", name: "SylPlugins", group: "system", page: "plugins/README.md", text: "Your own widgets, panels and helpers, plus Diver, AirPods, FaTest, Keep Awake and SylRGB built in." }
 ]
 
 export const LEGAL = [

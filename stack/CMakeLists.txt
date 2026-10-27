@@ -52,6 +52,7 @@ qt_add_qml_module(sylstack
 qt6_generate_wayland_protocol_client_sources(sylstack FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/protocols/ext-session-lock-v1.xml
     ${CMAKE_CURRENT_SOURCE_DIR}/protocols/ext-background-effect-v1.xml
+    ${CMAKE_CURRENT_SOURCE_DIR}/protocols/idle-inhibit-unstable-v1.xml
     ${CMAKE_CURRENT_SOURCE_DIR}/protocols/ext-foreign-toplevel-list-v1.xml
     ${CMAKE_CURRENT_SOURCE_DIR}/protocols/wlr-foreign-toplevel-management-unstable-v1.xml
     ${CMAKE_CURRENT_SOURCE_DIR}/protocols/hyprland-toplevel-export-v1.xml

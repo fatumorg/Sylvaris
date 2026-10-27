@@ -20,7 +20,7 @@ Sylvaris is a glass desktop shell for Hyprland, niri and sway. These pages cover
 ## Plugins
 
 - [SylPlugins](plugins/README.md): turning plugins on, installing and writing your own
-- [Diver](plugins/diver.md), [AirPods](plugins/airpods.md) and [FaTest](plugins/fatest.md), the built-in ones
+- [Diver](plugins/diver.md), [AirPods](plugins/airpods.md), [FaTest](plugins/fatest.md), [Keep Awake](plugins/awake.md) and [SylRGB](plugins/rgb.md), the built-in ones
 
 ## Reference
 

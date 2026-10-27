@@ -13,6 +13,8 @@
 #include "stack.h"
 
 struct ext_background_effect_surface_v1;
+struct wl_surface;
+struct zwp_idle_inhibitor_v1;
 
 namespace stack {
 
@@ -229,6 +231,7 @@ public:
     Region *mask() const { return m_mask; }
     void setMask(Region *mask);
     QQmlListProperty<QObject> data();
+    ::wl_surface *surface() const { return m_surface; }
 
     void classBegin() override {}
     void componentComplete() override;
@@ -243,6 +246,7 @@ signals:
     void screenChanged();
     void maskChanged();
     void windowChanged();
+    void surfaceChanged();
     void closed();
 
 protected:
@@ -267,6 +271,7 @@ private:
     void hideWindow();
     void releaseWindow();
     void attachEffect();
+    void trackSurface();
     void surfaceCreated();
     void surfaceDestroyed();
     void applyBlur(bool force);
@@ -285,7 +290,40 @@ private:
     QRegion m_lastBlur;
     bool m_hasBlur = false;
     ::ext_background_effect_surface_v1 *m_blurSurface = nullptr;
+    ::wl_surface *m_surface = nullptr;
     QList<QObject *> m_data;
+};
+
+class IdleInhibitor : public QObject
+{
+    Q_OBJECT
+    QML_ELEMENT
+    Q_PROPERTY(stack::WindowBase *window READ window WRITE setWindow NOTIFY windowChanged)
+    Q_PROPERTY(bool enabled READ enabled WRITE setEnabled NOTIFY enabledChanged)
+    Q_PROPERTY(bool active READ active NOTIFY activeChanged)
+
+public:
+    explicit IdleInhibitor(QObject *parent = nullptr);
+    ~IdleInhibitor() override;
+
+    WindowBase *window() const { return m_window; }
+    void setWindow(WindowBase *window);
+    bool enabled() const { return m_enabled; }
+    void setEnabled(bool enabled);
+    bool active() const { return m_inhibitor != nullptr; }
+
+signals:
+    void windowChanged();
+    void enabledChanged();
+    void activeChanged();
+
+private:
+    void sync();
+
+    QPointer<WindowBase> m_window;
+    bool m_enabled = true;
+    ::zwp_idle_inhibitor_v1 *m_inhibitor = nullptr;
+    ::wl_surface *m_on = nullptr;
 };
 
 class PanelWindow : public WindowBase

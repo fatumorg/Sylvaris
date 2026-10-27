@@ -1,0 +1,18 @@
+sleep 1.5
+syl awake on
+check grep -q 'error: Keep Awake is off' "$OUT/ipc.log"
+syl plugins enable awake
+sleep 0.5
+syl awake on
+sleep 1.5
+syl awake state
+check sylvaris awake state | grep -q '"on":true,"holding":true'
+syl set center.extra ["awake"]
+sleep 0.5
+syl center open
+sleep 1
+shot awake-tile
+syl center close
+syl awake
+sleep 1
+check sylvaris awake state | grep -q '"on":false,"holding":false'

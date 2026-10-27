@@ -12,6 +12,7 @@
 #include <cmath>
 
 #include "qwayland-ext-background-effect-v1.h"
+#include "qwayland-idle-inhibit-unstable-v1.h"
 
 namespace stack {
 
@@ -40,6 +41,22 @@ private:
 BlurManager *blurManager()
 {
     static BlurManager *manager = new BlurManager();
+    return manager;
+}
+
+class IdleManager : public QWaylandClientExtensionTemplate<IdleManager>, public QtWayland::zwp_idle_inhibit_manager_v1
+{
+public:
+    IdleManager()
+        : QWaylandClientExtensionTemplate<IdleManager>(1)
+    {
+        initialize();
+    }
+};
+
+IdleManager *idleManager()
+{
+    static IdleManager *manager = new IdleManager();
     return manager;
 }
 
@@ -348,6 +365,7 @@ void WindowBase::syncVisible()
         m_shown = true;
         refreshRegions();
         m_window->setVisible(true);
+        trackSurface();
     } else if (!m_visible && m_shown) {
         hideWindow();
     }
@@ -394,8 +412,19 @@ void WindowBase::recreate()
         syncVisible();
 }
 
+void WindowBase::trackSurface()
+{
+    auto *w = dynamic_cast<QtWaylandClient::QWaylandWindow *>(m_window->handle());
+    ::wl_surface *surface = w ? w->wlSurface() : nullptr;
+    if (surface == m_surface)
+        return;
+    m_surface = surface;
+    emit surfaceChanged();
+}
+
 void WindowBase::surfaceCreated()
 {
+    trackSurface();
     applyBlur(true);
 }
 
@@ -406,6 +435,64 @@ void WindowBase::surfaceDestroyed()
         m_blurSurface = nullptr;
     }
     m_hasBlur = false;
+    if (m_surface) {
+        m_surface = nullptr;
+        emit surfaceChanged();
+    }
+}
+
+IdleInhibitor::IdleInhibitor(QObject *parent)
+    : QObject(parent)
+{
+    if (QGuiApplication::platformName() == QStringLiteral("wayland"))
+        connect(idleManager(), &QWaylandClientExtension::activeChanged, this, &IdleInhibitor::sync);
+}
+
+IdleInhibitor::~IdleInhibitor()
+{
+    if (m_inhibitor)
+        zwp_idle_inhibitor_v1_destroy(m_inhibitor);
+}
+
+void IdleInhibitor::setWindow(WindowBase *window)
+{
+    if (window == m_window)
+        return;
+    if (m_window)
+        disconnect(m_window, nullptr, this, nullptr);
+    m_window = window;
+    if (m_window)
+        connect(m_window, &WindowBase::surfaceChanged, this, &IdleInhibitor::sync);
+    emit windowChanged();
+    sync();
+}
+
+void IdleInhibitor::setEnabled(bool enabled)
+{
+    if (enabled == m_enabled)
+        return;
+    m_enabled = enabled;
+    emit enabledChanged();
+    sync();
+}
+
+void IdleInhibitor::sync()
+{
+    ::wl_surface *surface = m_enabled && m_window ? m_window->surface() : nullptr;
+    if (surface && !idleManager()->isActive())
+        surface = nullptr;
+    if (surface == m_on)
+        return;
+    const bool was = m_inhibitor != nullptr;
+    if (m_inhibitor) {
+        zwp_idle_inhibitor_v1_destroy(m_inhibitor);
+        m_inhibitor = nullptr;
+    }
+    m_on = surface;
+    if (surface)
+        m_inhibitor = idleManager()->create_inhibitor(surface);
+    if (was != (m_inhibitor != nullptr))
+        emit activeChanged();
 }
 
 void WindowBase::refreshRegions()

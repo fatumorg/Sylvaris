@@ -4,7 +4,7 @@ import { EXTRAS, offeredExtras, airpodsLine, speedLine } from "../shell/lib/cent
 import { validateSettings } from "../shell/lib/settings.mjs"
 
 test("extra tiles are opt-in and plugin tiles need their plugin", () => {
-    assert.deepEqual(EXTRAS.map(e => e.key), ["fatest", "airpods", "rgb", "screenshot", "record", "clip", "lock"])
+    assert.deepEqual(EXTRAS.map(e => e.key), ["fatest", "airpods", "rgb", "awake", "screenshot", "record", "clip", "lock"])
     const none = offeredExtras({ enabled: {} }).map(e => e.key)
     assert.deepEqual(none, ["screenshot", "record", "clip", "lock"])
     const both = offeredExtras({ enabled: { fatest: true, airpods: true } }).map(e => e.key)

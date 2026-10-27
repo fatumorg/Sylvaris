@@ -111,6 +111,11 @@ Item {
             tile.active = Headphones.connected && Headphones.noise !== "" && Headphones.noise !== "off";
             return tile;
         }
+        if (e.key === "awake") {
+            tile.subtitle = Awake.on ? "Screen stays on" : "Off";
+            tile.active = Awake.on;
+            return tile;
+        }
         if (p === undefined || p === null)
             return null;
         if (e.key === "fatest") {
@@ -143,6 +148,8 @@ Item {
                 root.extraOpen(key);
         } else if (key === "rgb") {
             root.peers.rgb.setOn(!root.peers.rgb.cfg.on);
+        } else if (key === "awake") {
+            Awake.set(!Awake.on);
         } else if (key === "record" && cap.recording) {
             cap.stop();
         } else {
@@ -151,6 +158,10 @@ Item {
     }
 
     function extraOpen(key: string): void {
+        if (key === "awake") {
+            Awake.set(!Awake.on);
+            return;
+        }
         const cap = root.peers.capture;
         root.dismiss();
         if (key === "fatest")

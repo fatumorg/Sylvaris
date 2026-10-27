@@ -19,7 +19,7 @@ SylSettings › Control Center picks what the panel shows.
 
 - `center.hidden` lists tiles to leave out: `wifi`, `bluetooth`, `night`, `dnd`, `hotspot`, or `toggle:<id>` for one of your [custom toggles](../configuration.md#custom-toggles).
 - `center.volume` and `center.media` turn the volume slider and the now playing card off.
-- `center.extra` adds optional tiles: `screenshot` and `record` (an area, or stop a recording), `clip` (clipboard history), `lock`, and, once their plugins are on, `fatest` and `airpods`.
+- `center.extra` adds optional tiles: `screenshot` and `record` (an area, or stop a recording), `clip` (clipboard history), `lock`, and, once their plugins are on, `fatest`, `airpods`, `rgb` and `awake`.
 
 `center.corner` sets where it opens: `top-left`, `top-center` or `top-right`. With the bar at the bottom or on a side, the panel follows the bar. The corner can differ per screen.
 

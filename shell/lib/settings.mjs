@@ -27,7 +27,7 @@ export const CENTER_TILES = ["wifi", "bluetooth", "night", "dnd", "hotspot"]
 
 export const PARTS = {
     bar: ["Apps", "Audio", "Battery", "BluetoothService", "NetworkService", "Diver", "Dnd", "Media", "Notifications", "Plugins"],
-    center: ["Audio", "BluetoothService", "NetworkService", "Hotspot", "Displays", "VirtualDisplay", "NightLight", "Diver", "Dnd", "Toggles", "Media", "Headphones"],
+    center: ["Audio", "Awake", "BluetoothService", "NetworkService", "Hotspot", "Displays", "VirtualDisplay", "NightLight", "Diver", "Dnd", "Toggles", "Media", "Headphones"],
     clock: ["Diver", "Weather", "Sky"],
     deck: ["Apps"],
     diver: ["Diver"],

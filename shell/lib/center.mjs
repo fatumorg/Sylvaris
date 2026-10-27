@@ -2,6 +2,7 @@ export const EXTRAS = [
     { key: "fatest", label: "Speed Test", glyph: "speed", plugin: "fatest" },
     { key: "airpods", label: "AirPods", glyph: "headphones", plugin: "airpods" },
     { key: "rgb", label: "Lighting", glyph: "rgb", plugin: "rgb" },
+    { key: "awake", label: "Keep Awake", glyph: "eye", plugin: "awake" },
     { key: "screenshot", label: "Screenshot", glyph: "camera", plugin: "" },
     { key: "record", label: "Record", glyph: "record", plugin: "" },
     { key: "clip", label: "Clipboard", glyph: "clipboard", plugin: "" },
