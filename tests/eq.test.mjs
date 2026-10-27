@@ -38,3 +38,7 @@ test("config builds a stereo filter graph aimed at the target sink", () => {
     assert.match(c, /target\.object = "alsa_output\.x \\"quoted\\""/)
     assert.match(c, /node\.name = "sylvaris_eq" media\.class = Audio\/Sink/)
 })
+
+test("config keeps WirePlumber from restoring a saved mute on the eq output", () => {
+    assert.match(config(validateEq({}), ""), /playback\.props = \{ node\.name = "sylvaris_eq_out" node\.passive = true state\.restore-props = false/)
+})

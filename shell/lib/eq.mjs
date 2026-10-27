@@ -128,7 +128,7 @@ export function config(eq, target) {
         "      audio.channels = 2",
         "      audio.position = [ FL FR ]",
         "      capture.props = { node.name = \"sylvaris_eq\" media.class = Audio/Sink }",
-        "      playback.props = { node.name = \"sylvaris_eq_out\" node.passive = true" + (target ? " target.object = " + quote(target) : "") + " }",
+        "      playback.props = { node.name = \"sylvaris_eq_out\" node.passive = true state.restore-props = false" + (target ? " target.object = " + quote(target) : "") + " }",
         "    }",
         "  }",
         "]",
