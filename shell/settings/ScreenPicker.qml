@@ -1,5 +1,5 @@
 import QtQuick
-import Quickshell
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -8,7 +8,7 @@ import "../lib/icons.mjs" as Icons
 Column {
     id: root
 
-    readonly property var names: Quickshell.screens.map(s => s.name)
+    readonly property var names: Stack.screens.map(s => s.name)
     readonly property bool custom: Settings.editing !== "" && Object.keys(Settings.values.screens[Settings.editing] || {}).length > 0
 
     visible: root.names.length > 1 || Settings.editing !== ""

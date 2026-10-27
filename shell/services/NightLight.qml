@@ -1,9 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
-import Quickshell.Hyprland
+import SylStack
 import "../lib/night.mjs" as N
 
 Singleton {
@@ -23,7 +21,7 @@ Singleton {
     function setEnabled(v: bool): void {
         root.error = "";
         if (v && !root.demo)
-            Quickshell.execDetached(["pkill", "-x", "hyprsunset"]);
+            Stack.execDetached(["pkill", "-x", "hyprsunset"]);
         Settings.set("nightLight.enabled", v);
     }
 

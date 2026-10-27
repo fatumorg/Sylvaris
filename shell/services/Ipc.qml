@@ -1,8 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import "../lib/ipc.mjs" as I
 
 Singleton {
@@ -12,7 +11,7 @@ Singleton {
     property var snapshot: ({})
     property var last: ({})
     property var watchers: []
-    readonly property string dir: (Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris"
+    readonly property string dir: (Stack.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris"
     readonly property string socketPath: root.dir + "/ipc.sock"
     property bool ready: false
 

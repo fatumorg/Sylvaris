@@ -58,7 +58,7 @@ bg wtype -k Shift_L -s 400 -M ctrl -k a -m ctrl hunter-2 -k Return
 sleep 2.5
 check test "$(cat "$HOME/Box/s.txt")" = "top secret"
 check sylvaris archive state | grep -q '"asking":""'
-check ! grep -q 'hunter-2' "$OUT/qs.log"
+check ! grep -q 'hunter-2' "$OUT/shell.log"
 check printf 'garbage' > "$HOME/Box/bad.zip"
 syl archive open ~/Box/bad.zip
 sleep 2

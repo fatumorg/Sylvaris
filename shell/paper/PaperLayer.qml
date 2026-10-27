@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Effects
-import Quickshell
-import Quickshell.Wayland
+import SylStack
 import qs
 import qs.services
 import "../lib/paper.mjs" as W
@@ -12,7 +11,7 @@ PanelWindow {
 
     required property var modelData
     readonly property var cfg: Settings.at(root.modelData.name).paper
-    readonly property string path: S.expandHome(W.resolve(root.cfg, Theme.currentId, Theme.wallpaper, root.modelData.name), Quickshell.env("HOME"))
+    readonly property string path: S.expandHome(W.resolve(root.cfg, Theme.currentId, Theme.wallpaper, root.modelData.name), Stack.env("HOME"))
     property bool flip: false
     property real mix: 1
     readonly property bool gpu: root.contentItem.GraphicsInfo.api !== GraphicsInfo.Software && root.contentItem.GraphicsInfo.api !== GraphicsInfo.Unknown

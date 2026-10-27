@@ -1,8 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import "../lib/weather.mjs" as W
 
 Singleton {
@@ -15,7 +14,7 @@ Singleton {
     property real fetched: 0
     readonly property bool available: root.data !== null
     readonly property var now: root.data === null ? null : W.describe(root.data.code, root.data.day)
-    readonly property string cachePath: (Quickshell.env("XDG_CACHE_HOME") || Quickshell.env("HOME") + "/.cache") + "/sylvaris/weather.json"
+    readonly property string cachePath: (Stack.env("XDG_CACHE_HOME") || Stack.env("HOME") + "/.cache") + "/sylvaris/weather.json"
 
     function refresh(): void {
         if (Demo.enabled) {

@@ -44,7 +44,7 @@ const STATUS = {
     privacy: { text: "Mic and cameras", glyph: "mic", offGlyph: "micOff", on: "Off", off: "Back on" }
 }
 
-const SELF = /^(\.?quickshell(-wrapped)?|qs)$/i
+const SELF = /^\.?sylstack(-wrapped)?$/i
 
 export const CHAT_APPS = [
     { id: "discord", label: "Discord", glyph: "speech", app: /discord|vesktop|vencord|webcord|armcord|legcord|equibop|dorion/i, web: /discord\.com/i },

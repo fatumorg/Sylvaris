@@ -1,8 +1,6 @@
 import QtQuick
 import QtQuick.Shapes
-import Quickshell
-import Quickshell.Io
-import Quickshell.Wayland
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -26,7 +24,7 @@ Scope {
     readonly property var ids: root.cfg.actions
     readonly property string current: root.ids.length > 0 ? root.ids[Math.max(0, Math.min(root.ids.length - 1, root.selected))] : ""
     readonly property var meta: root.current === "" ? null : P.ACTIONS[root.current]
-    readonly property string avatar: S.expandHome(Config.values.avatar, Quickshell.env("HOME"))
+    readonly property string avatar: S.expandHome(Config.values.avatar, Stack.env("HOME"))
 
     signal opened
 
@@ -122,7 +120,7 @@ Scope {
         if (id === "logout" && cmd === "")
             Compositor.run("quit", []);
         else if (cmd !== "")
-            Quickshell.execDetached(["sh", "-c", cmd]);
+            Stack.execDetached(["sh", "-c", cmd]);
     }
 
     NumberAnimation {
@@ -375,7 +373,7 @@ Scope {
                     Text {
                         textFormat: Text.PlainText
                         anchors.horizontalCenter: parent.horizontalCenter
-                        text: Quickshell.env("USER") || ""
+                        text: Stack.env("USER") || ""
                         color: Theme.text
                         font.family: Tokens.fontUi
                         font.pixelSize: 34

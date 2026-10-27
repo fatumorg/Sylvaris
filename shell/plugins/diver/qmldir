@@ -1,0 +1,10 @@
+module qs.plugins.diver
+singleton Diver 1.0 Diver.qml
+DiverCalendar 1.0 DiverCalendar.qml
+DiverLists 1.0 DiverLists.qml
+DiverPage 1.0 DiverPage.qml
+DiverPanel 1.0 DiverPanel.qml
+DiverSheet 1.0 DiverSheet.qml
+DiverTaskRow 1.0 DiverTaskRow.qml
+DiverToday 1.0 DiverToday.qml
+SylDiver 1.0 SylDiver.qml

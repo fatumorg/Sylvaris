@@ -44,9 +44,9 @@ for steps in "$here"/*.steps; do
     if ! "${extra[@]}" "$here/run.sh" "$here/out/$name" "$steps" ${seed:+"$seed"} >/dev/null 2>&1; then
         echo "FAIL $name (run.sh)"
         failed=1
-    elif grep -qE "TypeError|ReferenceError|is not a function|Cannot read property" "$here/out/$name/qs.log"; then
+    elif grep -qE "TypeError|ReferenceError|is not a function|Cannot read property" "$here/out/$name/shell.log"; then
         echo "FAIL $name (script error)"
-        grep -E "TypeError|ReferenceError|is not a function|Cannot read property" "$here/out/$name/qs.log" | head -3
+        grep -E "TypeError|ReferenceError|is not a function|Cannot read property" "$here/out/$name/shell.log" | head -3
         failed=1
     else
         echo "ok   $name"

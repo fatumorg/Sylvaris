@@ -1,8 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import "../lib/sync.mjs" as S
 
 Singleton {
@@ -10,8 +9,8 @@ Singleton {
 
     readonly property var cfg: Settings.values.sync
     readonly property string helper: Qt.resolvedUrl("../helpers/sync.py").toString().replace("file://", "")
-    readonly property string home: Quickshell.env("HOME")
-    readonly property string configHome: Quickshell.env("XDG_CONFIG_HOME") || root.home + "/.config"
+    readonly property string home: Stack.env("HOME")
+    readonly property string configHome: Stack.env("XDG_CONFIG_HOME") || root.home + "/.config"
     readonly property var colors: Theme.theme.colors
     property var results: []
     property real last: 0

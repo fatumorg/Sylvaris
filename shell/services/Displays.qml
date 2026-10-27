@@ -1,8 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import "../lib/displays.mjs" as D
 
 Singleton {
@@ -22,7 +21,7 @@ Singleton {
 
     function sizes(): var {
         const out = {};
-        for (const s of Quickshell.screens)
+        for (const s of Stack.screens)
             out[s.name] = {
                 width: Math.round(s.width * s.devicePixelRatio),
                 height: Math.round(s.height * s.devicePixelRatio)

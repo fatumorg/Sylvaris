@@ -1,8 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import "../lib/virtual.mjs" as V
 import "../lib/wm.mjs" as W
 
@@ -11,7 +10,7 @@ Singleton {
 
     readonly property bool demo: Demo.enabled
     readonly property string name: V.NAME
-    readonly property string configFile: (Quickshell.env("XDG_CONFIG_HOME") || Quickshell.env("HOME") + "/.config") + "/wayvnc/config"
+    readonly property string configFile: (Stack.env("XDG_CONFIG_HOME") || Stack.env("HOME") + "/.config") + "/wayvnc/config"
     property bool installed: false
     readonly property bool supported: root.demo || Compositor.can("virtualDisplay")
     readonly property bool available: root.supported && (root.demo || (root.installed && Displays.available))
@@ -47,7 +46,7 @@ Singleton {
 
     function shown(): var {
         const out = {};
-        for (const sc of Quickshell.screens) {
+        for (const sc of Stack.screens) {
             if (Displays.current[sc.name] !== undefined)
                 out[sc.name] = Displays.current[sc.name];
         }
@@ -160,7 +159,7 @@ Singleton {
             if (!root.stopping && code !== 0)
                 root.error = serverErr.text.trim().split("\n").pop() || "wayvnc stopped";
             root.stopping = false;
-            Quickshell.execDetached(W.virtualOutput(Compositor.name, "remove", root.name));
+            Stack.execDetached(W.virtualOutput(Compositor.name, "remove", root.name));
             refreshLater.restart();
         }
     }

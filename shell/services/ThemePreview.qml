@@ -1,7 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
+import SylStack
 import qs
 import "../lib/preview.mjs" as P
 

@@ -217,7 +217,7 @@ const OWN_WINDOWS = [[" — SylFiles", "sylvaris-files"], [" — SylArchive", "s
 
 export function appOf(appId, title) {
     const id = String(appId || "")
-    if (!/^(org\.)?quickshell$/i.test(id))
+    if (!/^sylvaris$/i.test(id))
         return id
     const t = String(title || "")
     const own = OWN_WINDOWS.find(o => t.endsWith(o[0]))

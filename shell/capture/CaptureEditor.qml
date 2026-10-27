@@ -1,6 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Wayland
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -181,14 +180,14 @@ Scope {
         root.exportTo(root.saveTo, path => {
             root.saved = path;
             if (!Demo.enabled)
-                Quickshell.execDetached(["notify-send", "-a", "Sylvaris", "-i", path, "Edited screenshot saved", path]);
+                Stack.execDetached(["notify-send", "-a", "Sylvaris", "-i", path, "Edited screenshot saved", path]);
         });
     }
 
     function copy(): void {
-        root.exportTo((Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris-edit.png", path => {
+        root.exportTo((Stack.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris-edit.png", path => {
             root.saved = path;
-            Quickshell.execDetached(["sh", "-c", "wl-copy -t image/png < \"$0\" >/dev/null 2>&1", path]);
+            Stack.execDetached(["sh", "-c", "wl-copy -t image/png < \"$0\" >/dev/null 2>&1", path]);
         });
     }
 

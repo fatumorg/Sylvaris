@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://quickshell.org"><img src="https://img.shields.io/badge/Quickshell-0.3-c9702f?style=for-the-badge" alt="Quickshell"></a>
+  <a href="stack"><img src="https://img.shields.io/badge/SylStack-1.0-c9702f?style=for-the-badge" alt="SylStack"></a>
   <a href="https://hyprland.org"><img src="https://img.shields.io/badge/Hyprland-58e1ff?style=for-the-badge&logo=hyprland&logoColor=black" alt="Hyprland"></a>
   <img src="https://img.shields.io/badge/niri-e0955c?style=for-the-badge" alt="niri">
   <img src="https://img.shields.io/badge/sway-68751c?style=for-the-badge&logo=sway&logoColor=white" alt="sway">
@@ -77,6 +77,7 @@
 ```nix
 {
   inputs.sylvaris.url = "github:fatumorg/Sylvaris";
+  inputs.sylvaris.inputs.nixpkgs.follows = "nixpkgs";
 
   outputs = { sylvaris, ... }: {
     homeConfigurations.me = home-manager.lib.homeManagerConfiguration {
@@ -97,7 +98,7 @@
 }
 ```
 
-Every setting is a typed Home Manager option. For the lock screen's PAM service and the SylGreet login screen, also import `sylvaris.nixosModules.sylvaris`. Every option is in [docs/nix.md](docs/nix.md). Not on Nix? [docs/install.md](docs/install.md) has tested steps for Arch, Fedora, Debian, Ubuntu, Linux Mint, openSUSE, Void, Gentoo and every other distribution, plus `make install`.
+Every setting is a typed Home Manager option. For the lock screen's PAM service and the SylGreet login screen, also import `sylvaris.nixosModules.sylvaris`. Every option is in [docs/nix.md](docs/nix.md). Not on Nix? [docs/install.md](docs/install.md) has steps for Arch, Fedora, Debian, Ubuntu, Linux Mint, openSUSE, Void, Gentoo and every other distribution: `make` builds SylStack, `sudo make install` puts everything in place.
 
 ## 🚀 Start
 

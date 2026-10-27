@@ -1,5 +1,5 @@
 import QtQuick
-import Quickshell
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -241,7 +241,7 @@ Item {
                 forgetTimer.restart();
             }
         } else if (key === "address") {
-            Quickshell.execDetached(["wl-copy", i.key]);
+            Stack.execDetached(["wl-copy", i.key]);
             root.copied = true;
             copiedTimer.restart();
         }

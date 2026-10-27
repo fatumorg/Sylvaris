@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Shapes
-import Quickshell
 import qs
 import qs.services
 import qs.plugins.diver

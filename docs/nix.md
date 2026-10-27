@@ -7,6 +7,7 @@ Sylvaris is a flake. It provides a package, a Home Manager module for the shell,
 ```nix
 {
   inputs.sylvaris.url = "github:fatumorg/Sylvaris";
+  inputs.sylvaris.inputs.nixpkgs.follows = "nixpkgs";
 
   outputs = { sylvaris, ... }: {
     homeConfigurations.me = home-manager.lib.homeManagerConfiguration {
@@ -26,6 +27,8 @@ Sylvaris is a flake. It provides a package, a Home Manager module for the shell,
   };
 }
 ```
+
+Keep the `follows` line. SylLock and the polkit agent load your system's PAM modules, and those only load into a program built from the same nixpkgs as your system; without it, a lock screen could refuse every password after an update. SylLock says so when PAM cannot load its modules, instead of calling the password wrong.
 
 Then start `sylvaris` from your compositor (see [getting started](start.md#2-start-it-with-your-compositor)).
 

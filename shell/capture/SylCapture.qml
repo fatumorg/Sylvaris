@@ -1,7 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
-import Quickshell.Wayland
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -13,7 +11,7 @@ Popup {
     id: root
 
     readonly property var cfg: Settings.values.capture
-    readonly property string home: Quickshell.env("HOME")
+    readonly property string home: Stack.env("HOME")
     property string kind: "shot"
     property string mode: "region"
     property var rects: []
@@ -76,11 +74,11 @@ Popup {
         const f = file || root.last;
         if (f === "")
             throw new Error("take a screenshot first, or give a file: capture edit <path>");
-        const runtime = (Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/";
+        const runtime = (Stack.env("XDG_RUNTIME_DIR") || "/tmp") + "/";
         const dir = K.expand(root.cfg.folder, root.home);
         const temporary = f.indexOf(runtime) === 0;
         if (temporary)
-            Quickshell.execDetached(["mkdir", "-p", dir]);
+            Stack.execDetached(["mkdir", "-p", dir]);
         root.close();
         root.editing = "";
         root.editTarget = temporary ? dir + "/" + A.editedName(K.fileName("shot", new Date(), Object.assign({}, root.cfg, {
@@ -102,7 +100,7 @@ Popup {
 
     function notify(title: string, file: string): void {
         if (!Demo.enabled)
-            Quickshell.execDetached(["notify-send", "-a", "Sylvaris", "-i", file, title, file]);
+            Stack.execDetached(["notify-send", "-a", "Sylvaris", "-i", file, title, file]);
     }
 
     Timer {
@@ -116,10 +114,10 @@ Popup {
             if (root.kind === "video") {
                 root.started = false;
                 root.waitUntil = 0;
-                recorder.command = ["sh", Quickshell.shellDir + "/helpers/capture-record.sh", dir, name, root.mode, out, c.audio ? c.audioSource : "none", String(c.countdown)].concat(K.recorderArgs(c, ""));
+                recorder.command = ["sh", Stack.shellDir + "/helpers/capture-record.sh", dir, name, root.mode, out, c.audio ? c.audioSource : "none", String(c.countdown)].concat(K.recorderArgs(c, ""));
                 recorder.running = true;
             } else {
-                shooter.command = ["sh", Quickshell.shellDir + "/helpers/capture-shot.sh", dir, name, root.mode, String(c.delay), c.copy ? "1" : "0", c.save ? "1" : "0", root.rects.join("\n"), out, c.format === "jpeg" ? "image/jpeg" : "image/png"].concat(K.grimArgs(c));
+                shooter.command = ["sh", Stack.shellDir + "/helpers/capture-shot.sh", dir, name, root.mode, String(c.delay), c.copy ? "1" : "0", c.save ? "1" : "0", root.rects.join("\n"), out, c.format === "jpeg" ? "image/jpeg" : "image/png"].concat(K.grimArgs(c));
                 shooter.running = true;
             }
         }
@@ -182,7 +180,7 @@ Popup {
         }
         onExited: code => {
             if (root.started && code === 0) {
-                finisher.command = ["sh", Quickshell.shellDir + "/helpers/capture-finish.sh", root.last, root.cfg.copy ? K.fileUri(root.last) : ""];
+                finisher.command = ["sh", Stack.shellDir + "/helpers/capture-finish.sh", root.last, root.cfg.copy ? K.fileUri(root.last) : ""];
                 finisher.running = true;
             }
             else if (root.started)

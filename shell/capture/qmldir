@@ -1,0 +1,3 @@
+module qs.capture
+CaptureEditor 1.0 CaptureEditor.qml
+SylCapture 1.0 SylCapture.qml

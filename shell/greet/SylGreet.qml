@@ -1,23 +1,17 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
-import Quickshell.Wayland
-import Quickshell.Services.Greetd
-import qs
+import SylStack
 import qs.services
-import qs.components
 import "../lib/greet.mjs" as G
-import "../lib/icons.mjs" as Icons
 
 Scope {
     id: root
 
-    readonly property string stateDir: Quickshell.env("SYLVARIS_GREET_STATE") || ""
-    readonly property string wallpaper: Quickshell.env("SYLVARIS_GREET_WALLPAPER") || Theme.wallpaper
-    readonly property string defaultUser: Quickshell.env("SYLVARIS_GREET_USER") || ""
-    readonly property string defaultSession: Quickshell.env("SYLVARIS_GREET_SESSION") || ""
-    readonly property string sessionDirs: Quickshell.env("SYLVARIS_GREET_SESSIONS") || "/run/current-system/sw/share/wayland-sessions:/usr/local/share/wayland-sessions:/usr/share/wayland-sessions"
-    readonly property bool dry: Quickshell.env("SYLVARIS_GREET_DRY") === "1"
+    readonly property string stateDir: Stack.env("SYLVARIS_GREET_STATE") || ""
+    readonly property string wallpaper: Stack.env("SYLVARIS_GREET_WALLPAPER") || Theme.wallpaper
+    readonly property string defaultUser: Stack.env("SYLVARIS_GREET_USER") || ""
+    readonly property string defaultSession: Stack.env("SYLVARIS_GREET_SESSION") || ""
+    readonly property string sessionDirs: Stack.env("SYLVARIS_GREET_SESSIONS") || "/run/current-system/sw/share/wayland-sessions:/usr/local/share/wayland-sessions:/usr/share/wayland-sessions"
+    readonly property bool dry: Stack.env("SYLVARIS_GREET_DRY") === "1"
     property var users: []
     property var sessions: []
     property int userIndex: -1
@@ -31,7 +25,7 @@ Scope {
     property string pending: ""
     property string typed: ""
     readonly property string avatar: Config.values.avatar.indexOf("/") === 0 ? Config.values.avatar : root.user === null ? "" : root.user.home + "/.face"
-    readonly property var mainScreen: Quickshell.screens.reduce((best, s) => best === null || s.width * s.height > best.width * best.height ? s : best, null)
+    readonly property var mainScreen: Stack.screens.reduce((best, s) => best === null || s.width * s.height > best.width * best.height ? s : best, null)
     property string launched: ""
     property real now: Date.now()
     readonly property var user: root.userIndex >= 0 ? root.users[root.userIndex] : null
@@ -98,7 +92,7 @@ Scope {
             root.launched = action;
             return;
         }
-        Quickshell.execDetached(["sh", "-c", "systemctl \"$1\" 2>/dev/null || loginctl \"$1\"", "sh", action]);
+        Stack.execDetached(["sh", "-c", "systemctl \"$1\" 2>/dev/null || loginctl \"$1\"", "sh", action]);
     }
 
     function state(): var {
@@ -164,7 +158,7 @@ Scope {
     }
 
     FileView {
-        path: Quickshell.env("SYLVARIS_GREET_PASSWD") || "/etc/passwd"
+        path: Stack.env("SYLVARIS_GREET_PASSWD") || "/etc/passwd"
         printErrors: false
         onLoaded: {
             root.users = G.parsePasswd(text()).map(u => Object.assign({
@@ -208,7 +202,7 @@ Scope {
     }
 
     Variants {
-        model: Quickshell.screens
+        model: Stack.screens
 
         PanelWindow {
             required property var modelData

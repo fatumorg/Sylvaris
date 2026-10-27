@@ -1,8 +1,7 @@
 result
 result-*
+build/
 tests/headless/out/
 __pycache__/
-.superpowers
-CLAUDE.md
 site/dist/
 site/operator.json

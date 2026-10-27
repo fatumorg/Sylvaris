@@ -4,7 +4,7 @@
 
 `sylvaris lock` locks every screen with the session-lock protocol and mirrors what you type on all of them. Nothing can draw over it, and the compositor keeps the session locked even if Sylvaris stops.
 
-The lock runs as its own Quickshell process (`lock.qml`), separate from the bar, every other part and every plugin, so a crash in the main shell leaves the lock screen up and working. It looks like the rest of Sylvaris: your wallpaper, a large clock and a password field that shakes on a wrong password.
+The lock runs as its own SylStack process (`lock.qml`), separate from the bar, every other part and every plugin, so a crash in the main shell leaves the lock screen up and working. It looks like the rest of Sylvaris: your wallpaper, a large clock and a password field that shakes on a wrong password.
 
 Passwords are checked by PAM with the first of the `sylvaris`, `hyprlock`, `swaylock` or `login` services that exists; `lock.pam` picks one yourself. The [NixOS module](../nix.md#nixos-module) adds the `sylvaris` service.
 

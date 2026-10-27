@@ -10,7 +10,7 @@ function walk(dir) {
     return readdirSync(dir, { withFileTypes: true }).flatMap(e => e.isDirectory() ? walk(join(dir, e.name)) : e.name.endsWith(".qml") ? [join(dir, e.name)] : [])
 }
 
-test("icon theme images never load on the async reader thread, where QIcon crashes Quickshell", () => {
+test("icon theme images never load on the async reader thread, where QIcon is not thread safe", () => {
     const offenders = []
     for (const file of walk(ROOT)) {
         const lines = readFileSync(file, "utf8").split("\n")

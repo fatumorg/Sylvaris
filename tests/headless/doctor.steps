@@ -3,7 +3,7 @@ write sylvaris/settings.json {"version":1,"parts":{"diver":false},"clock":{"corn
 sleep 0.5
 check sylvaris doctor > "$OUT/doctor.txt"
 check grep -q '^Sylvaris [0-9.]* (commit ' "$OUT/doctor.txt"
-check grep -q '^Quickshell: Quickshell' "$OUT/doctor.txt"
+check grep -q '^SylStack: SylStack' "$OUT/doctor.txt"
 check grep -q '^Compositor: sway' "$OUT/doctor.txt"
 check grep -q '^Parts off: diver, island$' "$OUT/doctor.txt"
 check grep -q '^Missing tools' "$OUT/doctor.txt"

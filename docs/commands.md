@@ -71,4 +71,4 @@ Parts you turned off answer with an error that says how to turn them back on.
 
 `sylvaris watch` and fast commands use `$XDG_RUNTIME_DIR/sylvaris/ipc.sock`. Tools can talk to it directly: send one request per line, either plain words (`center toggle`) or a JSON array (`["center","view","orbit-wifi:My Network"]`), and read one JSON reply per line (`{"ok":true,"result":...}`). Sending `["watch","audio"]` turns the connection into a stream: every requested topic once, then a line each time one changes, such as `{"topic":"audio","data":{...}}`.
 
-`socat` makes the `sylvaris` command fast. Without it, commands fall back to `qs ipc`, but `sylvaris watch` needs it.
+`sylvaris` talks to the socket with `sylstack msg`, so no other tool is needed. From a script, `sylstack msg "$XDG_RUNTIME_DIR/sylvaris/ipc.sock" 'center toggle'` sends one request and prints the reply; `sylstack msg -f` keeps the connection open for `watch`.

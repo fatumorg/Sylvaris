@@ -1,8 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Services.Mpris
+import SylStack
 
 Singleton {
     id: root

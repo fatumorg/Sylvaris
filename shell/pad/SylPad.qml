@@ -1,7 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
-import Quickshell.Wayland
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -115,7 +113,7 @@ Scope {
     function answer(text: string): void {
         if (root.pickOut === "")
             return;
-        Quickshell.execDetached(["sh", "-c", "printf '%s' \"$1\" > \"$2\"", "sylvaris-pick", text, root.pickOut]);
+        Stack.execDetached(["sh", "-c", "printf '%s' \"$1\" > \"$2\"", "sylvaris-pick", text, root.pickOut]);
         root.pickOut = "";
         root.pickItems = null;
     }

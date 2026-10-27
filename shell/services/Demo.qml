@@ -1,10 +1,10 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
+import SylStack
 
 Singleton {
-    readonly property bool enabled: Quickshell.env("SYLVARIS_DEMO") === "1"
+    readonly property bool enabled: Stack.env("SYLVARIS_DEMO") === "1"
 
     readonly property var bluetooth: [
         { address: "00:11:22:33:44:01", name: "Headphones", icon: "audio-headphones", connected: true, paired: true, trusted: true, batteryAvailable: true, battery: 0.9 },

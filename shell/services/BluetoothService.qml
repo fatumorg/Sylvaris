@@ -1,9 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
-import Quickshell.Bluetooth
+import SylStack
 import "../lib/icons.mjs" as Icons
 import "../lib/audio.mjs" as AudioLib
 import "../lib/orbit.mjs" as O
@@ -218,7 +216,7 @@ Singleton {
                     }) : c);
             return;
         }
-        Quickshell.execDetached(["pactl", "set-card-profile", p.card, p.next]);
+        Stack.execDetached(["pactl", "set-card-profile", p.card, p.next]);
         profileRefresh.restart();
     }
 

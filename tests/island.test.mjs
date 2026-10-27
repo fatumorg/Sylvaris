@@ -234,7 +234,7 @@ test("ownerOf names the app behind a stream and drops audio plumbing", () => {
     assert.equal(o({ "application.name": "Firefox", "application.process.binary": ".firefox-wrapped" }), "Firefox")
     assert.equal(o({ "application.name": "ALSA plug-in [audacity]", "application.process.binary": "audacity" }), "Audacity")
     assert.equal(o({ "application.name": "loopback-1234-56", "application.process.binary": "pipewire" }), "")
-    assert.equal(o({ "application.name": "Quickshell", "application.process.binary": ".quickshell-wrapped" }), "")
+    assert.equal(o({ "application.name": "sylstack", "application.process.binary": ".sylstack-wrapped" }), "")
     assert.equal(o({ "application.name": "", "application.process.binary": "" }), "")
     assert.equal(o({ "application.name": "OBS", "application.process.binary": "obs" }), "OBS Studio")
     assert.equal(ownerOf({ "application.name": "Firefox", "application.process.binary": "firefox" }).browser, true)

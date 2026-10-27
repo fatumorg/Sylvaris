@@ -13,9 +13,19 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - SylFiles answers "Show in folder" from other apps over `org.freedesktop.FileManager1` (Home Manager `defaultFileManager`)
 - Virtual display in SylCenter Displays: an extra screen for a tablet over VNC, with size presets and the login shown in the panel (Hyprland)
 
+### Changed
+
+- Sylvaris runs on SylStack instead of Quickshell. Quickshell and `socat` are no longer needed: the Nix package brings SylStack along, and `make` builds it everywhere else
+- `sylvaris` talks to the shell with `sylstack msg`; when the shell is not running, commands say so instead of falling back to `qs ipc`
+- Sylvaris windows report the app id `sylvaris` instead of `org.quickshell`; window rules that match the old id need the new one
+- A copy of the shell in `~/.config/quickshell/sylvaris` is no longer picked up; set `SYLVARIS_DIR` to run another copy
+- Install routes build SylStack from source, so Fedora and Ubuntu no longer need a COPR or PPA
+- The Nix examples add `inputs.sylvaris.inputs.nixpkgs.follows`, which SylLock needs to load your system's PAM modules
+
 ### Fixed
 
 - Displays no longer treats a screen running a custom mode as off, so Apply keeps it on
+- SylLock says the PAM service is broken when its modules cannot load, instead of calling every password wrong
 
 ## [0.4.2] - 2026-10-20
 

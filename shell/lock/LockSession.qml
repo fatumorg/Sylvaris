@@ -1,11 +1,6 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
-import Quickshell.Wayland
-import Quickshell.Services.Pam
-import qs
+import SylStack
 import qs.services
-import qs.components
 import "../lib/lock.mjs" as L
 import "../lib/settings.mjs" as S
 
@@ -13,9 +8,9 @@ Scope {
     id: root
 
     readonly property var cfg: Settings.values.lock
-    property string user: Quickshell.env("USER") || ""
-    readonly property string avatar: S.expandHome(Config.values.avatar || "", Quickshell.env("HOME"))
-    readonly property string testDir: Demo.enabled ? Quickshell.env("SYLVARIS_PAM_DIR") || "" : ""
+    property string user: Stack.env("USER") || ""
+    readonly property string avatar: S.expandHome(Config.values.avatar || "", Stack.env("HOME"))
+    readonly property string testDir: Demo.enabled ? Stack.env("SYLVARIS_PAM_DIR") || "" : ""
     property bool locked: false
     property string typed: ""
     property bool busy: false
@@ -26,7 +21,7 @@ Scope {
     property var installed: []
     property real now: Date.now()
     property bool quitting: false
-    readonly property string stateFile: (Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris/lock.json"
+    readonly property string stateFile: (Stack.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris/lock.json"
     readonly property string service: root.testDir !== "" ? "sylvaris-test" : L.pamService(root.cfg.pam, root.installed)
 
     signal failed

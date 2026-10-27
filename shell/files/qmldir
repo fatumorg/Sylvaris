@@ -1,0 +1,22 @@
+module qs.files
+AskDialog 1.0 AskDialog.qml
+ClashDialog 1.0 ClashDialog.qml
+Details 1.0 Details.qml
+Entry 1.0 Entry.qml
+FileIcon 1.0 FileIcon.qml
+FileRow 1.0 FileRow.qml
+FileTile 1.0 FileTile.qml
+FilesDialog 1.0 FilesDialog.qml
+FilesMenu 1.0 FilesMenu.qml
+FilesWindow 1.0 FilesWindow.qml
+FilterField 1.0 FilterField.qml
+Pane 1.0 Pane.qml
+PathBar 1.0 PathBar.qml
+PickBar 1.0 PickBar.qml
+PillButton 1.0 PillButton.qml
+RenameField 1.0 RenameField.qml
+Sidebar 1.0 Sidebar.qml
+StatusBar 1.0 StatusBar.qml
+SylFiles 1.0 SylFiles.qml
+TabStrip 1.0 TabStrip.qml
+ToolButton 1.0 ToolButton.qml

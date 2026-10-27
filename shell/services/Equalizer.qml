@@ -1,9 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
-import Quickshell.Services.Pipewire
+import SylStack
 import "../lib/eq.mjs" as E
 
 Singleton {
@@ -11,7 +9,7 @@ Singleton {
 
     readonly property var cfg: Settings.values.media.eq
     readonly property bool enabled: root.cfg.enabled || root.cfg.spatial
-    readonly property string path: (Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris/eq.conf"
+    readonly property string path: (Stack.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris/eq.conf"
     readonly property var node: root.find("sylvaris_eq")
     readonly property var outNode: root.find("sylvaris_eq_out")
     readonly property bool running: root.node !== null
@@ -70,13 +68,13 @@ Singleton {
             return;
         root.write();
         if (root.outNode !== null)
-            Quickshell.execDetached(["pw-metadata", String(root.outNode.id), "target.object", name]);
+            Stack.execDetached(["pw-metadata", String(root.outNode.id), "target.object", name]);
     }
 
     function push(): void {
         root.write();
         if (root.node !== null)
-            Quickshell.execDetached(["pw-cli", "set-param", String(root.node.id), "Props", E.paramsText(root.effective())]);
+            Stack.execDetached(["pw-cli", "set-param", String(root.node.id), "Props", E.paramsText(root.effective())]);
     }
 
     function start(): void {
@@ -140,7 +138,7 @@ Singleton {
         interval: 1500
         onTriggered: {
             if (!root.enabled)
-                Quickshell.execDetached(["pkill", "-f", "^pipewire -c " + root.path + "$"]);
+                Stack.execDetached(["pkill", "-f", "^pipewire -c " + root.path + "$"]);
         }
     }
 

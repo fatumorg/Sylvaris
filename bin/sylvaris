@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-dir="${SYLVARIS_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/sylvaris}"
-if [ -z "${SYLVARIS_DIR:-}" ] && [ ! -d "$dir" ]; then
+dir="${SYLVARIS_DIR:-}"
+if [ -z "$dir" ]; then
     here="$(dirname "$(readlink -f "$0")")"
     for d in "$here/../share/sylvaris" "$here/../shell"; do
         [ -f "$d/shell.qml" ] && dir="$(cd "$d" && pwd)" && break
     done
 fi
+[ -n "$dir" ] || { echo "sylvaris: cannot find the shell; set SYLVARIS_DIR to its folder" >&2; exit 1; }
 sock="${XDG_RUNTIME_DIR:-/tmp}/sylvaris/ipc.sock"
 
 usage() {
@@ -50,12 +51,14 @@ json() {
 request() {
     local reply="" sep=$'\x1f' req
     req="$(printf "%s$sep" "$@")"
-    if [ -S "$sock" ] && command -v socat >/dev/null 2>&1; then
-        reply="$(printf '%s\n' "$req" | socat -t 5 - "UNIX-CONNECT:$sock" 2>/dev/null)" || reply=""
+    if [ ! -S "$sock" ]; then
+        echo "error: Sylvaris is not running" >&2
+        return 1
     fi
-    if [ -z "$reply" ]; then
-        reply="$(qs -p "$dir" ipc call sylvaris run "$req")"
-    fi
+    reply="$(sylstack msg "$sock" "$req")" || {
+        echo "error: could not reach Sylvaris at $sock" >&2
+        return 1
+    }
     printf '%s\n' "$reply"
 }
 
@@ -82,7 +85,7 @@ install_plugin() {
 
 run() {
     local reply
-    reply="$(request "$@")"
+    reply="$(request "$@")" || exit 1
     printf '%s\n' "$reply"
     case "$reply" in
     error:*) exit 1 ;;
@@ -91,7 +94,7 @@ run() {
 
 case "${1:-}" in
 "")
-    exec qs -p "$dir" -n
+    exec sylstack -p "$dir" -n
     ;;
 -h | --help | help)
     usage
@@ -102,7 +105,7 @@ version | -V | --version)
     printf 'Sylvaris %s\n' "$v"
     ;;
 greet)
-    exec qs -p "$dir/greet.qml" -n
+    exec sylstack -p "$dir/greet.qml" -n
     ;;
 filemanager1)
     exec python3 "$dir/helpers/filemanager1.py" "$(readlink -f "$0")"
@@ -162,9 +165,9 @@ set)
 doctor)
     out="$(mktemp)"
     trap 'rm -f "$out"' EXIT
-    SYLVARIS_DOCTOR_OUT="$out" QT_QPA_PLATFORM=offscreen timeout 20 qs -p "$dir/doctor.qml" >/dev/null 2>&1 || true
+    SYLVARIS_DOCTOR_OUT="$out" QT_QPA_PLATFORM=offscreen timeout 20 sylstack -p "$dir/doctor.qml" >/dev/null 2>&1 || true
     if [ ! -s "$out" ]; then
-        echo "doctor could not start quickshell (qs) with $dir/doctor.qml" >&2
+        echo "doctor could not start sylstack with $dir/doctor.qml" >&2
         exit 1
     fi
     cat "$out"
@@ -176,7 +179,8 @@ plugins)
     if [ "${2:-}" = install ]; then install_plugin "${@:3}"; else run "$@"; fi
     ;;
 watch)
-    { json watch "${@:2}"; echo; } | socat -,ignoreeof "UNIX-CONNECT:$sock"
+    [ -S "$sock" ] || { echo "error: Sylvaris is not running" >&2; exit 1; }
+    exec sylstack msg -f "$sock" "$(json watch "${@:2}")"
     ;;
 *)
     run "$@"

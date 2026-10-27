@@ -1,6 +1,6 @@
 import QtQuick
 import Qt.labs.folderlistmodel
-import Quickshell
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -12,8 +12,8 @@ Popup {
     id: root
 
     readonly property var cfg: Settings.values.paper
-    readonly property string folderPath: S.expandHome(root.cfg.folder, Quickshell.env("HOME"))
-    readonly property string current: S.expandHome(W.resolve(root.cfg, Theme.currentId, Theme.wallpaper, root.screenInfo ? root.screenInfo.name : ""), Quickshell.env("HOME"))
+    readonly property string folderPath: S.expandHome(root.cfg.folder, Stack.env("HOME"))
+    readonly property string current: S.expandHome(W.resolve(root.cfg, Theme.currentId, Theme.wallpaper, root.screenInfo ? root.screenInfo.name : ""), Stack.env("HOME"))
     property string scope: "theme"
 
     namespace: "sylpaper-picker"
@@ -49,7 +49,7 @@ Popup {
     function set(path: string): void {
         if (path === "")
             throw new Error("usage: paper set <image path>");
-        root.pick(S.expandHome(path, Quickshell.env("HOME")));
+        root.pick(S.expandHome(path, Stack.env("HOME")));
     }
 
     function step(d: int): void {
@@ -63,7 +63,7 @@ Popup {
     }
 
     Variants {
-        model: root.cfg.enabled ? Quickshell.screens : []
+        model: root.cfg.enabled ? Stack.screens : []
 
         delegate: PaperLayer {}
     }

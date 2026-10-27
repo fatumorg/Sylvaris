@@ -1,6 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -12,7 +11,7 @@ Popup {
     id: root
 
     readonly property var cfg: Settings.values.rgb
-    readonly property string helper: Quickshell.shellDir + "/helpers/rgb.py"
+    readonly property string helper: Stack.shellDir + "/helpers/rgb.py"
     readonly property string accent: R.hex(Theme.accent.toString())
     readonly property string themeRgb: Theme.theme.colors.rgb || ""
     readonly property string shown: R.shared(root.cfg, root.accent, root.themeRgb)

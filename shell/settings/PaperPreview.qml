@@ -1,8 +1,6 @@
 import QtQuick
 import QtQuick.Effects
-import qs
 import qs.services
-import qs.components
 
 MiniScreen {
     id: root

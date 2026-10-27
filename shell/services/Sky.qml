@@ -1,8 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import "../lib/sky.mjs" as K
 
 Singleton {
@@ -17,7 +16,7 @@ Singleton {
     readonly property real longitude: root.available ? root.location.longitude : 0
     property string zone: ""
 
-    readonly property real offset: Demo.enabled && Quickshell.env("SYLVARIS_SKY_TIME") ? Date.parse(Quickshell.env("SYLVARIS_SKY_TIME")) - Date.now() : 0
+    readonly property real offset: Demo.enabled && Stack.env("SYLVARIS_SKY_TIME") ? Date.parse(Stack.env("SYLVARIS_SKY_TIME")) - Date.now() : 0
     property real now: Date.now() + root.offset
     readonly property real day: K.dayStart(root.now)
     readonly property var sun: K.sunPosition(root.now, root.latitude, root.longitude)

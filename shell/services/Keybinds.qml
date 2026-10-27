@@ -1,9 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Hyprland
-import Quickshell.Io
+import SylStack
 import "../lib/keys.mjs" as K
 import "../lib/perf.mjs" as P
 
@@ -16,7 +14,7 @@ Singleton {
     property var external: ({})
     property bool included: false
     property real quietUntil: 0
-    readonly property string configHome: Quickshell.env("XDG_CONFIG_HOME") || Quickshell.env("HOME") + "/.config"
+    readonly property string configHome: Stack.env("XDG_CONFIG_HOME") || Stack.env("HOME") + "/.config"
     readonly property string file: K.bindsPath(Compositor.name, Compositor.usingLua, root.configHome)
     readonly property string include: K.includeLine(Compositor.name, Compositor.usingLua)
     readonly property string dir: Compositor.name === "hyprland" ? root.configHome + "/hypr" : root.configHome + "/sway"
@@ -31,9 +29,9 @@ Singleton {
         const d = K.diff(force ? {} : root.applied, root.wanted);
         if (!force)
             for (const combo of d.unbind)
-                Quickshell.execDetached(K.unbindArgs(Compositor.name, Compositor.usingLua, combo));
+                Stack.execDetached(K.unbindArgs(Compositor.name, Compositor.usingLua, combo));
         for (const b of d.bind)
-            Quickshell.execDetached(K.bindArgs(Compositor.name, Compositor.usingLua, b[0], b[1]));
+            Stack.execDetached(K.bindArgs(Compositor.name, Compositor.usingLua, b[0], b[1]));
         root.applied = root.wanted;
         root.save();
     }
@@ -59,7 +57,7 @@ Singleton {
         if (Demo.enabled || args === null)
             return;
         root.quietUntil = Date.now() + 2000;
-        Quickshell.execDetached(args);
+        Stack.execDetached(args);
         if (!on && Compositor.name === "sway")
             rebind.restart();
     }

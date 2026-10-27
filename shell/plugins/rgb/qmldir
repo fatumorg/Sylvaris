@@ -1,0 +1,3 @@
+module qs.plugins.rgb
+RGBPage 1.0 RGBPage.qml
+SylRGB 1.0 SylRGB.qml

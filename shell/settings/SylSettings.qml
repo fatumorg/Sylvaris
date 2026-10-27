@@ -1,9 +1,6 @@
 import QtQuick
 import QtQuick.Shapes
-import Quickshell
-import Quickshell.Io
-import Quickshell.Wayland
-import Quickshell.Services.UPower
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -740,7 +737,7 @@ Scope {
                     version: root.version
                     memory: root.memory
                     uptime: root.uptimeText
-                    onReload: Quickshell.reload(false)
+                    onReload: Stack.reload(false)
                 }
             }
 

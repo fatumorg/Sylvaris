@@ -1,5 +1,5 @@
 import QtQuick
-import Quickshell
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -226,7 +226,7 @@ FocusScope {
                     required property var modelData
                     required property int index
                     readonly property bool on: dialog.lit === app.index
-                    readonly property string icon: Quickshell.iconPath(app.modelData.icon || "", true)
+                    readonly property string icon: Stack.iconPath(app.modelData.icon || "", true)
                     width: appList.width
                     height: 40
 

@@ -1,8 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Services.Notifications
+import SylStack
 import "../lib/notify.mjs" as N
 import "../lib/island.mjs" as I
 

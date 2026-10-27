@@ -1,9 +1,6 @@
 import QtQuick
 import Qt.labs.folderlistmodel
-import Quickshell
-import Quickshell.Io
-import Quickshell.Wayland
-import qs
+import SylStack
 import qs.services
 import "../lib/files.mjs" as F
 import "../lib/viewer.mjs" as V
@@ -19,13 +16,13 @@ Scope {
     readonly property bool windowed: true
     readonly property var cfg: Settings.values.files
     readonly property var keys: F.keymap(root.cfg.keys)
-    readonly property string home: Quickshell.env("HOME") || "/"
-    readonly property string dataHome: Quickshell.env("XDG_DATA_HOME") || root.home + "/.local/share"
-    readonly property string cacheHome: Quickshell.env("XDG_CACHE_HOME") || root.home + "/.cache"
-    readonly property string configHome: Quickshell.env("XDG_CONFIG_HOME") || root.home + "/.config"
+    readonly property string home: Stack.env("HOME") || "/"
+    readonly property string dataHome: Stack.env("XDG_DATA_HOME") || root.home + "/.local/share"
+    readonly property string cacheHome: Stack.env("XDG_CACHE_HOME") || root.home + "/.cache"
+    readonly property string configHome: Stack.env("XDG_CONFIG_HOME") || root.home + "/.config"
     readonly property string trashPath: root.dataHome + "/Trash/files"
-    readonly property string helper: Quickshell.shellDir + "/helpers/files.py"
-    readonly property string archiveHelper: Quickshell.shellDir + "/helpers/archive.py"
+    readonly property string helper: Stack.shellDir + "/helpers/files.py"
+    readonly property string archiveHelper: Stack.shellDir + "/helpers/archive.py"
     readonly property var packing: Settings.values.archive
     readonly property bool archiveOn: Settings.values.parts.archive === true
     property bool picker: false
@@ -183,7 +180,7 @@ Scope {
     }
 
     function writePick(out: string, paths: var): void {
-        Quickshell.execDetached(["sh", "-c", "out=$1; shift; { for p in \"$@\"; do printf '%s\\n' \"$p\"; done; printf '\\n'; } > \"$out\"", "sh", out].concat(paths));
+        Stack.execDetached(["sh", "-c", "out=$1; shift; { for p in \"$@\"; do printf '%s\\n' \"$p\"; done; printf '\\n'; } > \"$out\"", "sh", out].concat(paths));
     }
 
     function answerPick(paths: var): void {
@@ -516,7 +513,7 @@ Scope {
         } else if (root.cfg.openArchives && root.archiveOn && A.isArchive(name)) {
             root.openArchive(p);
         } else {
-            Quickshell.execDetached(["gio", "open", p]);
+            Stack.execDetached(["gio", "open", p]);
         }
     }
 
@@ -620,7 +617,7 @@ Scope {
             if (e !== null && e.dir)
                 root.newTab(F.joinPath(root.path, n));
             else if (e !== null && !root.inTrash)
-                Quickshell.execDetached(["gio", "open", F.joinPath(root.path, n)]);
+                Stack.execDetached(["gio", "open", F.joinPath(root.path, n)]);
         }
     }
 
@@ -628,7 +625,7 @@ Scope {
         for (const p of root.targets) {
             const args = V.execArgs(app.execString, p);
             if (args.length > 0)
-                Quickshell.execDetached(args);
+                Stack.execDetached(args);
         }
         root.dialog = "";
     }
@@ -639,7 +636,7 @@ Scope {
             root.say("Set a terminal in config.json first", false);
             return;
         }
-        Quickshell.execDetached({
+        Stack.execDetached({
             command: words,
             workingDirectory: dir
         });
@@ -714,13 +711,13 @@ Scope {
             mode: mode,
             items: items
         };
-        Quickshell.execDetached(["wl-copy", "-t", "text/uri-list", F.urisOf(items.map(i => i.path))]);
+        Stack.execDetached(["wl-copy", "-t", "text/uri-list", F.urisOf(items.map(i => i.path))]);
         root.say((items.length === 1 ? "“" + F.nameOf(items[0].path) + "”" : items.length + " items") + (mode === "cut" ? " will move when you paste" : " copied"), false);
     }
 
     function copyPath(): void {
         const list = root.selected.length > 0 ? root.selected.map(n => F.joinPath(root.path, n)) : [root.path];
-        Quickshell.execDetached(["wl-copy", "--", list.join("\n")]);
+        Stack.execDetached(["wl-copy", "--", list.join("\n")]);
         root.say(list.length === 1 ? "Path copied" : "Paths copied", false);
     }
 

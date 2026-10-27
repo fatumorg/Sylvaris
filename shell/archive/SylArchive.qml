@@ -1,8 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
-import Quickshell.Wayland
-import qs
+import SylStack
 import qs.services
 import "../lib/files.mjs" as F
 import "../lib/archive.mjs" as A
@@ -31,10 +28,10 @@ Scope {
             typing: root.shared.typing
         })
     readonly property var keys: F.keymap(root.own.keys, A.ARCHIVE_ACTIONS)
-    readonly property string home: Quickshell.env("HOME") || "/"
-    readonly property string cacheHome: Quickshell.env("XDG_CACHE_HOME") || root.home + "/.cache"
+    readonly property string home: Stack.env("HOME") || "/"
+    readonly property string cacheHome: Stack.env("XDG_CACHE_HOME") || root.home + "/.cache"
     readonly property string cacheDir: root.cacheHome + "/sylvaris/archive"
-    readonly property string helper: Quickshell.shellDir + "/helpers/archive.py"
+    readonly property string helper: Stack.shellDir + "/helpers/archive.py"
     readonly property string title: (root.archive === "" ? "Archive" : F.nameOf(root.archive)) + " — SylArchive"
 
     property string archive: ""
@@ -756,7 +753,7 @@ Scope {
                 root.say(A.extractNote(r), false);
             else if (op.launch)
                 for (const pair of r.ok)
-                    Quickshell.execDetached(["gio", "open", pair[1]]);
+                    Stack.execDetached(["gio", "open", pair[1]]);
         } else if (op.kind === "extract") {
             root.say(A.extractNote(r), false);
             if (r.ok.length > 0 && r.failed.length === 0 && !r.cancelled && root.own.reveal)

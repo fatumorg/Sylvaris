@@ -1,6 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -15,7 +14,7 @@ Column {
     property string message: ""
     property bool available: false
     property var last: null
-    readonly property string home: Quickshell.env("HOME")
+    readonly property string home: Stack.env("HOME")
 
     spacing: 24
 

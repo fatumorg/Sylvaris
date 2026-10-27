@@ -1,0 +1,3 @@
+module qs.paper
+PaperLayer 1.0 PaperLayer.qml
+SylPaper 1.0 SylPaper.qml

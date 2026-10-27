@@ -2,8 +2,7 @@ pragma Singleton
 
 import QtQuick
 import Qt.labs.folderlistmodel
-import Quickshell
-import Quickshell.Io
+import SylStack
 import qs
 import "../lib/theme.mjs" as T
 import "../lib/settings.mjs" as S
@@ -11,10 +10,10 @@ import "../lib/settings.mjs" as S
 Singleton {
     id: root
 
-    readonly property string home: Quickshell.env("HOME")
+    readonly property string home: Stack.env("HOME")
     readonly property string stateFile: S.expandHome(Config.values.themeStateFile, root.home)
     readonly property string themesDir: S.expandHome(Config.values.themesDir, root.home)
-    readonly property string configHome: Quickshell.env("XDG_CONFIG_HOME") || root.home + "/.config"
+    readonly property string configHome: Stack.env("XDG_CONFIG_HOME") || root.home + "/.config"
     property int linked: 0
     property bool relink: false
     property string currentId: ""
@@ -131,8 +130,8 @@ Singleton {
             root.errors = root.errors.concat(r.missing.map(m => "link source not found: " + m));
         if (r.changed === 0 || Demo.enabled)
             return;
-        Quickshell.execDetached(["pkill", "-USR1", "kitty"]);
-        Quickshell.execDetached(["pkill", "-USR2", "waybar"]);
+        Stack.execDetached(["pkill", "-USR1", "kitty"]);
+        Stack.execDetached(["pkill", "-USR2", "waybar"]);
         try {
             Compositor.run("reload", []);
         } catch (e) {

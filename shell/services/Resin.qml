@@ -1,8 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import qs
+import SylStack
 import "../lib/settings.mjs" as S
 
 Singleton {

@@ -1,5 +1,5 @@
 import QtQuick
-import Quickshell
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -225,7 +225,7 @@ Column {
         RowButton {
             icon: Icons.GLYPHS.folder
             label: "Open the plugins folder"
-            onClicked: Quickshell.execDetached(["sh", "-c", "mkdir -p \"$0\" && xdg-open \"$0\"", Plugins.dir])
+            onClicked: Stack.execDetached(["sh", "-c", "mkdir -p \"$0\" && xdg-open \"$0\"", Plugins.dir])
         }
     }
 }

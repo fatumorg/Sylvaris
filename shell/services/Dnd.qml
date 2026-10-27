@@ -1,8 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 
 Singleton {
     id: root
@@ -29,9 +28,9 @@ Singleton {
         }
         if (!root.demo) {
             if (root.external === "swaync")
-                Quickshell.execDetached(["swaync-client", v ? "-dn" : "-df"]);
+                Stack.execDetached(["swaync-client", v ? "-dn" : "-df"]);
             else if (root.external === "mako")
-                Quickshell.execDetached(["makoctl", "mode", v ? "-a" : "-r", "do-not-disturb"]);
+                Stack.execDetached(["makoctl", "mode", v ? "-a" : "-r", "do-not-disturb"]);
         }
         root.externalEnabled = v;
     }

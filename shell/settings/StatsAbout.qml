@@ -1,5 +1,5 @@
 import QtQuick
-import Quickshell
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -44,7 +44,7 @@ Column {
         },
         {
             glyph: Icons.GLYPHS.displays,
-            value: String(Quickshell.screens.length),
+            value: String(Stack.screens.length),
             label: "Screens"
         },
         {
@@ -165,7 +165,7 @@ Column {
             Text {
                 textFormat: Text.PlainText
                 width: parent.width
-                text: "A Quickshell desktop for Hyprland, niri and sway. Running on " + Compositor.name + (Compositor.usingLua ? " with a Lua config" : "") + "."
+                text: "A desktop shell for Hyprland, niri and sway, built on SylStack. Running on " + Compositor.name + (Compositor.usingLua ? " with a Lua config" : "") + "."
                 wrapMode: Text.Wrap
                 color: Theme.textDim
                 font.family: Tokens.fontUi
@@ -189,7 +189,7 @@ Column {
                 Chip {
                     text: "Open folder"
                     glyph: Icons.GLYPHS.open
-                    onClicked: Quickshell.execDetached(["xdg-open", Config.dir])
+                    onClicked: Stack.execDetached(["xdg-open", Config.dir])
                 }
 
                 Chip {

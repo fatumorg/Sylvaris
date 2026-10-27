@@ -1,7 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
+import SylStack
 import "../lib/pad.mjs" as P
 
 Singleton {
@@ -25,7 +25,7 @@ Singleton {
     }
 
     function icon(app: var): string {
-        return app && app.icon ? Quickshell.iconPath(app.icon, true) : "";
+        return app && app.icon ? Stack.iconPath(app.icon, true) : "";
     }
 
     function launch(app: var): void {
@@ -35,7 +35,7 @@ Singleton {
         if (Demo.enabled)
             return;
         if (app.runInTerminal)
-            Quickshell.execDetached([Config.values.terminal, "-e"].concat(app.command));
+            Stack.execDetached([Config.values.terminal, "-e"].concat(app.command));
         else
             app.execute();
     }

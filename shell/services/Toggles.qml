@@ -1,8 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import "../lib/icons.mjs" as Icons
 import "../lib/perf.mjs" as P
 
@@ -48,7 +47,7 @@ Singleton {
             return;
         const cmd = on ? def.on : def.off;
         if (cmd !== "" && !Demo.enabled)
-            Quickshell.execDetached(["sh", "-c", cmd]);
+            Stack.execDetached(["sh", "-c", cmd]);
         Settings.set("toggleState." + id, on);
         if (def.status !== "") {
             const next = Object.assign({}, root.status);

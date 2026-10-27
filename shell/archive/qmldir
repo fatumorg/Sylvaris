@@ -1,0 +1,4 @@
+module qs.archive
+ArchiveInfo 1.0 ArchiveInfo.qml
+ArchiveWindow 1.0 ArchiveWindow.qml
+SylArchive 1.0 SylArchive.qml

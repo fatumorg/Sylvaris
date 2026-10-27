@@ -1,6 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Wayland
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -304,14 +303,14 @@ Scope {
                 if (!visible)
                     return;
                 panel.forceActiveFocus();
-                if (Quickshell.env("SYLVARIS_TRACE") === "1")
+                if (Stack.env("SYLVARIS_TRACE") === "1")
                     console.log("SYLVARIS_SHOWN " + Date.now());
             }
             Component.onCompleted: {
                 if (!visible)
                     return;
                 panel.forceActiveFocus();
-                if (Quickshell.env("SYLVARIS_TRACE") === "1")
+                if (Stack.env("SYLVARIS_TRACE") === "1")
                     console.log("SYLVARIS_SHOWN " + Date.now());
             }
 

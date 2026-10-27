@@ -1,7 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
-import qs
+import SylStack
 import qs.services
 import qs.components
 import qs.settings
@@ -26,7 +24,7 @@ Column {
 
     Process {
         id: lister
-        command: ["python3", Quickshell.shellDir + "/helpers/rgb.py", page.cfg.host, String(page.cfg.port), "list"]
+        command: ["python3", Stack.shellDir + "/helpers/rgb.py", page.cfg.host, String(page.cfg.port), "list"]
         stdout: StdioCollector {
             onStreamFinished: {
                 try {

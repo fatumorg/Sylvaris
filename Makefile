@@ -4,13 +4,21 @@ GREETER_USER ?= $(or $(shell sed -n 's/^user *= *"\(.*\)"/\1/p' /etc/greetd/conf
 SHARE_GROUP ?= users
 
 bindir = $(DESTDIR)$(PREFIX)/bin
+build = build/sylstack
 sharedir = $(DESTDIR)$(PREFIX)/share/sylvaris
 greetdir = $(DESTDIR)/etc/sylvaris-greet
 statedir = $(DESTDIR)/var/lib/sylvaris-greet
 
-.PHONY: install install-pam install-greeter uninstall
+.PHONY: all sylstack install install-pam install-greeter uninstall
 
-install:
+all: sylstack
+
+sylstack:
+	cmake -S stack -B $(build) -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(PREFIX)
+	cmake --build $(build) --parallel
+
+install: sylstack
+	DESTDIR=$(DESTDIR) cmake --install $(build)
 	install -Dm755 bin/sylvaris $(bindir)/sylvaris
 	rm -rf $(sharedir)
 	mkdir -p $(sharedir)
@@ -30,5 +38,6 @@ install-greeter: install
 	install -d -m2775 -o $(GREETER_USER) -g $(SHARE_GROUP) $(statedir)/shared
 
 uninstall:
+	[ ! -f $(build)/install_manifest.txt ] || xargs rm -f < $(build)/install_manifest.txt
 	rm -f $(bindir)/sylvaris $(bindir)/sylvaris-greet
 	rm -rf $(sharedir)

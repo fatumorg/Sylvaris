@@ -2,7 +2,8 @@
   lib,
   stdenvNoCC,
   makeWrapper,
-  quickshell,
+  callPackage,
+  sylstack ? callPackage ./sylstack.nix { },
   wlr-randr,
   wayvnc,
   openssl,
@@ -15,7 +16,6 @@
   libarchive,
   coreutils,
   procps,
-  socat,
   pipewire,
   python3,
   curl,
@@ -125,10 +125,9 @@ let
   };
   tools = lib.unique (
     [
-      quickshell
+      sylstack
       coreutils
       procps
-      socat
     ]
     ++ lib.concatLists (lib.mapAttrsToList (name: lib.optionals (sylvarisParts.${name} or true)) partTools)
   );
@@ -167,10 +166,13 @@ stdenvNoCC.mkDerivation {
     runHook postInstall
   '';
 
-  passthru.parts = builtins.attrNames partTools;
+  passthru = {
+    parts = builtins.attrNames partTools;
+    inherit sylstack;
+  };
 
   meta = {
-    description = "Modular Quickshell desktop shell for Hyprland, niri and sway";
+    description = "Modular desktop shell for Hyprland, niri and sway, built on SylStack";
     license = lib.licenses.mit;
     platforms = lib.platforms.linux;
     mainProgram = "sylvaris";

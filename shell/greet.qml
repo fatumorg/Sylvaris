@@ -1,6 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import qs.greet
 
 ShellRoot {
@@ -8,11 +7,19 @@ ShellRoot {
         id: greet
     }
 
-    IpcHandler {
-        target: "sylvaris"
+    SocketServer {
+        active: true
+        path: (Stack.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris/greet.sock"
+        handler: Socket {
+            id: client
 
-        function run(request: string): string {
-            return JSON.stringify(greet.state());
+            parser: SplitParser {
+                onRead: line => {
+                    client.write(JSON.stringify(greet.state()) + "\n");
+                    client.flush();
+                    client.connected = false;
+                }
+            }
         }
     }
 }

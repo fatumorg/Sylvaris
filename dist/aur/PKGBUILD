@@ -1,12 +1,12 @@
 pkgname=sylvaris-git
 pkgver=r0.0000000
 pkgrel=1
-pkgdesc="Modular Quickshell desktop shell for Hyprland, niri and sway"
-arch=('any')
+pkgdesc="Modular desktop shell for Hyprland, niri and sway, built on SylStack"
+arch=('x86_64' 'aarch64')
 url="https://github.com/fatumorg/Sylvaris"
 license=('MIT')
-depends=('quickshell' 'qt6-svg' 'socat' 'inter-font' 'ttf-jetbrains-mono-nerd' 'bash' 'coreutils' 'procps-ng')
-makedepends=('git' 'make')
+depends=('qt6-base' 'qt6-declarative' 'qt6-wayland' 'qt6-svg' 'layer-shell-qt' 'polkit-qt6' 'libpipewire' 'pam' 'wayland' 'inter-font' 'ttf-jetbrains-mono-nerd' 'bash' 'coreutils' 'procps-ng')
+makedepends=('git' 'make' 'cmake')
 optdepends=(
   'pipewire: audio, media, equalizer and Diver alarm sounds'
   'pipewire-pulse: volume and output switching'
@@ -35,6 +35,11 @@ sha256sums=('SKIP')
 pkgver() {
   cd sylvaris
   printf 'r%s.%s' "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"
+}
+
+build() {
+  cd sylvaris
+  make PREFIX=/usr sylstack
 }
 
 package() {

@@ -1,5 +1,5 @@
 {
-  description = "Sylvaris, a modular Quickshell desktop shell for Hyprland, niri and sway";
+  description = "Sylvaris, a modular desktop shell for Hyprland, niri and sway";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -14,7 +14,9 @@
     in
     {
       packages = forAll (pkgs: rec {
+        sylstack = pkgs.callPackage ./nix/sylstack.nix { };
         sylvaris = pkgs.callPackage ./nix/package.nix {
+          inherit sylstack;
           commit = self.shortRev or self.dirtyShortRev or "unknown";
         };
         default = sylvaris;
@@ -46,7 +48,9 @@
               cd ${./.}
               node --test tests/*.test.mjs
               python3 -m unittest discover -s tests -p '*_test.py'
-              find shell -name '*.qml' -print0 | xargs -0 qmllint -I ${pkgs.qt6.qtdeclarative}/lib/qt-6/qml -I ${pkgs.quickshell}/lib/qt-6/qml -I ${pkgs.qt6.qtmultimedia}/lib/qt-6/qml
+              mkdir -p $TMPDIR/imports
+              ln -s $PWD/shell $TMPDIR/imports/qs
+              find shell -name '*.qml' -print0 | xargs -0 qmllint -I ${pkgs.qt6.qtdeclarative}/lib/qt-6/qml -I ${self.packages.${pkgs.stdenv.hostPlatform.system}.sylstack}/lib/qt-6/qml -I ${pkgs.qt6.qtmultimedia}/lib/qt-6/qml -I $TMPDIR/imports
               touch $out
             '';
 
@@ -193,13 +197,12 @@
           packages = [
             pkgs.nodejs
             pkgs.qt6.qtdeclarative
-            pkgs.quickshell
+            self.packages.${pkgs.stdenv.hostPlatform.system}.sylstack
             pkgs.sway-unwrapped
             pkgs.grim
             pkgs.wlr-randr
             pkgs.wlsunset
             pkgs.jq
-            pkgs.socat
             pkgs.libnotify
             pkgs.wtype
             pkgs.wlrctl

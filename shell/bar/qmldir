@@ -1,0 +1,5 @@
+module qs.bar
+BarButton 1.0 BarButton.qml
+BarGroup 1.0 BarGroup.qml
+SylBar 1.0 SylBar.qml
+TrayMenu 1.0 TrayMenu.qml

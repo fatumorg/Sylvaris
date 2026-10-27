@@ -1,7 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
-import qs
+import SylStack
 import qs.services
 import "../lib/lock.mjs" as L
 
@@ -9,7 +7,8 @@ Scope {
     id: root
 
     readonly property var cfg: Settings.values.lock
-    readonly property string stateFile: (Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris/lock.json"
+    readonly property string stateFile: (Stack.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris/lock.json"
+    readonly property string socketFile: (Stack.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris/lock.sock"
     property var surface: ({})
     property bool confirmed: false
     property string problem: ""
@@ -23,7 +22,7 @@ Scope {
         root.opened();
         root.problem = "";
         root.confirmed = false;
-        Quickshell.execDetached(["sh", "-c", "mkdir -p \"$(dirname \"$1\")\"; i=0; while [ $i -lt 50 ]; do r=$(qs -p \"$0\" ipc call sylvaris run lock 2>/dev/null) || exec qs -p \"$0\" -n; case $r in *'\"locked\":true'*) exit 0 ;; esac; sleep 0.1; i=$((i + 1)); done; exit 1", Quickshell.shellDir + "/lock.qml", root.stateFile]);
+        Stack.execDetached(["sh", "-c", "mkdir -p -m 700 \"$(dirname \"$1\")\"; i=0; while [ $i -lt 50 ]; do r=$(sylstack msg \"$2\" lock 2>/dev/null) || exec sylstack -p \"$0\" -n; case $r in *'\"locked\":true'*) exit 0 ;; esac; sleep 0.1; i=$((i + 1)); done; exit 1", Stack.shellDir + "/lock.qml", root.stateFile, root.socketFile]);
         watchdog.restart();
     }
 
@@ -66,7 +65,7 @@ Scope {
                 return;
             root.problem = root.surface.error === true && root.surface.message ? root.surface.message : "The lock screen did not start";
             if (!Demo.enabled)
-                Quickshell.execDetached(["notify-send", "-a", "Sylvaris", "-u", "critical", "Sylvaris could not lock the screen", root.problem]);
+                Stack.execDetached(["notify-send", "-a", "Sylvaris", "-u", "critical", "Sylvaris could not lock the screen", root.problem]);
         }
     }
 
@@ -108,7 +107,7 @@ Scope {
         stdout: SplitParser {
             onRead: line => {
                 root.monitorRetries = 0;
-                if (L.isLockSignal(line, L.sessionPath(Quickshell.env("XDG_SESSION_ID") || "")))
+                if (L.isLockSignal(line, L.sessionPath(Stack.env("XDG_SESSION_ID") || "")))
                     root.lock();
             }
         }

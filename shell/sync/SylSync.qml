@@ -1,6 +1,5 @@
 import QtQuick
-import Quickshell
-import qs
+import SylStack
 import qs.services
 
 Scope {

@@ -1,7 +1,6 @@
 import QtQuick
 import qs
 import qs.services
-import qs.components
 import "../lib/bar.mjs" as B
 import "../lib/motion.mjs" as M
 

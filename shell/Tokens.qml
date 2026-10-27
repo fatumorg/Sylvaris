@@ -1,7 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
+import SylStack
 import "lib/motion.mjs" as M
 
 Singleton {

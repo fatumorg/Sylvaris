@@ -1,7 +1,6 @@
 import QtQuick
 import qs
 import qs.services
-import "../lib/files.mjs" as F
 
 Item {
     id: cell

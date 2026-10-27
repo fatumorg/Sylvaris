@@ -1,8 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import qs.services
 import "../../lib/diver.mjs" as D
 import "../../lib/plan.mjs" as P
@@ -12,7 +11,7 @@ Singleton {
 
     readonly property var cfg: Settings.values.diver
     readonly property string helper: Qt.resolvedUrl("../../helpers/diver.py").toString().replace("file://", "")
-    readonly property string tonePath: (Quickshell.env("XDG_CACHE_HOME") || Quickshell.env("HOME") + "/.cache") + "/sylvaris/diver-alarm.wav"
+    readonly property string tonePath: (Stack.env("XDG_CACHE_HOME") || Stack.env("HOME") + "/.cache") + "/sylvaris/diver-alarm.wav"
     property bool paired: false
     property var data: []
     property real version: 0
@@ -90,7 +89,7 @@ Singleton {
     }
 
     function unpair(): void {
-        Quickshell.execDetached(["python3", root.helper, "unpair"]);
+        Stack.execDetached(["python3", root.helper, "unpair"]);
         root.paired = false;
         root.data = [];
         root.synced = "[]";
@@ -317,7 +316,7 @@ Singleton {
         const minutes = root.focusMinutes;
         root.stopFocus();
         if (!Demo.enabled && root.cfg.notify)
-            Quickshell.execDetached(["notify-send", "-a", "Diver", "Focus finished", minutes + " min on " + title]);
+            Stack.execDetached(["notify-send", "-a", "Diver", "Focus finished", minutes + " min on " + title]);
     }
 
     function push(): void {
@@ -400,7 +399,7 @@ Singleton {
         if (!root.cfg.notify)
             return;
         const when = r.before > 0 ? "in " + r.before + " min · " : "";
-        Quickshell.execDetached(["notify-send", "-a", "Diver", "-u", r.alarm ? "critical" : "normal", r.title, when + Qt.formatTime(new Date(r.start), "HH:mm") + (r.path !== "" ? " · " + r.path : "")]);
+        Stack.execDetached(["notify-send", "-a", "Diver", "-u", r.alarm ? "critical" : "normal", r.title, when + Qt.formatTime(new Date(r.start), "HH:mm") + (r.path !== "" ? " · " + r.path : "")]);
     }
 
     function state(): var {

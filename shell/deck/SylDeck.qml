@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Shapes
-import Quickshell
-import Quickshell.Wayland
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -11,7 +10,7 @@ import "../lib/icons.mjs" as Icons
 Scope {
     id: root
 
-    property var screens: Quickshell.screens
+    property var screens: Stack.screens
     readonly property var cfg: Settings.at(root.screens.length === 1 ? root.screens[0].name : "").deck
     readonly property int size: root.cfg.size
     readonly property real reach: root.size * 2.6

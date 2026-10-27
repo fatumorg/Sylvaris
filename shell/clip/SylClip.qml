@@ -1,6 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -11,8 +10,8 @@ Popup {
     id: root
 
     readonly property var cfg: Settings.values.clip
-    readonly property string cacheDir: (Quickshell.env("XDG_CACHE_HOME") || Quickshell.env("HOME") + "/.cache") + "/sylvaris/clip"
-    readonly property string storePath: (Quickshell.env("XDG_STATE_HOME") || Quickshell.env("HOME") + "/.local/state") + "/sylvaris/clip.json"
+    readonly property string cacheDir: (Stack.env("XDG_CACHE_HOME") || Stack.env("HOME") + "/.cache") + "/sylvaris/clip"
+    readonly property string storePath: (Stack.env("XDG_STATE_HOME") || Stack.env("HOME") + "/.local/state") + "/sylvaris/clip.json"
     property var history: []
     property string query: ""
     property int selected: 0
@@ -31,7 +30,7 @@ Popup {
         const kept = root.history.map(e => e.path).filter(Boolean);
         const gone = before.filter(e => e.path && kept.indexOf(e.path) < 0).map(e => e.path);
         if (gone.length > 0)
-            Quickshell.execDetached(["rm", "-f"].concat(gone));
+            Stack.execDetached(["rm", "-f"].concat(gone));
         root.save();
     }
 
@@ -45,9 +44,9 @@ Popup {
             return;
         if (!Demo.enabled) {
             if (entry.kind === "image")
-                Quickshell.execDetached(["sh", "-c", "wl-copy -t image/png < \"$0\"", entry.path]);
+                Stack.execDetached(["sh", "-c", "wl-copy -t image/png < \"$0\"", entry.path]);
             else
-                Quickshell.execDetached(["wl-copy", "--", entry.text]);
+                Stack.execDetached(["wl-copy", "--", entry.text]);
         }
         root.add(Object.assign({}, entry, {
             at: Date.now()
@@ -66,7 +65,7 @@ Popup {
         const hit = root.history.find(e => e.id === id);
         root.history = root.history.filter(e => e.id !== id);
         if (hit && hit.path)
-            Quickshell.execDetached(["rm", "-f", hit.path]);
+            Stack.execDetached(["rm", "-f", hit.path]);
         root.save();
     }
 
@@ -75,9 +74,9 @@ Popup {
         const drop = root.history.filter(e => !e.pinned && e.path).map(e => e.path);
         root.history = keep;
         if (drop.length > 0)
-            Quickshell.execDetached(["rm", "-f"].concat(drop));
+            Stack.execDetached(["rm", "-f"].concat(drop));
         if (!Demo.enabled)
-            Quickshell.execDetached(["wl-copy", "--clear"]);
+            Stack.execDetached(["wl-copy", "--clear"]);
         root.save();
     }
 

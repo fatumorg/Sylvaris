@@ -1,6 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Wayland
+import SylStack
 import qs
 import qs.services
 import qs.components

@@ -126,33 +126,40 @@ programs.sylvaris = {
 };</code></pre>
       </div>
       <div class="tab-panel" role="tabpanel" id="panel-arch" aria-labelledby="tab-arch">
-<pre data-lang="sh"><code>sudo pacman -S --needed quickshell qt6-svg socat inter-font \
-  ttf-jetbrains-mono-nerd pipewire pipewire-pulse libpulse \
+<pre data-lang="sh"><code>sudo pacman -S --needed base-devel cmake qt6-base qt6-declarative \
+  qt6-wayland qt6-svg layer-shell-qt polkit-qt6 libpipewire pam wayland \
+  inter-font ttf-jetbrains-mono-nerd pipewire pipewire-pulse libpulse \
   python-cryptography libnotify wlsunset curl networkmanager \
   wlr-randr wl-clipboard grim slurp wf-recorder ffmpeg glib2 git make
 git clone {{REPO}}
-cd Sylvaris &amp;&amp; sudo make install install-pam</code></pre>
+cd Sylvaris &amp;&amp; make &amp;&amp; sudo make install install-pam</code></pre>
       </div>
       <div class="tab-panel" role="tabpanel" id="panel-fedora" aria-labelledby="tab-fedora">
-<pre data-lang="sh"><code>sudo dnf copr enable errornointernet/quickshell
-sudo dnf install quickshell qt6-qtsvg socat rsms-inter-fonts \
+<pre data-lang="sh"><code>sudo dnf install cmake gcc-c++ qt6-qtbase-devel qt6-qtbase-private-devel \
+  qt6-qtdeclarative-devel qt6-qtwayland-devel qt6-qtsvg layer-shell-qt-devel \
+  polkit-qt6-1-devel pipewire-devel pam-devel wayland-devel rsms-inter-fonts \
   pipewire pipewire-pulseaudio pipewire-utils pulseaudio-utils \
   python3-cryptography libnotify wlsunset curl NetworkManager \
   wlr-randr wl-clipboard grim slurp wf-recorder ffmpeg glib2 \
   procps-ng git make xz unzip
 git clone {{REPO}}
-cd Sylvaris &amp;&amp; sudo make install install-pam</code></pre>
+cd Sylvaris &amp;&amp; make &amp;&amp; sudo make install install-pam</code></pre>
       </div>
       <div class="tab-panel" role="tabpanel" id="panel-ubuntu" aria-labelledby="tab-ubuntu">
-<pre data-lang="sh"><code>sudo add-apt-repository ppa:avengemedia/danklinux
-sudo apt install quickshell qml6-module-qtquick-effects \
-  qml6-module-qtquick-shapes qml6-module-qt-labs-folderlistmodel \
-  socat fonts-inter pipewire pipewire-pulse pulseaudio-utils \
-  python3-cryptography libnotify-bin wlsunset curl network-manager \
-  wlr-randr wl-clipboard grim slurp wf-recorder ffmpeg \
+<pre data-lang="sh"><code>sudo apt install build-essential cmake pkgconf qt6-base-dev \
+  qt6-base-private-dev qt6-base-dev-tools qt6-declarative-dev \
+  qt6-declarative-private-dev qt6-wayland-dev qt6-wayland-private-dev \
+  qt6-wayland qt6-svg-plugins qt6-image-formats-plugins \
+  liblayershellqtinterface-dev libpolkit-qt6-1-dev libpipewire-0.3-dev \
+  libpam0g-dev libwayland-dev qml6-module-qtquick qml6-module-qtqml \
+  qml6-module-qtqml-models qml6-module-qtquick-window \
+  qml6-module-qtquick-effects qml6-module-qtquick-shapes \
+  qml6-module-qt-labs-folderlistmodel fonts-inter pipewire pipewire-pulse \
+  pulseaudio-utils python3-cryptography libnotify-bin wlsunset curl \
+  network-manager wlr-randr wl-clipboard grim slurp wf-recorder ffmpeg \
   libglib2.0-bin git make xz-utils unzip
 git clone {{REPO}}
-cd Sylvaris &amp;&amp; sudo make install install-pam</code></pre>
+cd Sylvaris &amp;&amp; make &amp;&amp; sudo make install install-pam</code></pre>
       </div>
       <div class="tab-panel" role="tabpanel" id="panel-other" aria-labelledby="tab-other">
 <pre data-lang="sh"><code># Linux Mint 22, Ubuntu 24.04, Debian 13 and anything
@@ -168,7 +175,7 @@ sylvaris doctor</code></pre>
   <section class="weight" aria-labelledby="weight-title">
     <div class="sect-head narrow">
       <h2 id="weight-title">How heavy is it?</h2>
-      <p>Measured in the headless test harness with demo data on one 2560×1440 screen. Memory is the whole Sylvaris process, including Quickshell, Qt and, with a GPU, the driver's mappings. CPU is a share of one core over 20 idle seconds.</p>
+      <p>Measured in the headless test harness with demo data on one 2560×1440 screen. Memory is the whole Sylvaris process, including SylStack, Qt and, with a GPU, the driver's mappings. CPU is a share of one core over 20 idle seconds.</p>
     </div>
     <div class="weigh"><div class="table"><table>
       <thead><tr><th>Situation</th><th class="r">Software rendering</th><th class="r">GPU (NVIDIA)</th></tr></thead>

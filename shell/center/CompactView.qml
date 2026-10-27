@@ -1,5 +1,5 @@
 import QtQuick
-import Quickshell
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -265,7 +265,7 @@ Item {
                     textFormat: Text.PlainText
                     anchors.centerIn: parent
                     visible: !avatar.ready
-                    text: (Quickshell.env("USER") || "?").charAt(0).toUpperCase()
+                    text: (Stack.env("USER") || "?").charAt(0).toUpperCase()
                     color: Theme.onAccent
                     font.family: Tokens.fontUi
                     font.pixelSize: 24
@@ -275,7 +275,7 @@ Item {
                 RoundImage {
                     id: avatar
                     anchors.fill: parent
-                    source: "file://" + S.expandHome(Config.values.avatar, Quickshell.env("HOME"))
+                    source: "file://" + S.expandHome(Config.values.avatar, Stack.env("HOME"))
                 }
             }
         }

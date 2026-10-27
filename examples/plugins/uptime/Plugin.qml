@@ -1,5 +1,5 @@
 import QtQuick
-import Quickshell.Io
+import SylStack
 import qs
 import qs.services
 import qs.components

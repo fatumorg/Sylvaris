@@ -1,7 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Wayland
-import Quickshell.Services.Polkit
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -10,7 +8,7 @@ import "../lib/icons.mjs" as Icons
 Scope {
     id: root
 
-    readonly property string user: Quickshell.env("USER") || ""
+    readonly property string user: Stack.env("USER") || ""
     property var preview: null
     readonly property var agent: agentLoader.item
     readonly property var flow: root.preview !== null ? root.preview : root.agent !== null ? root.agent.flow : null

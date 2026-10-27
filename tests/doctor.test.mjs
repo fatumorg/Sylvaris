@@ -18,15 +18,15 @@ test("every package a part needs names the programs to look for", () => {
     for (const pkgs of Object.values(PART_PACKAGES))
         for (const p of pkgs)
             assert.ok(Array.isArray(PACKAGE_BINS[p]) && PACKAGE_BINS[p].length > 0, p)
-    assert.ok(allBins().includes("qs") && allBins().includes("grim"))
+    assert.ok(allBins().includes("sylstack") && allBins().includes("grim"))
     assert.equal(new Set(allBins()).size, allBins().length)
-    assert.deepEqual(CORE_BINS, ["qs", "socat"])
+    assert.deepEqual(CORE_BINS, ["sylstack"])
 })
 
 test("missingTools lists only enabled parts with absent programs", () => {
     const present = allBins().filter(b => b !== "wf-recorder" && b !== "gdbus")
     assert.deepEqual(missingTools(["capture", "lock", "pad"], present), { capture: ["wf-recorder"], lock: ["gdbus"] })
-    assert.deepEqual(missingTools(["pad"], []), { core: ["qs", "socat"] })
+    assert.deepEqual(missingTools(["pad"], []), { core: ["sylstack"] })
     assert.deepEqual(missingTools(["capture"], allBins()), {})
 })
 
@@ -49,7 +49,7 @@ test("problems reports values the validator replaced or dropped", () => {
 const facts = {
     version: "0.4.2",
     commit: "abc1234",
-    quickshell: "quickshell 0.3.1",
+    sylstack: "SylStack 1.0.0 (Qt 6.11.2)",
     compositor: "hyprland 0.51.0",
     gpus: [{ vendor: "0x10de", driver: "nvidia" }],
     present: allBins().filter(b => b !== "grim"),
@@ -60,7 +60,7 @@ const facts = {
 test("report covers versions, parts, tools and both files", () => {
     const r = report(facts)
     assert.match(r, /^Sylvaris 0\.4\.2 \(commit abc1234\)$/m)
-    assert.match(r, /^Quickshell: quickshell 0\.3\.1$/m)
+    assert.match(r, /^SylStack: SylStack 1\.0\.0 \(Qt 6\.11\.2\)$/m)
     assert.match(r, /^Compositor: hyprland 0\.51\.0$/m)
     assert.match(r, /^GPU: NVIDIA \(nvidia\)$/m)
     assert.match(r, /^Parts off: diver, island$/m)
@@ -84,15 +84,15 @@ test("report shows a file from a newer Sylvaris as refused", () => {
 })
 
 test("parseFacts reads the gathering script's key=value lines", () => {
-    const f = parseFacts("quickshell=quickshell 0.3.1\ncompositor=hyprland v0.51.0\ngpu=0x10de nvidia\ngpu=0x8086 \nbin=qs\nbin=grim\ncommit=abc1234\nnoise\n")
+    const f = parseFacts("sylstack=SylStack 1.0.0 (Qt 6.11.2)\ncompositor=hyprland v0.51.0\ngpu=0x10de nvidia\ngpu=0x8086 \nbin=sylstack\nbin=grim\ncommit=abc1234\nnoise\n")
     assert.deepEqual(f, {
-        quickshell: "quickshell 0.3.1",
+        sylstack: "SylStack 1.0.0 (Qt 6.11.2)",
         compositor: "hyprland v0.51.0",
         commit: "abc1234",
         gpus: [{ vendor: "0x10de", driver: "nvidia" }, { vendor: "0x8086", driver: "" }],
-        present: ["qs", "grim"]
+        present: ["sylstack", "grim"]
     })
-    assert.deepEqual(parseFacts(""), { quickshell: "", compositor: "", commit: "", gpus: [], present: [] })
+    assert.deepEqual(parseFacts(""), { sylstack: "", compositor: "", commit: "", gpus: [], present: [] })
 })
 
 test("the version in lib/version.mjs matches nix/package.nix", async () => {

@@ -1,8 +1,7 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Services.Pipewire
+import SylStack
 import "../lib/audio.mjs" as AudioLib
 
 Singleton {

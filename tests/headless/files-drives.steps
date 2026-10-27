@@ -33,7 +33,7 @@ sleep 2.5
 check sylvaris files state | grep -q '"asking":""'
 check sylvaris files state | grep -q '"open":true,"path":"[^"]*/home/media/Vault"'
 check sylvaris files state | grep -q '"label":"Vault","kind":"usb","mounted":true'
-check ! grep -rq 'tulip' "$HOME/fake-drives.log" "$OUT/qs.log" "$OUT/ipc.log"
+check ! grep -rq 'tulip' "$HOME/fake-drives.log" "$OUT/shell.log" "$OUT/ipc.log"
 syl files eject Vault
 sleep 2
 check grep -q 'lock /dev/sdc1' "$HOME/fake-drives.log"

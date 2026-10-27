@@ -1,0 +1,4 @@
+module qs.notify
+NotificationCard 1.0 NotificationCard.qml
+SylNotify 1.0 SylNotify.qml
+Toasts 1.0 Toasts.qml

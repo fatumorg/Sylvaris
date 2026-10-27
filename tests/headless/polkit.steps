@@ -15,4 +15,4 @@ shot polkit-wrong
 bg wtype -k Shift_L right -k Return
 sleep 1
 syl state polkit
-check ! grep -q zq8 "$OUT/ipc.log" "$OUT/qs.log" "$HOME/watch.log"
+check ! grep -q zq8 "$OUT/ipc.log" "$OUT/shell.log" "$HOME/watch.log"

@@ -1,6 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import qs
 import qs.services
 import qs.center
@@ -601,7 +600,7 @@ ShellRoot {
 
         Scope {
             Variants {
-                model: Quickshell.screens
+                model: Stack.screens
 
                 SylBar {
                     required property var modelData
@@ -624,7 +623,7 @@ ShellRoot {
 
         Scope {
             Variants {
-                model: Quickshell.screens
+                model: Stack.screens
 
                 SylDeck {
                     required property var modelData
@@ -734,8 +733,8 @@ ShellRoot {
                 close: () => root.need("settings").close(),
                 screen: name => {
                     const n = String(name || "");
-                    if (n !== "all" && n !== "" && Quickshell.screens.every(s => s.name !== n))
-                        throw new Error("usage: settings screen <all|" + Quickshell.screens.map(s => s.name).join("|") + ">");
+                    if (n !== "all" && n !== "" && Stack.screens.every(s => s.name !== n))
+                        throw new Error("usage: settings screen <all|" + Stack.screens.map(s => s.name).join("|") + ">");
                     Settings.editing = n === "all" ? "" : n;
                 },
                 all: () => Settings.values,
@@ -1141,7 +1140,7 @@ ShellRoot {
             },
             shell: {
                 default: "config",
-                reload: () => Quickshell.reload(false),
+                reload: () => Stack.reload(false),
                 config: () => ({
                         folder: Config.dir,
                         config: Config.path,
@@ -1205,14 +1204,5 @@ ShellRoot {
         target: Ipc
         property: "snapshot"
         value: root.stateObject()
-    }
-
-    IpcHandler {
-        target: "sylvaris"
-
-        function run(request: string): string {
-            const r = I.parseRequest(request);
-            return r.ok ? Ipc.run(r.words) : "error: " + r.error;
-        }
     }
 }

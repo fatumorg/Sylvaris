@@ -1,5 +1,5 @@
 import QtQuick
-import Quickshell
+import SylStack
 
 ShellRoot {
     FloatingWindow {

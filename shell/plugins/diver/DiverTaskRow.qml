@@ -1,5 +1,5 @@
 import QtQuick
-import Quickshell
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -124,7 +124,7 @@ Item {
                 anchors.margins: -8
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
-                onClicked: Quickshell.execDetached(["wl-copy", "--", root.task.text])
+                onClicked: Stack.execDetached(["wl-copy", "--", root.task.text])
             }
         }
 

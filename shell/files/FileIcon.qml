@@ -1,6 +1,5 @@
 import QtQuick
-import Quickshell
-import qs
+import SylStack
 import qs.services
 import qs.components
 import "../lib/files.mjs" as F
@@ -21,7 +20,7 @@ Item {
     readonly property var sources: !root.previewable ? [] : (root.size > 96 ? ["x-large/", "large/", "normal/"] : ["large/", "normal/", "x-large/"]).filter(d => root.files.thumbs[d + root.hash + ".png"] === true).map(d => "file://" + root.files.cacheHome + "/thumbnails/" + d + root.hash + ".png").concat(root.kind === "image" && V.kindOf(root.full) === "image" ? [V.uriOf(root.full)] : [])
     property int attempt: 0
     readonly property bool pictured: pic.status === Image.Ready
-    readonly property string themed: root.files.cfg.icons === "theme" ? Quickshell.iconPath(F.themeIcon(root.kind), true) : ""
+    readonly property string themed: root.files.cfg.icons === "theme" ? Stack.iconPath(F.themeIcon(root.kind), true) : ""
 
     implicitWidth: root.size
     implicitHeight: root.size

@@ -5,102 +5,97 @@ Sylvaris runs on almost any Linux distribution. On NixOS or with Home Manager, u
 You need four things:
 
 - **A Wayland compositor Sylvaris knows:** Hyprland, sway or niri. GNOME, KDE Plasma, Cinnamon, Xfce and COSMIC are not supported. On Linux Mint, Ubuntu, Pop!_OS and similar, install sway (every distribution below packages it) or Hyprland next to your desktop and pick it on the login screen. Your old desktop stays as it was.
-- **Quickshell 0.3.1 or newer, built with Qt 6.9 or newer.** Older Qt can start Quickshell but cannot load Sylvaris: `sylvaris doctor` and the log then show `Could not open module qs:@/qs/lib/... for reading`.
+- **Qt 6.9 or newer with its development files.** Sylvaris runs on SylStack, a small runtime that comes in this repository and that `make` builds for you. It needs Qt's Base, Declarative (Qt Quick), Wayland and SVG modules, plus LayerShellQt, polkit-qt6, PipeWire, PAM and Wayland headers. Older Qt cannot build it; [use Nix](#any-distribution-with-nix) there.
 - **The fonts Inter and JetBrainsMono Nerd Font.** Without the second, every icon is an empty box.
 - **A few small tools**, listed per distribution. [Which part needs which tool](#which-part-needs-which-tool) says what each is for.
 
 ## Find your distribution
 
-Every route marked "tested" was installed with exactly the commands on this page in a clean container on 29 September 2026, then Sylvaris was started in a headless sway and checked with `sylvaris doctor`. That catches wrong package names, missing tools and a Quickshell or Qt that is too old. It does not test your graphics card or real hardware.
+Version 1.0 replaced Quickshell with SylStack, so every native route now builds SylStack from source. The package names below were checked against each distribution's package index on 27 October 2026; the routes were not yet run in clean containers the way the 0.x routes were. If a name is off, `make` stops and names the missing piece, and `sylvaris doctor` names missing tools. The Nix route was tested on NixOS.
 
-| Distribution | Quickshell comes from | Status |
+| Distribution | Qt | Status |
 |---|---|---|
-| [Arch Linux](#arch-linux-and-derivatives), Manjaro, EndeavourOS, CachyOS, Garuda | the official repositories | tested on Arch |
-| [Fedora](#fedora) 43, 44 and 45, Nobara | a COPR | tested on Fedora 44 |
-| [Debian testing and unstable](#debian-testing-and-unstable) | Debian | tested on testing |
-| [Ubuntu 26.04](#ubuntu) and its flavours | a PPA | tested |
-| [openSUSE](#opensuse) Tumbleweed, Slowroll, Leap 16 | the Open Build Service | tested on Tumbleweed and Leap 16.0 |
-| [Void Linux](#void-linux) | the official repositories | tested |
-| [Gentoo](#gentoo) | the GURU overlay | package names checked, not started |
-| [Linux Mint 22, Ubuntu 24.04, Debian 13, Pop!_OS, Zorin OS, elementary OS, LMDE](#any-distribution-with-nix) | Nix | tested on Ubuntu 24.04 |
-| [Anything else](#any-distribution-with-nix) | Nix, or [from source](#quickshell-from-source) | |
+| [Arch Linux](#arch-linux-and-derivatives), Manjaro, EndeavourOS, CachyOS, Garuda | 6.12 | package names checked |
+| [Fedora](#fedora) 43, 44 and 45, Nobara | 6.11 | package names checked on Fedora 44 |
+| [Debian testing and unstable](#debian-testing-and-unstable) | 6.11 | package names checked on testing |
+| [Ubuntu 26.04](#ubuntu) and its flavours | | same packages as Debian |
+| [openSUSE](#opensuse), [Void Linux](#void-linux), [Gentoo](#gentoo) | | [build SylStack](#build-sylstack) with your distribution's Qt 6 development packages |
+| [Linux Mint 22, Ubuntu 24.04, Debian 13, Pop!_OS, Zorin OS, elementary OS, LMDE](#any-distribution-with-nix) | too old | Nix, tested |
+| [Anything else](#any-distribution-with-nix) | | Nix, or [build SylStack](#build-sylstack) |
 
-Linux Mint 22, Ubuntu 24.04 and everything built on them ship Qt 6.4, which is too old to build Quickshell at all. Debian 13 and LMDE 7 ship Qt 6.8, where Quickshell builds but cannot load Sylvaris. On those, [Nix](#any-distribution-with-nix) is the way in: it brings its own Qt and never touches the rest of your system.
+Linux Mint 22, Ubuntu 24.04 and everything built on them ship Qt 6.4, and Debian 13 and LMDE 7 ship Qt 6.8; both are too old for SylStack. On those, [Nix](#any-distribution-with-nix) is the way in: it brings its own Qt and never touches the rest of your system.
 
 ## Arch Linux and derivatives
 
 ```sh
-sudo pacman -S --needed quickshell qt6-svg socat inter-font ttf-jetbrains-mono-nerd \
+sudo pacman -S --needed base-devel cmake qt6-base qt6-declarative qt6-wayland qt6-svg \
+  layer-shell-qt polkit-qt6 libpipewire pam wayland inter-font ttf-jetbrains-mono-nerd \
   pipewire pipewire-pulse libpulse python-cryptography libnotify wlsunset curl \
   networkmanager wlr-randr wl-clipboard grim slurp wf-recorder ffmpeg glib2 git make
 ```
 
 No compositor yet? `sudo pacman -S hyprland`, `sway` or `niri`. Manjaro, EndeavourOS, CachyOS and Garuda use the same packages.
 
-[`dist/aur/PKGBUILD`](../dist/aur/PKGBUILD) builds a `sylvaris-git` package from the latest commit instead of `make install`: copy it into an empty folder and run `makepkg -si`. It installs the shell, the `sylvaris` command and the PAM service; the login screen still needs `sudo make install-greeter` from a clone.
+[`dist/aur/PKGBUILD`](../dist/aur/PKGBUILD) builds a `sylvaris-git` package from the latest commit instead of `make install`: copy it into an empty folder and run `makepkg -si`. It builds SylStack and installs the shell, the `sylvaris` and `sylstack` commands and the PAM service; the login screen still needs `sudo make install-greeter` from a clone.
 
 ## Fedora
 
-Quickshell comes from a COPR, a community repository on Fedora's own build service:
+Everything comes from Fedora itself; no COPR is needed any more:
 
 ```sh
-sudo dnf copr enable errornointernet/quickshell
-sudo dnf install quickshell qt6-qtsvg socat rsms-inter-fonts pipewire pipewire-pulseaudio \
-  pipewire-utils pulseaudio-utils python3-cryptography libnotify wlsunset curl NetworkManager \
-  wlr-randr wl-clipboard grim slurp wf-recorder ffmpeg glib2 procps-ng git make xz unzip
+sudo dnf install cmake gcc-c++ qt6-qtbase-devel qt6-qtbase-private-devel \
+  qt6-qtdeclarative-devel qt6-qtwayland-devel qt6-qtsvg layer-shell-qt-devel \
+  polkit-qt6-1-devel pipewire-devel pam-devel wayland-devel rsms-inter-fonts pipewire \
+  pipewire-pulseaudio pipewire-utils pulseaudio-utils python3-cryptography libnotify \
+  wlsunset curl NetworkManager wlr-randr wl-clipboard grim slurp wf-recorder ffmpeg glib2 \
+  procps-ng git make xz unzip
 ```
 
-If `dnf copr` is an unknown command, `sudo dnf install dnf5-plugins` first. No compositor yet? `sudo dnf install sway`. JetBrainsMono Nerd Font is not packaged, so [install it by hand](#fonts-by-hand).
+No compositor yet? `sudo dnf install sway`. JetBrainsMono Nerd Font is not packaged, so [install it by hand](#fonts-by-hand).
 
 ## Debian testing and unstable
 
 ```sh
-sudo apt install quickshell qml6-module-qtquick-effects qml6-module-qtquick-shapes \
-  qml6-module-qt-labs-folderlistmodel socat fonts-inter pipewire pipewire-pulse \
+sudo apt install build-essential cmake pkgconf qt6-base-dev qt6-base-private-dev \
+  qt6-base-dev-tools qt6-declarative-dev qt6-declarative-private-dev qt6-wayland-dev \
+  qt6-wayland-private-dev qt6-wayland qt6-svg-plugins qt6-image-formats-plugins \
+  liblayershellqtinterface-dev libpolkit-qt6-1-dev libpipewire-0.3-dev libpam0g-dev \
+  libwayland-dev qml6-module-qtquick qml6-module-qtqml qml6-module-qtqml-models \
+  qml6-module-qtquick-window qml6-module-qtquick-effects qml6-module-qtquick-shapes \
+  qml6-module-qt-labs-folderlistmodel fonts-inter pipewire pipewire-pulse \
   pulseaudio-utils python3-cryptography libnotify-bin wlsunset curl network-manager \
   wlr-randr wl-clipboard grim slurp wf-recorder ffmpeg libglib2.0-bin git make xz-utils unzip
 ```
 
-No compositor yet? `sudo apt install sway`. JetBrainsMono Nerd Font is not packaged, so [install it by hand](#fonts-by-hand).
+No compositor yet? `sudo apt install sway`. JetBrainsMono Nerd Font is not packaged, so [install it by hand](#fonts-by-hand). Add `qml6-module-qtmultimedia` if you want SylViewer to play videos.
 
 Debian 13 (trixie), the current stable release, has Qt 6.8, which is too old. Use [Nix](#any-distribution-with-nix) there, or wait for Debian 14.
 
 ## Ubuntu
 
-For Ubuntu 26.04, and Kubuntu, Xubuntu, Ubuntu MATE and the other 26.04 flavours. Quickshell comes from a PPA:
-
-```sh
-sudo add-apt-repository ppa:avengemedia/danklinux
-sudo apt update
-sudo apt install quickshell qml6-module-qtquick-effects qml6-module-qtquick-shapes \
-  qml6-module-qt-labs-folderlistmodel socat fonts-inter pipewire pipewire-pulse \
-  pulseaudio-utils python3-cryptography libnotify-bin wlsunset curl network-manager \
-  wlr-randr wl-clipboard grim slurp wf-recorder ffmpeg libglib2.0-bin git make xz-utils unzip
-```
-
-If `add-apt-repository` is missing, `sudo apt install software-properties-common` first. No compositor yet? `sudo apt install sway`. JetBrainsMono Nerd Font is not packaged, so [install it by hand](#fonts-by-hand).
+Ubuntu 26.04, and Kubuntu, Xubuntu, Ubuntu MATE and the other 26.04 flavours, use the [Debian command](#debian-testing-and-unstable) above; no PPA is needed any more. If a package is not found, `sudo add-apt-repository universe` first.
 
 On Ubuntu 24.04 and Linux Mint 22, use [Nix](#any-distribution-with-nix) instead.
 
 ## openSUSE
 
-Quickshell is in the `home:AvengeMedia:danklinux` repository on the Open Build Service. Add it for your release (`openSUSE_Tumbleweed`, `openSUSE_Slowroll` or `16.0`):
+Install your release's Qt 6 development packages for Base (with the private headers), Declarative, Wayland and SVG, plus LayerShellQt, polkit-qt6, PipeWire, PAM and Wayland development packages, then [build SylStack](#build-sylstack). The runtime tools are the same as before:
 
 ```sh
-sudo zypper addrepo https://download.opensuse.org/repositories/home:AvengeMedia:danklinux/openSUSE_Tumbleweed/home:AvengeMedia:danklinux.repo
-sudo zypper --gpg-auto-import-keys refresh
-sudo zypper install quickshell socat pipewire pipewire-pulseaudio pulseaudio-utils \
-  python3 python3-cryptography libnotify-tools wlsunset curl NetworkManager wlr-randr \
-  wl-clipboard grim slurp wf-recorder ffmpeg glib2-tools git make xz unzip
+sudo zypper install pipewire pipewire-pulseaudio pulseaudio-utils python3 \
+  python3-cryptography libnotify-tools wlsunset curl NetworkManager wlr-randr \
+  wl-clipboard grim slurp wf-recorder ffmpeg glib2-tools git make cmake gcc-c++ xz unzip
 ```
 
 No compositor yet? `sudo zypper install sway`. [Install both fonts by hand](#fonts-by-hand).
 
 ## Void Linux
 
+Install `qt6-base-devel`, `qt6-declarative-devel`, `qt6-wayland-devel` and `qt6-svg` or their current names, plus the LayerShellQt, polkit-qt6, PipeWire, PAM and Wayland development packages, then [build SylStack](#build-sylstack). The runtime tools:
+
 ```sh
-sudo xbps-install -S quickshell socat pipewire python3-cryptography libnotify wlsunset curl \
-  NetworkManager wlr-randr wl-clipboard grim slurp wf-recorder ffmpeg glib git make \
+sudo xbps-install -S pipewire python3-cryptography libnotify wlsunset curl \
+  NetworkManager wlr-randr wl-clipboard grim slurp wf-recorder ffmpeg glib git make cmake \
   font-inter nerd-fonts-ttf
 ```
 
@@ -110,28 +105,26 @@ Without systemd, SylPower and the login screen suspend, hibernate, restart and s
 
 ## Gentoo
 
-Quickshell, wlsunset, wlr-randr and Inter are in the GURU overlay and marked as testing:
+Emerge `dev-qt/qtbase` (with the `wayland` USE flag), `dev-qt/qtdeclarative`, `dev-qt/qtwayland`, `dev-qt/qtsvg`, `kde-plasma/layer-shell-qt`, `dev-libs/polkit-qt`, `media-video/pipewire` and `sys-libs/pam`, then [build SylStack](#build-sylstack). wlsunset, wlr-randr and Inter are in the GURU overlay:
 
 ```sh
 sudo emerge --ask app-eselect/eselect-repository dev-vcs/git
 sudo eselect repository enable guru
 sudo emaint sync -r guru
-printf '%s ~amd64\n' gui-apps/quickshell gui-apps/wlsunset gui-apps/wlr-randr media-fonts/inter \
+printf '%s ~amd64\n' gui-apps/wlsunset gui-apps/wlr-randr media-fonts/inter \
   | sudo tee /etc/portage/package.accept_keywords/sylvaris
 echo 'media-video/pipewire sound-server' | sudo tee /etc/portage/package.use/sylvaris
-sudo emerge --ask --autounmask gui-apps/quickshell net-misc/socat media-video/pipewire \
-  media-libs/libpulse dev-python/cryptography x11-libs/libnotify gui-apps/wlsunset net-misc/curl \
-  net-misc/networkmanager gui-apps/wlr-randr gui-apps/wl-clipboard gui-apps/grim gui-apps/slurp \
-  gui-apps/wf-recorder media-video/ffmpeg dev-libs/glib media-fonts/inter app-arch/unzip
+sudo emerge --ask --autounmask media-libs/libpulse dev-python/cryptography x11-libs/libnotify \
+  gui-apps/wlsunset net-misc/curl net-misc/networkmanager gui-apps/wlr-randr \
+  gui-apps/wl-clipboard gui-apps/grim gui-apps/slurp gui-apps/wf-recorder media-video/ffmpeg \
+  dev-libs/glib media-fonts/inter app-arch/unzip dev-build/cmake
 ```
 
-Use `~arm64` on ARM. If `--autounmask` proposes USE changes (Quickshell needs `dev-qt/qtbase` with `vulkan`), accept them with `dispatch-conf` and run the last command again. No compositor yet? `sudo emerge --ask gui-wm/sway`. [Install JetBrainsMono Nerd Font by hand](#fonts-by-hand).
-
-This route was checked against the Gentoo and GURU package lists but not built and started, because compiling Qt takes hours. If something is off, `sylvaris doctor` names what is missing.
+Use `~arm64` on ARM. No compositor yet? `sudo emerge --ask gui-wm/sway`. [Install JetBrainsMono Nerd Font by hand](#fonts-by-hand).
 
 ## Any distribution with Nix
 
-This works on every distribution, including those whose own Qt is too old. Nix installs Sylvaris, Quickshell, Qt and every tool in `/nix`, separate from the rest of your system, and removing it removes all of it.
+This works on every distribution, including those whose own Qt is too old. Nix installs Sylvaris, SylStack, Qt and every tool in `/nix`, separate from the rest of your system, and removing it removes all of it.
 
 Install Nix with the official installer. It asks for your password once:
 
@@ -161,12 +154,13 @@ Skip [install Sylvaris](#install-sylvaris) below; the Nix command already did it
 ```sh
 git clone https://github.com/fatumorg/Sylvaris
 cd Sylvaris
+make
 sudo make install install-pam
 ```
 
-This puts `sylvaris` in `/usr/local/bin`, the shell in `/usr/local/share/sylvaris` and a `sylvaris` PAM service for SylLock in `/etc/pam.d` (it is left alone if one is already there). Use `make install PREFIX=~/.local` to install for your user only; SylLock then uses the `login` PAM service.
+`make` builds SylStack in `build/sylstack` as your user; `sudo make install` copies it and the shell into place. This puts `sylvaris` and `sylstack` in `/usr/local/bin`, the shell in `/usr/local/share/sylvaris` and a `sylvaris` PAM service for SylLock in `/etc/pam.d` (it is left alone if one is already there). Use `make install PREFIX=~/.local` to install for your user only; SylLock then uses the `login` PAM service.
 
-To try it without installing, run `bin/sylvaris` from the clone. A copy in `~/.config/quickshell/sylvaris` takes priority over the installed one, which is handy for editing.
+To try it without installing, run `make`, put `build/sylstack` on your `PATH` and run `bin/sylvaris` from the clone. `SYLVARIS_DIR=/path/to/shell` points the command at any other copy of the shell, which is handy for editing.
 
 Then start it with your compositor, as [getting started](start.md#2-start-it-with-your-compositor) shows. For example in Hyprland:
 
@@ -176,7 +170,7 @@ hl.on("hyprland.start", function() hl.exec_cmd("sylvaris") end)
 
 Remove the bar, launcher, notification daemon and other tools Sylvaris replaces from your autostart, or they will show up twice.
 
-To update, `git pull` and run `sudo make install` again. To remove it, `sudo make uninstall`.
+To update, `git pull`, then `make` and `sudo make install` again. To remove it, `sudo make uninstall`.
 
 ## Check it
 
@@ -186,7 +180,7 @@ sylvaris doctor
 
 It works even when the shell is not running. Look at three lines:
 
-- `Quickshell:` should say 0.3.1 or newer.
+- `SylStack:` should name the version and a Qt of 6.9 or newer.
 - `Missing tools: none`. Otherwise it names each missing program and the part that wants it. Install it, or turn that part off with `sylvaris set parts.<name> false`.
 - `Missing fonts: none`. Otherwise see [fonts by hand](#fonts-by-hand).
 
@@ -206,9 +200,15 @@ fc-cache -f
 
 Skip the Inter lines if your distribution installed `fonts-inter`, `rsms-inter-fonts` or similar. Restart Sylvaris afterwards so it sees the new fonts.
 
-## Quickshell from source
+## Build SylStack
 
-For distributions not listed above. Follow [`BUILD.md`](https://git.outfoxxed.me/quickshell/quickshell/src/branch/master/BUILD.md) in the Quickshell repository. Sylvaris needs Qt 6.9 or newer with the Quick, Shapes, Effects and SVG modules, and the Wayland and Hyprland parts of Quickshell (both on by default). If your Qt is older, [use Nix](#any-distribution-with-nix).
+`make` in a clone builds SylStack with CMake. It needs:
+
+- CMake 3.21 or newer, `pkg-config` and a C++20 compiler
+- Qt 6.9 or newer: Base with its private headers and Wayland client, Declarative (Qt Quick, Shapes, Effects, Qt.labs.folderlistmodel), Wayland and SVG; Multimedia only for video in SylViewer
+- LayerShellQt, polkit-qt6, PipeWire (`libpipewire-0.3`), PAM and `wayland-client` development files
+
+The Wayland protocols it speaks ship inside `stack/protocols/`, so `wayland-protocols`, `wlr-protocols` and `hyprland-protocols` are not needed. If your Qt is older than 6.9, [use Nix](#any-distribution-with-nix).
 
 ## Which part needs which tool
 
@@ -228,7 +228,7 @@ For distributions not listed above. Follow [`BUILD.md`](https://git.outfoxxed.me
 | `gdbus` (glib) | lock, only for "lock when the system asks" |
 | `git` | plugins, only to install from Git |
 
-`python3`, `notify-send` and `pw-play` serve Diver, which the bar, center, clock and settings show too; `python3` also talks to AirPods. Wi-Fi in the bar and center reads NetworkManager over D-Bus, so keep the daemon running. `socat` makes the `sylvaris` command fast; without it commands fall back to `qs ipc`, but `sylvaris watch` needs it. `ffmpeg` only tidies finished recordings so they upload everywhere.
+`python3`, `notify-send` and `pw-play` serve Diver, which the bar, center, clock and settings show too; `python3` also talks to AirPods. Wi-Fi in the bar and center reads NetworkManager over D-Bus, so keep the daemon running. `ffmpeg` only tidies finished recordings so they upload everywhere.
 
 ## SylGreet, the login screen
 

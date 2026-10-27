@@ -1,0 +1,3 @@
+module qs.greet
+GreetView 1.0 GreetView.qml
+SylGreet 1.0 SylGreet.qml

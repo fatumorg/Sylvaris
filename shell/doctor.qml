@@ -1,14 +1,13 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import "lib/doctor.mjs" as D
 import "lib/version.mjs" as V
 
 ShellRoot {
     id: root
 
-    readonly property string dir: (Quickshell.env("XDG_CONFIG_HOME") || Quickshell.env("HOME") + "/.config") + "/sylvaris"
-    readonly property string out: Quickshell.env("SYLVARIS_DOCTOR_OUT") || ""
+    readonly property string dir: (Stack.env("XDG_CONFIG_HOME") || Stack.env("HOME") + "/.config") + "/sylvaris"
+    readonly property string out: Stack.env("SYLVARIS_DOCTOR_OUT") || ""
     property var files: ({})
     property var facts: null
 
@@ -54,7 +53,7 @@ ShellRoot {
 
     Process {
         running: true
-        command: ["sh", Quickshell.shellDir + "/helpers/doctor-facts.sh", Quickshell.shellDir].concat(D.allBins())
+        command: ["sh", Stack.shellDir + "/helpers/doctor-facts.sh", Stack.shellDir].concat(D.allBins())
         stdout: StdioCollector {
             onStreamFinished: {
                 root.facts = D.parseFacts(text);

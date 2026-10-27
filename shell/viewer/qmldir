@@ -1,0 +1,4 @@
+module qs.viewer
+SylViewer 1.0 SylViewer.qml
+VideoPane 1.0 VideoPane.qml
+ViewerButton 1.0 ViewerButton.qml

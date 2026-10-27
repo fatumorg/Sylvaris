@@ -1,6 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import qs.lock
 
 ShellRoot {
@@ -8,13 +7,21 @@ ShellRoot {
         id: session
     }
 
-    IpcHandler {
-        target: "sylvaris"
+    SocketServer {
+        active: true
+        path: (Stack.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris/lock.sock"
+        handler: Socket {
+            id: client
 
-        function run(request: string): string {
-            if (request === "lock")
-                session.relock();
-            return JSON.stringify(session.state());
+            parser: SplitParser {
+                onRead: line => {
+                    if (line === "lock")
+                        session.relock();
+                    client.write(JSON.stringify(session.state()) + "\n");
+                    client.flush();
+                    client.connected = false;
+                }
+            }
         }
     }
 }

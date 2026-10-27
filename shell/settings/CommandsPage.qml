@@ -1,8 +1,6 @@
 import QtQuick
-import Quickshell
-import qs
+import SylStack
 import qs.services
-import qs.components
 import "../lib/wm.mjs" as W
 import "../lib/icons.mjs" as Icons
 
@@ -30,7 +28,7 @@ Column {
                 Chip {
                     text: "Copy"
                     glyph: Icons.GLYPHS.copy
-                    onClicked: Quickshell.clipboardText = bindRow.line
+                    onClicked: Stack.clipboardText = bindRow.line
                 }
             }
         }

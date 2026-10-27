@@ -41,5 +41,5 @@ bg wtype -k Shift_L zq8Unlock -k Return
 sleep 1.5
 check grep -q '"locked":false' "$XDG_RUNTIME_DIR/sylvaris/lock.json"
 shot lock-orphan-unlocked
-check ! grep -q zq8 "$OUT/ipc.log" "$OUT/qs.log" "$HOME/watch.log"
-check for f in "$XDG_RUNTIME_DIR"/quickshell/by-id/*/log.qslog; do qs log "$f"; done > "$OUT/all-logs.txt"; ! grep -q zq8 "$OUT/all-logs.txt"
+check ! grep -q zq8 "$OUT/ipc.log" "$OUT/shell.log" "$HOME/watch.log"
+check ! grep -rq zq8 "$OUT"/*.log "$XDG_RUNTIME_DIR"/sylvaris

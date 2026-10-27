@@ -1,14 +1,13 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import "../lib/plugins.mjs" as P
 
 Singleton {
     id: root
 
-    readonly property string dir: (Quickshell.env("XDG_CONFIG_HOME") || Quickshell.env("HOME") + "/.config") + "/sylvaris/plugins"
+    readonly property string dir: (Stack.env("XDG_CONFIG_HOME") || Stack.env("HOME") + "/.config") + "/sylvaris/plugins"
     readonly property var cfg: Settings.values.plugins
     property var list: P.withBuiltins([])
     property string problem: ""

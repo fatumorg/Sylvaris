@@ -1,6 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -18,7 +17,7 @@ Popup {
     property bool stopping: false
     property bool queued: false
     readonly property bool running: runner.running
-    readonly property string historyPath: Quickshell.env("HOME") + "/.fatest_history.json"
+    readonly property string historyPath: Stack.env("HOME") + "/.fatest_history.json"
     readonly property real headline: root.st.phase === "download" || root.st.phase === "upload" ? root.st.live : root.st.phase === "done" ? root.st.download : root.st.phase === "error" ? 0 : root.history.length > 0 ? root.history[0].download : 0
 
     namespace: "sylfatest"

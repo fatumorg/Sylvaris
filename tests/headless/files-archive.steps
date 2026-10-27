@@ -33,7 +33,7 @@ shot files-archive-password
 bg wtype -k Shift_L -s 400 hunter-2 -k Return
 sleep 3
 check test "$(cat "$HOME/Pack/s.txt")" = "top secret"
-check ! grep -q 'hunter-2' "$OUT/qs.log"
+check ! grep -q 'hunter-2' "$OUT/shell.log"
 syl files select locked.zip
 bg wtype -k Shift_L -s 400 -k Menu
 sleep 0.8

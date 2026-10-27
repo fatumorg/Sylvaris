@@ -1,6 +1,5 @@
 import QtQuick
-import Quickshell
-import qs
+import SylStack
 import qs.services
 import qs.components
 import "../lib/bar.mjs" as B

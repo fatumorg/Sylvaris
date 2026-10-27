@@ -3,7 +3,6 @@ import qs
 import qs.services
 import qs.components
 import "../lib/files.mjs" as F
-import "../lib/archive.mjs" as A
 
 MiniScreen {
     id: root

@@ -1,0 +1,21 @@
+module qs.components
+AuthCard 1.0 AuthCard.qml
+Backdrop 1.0 Backdrop.qml
+DayAgenda 1.0 DayAgenda.qml
+Glass 1.0 Glass.qml
+Glyph 1.0 Glyph.qml
+HaloCore 1.0 HaloCore.qml
+IconTint 1.0 IconTint.qml
+MoonDisc 1.0 MoonDisc.qml
+Orbit 1.0 Orbit.qml
+OrbitNode 1.0 OrbitNode.qml
+Popup 1.0 Popup.qml
+RoundClip 1.0 RoundClip.qml
+RoundImage 1.0 RoundImage.qml
+RowButton 1.0 RowButton.qml
+Segmented 1.0 Segmented.qml
+SilkLink 1.0 SilkLink.qml
+Slider 1.0 Slider.qml
+TextBox 1.0 TextBox.qml
+Tile 1.0 Tile.qml
+Toggle 1.0 Toggle.qml

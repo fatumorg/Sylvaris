@@ -1,15 +1,14 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
+import SylStack
 import "../lib/settings.mjs" as S
 
 Singleton {
     id: root
 
-    readonly property string home: Quickshell.env("HOME")
-    readonly property string dir: (Quickshell.env("XDG_CONFIG_HOME") || (root.home + "/.config")) + "/sylvaris"
+    readonly property string home: Stack.env("HOME")
+    readonly property string dir: (Stack.env("XDG_CONFIG_HOME") || (root.home + "/.config")) + "/sylvaris"
     readonly property string path: root.dir + "/settings.json"
     property var raw: ({})
     readonly property var values: S.effectiveSettings(Config.values, root.raw)
@@ -86,7 +85,7 @@ Singleton {
         root.raw = m.value;
     }
 
-    Component.onCompleted: Quickshell.execDetached(["mkdir", "-p", root.dir])
+    Component.onCompleted: Stack.execDetached(["mkdir", "-p", root.dir])
 
     Timer {
         id: writeTimer

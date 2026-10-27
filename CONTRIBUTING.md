@@ -12,7 +12,7 @@ cd Sylvaris
 nix develop
 ```
 
-Without Nix, install `quickshell` (0.3.1 or newer, built with Qt 6.9 or newer), `nodejs`, `qt6-declarative` (for `qmllint`), `sway`, `grim`, `socat`, `jq`, `wtype`, `wlrctl`, `wayvnc`, `vncdotool`, `dbus`, `libnotify`, `wlr-randr` and `wlsunset` from your distribution.
+Without Nix, build SylStack with `make` (its build dependencies are listed in [docs/install.md](docs/install.md#build-sylstack)) and put `build/sylstack/sylstack` on your `PATH`, then install `nodejs`, `qt6-declarative` (for `qmllint`), `sway`, `grim`, `jq`, `wtype`, `wlrctl`, `wayvnc`, `vncdotool`, `dbus`, `libnotify`, `wlr-randr` and `wlsunset` from your distribution.
 
 Run your working copy with `SYLVARIS_DIR=$PWD/shell bin/sylvaris`. Stop your normal Sylvaris first, or test in the headless harness below instead. If `SYLVARIS_DIR` is already set in your environment (the Nix package sets a default), it points the CLI and the harness at the installed copy; unset it or set it to your checkout.
 
@@ -23,6 +23,7 @@ Run the checks for what you touched while you work, and all of them before you o
 | What | Command |
 |---|---|
 | Logic in `shell/lib` | `node --test tests/<name>.test.mjs` (all: `node --test tests/*.test.mjs`) |
+| SylStack | `nix build .#sylstack`, or `make` without Nix |
 | Python helpers | `python3 -m unittest discover -s tests -p '*_test.py'` |
 | QML | `qmllint` with the import paths from `flake.nix`; `nix flake check` runs it on every file |
 | Runtime and visuals | `tests/headless/run.sh OUT tests/headless/<name>.steps tests/fixtures/seed/warm` |
@@ -40,7 +41,7 @@ New logic in `shell/lib` comes with a failing node test first. New or changed be
 |---|---|
 | `sleep <s>` | wait |
 | `syl <words>` | run `bin/sylvaris <words>`, output goes to `OUT/ipc.log` |
-| `ipc <words>` | call the shell through Quickshell's IPC instead of the socket |
+| `ipc <words>` | send the words straight to the entry's socket with `sylstack msg` (`ipc.sock`, or `lock.sock` and `greet.sock` for those entries) |
 | `bg <shell>` | run a shell command in the background, inside the session |
 | `shot <name>` | screenshot to `OUT/<name>.png` |
 | `write <path> <text>` | write a file under the test home's `.config` |
@@ -54,7 +55,7 @@ New logic in `shell/lib` comes with a failing node test first. New or changed be
 
 ## Rules
 
-**No comments in code.** No `//`, `/* */`, `#`, `<!-- -->`, doc comments, TODOs or commented-out code in any tracked code file. Names, structure and tests carry the meaning; explanations belong in these documents, in `docs/`, or in the pull request. Shebangs, `pragma Singleton`, `.pragma library` and `#` inside strings are fine. If a linter warns, fix the cause or configure the linter in its config file.
+**No comments in code.** No `//`, `/* */`, `#`, `<!-- -->`, doc comments, TODOs or commented-out code in any tracked code file; `tests/comments.test.mjs` checks every one. Names, structure and tests carry the meaning; explanations belong in these documents, in `docs/`, or in the pull request. Shebangs, `pragma Singleton`, `.pragma library` and `#` inside strings are fine. If a linter warns, fix the cause or configure the linter in its config file.
 
 **Everything through the shared pieces.** Surfaces use `Glass`; colours come from `Theme`, sizes from `Tokens`, motion from `lib/motion.mjs`. Reuse `Toggle`, `Segmented`, `Card`, `SettingRow`, `RowButton`, `Glyph` and the existing services before writing new ones. Every interactive element has hover, pressed, focus and disabled states.
 

@@ -1,9 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Wayland
-import Quickshell.Widgets
-import Quickshell.Services.SystemTray
-import Quickshell.Services.UPower
+import SylStack
 import qs
 import qs.services
 import qs.plugins.diver
@@ -14,7 +10,7 @@ import "../lib/bar.mjs" as B
 Scope {
     id: root
 
-    property var screens: Quickshell.screens
+    property var screens: Stack.screens
     readonly property var cfg: Settings.at(root.screens.length === 1 ? root.screens[0].name : "").bar
     readonly property string position: root.cfg.position
     readonly property bool vertical: B.vertical(root.position)
@@ -333,7 +329,7 @@ Scope {
                                     id: appIcon
                                     required property string modelData
                                     readonly property var entry: Apps.entry(modelData)
-                                    readonly property string icon: entry !== null && entry.icon ? Quickshell.iconPath(entry.icon, true) : ""
+                                    readonly property string icon: entry !== null && entry.icon ? Stack.iconPath(entry.icon, true) : ""
                                     visible: icon !== ""
                                     width: 20
                                     height: 20
@@ -491,7 +487,7 @@ Scope {
                 IconImage {
                     anchors.verticalCenter: parent.verticalCenter
                     implicitSize: 18
-                    source: wm.entry !== null && wm.entry.icon ? Quickshell.iconPath(wm.entry.icon, true) : ""
+                    source: wm.entry !== null && wm.entry.icon ? Stack.iconPath(wm.entry.icon, true) : ""
                     visible: source !== ""
                     layer.enabled: Tokens.iconTint
                     layer.effect: IconTint {}

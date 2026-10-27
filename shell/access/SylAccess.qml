@@ -1,13 +1,10 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
-import Quickshell.Hyprland
+import SylStack
 import qs
 import qs.services
 import qs.components
 import qs.settings
 import "../lib/access.mjs" as A
-import "../lib/icons.mjs" as Icons
 
 Popup {
     id: root
@@ -19,7 +16,7 @@ Popup {
     property var tools: ({})
     property var applied: []
     property real quietUntil: 0
-    readonly property string tintPath: (Quickshell.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris/night.frag"
+    readonly property string tintPath: (Stack.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris/night.frag"
 
     namespace: "sylaccess"
     corner: root.local.placement.access
@@ -33,15 +30,15 @@ Popup {
         const cmds = A.hyprCommands(Compositor.usingLua, root.cfg, root.shaderDir, tint === null ? "" : root.tintPath);
         root.applied = cmds;
         root.quietUntil = Date.now() + 2000;
-        Quickshell.execDetached(["hyprctl"].concat(cmds[0]));
+        Stack.execDetached(["hyprctl"].concat(cmds[0]));
         if (tint === null)
-            Quickshell.execDetached(["hyprctl"].concat(cmds[1]));
+            Stack.execDetached(["hyprctl"].concat(cmds[1]));
         else {
             filterSource.path = root.cfg.filter === "none" ? "" : root.shaderDir + "/" + root.cfg.filter + ".frag";
-            Quickshell.execDetached(["sh", "-c", "mkdir -p \"$(dirname \"$1\")\" && printf %s \"$2\" > \"$1.part\" && mv -f \"$1.part\" \"$1\" && shift 2 && exec hyprctl \"$@\"", "sh", root.tintPath, A.tintShader(root.cfg.filter === "none" ? "" : filterSource.text(), tint)].concat(cmds[1]));
+            Stack.execDetached(["sh", "-c", "mkdir -p \"$(dirname \"$1\")\" && printf %s \"$2\" > \"$1.part\" && mv -f \"$1.part\" \"$1\" && shift 2 && exec hyprctl \"$@\"", "sh", root.tintPath, A.tintShader(root.cfg.filter === "none" ? "" : filterSource.text(), tint)].concat(cmds[1]));
         }
         if (root.cfg.cursor > 0)
-            Quickshell.execDetached(["hyprctl", "setcursor", Quickshell.env("XCURSOR_THEME") || "default", String(root.cfg.cursor)]);
+            Stack.execDetached(["hyprctl", "setcursor", Stack.env("XCURSOR_THEME") || "default", String(root.cfg.cursor)]);
     }
 
     function zoom(value: string): void {
@@ -61,7 +58,7 @@ Popup {
     function toggleTool(bin: string, args: var): void {
         if (!root.tools[bin])
             return;
-        Quickshell.execDetached(["sh", "-c", "pkill -x \"$0\" || exec \"$@\"", bin].concat([bin]).concat(args));
+        Stack.execDetached(["sh", "-c", "pkill -x \"$0\" || exec \"$@\"", bin].concat([bin]).concat(args));
     }
 
     function state(): var {

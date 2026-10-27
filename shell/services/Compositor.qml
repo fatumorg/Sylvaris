@@ -1,18 +1,14 @@
 pragma Singleton
 
 import QtQuick
-import Quickshell
-import Quickshell.Io
-import Quickshell.Hyprland
-import Quickshell.I3
-import Quickshell.Wayland
+import SylStack
 import "../lib/screens.mjs" as Screens
 import "../lib/wm.mjs" as W
 
 Singleton {
     id: root
 
-    readonly property string name: Quickshell.env("HYPRLAND_INSTANCE_SIGNATURE") ? "hyprland" : Quickshell.env("NIRI_SOCKET") ? "niri" : Quickshell.env("SWAYSOCK") ? "sway" : "unknown"
+    readonly property string name: Stack.env("HYPRLAND_INSTANCE_SIGNATURE") ? "hyprland" : Stack.env("NIRI_SOCKET") ? "niri" : Stack.env("SWAYSOCK") ? "sway" : "unknown"
     property string niriFocused: ""
     property var pending: []
     property var niriState: ({
@@ -77,14 +73,14 @@ Singleton {
         else if (t.via === "i3")
             I3.dispatch(t.command);
         else
-            Quickshell.execDetached(t.command);
+            Stack.execDetached(t.command);
     }
 
     function focusWorkspace(ws: var): void {
         if (ws.focused)
             return;
         if (root.name === "niri")
-            Quickshell.execDetached(["sh", "-c", "niri msg action focus-monitor \"$1\" && niri msg action focus-workspace \"$2\"", "sylvaris", ws.output, String(ws.index)]);
+            Stack.execDetached(["sh", "-c", "niri msg action focus-monitor \"$1\" && niri msg action focus-workspace \"$2\"", "sylvaris", ws.output, String(ws.index)]);
         else
             root.run("workspace", [String(ws.index)]);
     }
@@ -169,14 +165,14 @@ Singleton {
 
     function screenNames(): var {
         const out = [];
-        for (const s of Quickshell.screens)
+        for (const s of Stack.screens)
             out.push(s.name);
         return out;
     }
 
     function screenFor(name: string): var {
         const i = Screens.pickScreen(root.screenNames(), name);
-        return i < 0 ? null : Quickshell.screens[i];
+        return i < 0 ? null : Stack.screens[i];
     }
 
     function flush(): void {

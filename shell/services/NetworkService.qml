@@ -3,8 +3,7 @@ pragma Singleton
 import QtQuick
 import QtQml
 import QtQml.Models
-import Quickshell
-import Quickshell.Networking
+import SylStack
 import "../lib/icons.mjs" as Icons
 import "../lib/orbit.mjs" as O
 

@@ -12,7 +12,12 @@ seed="${3:-}"
 repo="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 shell_dir="${SYLVARIS_DIR:-$repo/shell}"
 entry="$shell_dir${HL_ENTRY:+/$HL_ENTRY}"
-qs_bin="$(command -v qs)"
+stack_bin="$(command -v sylstack)"
+case "${HL_ENTRY:-}" in
+lock.qml) ipc_sock=lock.sock ;;
+greet.qml) ipc_sock=greet.sock ;;
+*) ipc_sock=ipc.sock ;;
+esac
 rt="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/syl-hl-$$"
 home="$out/home"
 
@@ -32,7 +37,7 @@ fi
 printf '%s\n' "$bg" >"$out/sway.conf"
 
 cleanup() {
-    kill "${qs_pid:-}" "${wp_pid:-}" "${pw_pid:-}" "${sway_pid:-}" "${dbus_pid:-}" 2>/dev/null || true
+    kill "${shell_pid:-}" "${wp_pid:-}" "${pw_pid:-}" "${sway_pid:-}" "${dbus_pid:-}" 2>/dev/null || true
     wait 2>/dev/null || true
     rm -rf "$rt"
 }
@@ -93,16 +98,18 @@ if [ -n "${HL_PIPEWIRE:-}" ]; then
     fi
 fi
 
-"${hl_env[@]}" "$qs_bin" -p "$entry" >"$out/qs.log" 2>&1 &
-qs_pid=$!
+"${hl_env[@]}" "$stack_bin" -p "$entry" >"$out/shell.log" 2>&1 &
+shell_pid=$!
 
 ipc() {
-    "${hl_env[@]}" "$qs_bin" -p "$entry" ipc call sylvaris run "$*"
+    local req="$*"
+    [ "$ipc_sock" = ipc.sock ] && req="$(printf '%s\x1f' "$@")"
+    "$stack_bin" msg "$rt/sylvaris/$ipc_sock" "$req"
 }
 
 checks_failed=0
 for _ in $(seq 100); do
-    "${hl_env[@]}" "$qs_bin" -p "$entry" ipc show 2>/dev/null | grep -q sylvaris && break
+    [ -S "$rt/sylvaris/$ipc_sock" ] && break
     sleep 0.1
 done
 
@@ -122,7 +129,7 @@ while read -r cmd rest; do
         printf '\n' >>"$out/ipc.log"
         ;;
     bg)
-        "${hl_env[@]}" SYLVARIS_DIR="$shell_dir" PATH="$repo/bin:$PATH" OUT="$out" SHELL_PID="$qs_pid" sh -c "$rest" &
+        "${hl_env[@]}" SYLVARIS_DIR="$shell_dir" PATH="$repo/bin:$PATH" OUT="$out" SHELL_PID="$shell_pid" sh -c "$rest" &
         ;;
     shot)
         env -i XDG_RUNTIME_DIR="$rt" WAYLAND_DISPLAY="$display" PATH="$PATH" grim "$out/$rest.png"
@@ -138,14 +145,14 @@ while read -r cmd rest; do
         printf 'MARK %s %s\n' "$rest" "$(date +%s%3N)" >>"$out/ipc.log"
         ;;
     check)
-        if ! "${hl_env[@]}" SYLVARIS_DIR="$shell_dir" PATH="$repo/bin:$PATH" OUT="$out" SHELL_PID="$qs_pid" sh -c "$rest" >>"$out/ipc.log" 2>&1; then
+        if ! "${hl_env[@]}" SYLVARIS_DIR="$shell_dir" PATH="$repo/bin:$PATH" OUT="$out" SHELL_PID="$shell_pid" sh -c "$rest" >>"$out/ipc.log" 2>&1; then
             printf 'CHECK FAILED: %s\n' "$rest" | tee -a "$out/ipc.log" >&2
             checks_failed=1
         fi
         ;;
     wait)
         waited=0
-        until "${hl_env[@]}" SYLVARIS_DIR="$shell_dir" PATH="$repo/bin:$PATH" OUT="$out" SHELL_PID="$qs_pid" sh -c "$rest" >/dev/null 2>&1; do
+        until "${hl_env[@]}" SYLVARIS_DIR="$shell_dir" PATH="$repo/bin:$PATH" OUT="$out" SHELL_PID="$shell_pid" sh -c "$rest" >/dev/null 2>&1; do
             waited=$((waited + 1))
             if [ "$waited" -ge 100 ]; then
                 printf 'CHECK FAILED: wait %s\n' "$rest" | tee -a "$out/ipc.log" >&2
@@ -156,7 +163,7 @@ while read -r cmd rest; do
         done
         ;;
     killshell)
-        kill -9 "$qs_pid"
+        kill -9 "$shell_pid"
         ;;
     pointer)
         if [ -z "${vnc_port:-}" ]; then

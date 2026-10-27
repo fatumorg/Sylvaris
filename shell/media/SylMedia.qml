@@ -1,7 +1,6 @@
 import QtQuick
 import QtQuick.Shapes
-import Quickshell
-import Quickshell.Services.Mpris
+import SylStack
 import qs
 import qs.services
 import qs.components

@@ -1,8 +1,6 @@
 import QtQuick
 import Qt.labs.folderlistmodel
-import Quickshell
-import Quickshell.Io
-import Quickshell.Wayland
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -125,16 +123,16 @@ Scope {
         if (root.path === "")
             return;
         if (root.kind === "image")
-            Quickshell.execDetached(["sh", "-c", "wl-copy -t \"$1\" < \"$2\"", "sh", V.mimeOf(root.path), root.path]);
+            Stack.execDetached(["sh", "-c", "wl-copy -t \"$1\" < \"$2\"", "sh", V.mimeOf(root.path), root.path]);
         else
-            Quickshell.execDetached(["wl-copy", "-t", "text/uri-list", V.uriOf(root.path)]);
+            Stack.execDetached(["wl-copy", "-t", "text/uri-list", V.uriOf(root.path)]);
         root.say(root.kind === "image" ? "Image copied" : "File copied");
     }
 
     function showFolder(): void {
         if (root.folder === "")
             return;
-        Quickshell.execDetached(["gio", "open", root.folder]);
+        Stack.execDetached(["gio", "open", root.folder]);
         root.close();
     }
 
@@ -149,7 +147,7 @@ Scope {
         const args = V.execArgs(app.execString, root.path);
         if (args.length === 0)
             return;
-        Quickshell.execDetached(args);
+        Stack.execDetached(args);
         root.close();
     }
 

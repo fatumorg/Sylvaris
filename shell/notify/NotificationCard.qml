@@ -1,6 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Services.Notifications
+import SylStack
 import qs
 import qs.services
 import qs.components
@@ -16,7 +15,7 @@ Item {
     readonly property var n: root.entry.n
     readonly property bool hovered: hover.hovered
     readonly property bool critical: root.n.urgency === NotificationUrgency.Critical
-    readonly property string icon: N.iconSource(root.n.appIcon !== "" ? root.n.appIcon : root.n.image && !N.isPicture(root.n.image) ? root.n.image : root.desktopIcon(), name => Quickshell.iconPath(name, true))
+    readonly property string icon: N.iconSource(root.n.appIcon !== "" ? root.n.appIcon : root.n.image && !N.isPicture(root.n.image) ? root.n.image : root.desktopIcon(), name => Stack.iconPath(name, true))
     readonly property string picture: N.isPicture(root.n.image) ? N.iconSource(root.n.image, name => "") : ""
     readonly property var buttons: root.n.actions.filter(a => a.identifier !== "default" && a.text !== "")
     property real progress: 1

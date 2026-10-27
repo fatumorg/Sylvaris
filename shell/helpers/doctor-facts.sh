@@ -1,7 +1,7 @@
 #!/bin/sh
 shell_dir="$1"
 shift
-printf 'quickshell=%s\n' "$(qs --version 2>/dev/null | head -n 1)"
+printf 'sylstack=%s\n' "$(sylstack --version 2>/dev/null | head -n 1)"
 if [ -r "$shell_dir/COMMIT" ]; then
     printf 'commit=%s\n' "$(head -n 1 "$shell_dir/COMMIT")"
 else

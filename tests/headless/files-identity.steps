@@ -2,7 +2,7 @@ sleep 1.5
 syl files open
 sleep 2
 check sylvaris state compositor | grep -q '"appId":"sylvaris-files","title":"Home — SylFiles"'
-check ! sylvaris state compositor | grep -q '"appId":"org.quickshell"'
+check ! sylvaris state compositor | grep -q '"appId":"sylvaris"'
 check mkdir -p "$HOME/Box" && cd "$HOME/Box" && python3 -c 'import zipfile; z = zipfile.ZipFile("a.zip", "w"); z.writestr("y.txt", "y"); z.close()'
 syl archive open ~/Box/a.zip
 sleep 2

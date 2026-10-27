@@ -1,0 +1,10 @@
+module qs.center
+CalendarView 1.0 CalendarView.qml
+CompactView 1.0 CompactView.qml
+DisplaysView 1.0 DisplaysView.qml
+HotspotView 1.0 HotspotView.qml
+MediaCard 1.0 MediaCard.qml
+OrbitView 1.0 OrbitView.qml
+OutputsView 1.0 OutputsView.qml
+SylCenter 1.0 SylCenter.qml
+ViewHeader 1.0 ViewHeader.qml

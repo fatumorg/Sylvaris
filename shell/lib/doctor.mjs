@@ -54,7 +54,7 @@ export const PACKAGE_BINS = {
     libarchive: ["bsdtar", "bsdcat"]
 }
 
-export const CORE_BINS = ["qs", "socat"]
+export const CORE_BINS = ["sylstack"]
 
 const VENDORS = { "0x10de": "NVIDIA", "0x1002": "AMD", "0x8086": "Intel", "0x1af4": "Virtio", "0x15ad": "VMware" }
 
@@ -165,7 +165,7 @@ export function report(f) {
     const missing = missingTools(on, f.present || [])
     const lines = [
         "Sylvaris " + f.version + " (commit " + (f.commit || "unknown") + ")",
-        "Quickshell: " + (f.quickshell || "not found"),
+        "SylStack: " + (f.sylstack || "not found"),
         "Compositor: " + (f.compositor || "unknown"),
         "GPU: " + ((f.gpus || []).length === 0 ? "unknown" : f.gpus.map(g => gpuName(g.vendor, g.driver)).join(", ")),
         "Parts on: " + (on.length === 0 ? "none" : on.join(", ")),
@@ -188,7 +188,7 @@ export function report(f) {
 }
 
 export function parseFacts(text) {
-    const out = { quickshell: "", compositor: "", commit: "", gpus: [], present: [] }
+    const out = { sylstack: "", compositor: "", commit: "", gpus: [], present: [] }
     for (const line of String(text || "").split("\n")) {
         const eq = line.indexOf("=")
         if (eq < 0)
@@ -200,7 +200,7 @@ export function parseFacts(text) {
             out.gpus.push({ vendor: sp < 0 ? value : value.slice(0, sp), driver: sp < 0 ? "" : value.slice(sp + 1).trim() })
         } else if (key === "bin") {
             out.present.push(value)
-        } else if (key === "quickshell" || key === "compositor" || key === "commit") {
+        } else if (key === "sylstack" || key === "compositor" || key === "commit") {
             out[key] = value
         }
     }

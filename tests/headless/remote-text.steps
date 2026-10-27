@@ -1,7 +1,7 @@
 sleep 1.5
 bg timeout 20 python3 -m http.server 18765 --bind 127.0.0.1 > "$OUT/http.log" 2>&1
 sleep 1
-bg timeout 15 qs -p "$PWD/tests/fixtures/rich-title" > "$OUT/window.log" 2>&1
+bg timeout 15 sylstack -p "$PWD/tests/fixtures/rich-title" > "$OUT/window.log" 2>&1
 sleep 3
 shot remote-text
 syl switcher next

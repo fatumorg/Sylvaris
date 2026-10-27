@@ -1,9 +1,5 @@
 import QtQuick
-import Quickshell
-import Quickshell.Io
-import Quickshell.Wayland
-import Quickshell.Services.Notifications
-import Quickshell.Services.Pipewire
+import SylStack
 import qs
 import qs.services
 import qs.plugins.diver
@@ -130,7 +126,7 @@ Scope {
         const app = I.chatOf(f);
         const desktop = e.n.desktopEntry ? Apps.entry(e.n.desktopEntry) : null;
         const picture = N.isPicture(e.n.image) ? N.iconSource(e.n.image, name => "") : "";
-        const icon = N.iconSource(e.n.appIcon !== "" ? e.n.appIcon : desktop ? desktop.icon : "", name => Quickshell.iconPath(name, true));
+        const icon = N.iconSource(e.n.appIcon !== "" ? e.n.appIcon : desktop ? desktop.icon : "", name => Stack.iconPath(name, true));
         const acts = I.pickActions(e.n.actions.map(a => ({
                         identifier: a.identifier,
                         text: a.text
@@ -339,7 +335,7 @@ Scope {
                 Notifications.entry(a.id).n.sendInlineReply(text);
             else if (text !== "") {
                 Notifications.invoke(a.id, "default");
-                Quickshell.execDetached(["sh", "-c", "printf %s \"$1\" | wtype -s 700 -k Shift_L - -k Return", "sh", text]);
+                Stack.execDetached(["sh", "-c", "printf %s \"$1\" | wtype -s 700 -k Shift_L - -k Return", "sh", text]);
             }
             root.replyTo = -1;
             root.flash = null;
@@ -619,7 +615,7 @@ Scope {
     }
 
     Variants {
-        model: root.cfg.screens === "all" ? Quickshell.screens : root.screenInfo !== null ? [root.screenInfo] : []
+        model: root.cfg.screens === "all" ? Stack.screens : root.screenInfo !== null ? [root.screenInfo] : []
 
         PanelWindow {
             id: win

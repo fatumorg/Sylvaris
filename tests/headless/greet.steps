@@ -19,4 +19,4 @@ sleep 0.4
 ipc state
 bg wtype -k Shift_L right -k Return
 sleep 1.2
-check ! grep -q zq8 "$OUT/ipc.log" "$OUT/qs.log"
+check ! grep -q zq8 "$OUT/ipc.log" "$OUT/shell.log"

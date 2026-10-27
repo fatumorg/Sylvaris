@@ -1,7 +1,6 @@
 import QtQuick
 import qs
 import qs.services
-import qs.components
 
 MiniScreen {
     id: root
