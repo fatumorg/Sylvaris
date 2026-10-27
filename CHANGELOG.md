@@ -4,6 +4,19 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Added
+
+- SylCenter's sound output view works like pavucontrol: apps that record show under Recording, each row shows the stream's title, clicking the output beside a slider moves that app to the next output or microphone, and apps that stop stay listed with their last volume
+
+### Fixed
+
+- The equalizer was silent when WirePlumber had once saved its output stream as muted; its output stream no longer saves or restores volume
+- With the equalizer on and no output picked yet, SylCenter marks the output it actually plays to
+- SylRGB picks up devices plugged in after OpenRGB started, such as an Aerox 3 on its cable, by asking OpenRGB to rescan
+- The Aerox 3's own click colour from SteelSeries GG no longer takes over SylRGB's press flash
+- SylRGB keeps watching for new devices when OpenRGB drops its connection during a rescan, so a mouse that reconnects twice while plugging in is still found
+- The click flash stopped for good after lights were turned off, a press colour was cleared or OpenRGB went away for a moment
+
 ## [1.0.1] - 2026-10-27
 
 ### Fixed

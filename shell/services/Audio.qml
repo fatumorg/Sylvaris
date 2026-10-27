@@ -17,23 +17,45 @@ Singleton {
     readonly property real volume: root.demo ? root.demoVolume : (root.sink !== null && root.sink.audio ? root.sink.audio.volume : 0)
     readonly property bool muted: root.demo ? root.demoMuted : (root.sink !== null && root.sink.audio ? root.sink.audio.muted : false)
     readonly property var sinks: root.demo ? root.demoSinks() : root.realSinks()
-    readonly property var streamNodes: root.demo ? [] : Pipewire.nodes.values.filter(n => n.isStream && n.isSink && n.audio && n.name.indexOf("sylvaris_eq") !== 0)
-    readonly property var streamKeys: root.demo ? Demo.streams.map(s => String(s.id)) : root.streamNodes.map(n => String(n.id))
-    readonly property var streams: root.demo ? Demo.streams.map(s => {
+    readonly property var sources: root.demo ? [] : root.realSources()
+    readonly property var links: root.demo ? [] : Pipewire.linkGroups.values.filter(g => g.source && g.target).map(g => ({
+                source: g.source.id,
+                target: g.target.id
+            }))
+    readonly property var liveStreams: root.demo ? Demo.streams.map(s => {
         const l = root.demoStreamLevels[s.id] || {};
         return {
             key: String(s.id),
-            name: s.app,
+            kind: "play",
+            app: s.app,
+            title: "",
             volume: l.volume === undefined ? s.volume : l.volume,
-            muted: l.muted === true
+            muted: l.muted === true,
+            device: null,
+            live: true
         };
-    }) : root.streamNodes.map(n => ({
-                key: String(n.id),
-                name: AudioLib.streamName(n.properties["application.name"], root.nodeName(n)),
+    }) : AudioLib.appStreams(Pipewire.nodes.values.filter(n => n.isStream && n.audio).map(n => ({
+                id: n.id,
+                cls: n.mediaClass,
+                name: n.name,
+                props: n.properties,
                 volume: n.audio.volume,
                 muted: n.audio.muted
-            }))
+            })), root.links)
+    property var seenApps: ({})
+    property var pendingApps: ({})
+    readonly property var streams: AudioLib.withIdle(root.liveStreams, root.seenApps).rows
+    readonly property var streamKeys: root.streams.map(s => s.key)
     readonly property bool eqActive: !root.demo && root.sink !== null && root.sink.name === "sylvaris_eq"
+    readonly property string eqOutput: {
+        if (!root.eqActive)
+            return "";
+        if (Equalizer.target !== "")
+            return Equalizer.target;
+        const out = Equalizer.outNode === null ? undefined : root.links.find(l => l.source === Equalizer.outNode.id);
+        const n = out === undefined ? null : root.nodeById(String(out.target));
+        return n === null ? "" : n.name;
+    }
     readonly property string outputName: {
         for (const s of root.sinks) {
             if (s.current)
@@ -61,10 +83,55 @@ Singleton {
                 out.push({
                     key: String(n.id),
                     name: root.nodeName(n),
-                    current: root.eqActive ? n.name === Equalizer.target : root.sink !== null && n.id === root.sink.id
+                    current: root.eqActive ? n.name === root.eqOutput : root.sink !== null && n.id === root.sink.id
                 });
         }
         return out;
+    }
+
+    function realSources(): var {
+        return Pipewire.nodes.values.filter(n => n.mediaClass === "Audio/Source" && n.audio).map(n => ({
+                    key: String(n.id),
+                    name: root.nodeName(n)
+                }));
+    }
+
+    function nodeById(key: string): var {
+        for (const n of Pipewire.nodes.values) {
+            if (String(n.id) === key)
+                return n;
+        }
+        return null;
+    }
+
+    function deviceName(id: var): string {
+        const n = id === null ? null : root.nodeById(String(id));
+        if (n === null)
+            return "";
+        return n.name === "sylvaris_eq" ? "Equalizer" : n.nickname || root.nodeName(n);
+    }
+
+    function cycleDevice(key: string): void {
+        const s = root.streams.find(x => x.key === key);
+        if (root.demo || s === undefined || !s.live)
+            return;
+        const options = s.kind === "play" ? (Equalizer.node !== null ? [String(Equalizer.node.id)] : []).concat(root.sinks.map(x => x.key)) : root.sources.map(x => x.key);
+        if (options.length === 0)
+            return;
+        const n = root.nodeById(options[(options.indexOf(String(s.device)) + 1) % options.length]);
+        if (n !== null)
+            Stack.execDetached(["pw-metadata", key, "target.object", n.name]);
+    }
+
+    function setIdle(key: string, patch: var): void {
+        if (root.seenApps[key] === undefined)
+            return;
+        const seen = Object.assign({}, root.seenApps);
+        seen[key] = Object.assign({}, seen[key], patch);
+        root.seenApps = seen;
+        const pending = Object.assign({}, root.pendingApps);
+        pending[key] = Object.assign({}, pending[key], patch);
+        root.pendingApps = pending;
     }
 
     function setVolume(v: real): void {
@@ -92,10 +159,13 @@ Singleton {
             root.demoStreamLevels = next;
             return;
         }
-        for (const n of root.streamNodes) {
-            if (String(n.id) === key)
-                n.audio.volume = c;
-        }
+        const n = root.nodeById(key);
+        if (n !== null && n.audio)
+            n.audio.volume = c;
+        else
+            root.setIdle(key, {
+                volume: c
+            });
     }
 
     function toggleStreamMute(key: string): void {
@@ -107,9 +177,29 @@ Singleton {
             root.demoStreamLevels = next;
             return;
         }
-        for (const n of root.streamNodes) {
-            if (String(n.id) === key)
-                n.audio.muted = !n.audio.muted;
+        const n = root.nodeById(key);
+        if (n !== null && n.audio)
+            n.audio.muted = !n.audio.muted;
+        else if (root.seenApps[key] !== undefined)
+            root.setIdle(key, {
+                muted: !root.seenApps[key].muted
+            });
+    }
+
+    onLiveStreamsChanged: {
+        root.seenApps = AudioLib.withIdle(root.liveStreams, root.seenApps).seen;
+        for (const s of root.liveStreams) {
+            const id = s.kind + ":" + s.app;
+            const want = root.pendingApps[id];
+            if (want === undefined)
+                continue;
+            const pending = Object.assign({}, root.pendingApps);
+            delete pending[id];
+            root.pendingApps = pending;
+            if (want.volume !== undefined)
+                root.setStreamVolume(s.key, want.volume);
+            if (want.muted !== undefined && want.muted !== s.muted)
+                root.toggleStreamMute(s.key);
         }
     }
 
@@ -133,6 +223,6 @@ Singleton {
     }
 
     PwObjectTracker {
-        objects: root.demo ? [] : Pipewire.nodes.values.filter(n => n.isStream && n.isSink)
+        objects: root.demo ? [] : Pipewire.nodes.values.filter(n => n.isStream)
     }
 }

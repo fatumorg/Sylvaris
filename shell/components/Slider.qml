@@ -66,11 +66,13 @@ Rectangle {
     }
 
     Row {
+        id: lead
         x: 16
         anchors.verticalCenter: parent.verticalCenter
         spacing: 12
 
         Glyph {
+            id: leadIcon
             text: root.icon
             size: 20
             color: Theme.text
@@ -86,7 +88,9 @@ Rectangle {
         Text {
             textFormat: Text.PlainText
             anchors.verticalCenter: parent.verticalCenter
+            width: Math.max(0, Math.min(implicitWidth, trailingText.x - 12 - lead.x - leadIcon.width - lead.spacing))
             text: root.label
+            elide: Text.ElideRight
             color: Theme.text
             font.family: Tokens.fontUi
             font.pixelSize: Tokens.bodySize
@@ -95,6 +99,7 @@ Rectangle {
     }
 
     Text {
+        id: trailingText
         textFormat: Text.PlainText
         anchors.right: parent.right
         anchors.rightMargin: 14

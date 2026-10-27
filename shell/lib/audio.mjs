@@ -1,3 +1,5 @@
+import { ownerOf } from "./island.mjs"
+
 export function bluezCardName(address) {
     return "bluez_card." + String(address).toUpperCase().replace(/:/g, "_")
 }
@@ -59,4 +61,41 @@ export function streamName(app, fallback) {
     const alsa = /^PipeWire ALSA \[(.*)\]$/.exec(app || "")
     const name = (alsa ? alsa[1] : app || "").replace(/^\.(.*)-wrapped$/, "$1")
     return name || fallback
+}
+
+const STREAM_KINDS = { "Stream/Output/Audio": "play", "Stream/Input/Audio": "record" }
+
+export function appStreams(nodes, links) {
+    const outOf = {}
+    const inOf = {}
+    for (const l of links) {
+        if (outOf[l.source] === undefined)
+            outOf[l.source] = l.target
+        if (inOf[l.target] === undefined)
+            inOf[l.target] = l.source
+    }
+    const out = []
+    for (const n of nodes) {
+        const kind = STREAM_KINDS[n.cls]
+        const p = n.props || {}
+        if (kind === undefined || !p["application.name"] && !p["application.process.binary"])
+            continue
+        const app = ownerOf(p).name || streamName(p["application.name"], n.name)
+        const title = String(p["media.name"] || "").trim()
+        const device = kind === "play" ? outOf[n.id] : inOf[n.id]
+        out.push({ key: String(n.id), kind: kind, app: app, title: title.toLowerCase() === app.toLowerCase() ? "" : title, volume: n.volume, muted: n.muted, device: device === undefined ? null : device, live: true })
+    }
+    return out
+}
+
+export function withIdle(live, seen) {
+    const next = Object.assign({}, seen)
+    const playing = {}
+    for (const r of live) {
+        const key = r.kind + ":" + r.app
+        playing[key] = true
+        next[key] = Object.assign({}, r, { key: key, title: "", device: null, live: false })
+    }
+    const idle = Object.keys(next).filter(k => !playing[k]).sort().map(k => next[k])
+    return { rows: live.concat(idle), seen: next }
 }

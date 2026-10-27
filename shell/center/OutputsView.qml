@@ -95,33 +95,60 @@ Item {
                 }
             }
 
-            Text {
-                textFormat: Text.PlainText
-                visible: Audio.streamKeys.length > 0
-                topPadding: 12
-                text: "Apps"
-                color: Theme.textDim
-                font.family: Tokens.fontUi
-                font.pixelSize: Tokens.smallSize
-                font.weight: Font.DemiBold
-            }
-
             Repeater {
-                model: Audio.streamKeys
-                delegate: Slider {
-                    required property string modelData
-                    readonly property var stream: Audio.streams.find(s => s.key === modelData) || {
-                        name: "",
-                        volume: 0,
-                        muted: false
+                model: [
+                    {
+                        kind: "play",
+                        title: "Apps"
+                    },
+                    {
+                        kind: "record",
+                        title: "Recording"
                     }
+                ]
+                delegate: Column {
+                    id: section
+                    required property var modelData
+                    readonly property var keys: Audio.streams.filter(s => s.kind === section.modelData.kind).map(s => s.key)
                     width: parent.width
-                    value: stream.muted ? 0 : stream.volume
-                    icon: stream.muted ? Icons.GLYPHS.volumeMute : Icons.GLYPHS.volume
-                    label: stream.name
-                    trailing: Math.round(stream.volume * 100) + "%"
-                    onMoved: v => Audio.setStreamVolume(modelData, v)
-                    onIconClicked: Audio.toggleStreamMute(modelData)
+                    spacing: 8
+                    visible: section.keys.length > 0
+
+                    Text {
+                        textFormat: Text.PlainText
+                        topPadding: 12
+                        text: section.modelData.title
+                        color: Theme.textDim
+                        font.family: Tokens.fontUi
+                        font.pixelSize: Tokens.smallSize
+                        font.weight: Font.DemiBold
+                    }
+
+                    Repeater {
+                        model: section.keys
+                        delegate: Slider {
+                            required property string modelData
+                            readonly property var stream: Audio.streams.find(s => s.key === modelData) || {
+                                kind: "play",
+                                app: "",
+                                title: "",
+                                volume: 0,
+                                muted: false,
+                                device: null,
+                                live: false
+                            }
+                            readonly property string device: Audio.deviceName(stream.device)
+                            width: parent.width
+                            opacity: stream.live ? 1 : 0.5
+                            value: stream.muted ? 0 : stream.volume
+                            icon: stream.kind === "record" ? (stream.muted ? Icons.GLYPHS.micOff : Icons.GLYPHS.mic) : stream.muted ? Icons.GLYPHS.volumeMute : Icons.GLYPHS.volume
+                            label: stream.title === "" ? stream.app : stream.app + " · " + stream.title
+                            trailing: Math.round(stream.volume * 100) + "%" + (device === "" ? "" : " · " + device)
+                            onMoved: v => Audio.setStreamVolume(modelData, v)
+                            onIconClicked: Audio.toggleStreamMute(modelData)
+                            onTrailingClicked: Audio.cycleDevice(modelData)
+                        }
+                    }
                 }
             }
         }
