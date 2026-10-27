@@ -81,7 +81,11 @@ let
     lock = [ glib ];
     polkit = [ ];
     clip = [ wl-clipboard ];
-    island = [ wtype ];
+    island = [
+      wtype
+      wl-clipboard
+      libnotify
+    ];
     viewer = [
       wl-clipboard
       glib

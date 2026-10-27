@@ -23,6 +23,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - Theme `links` are no longer made while you only preview a theme in the picker, and switching to a theme without a link removes the one an earlier theme made and restores your backup
 - Notifications pushed out of the history by `notifications.history` are now closed, so their apps hear about it and their images no longer stay in memory
 - `sylvaris doctor` names the PAM service the lock uses and, when it falls back to `login` (whose failed-attempt lockout can shut you out), how to install the `sylvaris` one
+- An island reply to a chat without its own reply box is typed only once that app's window is in front; otherwise it is copied to the clipboard and a notification says so, instead of being typed and sent into whatever window had focus
 
 ## [1.0.1] - 2026-10-27
 

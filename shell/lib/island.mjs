@@ -362,3 +362,14 @@ export function hiddenSite(url, sites) {
     const host = m[1].toLowerCase()
     return sites.some(site => host === site || host === "www." + site || host === "m." + site)
 }
+
+export function ownsFocus(appId, desktopEntry, appName) {
+    const id = String(appId || "").toLowerCase()
+    if (id === "")
+        return false
+    const last = id.slice(id.lastIndexOf(".") + 1)
+    return [desktopEntry, appName].some(n => {
+        const name = String(n || "").toLowerCase()
+        return name !== "" && (name === id || name === last)
+    })
+}

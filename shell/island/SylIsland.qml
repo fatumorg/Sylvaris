@@ -27,6 +27,7 @@ Scope {
     property int lastNote: -1
     property var devicesBefore: []
     property int replyTo: -1
+    property var typing: null
     property var session: null
     property var cameraUsers: []
     readonly property bool performance: Settings.values.performance === "on"
@@ -317,6 +318,30 @@ Scope {
         }
     }
 
+    function typeReply(): void {
+        const t = root.typing;
+        const w = Compositor.activeWindow;
+        if (t !== null && w !== null && I.ownsFocus(w.appId, t.entry, t.app)) {
+            typeTimer.stop();
+            root.typing = null;
+            Stack.execDetached(["sh", "-c", "printf %s \"$1\" | wtype -s 700 -k Shift_L - -k Return", "sh", t.text]);
+            return;
+        }
+        if (t !== null && ++t.tries < 30)
+            return;
+        typeTimer.stop();
+        root.typing = null;
+        if (t !== null)
+            Stack.execDetached(["sh", "-c", "wl-copy -- \"$1\"; notify-send -a Sylvaris \"Reply copied\" \"$2 did not come to the front, so your reply is on the clipboard\"", "sh", t.text, t.app || t.entry || "The app"]);
+    }
+
+    Timer {
+        id: typeTimer
+        interval: 100
+        repeat: true
+        onTriggered: root.typeReply()
+    }
+
     function chat(a: var, what: string): void {
         if (what === "cancel" || a === null || Notifications.entry(a.id) === null) {
             root.replyTo = -1;
@@ -334,8 +359,15 @@ Scope {
             if (text !== "" && a.inline)
                 Notifications.entry(a.id).n.sendInlineReply(text);
             else if (text !== "") {
+                const n = Notifications.entry(a.id).n;
+                root.typing = {
+                    text: text,
+                    entry: n.desktopEntry || "",
+                    app: n.appName || "",
+                    tries: 0
+                };
                 Notifications.invoke(a.id, "default");
-                Stack.execDetached(["sh", "-c", "printf %s \"$1\" | wtype -s 700 -k Shift_L - -k Return", "sh", text]);
+                typeTimer.restart();
             }
             root.replyTo = -1;
             root.flash = null;

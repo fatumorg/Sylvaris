@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { DEFAULT_ISLAND, validateIsland, activities, label, joined, custom, SHORTCUTS, shortcutsFor, placeOf, cardHeight, CHAT_APPS, chatOf, isCall, pickActions, takes, hiddenSite, voiceOf, tucked, inUse, status, inCall, ownerOf, nodeKind, streamsOf, nextSession, VOICE_GRACE, voiceWindow } from "../shell/lib/island.mjs"
+import { DEFAULT_ISLAND, validateIsland, activities, label, joined, custom, SHORTCUTS, shortcutsFor, placeOf, cardHeight, CHAT_APPS, chatOf, isCall, pickActions, takes, hiddenSite, voiceOf, tucked, inUse, status, inCall, ownerOf, nodeKind, streamsOf, nextSession, VOICE_GRACE, voiceWindow, ownsFocus } from "../shell/lib/island.mjs"
 
 const idle = { flash: null, recording: { on: false }, alarm: null, focus: null, next: null, media: { title: "", playing: false } }
 
@@ -378,4 +378,15 @@ test("inCall keeps the island up for an incoming or ongoing call unless pinCalls
     assert.equal(inCall(validateIsland({ pinCalls: false }), { call: { sender: "Mia" } }), false)
     assert.equal(inCall(validateIsland({ calls: false }), { voice: { app: "Discord" } }), false)
     assert.equal(validateIsland({ pinCalls: 1 }).pinCalls, true)
+})
+
+test("ownsFocus matches the focused app id, or its last dot segment, against the desktop entry or app name", () => {
+    assert.equal(ownsFocus("org.telegram.desktop", "org.telegram.desktop", "Telegram"), true)
+    assert.equal(ownsFocus("firefox", "", "Firefox"), true)
+    assert.equal(ownsFocus("org.mozilla.firefox", "", "firefox"), true)
+    assert.equal(ownsFocus("Signal", "signal", ""), true)
+    assert.equal(ownsFocus("foot", "", "firefox"), false)
+    assert.equal(ownsFocus("org.telegram.desktop", "", "desktop2"), false)
+    assert.equal(ownsFocus("", "", ""), false)
+    assert.equal(ownsFocus(undefined, "", "firefox"), false)
 })

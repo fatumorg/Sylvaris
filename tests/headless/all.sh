@@ -25,7 +25,7 @@ for steps in "$here"/*.steps; do
     if [ "$name" = files-drives ]; then
         extra=(env PATH="$here/fake-drives:$PATH")
     fi
-    if [ "$name" = keybinds-sync ] || [ "$name" = remote-text ] || [ "$name" = files-identity ] || [ "$name" = performance-auto ]; then
+    if [ "$name" = keybinds-sync ] || [ "$name" = island-reply ] || [ "$name" = remote-text ] || [ "$name" = files-identity ] || [ "$name" = performance-auto ]; then
         extra=(env SYLVARIS_DEMO=0)
     fi
     if [ "$name" = island-voice ]; then

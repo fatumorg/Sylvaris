@@ -17,7 +17,7 @@ export const PART_PACKAGES = {
     lock: ["glib"],
     polkit: [],
     clip: ["wl-clipboard"],
-    island: ["wtype"],
+    island: ["wtype", "wl-clipboard", "libnotify"],
     viewer: ["wl-clipboard", "glib"],
     files: ["wl-clipboard", "glib", "python", "udisks"],
     archive: ["libarchive", "python"],
