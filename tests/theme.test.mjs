@@ -2,7 +2,7 @@ import { test } from "node:test"
 import assert from "node:assert/strict"
 import { DEFAULT_THEME, COLOR_KEYS, parseHex, withAlpha, validateTheme, tokens, nextThemeId, parseArgb, mixArgb, mixTokens, catalogEntry, linkCommand, parseLinkOutput } from "../shell/lib/theme.mjs"
 import { execFileSync } from "node:child_process"
-import { mkdtempSync, mkdirSync, writeFileSync, readlinkSync, symlinkSync } from "node:fs"
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readlinkSync, symlinkSync, existsSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
@@ -178,15 +178,38 @@ test("linkCommand relinks only changed targets and reports missing sources", () 
         const argv = linkCommand(links, home, conf)
         return parseLinkOutput(execFileSync(argv[0], argv.slice(1), { encoding: "utf8" }))
     }
-    assert.deepEqual(run(), { changed: 1, missing: [join(home, "cfg", "none")] })
+    assert.deepEqual(run(), { changed: 1, missing: [join(home, "cfg", "none")], kept: [] })
     assert.equal(readlinkSync(join(conf, "app", "a")), join(home, "cfg", "a"))
-    assert.deepEqual(run(), { changed: 0, missing: [join(home, "cfg", "none")] })
+    assert.deepEqual(run(), { changed: 0, missing: [join(home, "cfg", "none")], kept: [] })
     assert.deepEqual(linkCommand({}, home, conf), null)
 })
 
+test("linkCommand moves a real file aside instead of replacing it, and keeps it when a backup is already there", () => {
+    const home = mkdtempSync(join(tmpdir(), "syl-links-"))
+    const conf = join(home, ".config")
+    mkdirSync(join(home, "cfg"))
+    writeFileSync(join(home, "cfg", "a"), "theme")
+    mkdirSync(join(conf, "app"), { recursive: true })
+    writeFileSync(join(conf, "app", "a"), "mine")
+    mkdirSync(join(conf, "dir", "sub"), { recursive: true })
+    mkdirSync(join(conf, "other"), { recursive: true })
+    writeFileSync(join(conf, "other", "a"), "mine too")
+    writeFileSync(join(conf, "other", "a.before-sylvaris"), "older")
+    const links = { "app/a": "~/cfg/a", "dir/sub": "~/cfg/a", "other/a": "~/cfg/a" }
+    const argv = linkCommand(links, home, conf)
+    const r = parseLinkOutput(execFileSync(argv[0], argv.slice(1), { encoding: "utf8" }))
+    assert.deepEqual(r, { changed: 2, missing: [], kept: [join(conf, "other", "a")] })
+    assert.equal(readlinkSync(join(conf, "app", "a")), join(home, "cfg", "a"))
+    assert.equal(readFileSync(join(conf, "app", "a.before-sylvaris"), "utf8"), "mine")
+    assert.equal(readlinkSync(join(conf, "dir", "sub")), join(home, "cfg", "a"))
+    assert.ok(existsSync(join(conf, "dir", "sub.before-sylvaris")))
+    assert.equal(readFileSync(join(conf, "other", "a"), "utf8"), "mine too")
+    assert.equal(readFileSync(join(conf, "other", "a.before-sylvaris"), "utf8"), "older")
+})
+
 test("parseLinkOutput tolerates junk", () => {
-    assert.deepEqual(parseLinkOutput(""), { changed: 0, missing: [] })
-    assert.deepEqual(parseLinkOutput("noise\nchanged 2\nmissing /x y\n"), { changed: 2, missing: ["/x y"] })
+    assert.deepEqual(parseLinkOutput(""), { changed: 0, missing: [], kept: [] })
+    assert.deepEqual(parseLinkOutput("noise\nchanged 2\nmissing /x y\nkept /k\n"), { changed: 2, missing: ["/x y"], kept: ["/k"] })
 })
 
 test("a theme can name a workspace icon", async () => {

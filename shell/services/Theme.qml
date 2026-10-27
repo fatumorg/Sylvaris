@@ -128,6 +128,8 @@ Singleton {
         root.linked = r.changed;
         if (r.missing.length > 0)
             root.errors = root.errors.concat(r.missing.map(m => "link source not found: " + m));
+        if (r.kept.length > 0)
+            root.errors = root.errors.concat(r.kept.map(k => "not linked, your own file and an older backup are both in the way: " + k));
         if (r.changed === 0 || Demo.enabled)
             return;
         Stack.execDetached(["pkill", "-USR1", "kitty"]);

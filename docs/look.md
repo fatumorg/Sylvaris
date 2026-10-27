@@ -46,7 +46,7 @@ A theme is a JSON file in `~/.config/sylvaris/themes/` (or `programs.sylvaris.th
 
 Missing or invalid colours fall back to the built-in theme, one value at a time. An optional `rgb` colour sets what [SylRGB](plugins/rgb.md) sends to your lights while this theme is active, for when the accent looks right on screen but not on LEDs.
 
-`links` themes the rest of your desktop without a script. Each key is a path under `~/.config`, each value the file it should point to while this theme is active. When the theme is applied, Sylvaris symlinks every entry that changed, then reloads the compositor and signals kitty and waybar. Sources that do not exist are skipped and reported in `sylvaris state theme`. For colours in GTK, Qt, terminals, editors and browsers without writing files yourself, turn on [SylSync](parts/sync.md).
+`links` themes the rest of your desktop without a script. Each key is a path under `~/.config`, each value the file it should point to while this theme is active. When the theme is applied, Sylvaris symlinks every entry that changed, then reloads the compositor and signals kitty and waybar. A real file or folder of your own at one of those paths is moved to `<name>.before-sylvaris` first; if that backup already exists, your file stays and the link is skipped and reported. Sources that do not exist are skipped and reported in `sylvaris state theme`. For colours in GTK, Qt, terminals, editors and browsers without writing files yourself, turn on [SylSync](parts/sync.md).
 
 ## Motion and performance
 

@@ -200,7 +200,7 @@ export function catalogEntry(id, raw) {
     return { id: id, name: name, description: t.description, wallpaper: t.wallpaper, colors: t.colors }
 }
 
-const LINK_SCRIPT = 'n=0; while [ $# -ge 2 ]; do if [ ! -e "$1" ]; then echo "missing $1"; elif [ "$(readlink "$2")" != "$1" ]; then mkdir -p "$(dirname "$2")" && ln -sfn "$1" "$2" && n=$((n + 1)); fi; shift 2; done; echo "changed $n"'
+const LINK_SCRIPT = 'n=0; while [ $# -ge 2 ]; do if [ ! -e "$1" ]; then echo "missing $1"; elif [ "$(readlink "$2")" != "$1" ]; then if [ -e "$2" ] && [ ! -L "$2" ] && { [ -e "$2.before-sylvaris" ] || [ -L "$2.before-sylvaris" ] || ! mv -- "$2" "$2.before-sylvaris"; }; then echo "kept $2"; else mkdir -p "$(dirname "$2")" && ln -sfn "$1" "$2" && n=$((n + 1)); fi; fi; shift 2; done; echo "changed $n"'
 
 export function linkCommand(links, home, configHome) {
     const targets = Object.keys(links || {})
@@ -211,10 +211,12 @@ export function linkCommand(links, home, configHome) {
 }
 
 export function parseLinkOutput(text) {
-    const out = { changed: 0, missing: [] }
+    const out = { changed: 0, missing: [], kept: [] }
     for (const line of String(text || "").split("\n")) {
         if (line.indexOf("missing ") === 0)
             out.missing.push(line.slice(8))
+        else if (line.indexOf("kept ") === 0)
+            out.kept.push(line.slice(5))
         else if (/^changed \d+$/.test(line))
             out.changed = Number(line.slice(8))
     }
