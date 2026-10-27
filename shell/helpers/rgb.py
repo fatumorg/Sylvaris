@@ -328,15 +328,43 @@ EVENT = struct.Struct("<qqHHi")
 BUTTONS = range(0x110, 0x120)
 
 
-def event_nodes(location, sys_root="/sys"):
+QUIET_CLICK = {("1038", "183a"): 0x26, ("1038", "187a"): 0x26, ("1038", "1838"): 0x66, ("1038", "1878"): 0x66}
+
+
+def usb_device(location, sys_root="/sys"):
     m = re.search(r"hidraw\d+", location or "")
     if not m:
-        return []
+        return None, None
     path = os.path.realpath(os.path.join(sys_root, "class", "hidraw", m.group(0), "device"))
     top = os.path.realpath(sys_root)
     while path.startswith(top) and path != top and not os.path.exists(os.path.join(path, "idVendor")):
         path = os.path.dirname(path)
     if not os.path.exists(os.path.join(path, "idVendor")):
+        return None, None
+    return m.group(0), path
+
+
+def quiet_click(location, sys_root="/sys", dev_root="/dev"):
+    node, path = usb_device(location, sys_root)
+    if path is None:
+        return
+    try:
+        with open(os.path.join(path, "idVendor")) as v, open(os.path.join(path, "idProduct")) as p:
+            command = QUIET_CLICK.get((v.read().strip().lower(), p.read().strip().lower()))
+        if command is None:
+            return
+        fd = os.open(os.path.join(dev_root, node), os.O_WRONLY)
+        try:
+            os.write(fd, bytes([0x00, command, 0, 0, 0, 0, 0]))
+        finally:
+            os.close(fd)
+    except OSError:
+        pass
+
+
+def event_nodes(location, sys_root="/sys"):
+    _, path = usb_device(location, sys_root)
+    if path is None:
         return []
     names = set()
     for _, dirs, _ in os.walk(path):
@@ -362,6 +390,7 @@ def react(host, port, targets, out, stopped=lambda: False):
             direct = next((idx for idx, m in enumerate(d["modes"]) if m["color_mode"] == PER_LED and m["name"].lower() in ("direct", "custom", "static")), -1)
             state = {"i": i, "d": d, "direct": direct, "base": rgbof(t["base"]), "press": rgbof(t["press"]), "held": set()}
             run(c, devices, {"id": i, "name": d["name"], "do": "color", "color": t["base"], "fast": True})
+            quiet_click(d["location"])
             for path in t.get("events") or event_nodes(d["location"]):
                 try:
                     watched[os.open(path, os.O_RDONLY | os.O_NONBLOCK)] = (state, bytearray())
@@ -411,19 +440,47 @@ def react(host, port, targets, out, stopped=lambda: False):
         c.close()
 
 
-def watch(host, port, out):
+def hidraw_nodes(sys_root="/sys"):
+    try:
+        return set(os.listdir(os.path.join(sys_root, "class", "hidraw")))
+    except OSError:
+        return set()
+
+
+def watch(host, port, out, nodes=hidraw_nodes, tick=2, patience=15):
     c, err = connect(host, port)
     if err:
         out(json.dumps(err))
         return 1
-    c.sock.settimeout(None)
     out("ready")
+    known, moved = nodes(), False
     try:
         while True:
-            if c.packet()[1] == 100:
-                out("changed")
-    except (OSError, ConnectionError):
-        return 1
+            c.sock.settimeout(tick)
+            try:
+                while True:
+                    try:
+                        if c.packet()[1] == 100:
+                            out("changed")
+                    except socket.timeout:
+                        now = nodes()
+                        if now != known:
+                            known, moved = now, True
+                        elif moved:
+                            moved = False
+                            if c.protocol >= 5:
+                                c.send(0, 140)
+            except (OSError, ConnectionError):
+                c.close()
+            for _ in range(patience):
+                select.select([], [], [], tick)
+                again, err = connect(host, port)
+                if again:
+                    c = again
+                    break
+            else:
+                return 1
+            out("changed")
     finally:
         c.close()
 

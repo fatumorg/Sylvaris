@@ -336,9 +336,7 @@ Popup {
         }
         onExited: {
             root.reactUp = false;
-            if (root.reactTargets === "[]")
-                return;
-            if (reactor.sent !== root.reactTargets)
+            if (root.reactTargets === "[]" || reactor.sent !== root.reactTargets)
                 Qt.callLater(() => root.reactUp = true);
             else
                 reactAgain.restart();

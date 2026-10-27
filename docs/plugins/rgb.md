@@ -72,7 +72,9 @@ The flash needs the mouse in plain-colour mode; with an effect or with the mouse
 
 ## Devices that need a hand
 
-**SteelSeries Rival 3 Wireless and Aerox 3 Wireless.** Both use the same 2.4 GHz dongle, so OpenRGB lists the mouse as "SteelSeries Aerox 3 Wireless" either way. Colours set while the mouse sleeps show up as soon as it wakes, because SylRGB puts them back when the device reconnects.
+**SteelSeries Rival 3 Wireless and Aerox 3 Wireless.** Both use the same 2.4 GHz dongle, so OpenRGB lists the mouse as "SteelSeries Aerox 3 Wireless" either way. Colours set while the mouse sleeps show up as soon as it wakes, because SylRGB puts them back when the device reconnects. With the cable plugged in, OpenRGB lists the Aerox 3 a second time as "SteelSeries Aerox 3 Wireless Wired", with its own colour and press flash. The Aerox 3 can also flash on clicks by itself (the reactive colour set in SteelSeries GG or rivalcfg), which would cover SylRGB's flash, so while it has a press colour SylRGB switches that off until the mouse is next plugged in, without saving it to the mouse.
+
+OpenRGB does not notice devices plugged in after it started, so SylRGB asks it to look again whenever a HID device comes or goes, and the colours follow a moment later.
 
 **Krux Atax Pro RGB** (USB `3299:2736`). It uses the same EVision V2 controller as the Endorfy Omnis, which OpenRGB 1.0 already drives, but OpenRGB does not list its ID yet. Until it does, add the ID with a small patch. On NixOS:
 

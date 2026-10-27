@@ -198,6 +198,10 @@ class Server:
             self.send(conn, 0, 150, u32(len(body) + 4) + body)
         elif pid == 152:
             self.record({"op": "profile", "name": data.rstrip(b"\0").decode()})
+        elif pid == 140:
+            self.record({"op": "rescan"})
+            for c in list(self.clients):
+                c.shutdown(socket.SHUT_RDWR)
         elif pid == 1100:
             d = self.devices[dev]
             names = [m["name"] for m in d["modes"]]
