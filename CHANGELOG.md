@@ -6,6 +6,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Added
 
+- SylStack, the small Qt Quick runtime Sylvaris now runs on, in `stack/`: windows and layer shell, session lock, PAM, polkit, greetd, notifications, tray, MPRIS, PipeWire, UPower, NetworkManager, BlueZ, compositor IPC and window previews in one 2 MB binary
 - SylFiles: drag a bookmark up or down in the sidebar to reorder it, GTK bookmarks included
 - SylFiles: places and devices in the sidebar can be dragged into a new order too, saved in `files.placeOrder` and `files.deviceOrder`
 - SylFiles: `files.sections` and a "Sidebar order" setting choose the order of Places, Bookmarks and Devices
