@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Sylvaris
+Comment=The Sylvaris desktop shell
+Exec=sylvaris
+Icon=preferences-desktop
+Terminal=false
+NoDisplay=true

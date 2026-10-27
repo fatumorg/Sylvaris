@@ -153,9 +153,7 @@ stdenvNoCC.mkDerivation {
     cp -r shell/. $out/share/sylvaris/
     printf '%s\n' ${lib.escapeShellArg commit} > $out/share/sylvaris/COMMIT
     install -Dm755 bin/sylvaris $out/bin/sylvaris
-    install -Dm644 share/applications/sylvaris-viewer.desktop $out/share/applications/sylvaris-viewer.desktop
-    install -Dm644 share/applications/sylvaris-files.desktop $out/share/applications/sylvaris-files.desktop
-    install -Dm644 share/applications/sylvaris-archive.desktop $out/share/applications/sylvaris-archive.desktop
+    install -Dm644 -t $out/share/applications share/applications/*.desktop
     install -Dm644 share/icons/hicolor/scalable/apps/sylvaris-files.svg $out/share/icons/hicolor/scalable/apps/sylvaris-files.svg
     install -Dm644 share/icons/hicolor/scalable/apps/sylvaris-archive.svg $out/share/icons/hicolor/scalable/apps/sylvaris-archive.svg
     wrapProgram $out/bin/sylvaris \

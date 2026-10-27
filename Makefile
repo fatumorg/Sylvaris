@@ -6,6 +6,8 @@ SHARE_GROUP ?= users
 bindir = $(DESTDIR)$(PREFIX)/bin
 build = build/sylstack
 sharedir = $(DESTDIR)$(PREFIX)/share/sylvaris
+appdir = $(DESTDIR)$(PREFIX)/share/applications
+icondir = $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps
 greetdir = $(DESTDIR)/etc/sylvaris-greet
 statedir = $(DESTDIR)/var/lib/sylvaris-greet
 
@@ -23,6 +25,8 @@ install: sylstack
 	rm -rf $(sharedir)
 	mkdir -p $(sharedir)
 	cp -r shell/. $(sharedir)/
+	install -Dm644 -t $(appdir) share/applications/*.desktop
+	install -Dm644 -t $(icondir) share/icons/hicolor/scalable/apps/*.svg
 	git rev-parse --short HEAD > $(sharedir)/COMMIT 2>/dev/null || echo unknown > $(sharedir)/COMMIT
 
 install-pam:
@@ -40,4 +44,6 @@ install-greeter: install
 uninstall:
 	[ ! -f $(build)/install_manifest.txt ] || xargs rm -f < $(build)/install_manifest.txt
 	rm -f $(bindir)/sylvaris $(bindir)/sylvaris-greet
+	cd share/applications && for f in *.desktop; do rm -f "$(appdir)/$$f"; done
+	cd share/icons/hicolor/scalable/apps && for f in *.svg; do rm -f "$(icondir)/$$f"; done
 	rm -rf $(sharedir)
