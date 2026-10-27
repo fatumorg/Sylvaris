@@ -84,15 +84,16 @@ test("report shows a file from a newer Sylvaris as refused", () => {
 })
 
 test("parseFacts reads the gathering script's key=value lines", () => {
-    const f = parseFacts("sylstack=SylStack 1.0.0 (Qt 6.11.2)\ncompositor=hyprland v0.51.0\ngpu=0x10de nvidia\ngpu=0x8086 \nbin=sylstack\nbin=grim\ncommit=abc1234\nnoise\n")
+    const f = parseFacts("sylstack=SylStack 1.0.0 (Qt 6.11.2)\ncompositor=hyprland v0.51.0\ngpu=0x10de nvidia\ngpu=0x8086 \nbin=sylstack\nbin=grim\ncommit=abc1234\npam=hyprlock\npam=login\nnoise\n")
     assert.deepEqual(f, {
         sylstack: "SylStack 1.0.0 (Qt 6.11.2)",
         compositor: "hyprland v0.51.0",
         commit: "abc1234",
         gpus: [{ vendor: "0x10de", driver: "nvidia" }, { vendor: "0x8086", driver: "" }],
-        present: ["sylstack", "grim"]
+        present: ["sylstack", "grim"],
+        pams: ["hyprlock", "login"]
     })
-    assert.deepEqual(parseFacts(""), { sylstack: "", compositor: "", commit: "", gpus: [], present: [] })
+    assert.deepEqual(parseFacts(""), { sylstack: "", compositor: "", commit: "", gpus: [], present: [], pams: [] })
 })
 
 test("the version in lib/version.mjs matches nix/package.nix", async () => {
@@ -111,4 +112,14 @@ test("report lists missing fonts only when the families are known", () => {
     assert.match(report(Object.assign({}, facts, { fonts: ["Inter"] })), /^Missing fonts: JetBrainsMono Nerd Font \(icons show as empty boxes\)$/m)
     assert.match(report(Object.assign({}, facts, { fonts: ["Inter", "JetBrainsMono Nerd Font"] })), /^Missing fonts: none$/m)
     assert.doesNotMatch(report(facts), /Missing fonts/)
+})
+
+test("report names the lock's PAM service and how to install sylvaris when it falls back to login", () => {
+    assert.match(report(Object.assign({}, facts, { pams: ["sylvaris", "login"] })), /^Lock PAM service: sylvaris$/m)
+    assert.doesNotMatch(report(Object.assign({}, facts, { pams: ["hyprlock", "login"] })), /install-pam/)
+    const r = report(Object.assign({}, facts, { pams: ["login"] }))
+    assert.match(r, /^Lock PAM service: login$/m)
+    assert.match(r, /programs\.sylvaris\.lock\.enable/)
+    assert.match(r, /sudo make install-pam/)
+    assert.match(report(Object.assign({}, facts, { pams: [], settings: { path: "/c/settings.json", text: "{\"lock\":{\"pam\":\"swaylock\"}}" } })), /^Lock PAM service: swaylock$/m)
 })

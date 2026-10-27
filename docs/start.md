@@ -55,4 +55,4 @@ Then pick the parts you want. [Parts](parts/README.md) describes each one, and [
 
 ## When something is off
 
-`sylvaris doctor` prints what a bug report needs: versions, your GPUs, which parts are on, the programs a part needs but cannot find, fonts Qt cannot find, and every setting that is not valid, with the value used instead. It only reads, and it works even when the shell is not running.
+`sylvaris doctor` prints what a bug report needs: versions, your GPUs, which parts are on, the PAM service the lock checks your password with (with how to install the `sylvaris` one when it falls back to `login`), the programs a part needs but cannot find, fonts Qt cannot find, and every setting that is not valid, with the value used instead. It only reads, and it works even when the shell is not running.

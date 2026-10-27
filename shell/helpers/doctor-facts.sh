@@ -23,6 +23,9 @@ for card in /sys/class/drm/card[0-9]*; do
     [ -e "$card/device/driver" ] && driver="$(basename "$(readlink -f "$card/device/driver")")"
     printf 'gpu=%s %s\n' "$(cat "$card/device/vendor")" "$driver"
 done
+for pam in sylvaris hyprlock swaylock login; do
+    [ -e "/etc/pam.d/$pam" ] && printf 'pam=%s\n' "$pam"
+done
 for bin in "$@"; do
     command -v "$bin" >/dev/null 2>&1 && printf 'bin=%s\n' "$bin"
 done

@@ -1,4 +1,5 @@
 import { parseJson, validateConfig, effectiveSettings, liveParts, PARTS, migrateConfig, migrateSettings } from "./settings.mjs"
+import { pamService } from "./lock.mjs"
 
 export const PART_PACKAGES = {
     bar: ["pulseaudio", "pipewire", "python", "libnotify"],
@@ -171,6 +172,10 @@ export function report(f) {
         "Parts on: " + (on.length === 0 ? "none" : on.join(", ")),
         "Parts off: " + (off.length === 0 ? "none" : off.join(", "))
     ]
+    const pam = pamService(settings.lock.pam, f.pams || [])
+    lines.push("Lock PAM service: " + pam)
+    if (pam === "login")
+        lines.push("  Install the sylvaris PAM service: programs.sylvaris.lock.enable on NixOS, or sudo make install-pam")
     const keys = Object.keys(missing)
     if (keys.length === 0)
         lines.push("Missing tools: none")
@@ -188,7 +193,7 @@ export function report(f) {
 }
 
 export function parseFacts(text) {
-    const out = { sylstack: "", compositor: "", commit: "", gpus: [], present: [] }
+    const out = { sylstack: "", compositor: "", commit: "", gpus: [], present: [], pams: [] }
     for (const line of String(text || "").split("\n")) {
         const eq = line.indexOf("=")
         if (eq < 0)
@@ -200,6 +205,8 @@ export function parseFacts(text) {
             out.gpus.push({ vendor: sp < 0 ? value : value.slice(0, sp), driver: sp < 0 ? "" : value.slice(sp + 1).trim() })
         } else if (key === "bin") {
             out.present.push(value)
+        } else if (key === "pam") {
+            out.pams.push(value)
         } else if (key === "sylstack" || key === "compositor" || key === "commit") {
             out[key] = value
         }
