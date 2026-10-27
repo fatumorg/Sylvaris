@@ -1,6 +1,7 @@
 #!/bin/sh
 export XDG_CONFIG_HOME=/etc/sylvaris-greet
 export SYLVARIS_GREET_STATE=/var/lib/sylvaris-greet
+export SYLVARIS_GREET_SHARED=/var/lib/sylvaris-greet/shared
 if [ -f /etc/sylvaris-greet/environment ]; then
     set -a
     . /etc/sylvaris-greet/environment

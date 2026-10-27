@@ -21,6 +21,7 @@ let
     ${lib.concatStrings (lib.mapAttrsToList (k: v: "export ${k}=${lib.escapeShellArg v}\n") greet.environment)}
     export XDG_CONFIG_HOME=${configDir}
     export SYLVARIS_GREET_STATE=/var/lib/sylvaris-greet
+    export SYLVARIS_GREET_SHARED=${shared}
     export SYLVARIS_GREET_SESSIONS=${config.services.displayManager.sessionData.desktops}/share/wayland-sessions
     ${lib.optionalString (greet.user != "") "export SYLVARIS_GREET_USER=${lib.escapeShellArg greet.user}"}
     ${lib.optionalString (greet.session != "") "export SYLVARIS_GREET_SESSION=${lib.escapeShellArg greet.session}"}
@@ -134,14 +135,11 @@ in
       };
       systemd.tmpfiles.rules = [
         "d /var/lib/sylvaris-greet 0755 greeter greeter -"
-        "d ${shared} 2775 greeter ${greet.shareGroup} -"
+        "d ${shared} 1775 greeter ${greet.shareGroup} -"
       ];
       environment.etc."sylvaris-greet/sylvaris/config.json".source = json.generate "sylvaris-greet-config.json" (
         {
           version = 1;
-          themesDir = "${shared}/themes";
-          themeStateFile = "${shared}/theme";
-          avatar = "${shared}/avatar";
           greeterShare = "";
         }
         // greet.settings

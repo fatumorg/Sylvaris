@@ -271,7 +271,7 @@ sudo systemctl enable greetd
 
 Keep a way back before rebooting: `Ctrl+Alt+F2` gives a text console where `sudo systemctl disable greetd` and re-enabling your old display manager undo it.
 
-SylGreet lists the sessions in `/usr/share/wayland-sessions` and `/usr/local/share/wayland-sessions`. It uses the theme you last chose in Sylvaris, which Sylvaris copies to `/var/lib/sylvaris-greet/shared` whenever you change it.
+SylGreet lists the sessions in `/usr/share/wayland-sessions` and `/usr/local/share/wayland-sessions`. It uses the theme you last chose in Sylvaris, which Sylvaris copies to `/var/lib/sylvaris-greet/shared/<user>` whenever you change it.
 
 ## When something is wrong
 

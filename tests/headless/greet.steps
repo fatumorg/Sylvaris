@@ -1,5 +1,6 @@
 sleep 2
 ipc state
+check grep -q "\"theme\": *\"warm\"" "$OUT/ipc.log"
 shot greet
 bg wtype -k Shift_L zq8
 sleep 0.6

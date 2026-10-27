@@ -1,7 +1,4 @@
 {
   "version": 1,
-  "themesDir": "/var/lib/sylvaris-greet/shared/themes",
-  "themeStateFile": "/var/lib/sylvaris-greet/shared/theme",
-  "avatar": "/var/lib/sylvaris-greet/shared/avatar",
   "greeterShare": ""
 }

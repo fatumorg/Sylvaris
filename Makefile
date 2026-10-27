@@ -39,7 +39,7 @@ install-greeter: install
 	mkdir -p $(greetdir)/sway.d
 	[ -e $(greetdir)/sylvaris/config.json ] || install -Dm644 dist/greet/config.json $(greetdir)/sylvaris/config.json
 	install -d -m755 -o $(GREETER_USER) $(statedir)
-	install -d -m2775 -o $(GREETER_USER) -g $(SHARE_GROUP) $(statedir)/shared
+	install -d -m1775 -o $(GREETER_USER) -g $(SHARE_GROUP) $(statedir)/shared
 
 uninstall:
 	[ ! -f $(build)/install_manifest.txt ] || xargs rm -f < $(build)/install_manifest.txt

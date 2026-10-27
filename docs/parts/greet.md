@@ -22,6 +22,6 @@ programs.sylvaris.greeter = {
 
 It runs in a small sway session. `swayConfig` sets up its screens and keyboard, and `environment` adds variables such as `WLR_NO_HARDWARE_CURSORS = "1"` for NVIDIA. Its config lives under `/etc/sylvaris-greet`, and reboot and shutdown are one click away.
 
-It always looks like your desktop. Whenever you switch themes, Sylvaris copies the theme, its wallpaper and your avatar to `/var/lib/sylvaris-greet/shared` (`greeterShare` in `config.json`). That folder belongs to the `users` group (`greeter.shareGroup`), and the login screen uses what it finds there the next time it shows. `greeter.wallpaper` pins one image instead.
+It always looks like your desktop. Whenever you switch themes, Sylvaris copies the theme, its wallpaper and your avatar to your own folder, `/var/lib/sylvaris-greet/shared/<user>` (`greeterShare` in `config.json`). The shared folder belongs to the `users` group (`greeter.shareGroup`) and is sticky, so each member can create only their own folder, and Sylvaris refuses one that is a link or belongs to someone else. The login screen shows the look of the user it has selected. `greeter.wallpaper` pins one image instead.
 
 Without NixOS, [install.md](../install.md#sylgreet-the-login-screen) shows the greetd setup.

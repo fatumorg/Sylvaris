@@ -1,8 +1,8 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { DEFAULT_THEME, COLOR_KEYS, parseHex, withAlpha, validateTheme, tokens, nextThemeId, parseArgb, mixArgb, mixTokens, catalogEntry, linkCommand, parseLinkOutput } from "../shell/lib/theme.mjs"
+import { DEFAULT_THEME, COLOR_KEYS, parseHex, withAlpha, validateTheme, tokens, nextThemeId, parseArgb, mixArgb, mixTokens, catalogEntry, linkCommand, parseLinkOutput, shareCommand } from "../shell/lib/theme.mjs"
 import { execFileSync } from "node:child_process"
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readlinkSync, symlinkSync, existsSync } from "node:fs"
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readlinkSync, symlinkSync, existsSync, statSync, lstatSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
@@ -224,4 +224,41 @@ test("a theme can carry its own colour for RGB lighting", () => {
     assert.equal(validateTheme(Object.assign({}, base, { colors: { accent: "#e8e8e8", rgb: "#FFFFFF" } })).theme.colors.rgb, "#ffffff")
     assert.equal(validateTheme(base).theme.colors.rgb, undefined)
     assert.deepEqual(validateTheme(Object.assign({}, base, { colors: { rgb: "white" } })).errors, ["invalid color rgb"])
+})
+
+test("shareCommand writes the user's own folder with 755 folders and 644 files", () => {
+    const root = mkdtempSync(join(tmpdir(), "syl-share-"))
+    const src = mkdtempSync(join(tmpdir(), "syl-src-"))
+    writeFileSync(join(src, "wall.png"), "w")
+    writeFileSync(join(src, "face"), "a")
+    const argv = shareCommand(root, "ada", "warm", join(src, "wall.png"), join(src, "face"), "{}")
+    execFileSync(argv[0], argv.slice(1))
+    const d = join(root, "ada")
+    assert.equal(readFileSync(join(d, "theme"), "utf8"), "warm")
+    assert.equal(readFileSync(join(d, "themes", "warm.json"), "utf8"), "{}")
+    assert.equal(readFileSync(join(d, "wallpaper"), "utf8"), "w")
+    for (const f of ["", "themes"])
+        assert.equal(statSync(join(d, f)).mode & 0o7777, 0o755)
+    for (const f of ["theme", "wallpaper", "avatar", "themes/warm.json"])
+        assert.equal(statSync(join(d, f)).mode & 0o7777, 0o644)
+})
+
+test("shareCommand refuses a symlinked user folder and leaves its target alone", () => {
+    const root = mkdtempSync(join(tmpdir(), "syl-share-"))
+    const victim = mkdtempSync(join(tmpdir(), "syl-victim-"))
+    writeFileSync(join(victim, "theme"), "mine")
+    const mode = statSync(join(victim, "theme")).mode
+    symlinkSync(victim, join(root, "ada"))
+    const argv = shareCommand(root, "ada", "warm", "/nonexistent", "/nonexistent", "{}")
+    assert.throws(() => execFileSync(argv[0], argv.slice(1)))
+    assert.equal(readFileSync(join(victim, "theme"), "utf8"), "mine")
+    assert.equal(statSync(join(victim, "theme")).mode, mode)
+    assert.ok(lstatSync(join(root, "ada")).isSymbolicLink())
+})
+
+test("shareCommand skips unsafe names and an empty root", () => {
+    assert.equal(shareCommand("", "ada", "warm", "", "", "{}"), null)
+    assert.equal(shareCommand("/r", "../x", "warm", "", "", "{}"), null)
+    assert.equal(shareCommand("/r", "", "warm", "", "", "{}"), null)
+    assert.equal(shareCommand("/r", "ada", "a/b", "", "", "{}"), null)
 })

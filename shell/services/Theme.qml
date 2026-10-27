@@ -11,8 +11,9 @@ Singleton {
     id: root
 
     readonly property string home: Stack.env("HOME")
-    readonly property string stateFile: S.expandHome(Config.values.themeStateFile, root.home)
-    readonly property string themesDir: S.expandHome(Config.values.themesDir, root.home)
+    property string folder: ""
+    readonly property string stateFile: root.folder !== "" ? root.folder + "/theme" : S.expandHome(Config.values.themeStateFile, root.home)
+    readonly property string themesDir: root.folder !== "" ? root.folder + "/themes" : S.expandHome(Config.values.themesDir, root.home)
     readonly property string configHome: Stack.env("XDG_CONFIG_HOME") || root.home + "/.config"
     property int linked: 0
     property bool relink: false
@@ -161,13 +162,17 @@ Singleton {
 
     function share(): void {
         const dir = Config.values.greeterShare;
-        if (dir === "" || Demo.enabled || root.currentId === "" || !/^[A-Za-z0-9_.-]+$/.test(root.currentId))
+        const user = Stack.env("USER");
+        if (Demo.enabled || root.currentId === "")
             return;
         const copy = Object.assign({}, root.theme, {
-            wallpaper: dir + "/wallpaper",
+            wallpaper: dir + "/" + user + "/wallpaper",
             links: {}
         });
-        shareProc.command = ["sh", "-c", "d=\"$1\"; [ -d \"$d\" ] && [ -w \"$d\" ] || exit 0; mkdir -p \"$d/themes\" || exit 1; for p in wallpaper:\"$3\" avatar:\"$4\"; do n=${p%%:*}; f=${p#*:}; [ -f \"$f\" ] && cp -f \"$f\" \"$d/$n.part\" && mv -f \"$d/$n.part\" \"$d/$n\"; done; printf '%s' \"$5\" > \"$d/themes/$2.json\" && printf '%s' \"$2\" > \"$d/theme\"; chmod -f 664 \"$d/wallpaper\" \"$d/avatar\" \"$d/theme\" \"$d/themes/$2.json\"; exit 0", "sylvaris-share", dir, root.currentId, root.wallpaper, S.expandHome(Config.values.avatar, root.home), JSON.stringify(copy)];
+        const argv = T.shareCommand(dir, user, root.currentId, root.wallpaper, S.expandHome(Config.values.avatar, root.home), JSON.stringify(copy));
+        if (argv === null)
+            return;
+        shareProc.command = argv;
         shareProc.running = false;
         shareProc.running = true;
     }

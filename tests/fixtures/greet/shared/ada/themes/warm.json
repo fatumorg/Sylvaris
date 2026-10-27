@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "id": "warm",
+  "name": "Warm",
+  "description": "Warm browns and tan",
+  "wallpaper": "",
+  "colors": {
+    "base": "#181310", "surface": "#281f1a", "accent": "#c9702f", "accentHi": "#e0955c",
+    "accentDeep": "#a85c32", "onAccent": "#181310", "text": "#e7dac6", "textDim": "#b2967b",
+    "textSoft": "#d3b9a1", "danger": "#d9674a"
+  },
+  "alpha": { "surface": 0.9, "glass": 0.62, "line": 0.16, "tint": 0.08 }
+}

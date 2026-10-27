@@ -39,7 +39,7 @@ for steps in "$here"/*.steps; do
         gdir="$(mktemp -d)"
         python3 "$here/fake-greetd.py" "$gdir/greetd.sock" "$gdir/log" &
         gpid=$!
-        extra=(env HL_ENTRY=greet.qml GREETD_SOCK="$gdir/greetd.sock" SYLVARIS_GREET_PASSWD="$here/../fixtures/greet/passwd" SYLVARIS_GREET_SESSIONS="$here/../fixtures/greet/sessions" SYLVARIS_GREET_STATE="$gdir" SYLVARIS_GREET_DRY=1)
+        extra=(env HL_ENTRY=greet.qml GREETD_SOCK="$gdir/greetd.sock" SYLVARIS_GREET_PASSWD="$here/../fixtures/greet/passwd" SYLVARIS_GREET_SESSIONS="$here/../fixtures/greet/sessions" SYLVARIS_GREET_STATE="$gdir" SYLVARIS_GREET_SHARED="$here/../fixtures/greet/shared" SYLVARIS_GREET_DRY=1)
     fi
     if ! "${extra[@]}" "$here/run.sh" "$here/out/$name" "$steps" ${seed:+"$seed"} >/dev/null 2>&1; then
         echo "FAIL $name (run.sh)"

@@ -12,6 +12,8 @@ Scope {
     readonly property string defaultSession: Stack.env("SYLVARIS_GREET_SESSION") || ""
     readonly property string sessionDirs: Stack.env("SYLVARIS_GREET_SESSIONS") || "/run/current-system/sw/share/wayland-sessions:/usr/local/share/wayland-sessions:/usr/share/wayland-sessions"
     readonly property bool dry: Stack.env("SYLVARIS_GREET_DRY") === "1"
+    readonly property string shared: Stack.env("SYLVARIS_GREET_SHARED") || ""
+    readonly property string folder: root.shared === "" || root.user === null ? "" : root.shared + "/" + root.user.id
     property var users: []
     property var sessions: []
     property int userIndex: -1
@@ -24,7 +26,7 @@ Scope {
     property string message: ""
     property string pending: ""
     property string typed: ""
-    readonly property string avatar: Config.values.avatar.indexOf("/") === 0 ? Config.values.avatar : root.user === null ? "" : root.user.home + "/.face"
+    readonly property string avatar: root.folder !== "" ? root.folder + "/avatar" : Config.values.avatar.indexOf("/") === 0 ? Config.values.avatar : root.user === null ? "" : root.user.home + "/.face"
     readonly property var mainScreen: Stack.screens.reduce((best, s) => best === null || s.width * s.height > best.width * best.height ? s : best, null)
     property string launched: ""
     property real now: Date.now()
@@ -95,6 +97,8 @@ Scope {
         Stack.execDetached(["sh", "-c", "systemctl \"$1\" 2>/dev/null || loginctl \"$1\"", "sh", action]);
     }
 
+    onFolderChanged: Theme.folder = root.folder
+
     function state(): var {
         return {
             available: Greetd.available,
@@ -105,7 +109,8 @@ Scope {
             busy: root.busy,
             error: root.error,
             message: root.message,
-            launched: root.launched
+            launched: root.launched,
+            theme: Theme.currentId
         };
     }
 

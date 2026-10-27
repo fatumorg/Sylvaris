@@ -88,7 +88,8 @@
             grep -q "SYLVARIS_GREET_SESSIONS=/nix/store/.*/share/wayland-sessions" ${cfg.services.greetd.settings.default_session.command}
             grep -q "export WLR_NO_HARDWARE_CURSORS=1" ${cfg.services.greetd.settings.default_session.command}
             grep -q "sway --unsupported-gpu --config" ${cfg.services.greetd.settings.default_session.command}
-            grep -q '"themeStateFile": "/var/lib/sylvaris-greet/shared/theme"' ${cfg.environment.etc."sylvaris-greet/sylvaris/config.json".source}
+            grep -q "SYLVARIS_GREET_SHARED=/var/lib/sylvaris-greet/shared" ${cfg.services.greetd.settings.default_session.command}
+            echo '${builtins.toJSON cfg.systemd.tmpfiles.rules}' | grep -q "/var/lib/sylvaris-greet/shared 1775 greeter users"
             grep -q '"greeterShare": ""' ${cfg.environment.etc."sylvaris-greet/sylvaris/config.json".source}
             test -n "${builtins.toString cfg.security.pam.services.sylvaris.unixAuth}"
             grep -q "^cmd=/nix/store/.*/bin/sylvaris choose$" ${cfg.environment.etc."xdg/xdg-desktop-portal-termfilechooser/config".source}
