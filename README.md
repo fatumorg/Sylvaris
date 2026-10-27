@@ -16,6 +16,7 @@
   <img src="https://img.shields.io/badge/sway-68751c?style=for-the-badge&logo=sway&logoColor=white" alt="sway">
   <a href="https://nixos.org"><img src="https://img.shields.io/badge/Nix_flake-5277c3?style=for-the-badge&logo=nixos&logoColor=white" alt="Nix flake"></a>
   <img src="https://img.shields.io/badge/license-MIT-a85c32?style=for-the-badge" alt="MIT">
+  <a href="https://github.com/fatumorg/Sylvaris/actions/workflows/check.yml"><img src="https://img.shields.io/github/actions/workflow/status/fatumorg/Sylvaris/check.yml?branch=main&style=for-the-badge&label=checks" alt="Checks"></a>
 </p>
 
 <p align="center">
