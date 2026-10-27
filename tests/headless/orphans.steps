@@ -1,0 +1,7 @@
+sleep 2
+syl capture record screen
+sleep 4.5
+check ps -o pid= --ppid "$SHELL_PID" | tr -d ' ' > "$OUT/children" && [ -s "$OUT/children" ]
+killshell
+sleep 1.5
+check ! ps -o pid= -p "$(paste -sd, "$OUT/children")"

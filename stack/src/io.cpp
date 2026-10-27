@@ -12,6 +12,7 @@
 #include <QUrl>
 
 #include <csignal>
+#include <sys/prctl.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -154,6 +155,7 @@ void Process::startIfWanted()
     m_want = false;
     m_process = new QProcess(this);
     QProcess *p = m_process;
+    p->setChildProcessModifier([] { prctl(PR_SET_PDEATHSIG, SIGTERM); });
     if (!m_workingDirectory.isEmpty())
         p->setWorkingDirectory(m_workingDirectory);
     if (m_clearEnvironment || !m_environment.isEmpty())
