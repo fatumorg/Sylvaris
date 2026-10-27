@@ -1,2 +1,2 @@
-auth required /run/current-system/sw/lib/security/pam_exec.so expose_authtok quiet /bin/sh -c [read -r p; test "$p" = zq8Unlock]
-account required /run/current-system/sw/lib/security/pam_permit.so
+auth required pam_exec.so expose_authtok quiet /bin/sh -c [read -r p; test "$p" = zq8Unlock]
+account required pam_permit.so
