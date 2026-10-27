@@ -46,3 +46,17 @@ sleep 4
 check test "$(wl-paste -n)" = "not into the terminal"
 check ! test -s "$OUT/stray.txt"
 check sylvaris state notifications | grep -q 'Reply copied'
+bg notify-send -a firefox -A default=Open "Messenger" "messenger.com: Ana: one?" > /dev/null
+sleep 1
+syl island reply
+sleep 0.8
+syl island reply first one
+sleep 0.3
+bg notify-send -a firefox -A default=Open "Messenger" "messenger.com: Ola: two?" > /dev/null
+sleep 1
+syl island reply
+sleep 0.8
+syl island reply second one
+sleep 4
+check test "$(sylvaris state notifications | grep -o 'Reply copied' | wc -l)" -ge 3
+check ! test -s "$OUT/stray.txt"

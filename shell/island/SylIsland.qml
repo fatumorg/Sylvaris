@@ -332,7 +332,16 @@ Scope {
         typeTimer.stop();
         root.typing = null;
         if (t !== null)
-            Stack.execDetached(["sh", "-c", "wl-copy -- \"$1\"; notify-send -a Sylvaris \"Reply copied\" \"$2 did not come to the front, so your reply is on the clipboard\"", "sh", t.text, t.app || t.entry || "The app"]);
+            root.copyReply(t);
+    }
+
+    function copyReply(t: var): void {
+        Stack.execDetached(["sh", "-c", "wl-copy -- \"$1\"; notify-send -a Sylvaris \"Reply copied\" \"$2 did not come to the front, so your reply is on the clipboard\"", "sh", t.text, t.app || t.entry || "The app"]);
+    }
+
+    Component.onDestruction: {
+        if (root.typing !== null)
+            root.copyReply(root.typing);
     }
 
     Timer {
@@ -360,6 +369,8 @@ Scope {
                 Notifications.entry(a.id).n.sendInlineReply(text);
             else if (text !== "") {
                 const n = Notifications.entry(a.id).n;
+                if (root.typing !== null)
+                    root.copyReply(root.typing);
                 root.typing = {
                     text: text,
                     entry: n.desktopEntry || "",
