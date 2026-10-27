@@ -8,6 +8,18 @@ export const ACTIONS = {
     shutdown: { label: "Shut down", verb: "Shutting down", about: "Close everything and power off", glyph: "power", key: "p", confirm: true, command: "systemctl poweroff 2>/dev/null || loginctl poweroff" }
 }
 
+export const BATTERY_ALERTS = [15, 5]
+
+export function batteryAlert(percent, discharging, warned) {
+    if (!discharging)
+        return { warn: 0, warned: 101 }
+    const hit = BATTERY_ALERTS.filter(t => percent <= t && t < warned)
+    if (hit.length === 0)
+        return { warn: 0, warned: warned }
+    const low = Math.min(...hit)
+    return { warn: low, warned: low }
+}
+
 export const DEFAULT_POWER = { actions: ["lock", "suspend", "logout", "reboot", "shutdown"], confirm: true, countdown: 3, commands: {} }
 
 function isObject(v) {

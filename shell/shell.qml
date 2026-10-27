@@ -82,6 +82,7 @@ ShellRoot {
             Headphones: () => Headphones,
             ThemePreview: () => ThemePreview,
             Audio: () => Audio,
+            Battery: () => Battery,
             Media: () => Media,
             NightLight: () => NightLight,
             Dnd: () => Dnd,

@@ -1,6 +1,7 @@
 module qs.services
 singleton Apps 1.0 Apps.qml
 singleton Audio 1.0 Audio.qml
+singleton Battery 1.0 Battery.qml
 singleton BluetoothService 1.0 BluetoothService.qml
 singleton Compositor 1.0 Compositor.qml
 singleton Config 1.0 Config.qml

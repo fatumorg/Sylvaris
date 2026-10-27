@@ -12,6 +12,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - SylFiles: `files.sections` and a "Sidebar order" setting choose the order of Places, Bookmarks and Devices
 - SylFiles answers "Show in folder" from other apps over `org.freedesktop.FileManager1` (Home Manager `defaultFileManager`)
 - Virtual display in SylCenter Displays: an extra screen for a tablet over VNC, with size presets and the login shown in the panel (Hyprland)
+- A notification when the laptop battery runs down to 15% and again at 5%, while it is discharging
 
 ### Changed
 

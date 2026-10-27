@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { validatePower, commandFor, needsConfirm, byKey, ring, uptime, DEFAULT_POWER } from "../shell/lib/power.mjs"
+import { validatePower, commandFor, needsConfirm, byKey, ring, uptime, batteryAlert, DEFAULT_POWER } from "../shell/lib/power.mjs"
 
 test("validatePower keeps known actions once and clean commands", () => {
     const p = validatePower({ actions: ["reboot", "nope", "reboot", "lock"], commands: { reboot: "doas reboot", fly: "x", lock: 3 }, countdown: 40 })
@@ -38,4 +38,14 @@ test("suspend, hibernate, restart and shut down fall back to elogind's loginctl 
     assert.equal(commandFor("suspend", p, ""), "systemctl suspend 2>/dev/null || loginctl suspend")
     assert.equal(commandFor("hibernate", p, ""), "systemctl hibernate 2>/dev/null || loginctl hibernate")
     assert.equal(commandFor("reboot", p, ""), "systemctl reboot 2>/dev/null || loginctl reboot")
+})
+
+test("batteryAlert warns once at 15 and 5 percent while discharging and resets on the charger", () => {
+    assert.deepEqual(batteryAlert(40, true, 101), { warn: 0, warned: 101 })
+    assert.deepEqual(batteryAlert(15, true, 101), { warn: 15, warned: 15 })
+    assert.deepEqual(batteryAlert(12, true, 15), { warn: 0, warned: 15 })
+    assert.deepEqual(batteryAlert(5, true, 15), { warn: 5, warned: 5 })
+    assert.deepEqual(batteryAlert(3, true, 101), { warn: 5, warned: 5 })
+    assert.deepEqual(batteryAlert(3, true, 5), { warn: 0, warned: 5 })
+    assert.deepEqual(batteryAlert(3, false, 5), { warn: 0, warned: 101 })
 })

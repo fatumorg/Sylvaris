@@ -26,7 +26,7 @@ export const DEFAULT_PLACEMENT = { media: "auto", clip: "top-center", capture: "
 export const CENTER_TILES = ["wifi", "bluetooth", "night", "dnd", "hotspot"]
 
 export const PARTS = {
-    bar: ["Apps", "Audio", "BluetoothService", "NetworkService", "Diver", "Dnd", "Media", "Notifications", "Plugins"],
+    bar: ["Apps", "Audio", "Battery", "BluetoothService", "NetworkService", "Diver", "Dnd", "Media", "Notifications", "Plugins"],
     center: ["Audio", "BluetoothService", "NetworkService", "Hotspot", "Displays", "VirtualDisplay", "NightLight", "Diver", "Dnd", "Toggles", "Media", "Headphones"],
     clock: ["Diver", "Weather", "Sky"],
     deck: ["Apps"],
@@ -34,7 +34,7 @@ export const PARTS = {
     fatest: [],
     rgb: [],
     media: ["Headphones", "Equalizer", "Media"],
-    notify: ["Apps", "Dnd", "Notifications"],
+    notify: ["Apps", "Battery", "Dnd", "Notifications"],
     pad: ["Apps"],
     paper: [],
     power: [],
