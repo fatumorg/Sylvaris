@@ -4,6 +4,8 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-27
+
 ### Fixed
 
 - SylLock no longer crashes when you unlock, which left Hyprland showing "lockscreen app died" and sway a red screen
@@ -304,7 +306,8 @@ The first official release, out of beta.
 - Relock a lock screen that is still closing and report locks that fail
 - Never prompt or hang on plugin clones and unfreeze settings once the file is gone
 
-[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/fatumorg/Sylvaris/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/fatumorg/Sylvaris/compare/v0.4.2...v1.0.0
 [0.4.2]: https://github.com/fatumorg/Sylvaris/compare/v0.4.1...v0.4.2
 [0.4.1]: https://github.com/fatumorg/Sylvaris/compare/v0.4.0...v0.4.1
