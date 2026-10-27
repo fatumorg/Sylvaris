@@ -14,23 +14,30 @@ for var in GIT_AUTHOR_IDENT GIT_COMMITTER_IDENT; do
     fi
 done
 
-hits=$(git diff --cached -U0 --no-color --no-ext-diff --src-prefix=a/ --dst-prefix=b/ --diff-filter=ACMR | awk '
-    /^\+\+\+ / { f = substr($0, 7); next }
-    /^\+/ {
-        l = substr($0, 2)
-        slash = f ~ /\.(qml|mjs|js|html)$/
-        block = slash || f ~ /\.(css|nix)$/
-        hash = f ~ /\.(py|nix|sh|steps)$|^bin\//
-        if ((slash && l ~ /(^|[[:space:]])\/\/([[:space:]]|$)|^[[:space:]]*\/\//) ||
-            (block && l ~ /(^|[[:space:]])\/\*|^[[:space:]]*\*([[:space:]]|\/|$)/) ||
-            (hash && l ~ /^[[:space:]]*#([^!]|$)|[[:space:]]#([[:space:]]|$)/) ||
-            (f ~ /\.html$/ && l ~ /<!--/))
-            print f ": " l
-    }')
-if [ -n "$hits" ]; then
-    echo "pre-commit: staged comments are not allowed:" >&2
-    echo "$hits" >&2
-    fail=1
+if command -v node >/dev/null 2>&1; then
+    if ! node --test "$(git rev-parse --show-toplevel)/tests/comments.test.mjs" >/dev/null 2>&1; then
+        echo "pre-commit: a tracked file has a comment; see node --test tests/comments.test.mjs" >&2
+        fail=1
+    fi
+else
+    hits=$(git diff --cached -U0 --no-color --no-ext-diff --src-prefix=a/ --dst-prefix=b/ --diff-filter=ACMR | awk '
+        /^\+\+\+ / { f = substr($0, 7); next }
+        /^\+/ {
+            l = substr($0, 2)
+            slash = f ~ /\.(qml|mjs|js|html|cpp|h|frag)$/
+            block = slash || f ~ /\.(css|nix)$/
+            hash = f ~ /\.(py|nix|sh|steps)$|^bin\/|CMakeLists\.txt$/
+            if ((slash && l ~ /(^|[[:space:]])\/\/([[:space:]]|$)|^[[:space:]]*\/\//) ||
+                (block && l ~ /(^|[[:space:]])\/\*|^[[:space:]]*\*([[:space:]]|\/|$)/) ||
+                (hash && l ~ /^[[:space:]]*#([^!]|$)|[[:space:]]#([[:space:]]|$)/) ||
+                (f ~ /\.html$/ && l ~ /<!--/))
+                print f ": " l
+        }')
+    if [ -n "$hits" ]; then
+        echo "pre-commit: staged comments are not allowed:" >&2
+        echo "$hits" >&2
+        fail=1
+    fi
 fi
 
 if git diff --cached --name-only | grep -q '\.qml$'; then
