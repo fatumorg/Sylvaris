@@ -16,3 +16,9 @@ syl center close
 syl awake
 sleep 1
 check sylvaris awake state | grep -q '"on":false,"holding":false'
+syl awake on
+syl plugins disable awake
+sleep 0.5
+syl plugins enable awake
+sleep 1
+check sylvaris awake state | grep -q '"on":false,"holding":false'

@@ -25,6 +25,11 @@ Singleton {
         };
     }
 
+    onPluggedChanged: {
+        if (!root.plugged)
+            root.wanted = false;
+    }
+
     LazyLoader {
         id: loader
         active: root.on
