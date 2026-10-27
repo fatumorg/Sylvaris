@@ -71,7 +71,7 @@ export function iconSource(icon, lookup) {
     if (s === "")
         return ""
     if (s.indexOf("://") > 0)
-        return s
+        return /^(file|image):\/\//.test(s) ? s : ""
     if (s[0] === "/")
         return "file://" + s
     const found = lookup(s)

@@ -63,6 +63,10 @@ test("iconSource resolves names, paths and URLs", () => {
     assert.equal(isPicture("image://qsimage/1/2"), true)
     assert.equal(iconSource("image://icon/firefox", lookup), "image://icon/firefox")
     assert.equal(iconSource("image://icon/nope", lookup), "")
+    assert.equal(iconSource("https://tracker.example/p.png", lookup), "")
+    assert.equal(iconSource("HTTP://tracker.example/p.png", lookup), "")
+    assert.equal(iconSource("ftp://x/y.png", lookup), "")
+    assert.equal(iconSource("image://qsimage/1/2", lookup), "image://qsimage/1/2")
 })
 
 test("toastShift moves toasts beside or below an open panel in the same corner only", () => {
