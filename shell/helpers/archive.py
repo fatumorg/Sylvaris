@@ -290,7 +290,7 @@ def extract(job, archive, dest, mode, strip, names, answers=None):
     args = ["bsdtar", "-x", "-f", archive, "-C", tmp]
     if strip > 0:
         args += ["--strip-components", str(strip)]
-    code, lines = run(job, args + [pattern(n) for n in names], watch=watch)
+    code, lines = run(job, args + ["--"] + [pattern(n) for n in names], watch=watch)
     if code != 0 and single(archive) and unrecognized(lines) and not os.listdir(tmp):
         with open(os.path.join(tmp, stem or "data"), "wb") as f:
             p = subprocess.Popen(["bsdcat", archive], stdin=subprocess.DEVNULL, stdout=f, stderr=subprocess.PIPE, env=ENV, start_new_session=True)

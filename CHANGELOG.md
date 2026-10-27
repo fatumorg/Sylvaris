@@ -28,6 +28,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - Displays no longer treats a screen running a custom mode as off, so Apply keeps it on
 - SylLock says the PAM service is broken when its modules cannot load, instead of calling every password wrong
 - SylRGB's popup state no longer clashes with its shared colour, so `sylvaris rgb` reports `open` correctly and the device list refreshes after each change while the popup is open
+- Extracting chosen items from an archive passes their names to bsdtar after `--`, so an entry named like an option can no longer change what bsdtar does or run a program
 
 ## [0.4.2] - 2026-10-20
 

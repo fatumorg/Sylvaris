@@ -130,6 +130,14 @@ class ArchiveTest(unittest.TestCase):
         self.assertEqual(read(self.p("out", "b.txt")), "mine")
         self.assertEqual(read(self.p("out", "c", "d.txt")), "d")
 
+    def test_chosen_names_that_look_like_options_stay_names(self):
+        evil = "--use-compress-program=false"
+        z = self.zip_of("odd.zip", {"-v.txt": "v", evil: "e", "other.txt": "o"})
+        code, lines = run("extract", z, self.p("out"), "into", "0", "-v.txt", evil)
+        self.assertEqual(code, 0)
+        self.assertEqual(sorted(os.listdir(self.p("out"))), sorted(["-v.txt", evil]))
+        self.assertEqual(read(self.p("out", evil)), "e")
+
     def test_unpacks_a_single_compressed_file(self):
         with gzip.open(self.p("notes.txt.gz"), "wb") as f:
             f.write(b"plain text")
