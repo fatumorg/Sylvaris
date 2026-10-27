@@ -2,7 +2,7 @@ import { test } from "node:test"
 import assert from "node:assert/strict"
 import { PRESETS, parseVnc, parseAddresses, rightOf, presetLabel, vncConfigCommand } from "../shell/lib/virtual.mjs"
 import { execFileSync } from "node:child_process"
-import { mkdtempSync, writeFileSync, readFileSync, statSync } from "node:fs"
+import { mkdtempSync, writeFileSync, readFileSync, statSync, mkdirSync, chmodSync, existsSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
@@ -74,4 +74,22 @@ test("vncConfigCommand leaves a config without username=sylvaris alone", () => {
     const mine = "address=127.0.0.1\nusername=me\npassword=short\n"
     writeFileSync(file, mine)
     assert.equal(runVnc(file), mine)
+})
+
+test("vncConfigCommand never puts the new password on a command line", () => {
+    const dir = mkdtempSync(join(tmpdir(), "syl-vnc-"))
+    const shims = join(dir, "shims")
+    mkdirSync(shims)
+    for (const tool of ["sed", "awk", "grep", "mv", "rm", "cp", "tee"]) {
+        const real = execFileSync("sh", ["-c", "command -v " + tool], { encoding: "utf8" }).trim()
+        writeFileSync(join(shims, tool), "#!/bin/sh\nprintf '%s\\n' \"$*\" >> \"" + join(dir, "argv") + "\"\nexec " + real + " \"$@\"\n")
+        chmodSync(join(shims, tool), 0o755)
+    }
+    const file = join(dir, "config")
+    writeFileSync(file, "username=sylvaris\npassword=0a1b2c3d\n")
+    const argv = vncConfigCommand(file)
+    execFileSync(argv[0], argv.slice(1), { env: Object.assign({}, process.env, { PATH: shims + ":" + process.env.PATH }) })
+    const pw = readFileSync(file, "utf8").match(/^password=(.*)$/m)[1]
+    assert.match(pw, /^[0-9a-f]{32}$/)
+    assert.ok(!existsSync(join(dir, "argv")) || !readFileSync(join(dir, "argv"), "utf8").includes(pw))
 })

@@ -150,7 +150,7 @@ Singleton {
             id: vncConfigErr
         }
         onExited: code => {
-            if (code === 0)
+            if (code === 0 && !root.stopping)
                 root.serve();
             else
                 root.error = vncConfigErr.text.trim().split("\n").pop() || "Could not create the wayvnc config";
