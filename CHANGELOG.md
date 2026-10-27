@@ -17,6 +17,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - SylRGB keeps watching for new devices when OpenRGB drops its connection during a rescan, so a mouse that reconnects twice while plugging in is still found
 - The click flash stopped for good after lights were turned off, a press colour was cleared or OpenRGB went away for a moment
 - The virtual display's VNC password is 128 bits; a config Sylvaris made earlier with an 8-character password gets a new one (check the password in SylCenter before reconnecting)
+- Weather requests round your coordinates to two decimals (about 1 km) instead of three
 
 ### Security
 

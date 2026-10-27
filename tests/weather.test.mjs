@@ -23,7 +23,7 @@ const sample = {
 }
 
 test("the forecast url asks for the right units", () => {
-    assert.match(url(52.23, 21.01, "metric"), /latitude=52\.230&longitude=21\.010/)
+    assert.match(url(52.23, 21.01, "metric"), /latitude=52\.23&longitude=21\.01&/)
     assert.doesNotMatch(url(52.23, 21.01, "metric"), /fahrenheit/)
     assert.match(url(52.23, 21.01, "imperial"), /temperature_unit=fahrenheit&wind_speed_unit=mph/)
 })

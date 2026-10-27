@@ -14,7 +14,7 @@ Below the sky sits the weather from [Open-Meteo](https://open-meteo.com): now, t
 | `weather.units` | `metric` | `metric` or `imperial` |
 | `weather.refresh` | `30` | minutes between updates |
 
-This is the only part that talks to the internet on its own, and it only sends your coordinates.
+This is the only part that talks to the internet on its own, and it only sends your coordinates, rounded to two decimals (about 1 km).
 
 ## Location
 
