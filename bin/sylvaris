@@ -55,7 +55,7 @@ request() {
         echo "error: Sylvaris is not running" >&2
         return 1
     fi
-    reply="$(sylstack msg "$sock" "$req")" || {
+    reply="$(printf '%s' "$req" | sylstack msg "$sock")" || {
         echo "error: could not reach Sylvaris at $sock" >&2
         return 1
     }
