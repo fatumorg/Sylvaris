@@ -197,21 +197,33 @@ export function catalogEntry(id, raw) {
     const named = isObject(raw) && typeof raw.name === "string" && raw.name.trim() !== ""
     const name = named ? raw.name : id
     const t = validateTheme(isObject(raw) ? Object.assign({}, raw, { id: ID.test(id) ? id : "theme", name: name }) : raw).theme
-    return { id: id, name: name, description: t.description, wallpaper: t.wallpaper, colors: t.colors }
+    return { id: id, name: name, description: t.description, wallpaper: t.wallpaper, colors: t.colors, links: t.links || {} }
 }
+
+const UNLINK_SCRIPT = 'k=$1; shift; r=0; while [ "$k" -gt 0 ]; do if [ -L "$2" ] && [ "$(readlink "$2")" = "$1" ] && rm -f -- "$2"; then r=$((r + 1)); if [ -e "$2.before-sylvaris" ] || [ -L "$2.before-sylvaris" ]; then mv -- "$2.before-sylvaris" "$2"; fi; fi; shift 2; k=$((k - 1)); done; echo "removed $r"; '
 
 const LINK_SCRIPT = 'n=0; while [ $# -ge 2 ]; do if [ ! -e "$1" ]; then echo "missing $1"; elif [ "$(readlink "$2")" != "$1" ]; then if [ -e "$2" ] && [ ! -L "$2" ] && { [ -e "$2.before-sylvaris" ] || [ -L "$2.before-sylvaris" ] || ! mv -- "$2" "$2.before-sylvaris"; }; then echo "kept $2"; else mkdir -p "$(dirname "$2")" && ln -sfn "$1" "$2" && n=$((n + 1)); fi; fi; shift 2; done; echo "changed $n"'
 
-export function linkCommand(links, home, configHome) {
+export function staleLinks(catalog, links, home, configHome) {
+    const keep = links || {}
+    const out = []
+    for (const entry of Object.values(catalog || {}))
+        for (const [target, source] of Object.entries((entry && entry.links) || {}))
+            if (!Object.prototype.hasOwnProperty.call(keep, target))
+                out.push([expandHome(source, home), configHome + "/" + target])
+    return out
+}
+
+export function linkCommand(links, home, configHome, stale = []) {
     const targets = Object.keys(links || {})
-    if (targets.length === 0)
+    if (targets.length === 0 && stale.length === 0)
         return null
     const pairs = targets.reduce((out, t) => out.concat([expandHome(links[t], home), configHome + "/" + t]), [])
-    return ["sh", "-c", LINK_SCRIPT, "sylvaris-links"].concat(pairs)
+    return ["sh", "-c", UNLINK_SCRIPT + LINK_SCRIPT, "sylvaris-links", String(stale.length)].concat(...stale, pairs)
 }
 
 export function parseLinkOutput(text) {
-    const out = { changed: 0, missing: [], kept: [] }
+    const out = { changed: 0, removed: 0, missing: [], kept: [] }
     for (const line of String(text || "").split("\n")) {
         if (line.indexOf("missing ") === 0)
             out.missing.push(line.slice(8))
@@ -219,6 +231,8 @@ export function parseLinkOutput(text) {
             out.kept.push(line.slice(5))
         else if (/^changed \d+$/.test(line))
             out.changed = Number(line.slice(8))
+        else if (/^removed \d+$/.test(line))
+            out.removed = Number(line.slice(8))
     }
     return out
 }

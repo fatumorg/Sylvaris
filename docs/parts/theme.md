@@ -1,6 +1,6 @@
 # SylTheme
 
-`sylvaris theme` opens the theme picker on the focused screen with the current theme in front. The arrow keys, the mouse wheel, dragging or clicking a side card move the carousel. Once it rests for half a second, the whole desktop previews that theme, including its `links`.
+`sylvaris theme` opens the theme picker on the focused screen with the current theme in front. The arrow keys, the mouse wheel, dragging or clicking a side card move the carousel. Once it rests for half a second, the whole desktop previews that theme's colours and wallpaper. Its `links` are made only when you apply it.
 
 Start typing to search themes by name or description. Enter or **Apply theme** keeps it; Esc or a click on the backdrop brings back the theme you started with.
 

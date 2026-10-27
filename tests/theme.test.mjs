@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { DEFAULT_THEME, COLOR_KEYS, parseHex, withAlpha, validateTheme, tokens, nextThemeId, parseArgb, mixArgb, mixTokens, catalogEntry, linkCommand, parseLinkOutput, shareCommand } from "../shell/lib/theme.mjs"
+import { DEFAULT_THEME, COLOR_KEYS, parseHex, withAlpha, validateTheme, tokens, nextThemeId, parseArgb, mixArgb, mixTokens, catalogEntry, linkCommand, parseLinkOutput, shareCommand, staleLinks } from "../shell/lib/theme.mjs"
 import { execFileSync } from "node:child_process"
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readlinkSync, symlinkSync, existsSync, statSync, lstatSync } from "node:fs"
 import { tmpdir } from "node:os"
@@ -178,9 +178,9 @@ test("linkCommand relinks only changed targets and reports missing sources", () 
         const argv = linkCommand(links, home, conf)
         return parseLinkOutput(execFileSync(argv[0], argv.slice(1), { encoding: "utf8" }))
     }
-    assert.deepEqual(run(), { changed: 1, missing: [join(home, "cfg", "none")], kept: [] })
+    assert.deepEqual(run(), { changed: 1, removed: 0, missing: [join(home, "cfg", "none")], kept: [] })
     assert.equal(readlinkSync(join(conf, "app", "a")), join(home, "cfg", "a"))
-    assert.deepEqual(run(), { changed: 0, missing: [join(home, "cfg", "none")], kept: [] })
+    assert.deepEqual(run(), { changed: 0, removed: 0, missing: [join(home, "cfg", "none")], kept: [] })
     assert.deepEqual(linkCommand({}, home, conf), null)
 })
 
@@ -198,7 +198,7 @@ test("linkCommand moves a real file aside instead of replacing it, and keeps it 
     const links = { "app/a": "~/cfg/a", "dir/sub": "~/cfg/a", "other/a": "~/cfg/a" }
     const argv = linkCommand(links, home, conf)
     const r = parseLinkOutput(execFileSync(argv[0], argv.slice(1), { encoding: "utf8" }))
-    assert.deepEqual(r, { changed: 2, missing: [], kept: [join(conf, "other", "a")] })
+    assert.deepEqual(r, { changed: 2, removed: 0, missing: [], kept: [join(conf, "other", "a")] })
     assert.equal(readlinkSync(join(conf, "app", "a")), join(home, "cfg", "a"))
     assert.equal(readFileSync(join(conf, "app", "a.before-sylvaris"), "utf8"), "mine")
     assert.equal(readlinkSync(join(conf, "dir", "sub")), join(home, "cfg", "a"))
@@ -208,8 +208,8 @@ test("linkCommand moves a real file aside instead of replacing it, and keeps it 
 })
 
 test("parseLinkOutput tolerates junk", () => {
-    assert.deepEqual(parseLinkOutput(""), { changed: 0, missing: [], kept: [] })
-    assert.deepEqual(parseLinkOutput("noise\nchanged 2\nmissing /x y\nkept /k\n"), { changed: 2, missing: ["/x y"], kept: ["/k"] })
+    assert.deepEqual(parseLinkOutput(""), { changed: 0, removed: 0, missing: [], kept: [] })
+    assert.deepEqual(parseLinkOutput("noise\nchanged 2\nmissing /x y\nkept /k\n"), { changed: 2, removed: 0, missing: ["/x y"], kept: ["/k"] })
 })
 
 test("a theme can name a workspace icon", async () => {
@@ -262,3 +262,59 @@ test("shareCommand skips unsafe names and an empty root", () => {
     assert.equal(shareCommand("/r", "", "warm", "", "", "{}"), null)
     assert.equal(shareCommand("/r", "ada", "a/b", "", "", "{}"), null)
 })
+
+test("catalogEntry keeps the theme's validated links", () => {
+    assert.deepEqual(catalogEntry("warm", Object.assign({}, warm, { links: { "kitty/theme.conf": "~/k.conf", "../x": "~/y" } })).links, { "kitty/theme.conf": "~/k.conf" })
+    assert.deepEqual(catalogEntry("junk", [1]).links, {})
+})
+
+test("staleLinks lists catalog links the new theme lacks", () => {
+    const catalog = {
+        warm: { links: { "kitty/theme.conf": "~/cfg/warm.conf", "gtk/x": "~/cfg/gx" } },
+        cold: { links: { "kitty/theme.conf": "~/cfg/cold.conf" } },
+        bare: { links: {} },
+        old: {}
+    }
+    assert.deepEqual(staleLinks(catalog, { "kitty/theme.conf": "~/cfg/cold.conf" }, "/h", "/h/.config"), [["/h/cfg/gx", "/h/.config/gtk/x"]])
+    assert.deepEqual(staleLinks(catalog, {}, "/h", "/c"), [["/h/cfg/warm.conf", "/c/kitty/theme.conf"], ["/h/cfg/gx", "/c/gtk/x"], ["/h/cfg/cold.conf", "/c/kitty/theme.conf"]])
+})
+
+test("linkCommand removes stale links, restores their backups and leaves foreign links and real files alone", () => {
+    const home = mkdtempSync(join(tmpdir(), "syl-links-"))
+    const conf = join(home, ".config")
+    mkdirSync(join(home, "cfg"))
+    writeFileSync(join(home, "cfg", "warm"), "warm")
+    mkdirSync(join(conf, "app"), { recursive: true })
+    symlinkSync(join(home, "cfg", "warm"), join(conf, "app", "a"))
+    writeFileSync(join(conf, "app", "a.before-sylvaris"), "mine")
+    symlinkSync(join(home, "elsewhere"), join(conf, "app", "b"))
+    writeFileSync(join(conf, "app", "c"), "real")
+    const stale = [[join(home, "cfg", "warm"), join(conf, "app", "a")], [join(home, "cfg", "warm"), join(conf, "app", "b")], [join(home, "cfg", "warm"), join(conf, "app", "c")]]
+    const argv = linkCommand({}, home, conf, stale)
+    const r = parseLinkOutput(execFileSync(argv[0], argv.slice(1), { encoding: "utf8" }))
+    assert.equal(r.removed, 1)
+    assert.equal(r.changed, 0)
+    assert.equal(readFileSync(join(conf, "app", "a"), "utf8"), "mine")
+    assert.ok(!existsSync(join(conf, "app", "a.before-sylvaris")))
+    assert.equal(readlinkSync(join(conf, "app", "b")), join(home, "elsewhere"))
+    assert.equal(readFileSync(join(conf, "app", "c"), "utf8"), "real")
+})
+
+test("linkCommand removes a stale link that has no backup", () => {
+    const home = mkdtempSync(join(tmpdir(), "syl-links-"))
+    const conf = join(home, ".config")
+    mkdirSync(join(conf, "app"), { recursive: true })
+    symlinkSync(join(home, "gone"), join(conf, "app", "a"))
+    const argv = linkCommand({}, home, conf, [[join(home, "gone"), join(conf, "app", "a")]])
+    assert.equal(parseLinkOutput(execFileSync(argv[0], argv.slice(1), { encoding: "utf8" })).removed, 1)
+    assert.ok(!existsSync(join(conf, "app", "a")) && !lstatExists(join(conf, "app", "a")))
+})
+
+function lstatExists(p) {
+    try {
+        lstatSync(p)
+        return true
+    } catch {
+        return false
+    }
+}

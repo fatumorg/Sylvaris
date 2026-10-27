@@ -16,8 +16,11 @@ Singleton {
 
     function run(r: var): void {
         root.st = r.state;
+        Theme.linksHeld = r.state.active;
         if (r.apply !== "")
             Theme.apply(r.apply);
+        else if (!r.state.active)
+            Theme.link();
     }
 
     function begin(id: string): void {

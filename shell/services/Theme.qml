@@ -17,6 +17,7 @@ Singleton {
     readonly property string configHome: Stack.env("XDG_CONFIG_HOME") || root.home + "/.config"
     property int linked: 0
     property bool relink: false
+    property bool linksHeld: false
     property string currentId: ""
     property var theme: T.DEFAULT_THEME
     property var errors: []
@@ -113,7 +114,9 @@ Singleton {
     }
 
     function link(): void {
-        const cmd = T.linkCommand(root.theme.links, root.home, root.configHome);
+        if (root.linksHeld)
+            return;
+        const cmd = T.linkCommand(root.theme.links, root.home, root.configHome, T.staleLinks(root.catalog, root.theme.links, root.home, root.configHome));
         if (cmd === null)
             return;
         if (linkProc.running) {
@@ -131,7 +134,7 @@ Singleton {
             root.errors = root.errors.concat(r.missing.map(m => "link source not found: " + m));
         if (r.kept.length > 0)
             root.errors = root.errors.concat(r.kept.map(k => "not linked, your own file and an older backup are both in the way: " + k));
-        if (r.changed === 0 || Demo.enabled)
+        if (r.changed + r.removed === 0 || Demo.enabled)
             return;
         Stack.execDetached(["pkill", "-USR1", "kitty"]);
         Stack.execDetached(["pkill", "-USR2", "waybar"]);

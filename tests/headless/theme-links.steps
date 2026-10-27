@@ -9,3 +9,25 @@ sleep 1
 syl theme set birch
 sleep 1.5
 syl state theme
+check test -L "$OUT/home/.config/demo/linked.json"
+syl theme set amber
+sleep 1.5
+check ! test -L "$OUT/home/.config/demo/linked.json"
+syl theme open
+sleep 0.6
+syl theme next
+sleep 1.5
+syl state theme
+check grep -q '"applied":"birch"' "$OUT/ipc.log"
+check ! test -L "$OUT/home/.config/demo/linked.json"
+bg wtype -k Shift_L -k Escape
+sleep 1.5
+syl state theme
+check ! test -L "$OUT/home/.config/demo/linked.json"
+syl theme open
+sleep 0.6
+syl theme next
+sleep 1.5
+syl theme apply
+sleep 1.5
+check test -L "$OUT/home/.config/demo/linked.json"
