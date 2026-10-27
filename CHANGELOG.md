@@ -4,6 +4,11 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Fixed
+
+- SylLock no longer crashes when you unlock, which left Hyprland showing "lockscreen app died" and sway a red screen
+- SylLock covers every monitor: with more than one, every lock screen opened on the monitor under the pointer and the others stayed uncovered (sway refused the lock outright)
+
 ## [1.0.0] - 2026-10-27
 
 The first official release, out of beta.

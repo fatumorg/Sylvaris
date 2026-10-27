@@ -138,6 +138,7 @@ WlSessionLockSurface::WlSessionLockSurface(QObject *parent)
 
 void WlSessionLockSurface::configure()
 {
+    applySize();
     m_window->create();
     auto *w = dynamic_cast<QtWaylandClient::QWaylandWindow *>(m_window->handle());
     LockIntegration *shell = integration();
@@ -148,7 +149,7 @@ void WlSessionLockSurface::configure()
 void WlSessionLockSurface::applySize()
 {
     if (QScreen *s = m_window->screen())
-        m_window->resize(s->geometry().size());
+        m_window->setGeometry(s->geometry());
 }
 
 WlSessionLock::WlSessionLock(QObject *parent)
@@ -261,7 +262,8 @@ void WlSessionLock::syncSurfaces()
     }
     for (auto it = m_surfaces.begin(); it != m_surfaces.end();) {
         if (!live.contains(it.key()) || !it.value()) {
-            delete it.value().data();
+            if (it.value())
+                it.value()->deleteLater();
             it = m_surfaces.erase(it);
         } else {
             ++it;
@@ -273,8 +275,10 @@ void WlSessionLock::dropSurfaces()
 {
     const auto surfaces = m_surfaces;
     m_surfaces.clear();
-    for (const QPointer<QObject> &s : surfaces)
-        delete s.data();
+    for (const QPointer<QObject> &s : surfaces) {
+        if (s)
+            s->deleteLater();
+    }
 }
 
 }
