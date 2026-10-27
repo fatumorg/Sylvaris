@@ -4,6 +4,8 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-27
+
 ### Added
 
 - SylCenter's sound output view works like pavucontrol: apps that record show under Recording, each row shows the stream's title, clicking the output beside a slider moves that app to the next output or microphone, and apps that stop stay listed with their last volume
@@ -329,7 +331,8 @@ The first official release, out of beta.
 - Relock a lock screen that is still closing and report locks that fail
 - Never prompt or hang on plugin clones and unfreeze settings once the file is gone
 
-[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/fatumorg/Sylvaris/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/fatumorg/Sylvaris/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/fatumorg/Sylvaris/compare/v0.4.2...v1.0.0
 [0.4.2]: https://github.com/fatumorg/Sylvaris/compare/v0.4.1...v0.4.2
