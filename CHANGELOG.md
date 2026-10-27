@@ -31,6 +31,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - Extracting chosen items from an archive passes their names to bsdtar after `--`, so an entry named like an option can no longer change what bsdtar does or run a program
 - Notifications show icons only from local files and icon names; a web address sent as the icon is ignored instead of fetched
 - The polkit agent stops instead of retrying in a loop when PAM fails without asking for a password, for example while the account is locked out
+- SylLock shows PAM's own reason, such as a locked account, instead of "Wrong password"
 
 ## [0.4.2] - 2026-10-20
 

@@ -140,8 +140,9 @@ Scope {
                 root.locked = false;
                 quit.start();
             } else {
+                const said = root.error ? root.message : "";
                 root.error = true;
-                root.message = result === PamResult.MaxTries ? "Too many tries, wait a moment" : "Wrong password";
+                root.message = result === PamResult.MaxTries ? "Too many tries, wait a moment" : said || "Wrong password";
                 root.failed();
             }
         }
