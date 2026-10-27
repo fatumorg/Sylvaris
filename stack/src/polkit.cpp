@@ -70,9 +70,11 @@ void AuthFlow::start()
         return;
     }
     dropSession();
+    m_asked = false;
     auto *session = new PolkitQt1::Agent::Session(m_identity->identity(), m_cookie, nullptr, this);
     m_session = session;
     connect(session, &PolkitQt1::Agent::Session::request, this, [this](const QString &prompt, bool echo) {
+        m_asked = true;
         m_prompt = prompt;
         m_echo = echo;
         emit changed();
@@ -95,8 +97,8 @@ void AuthFlow::start()
         dropSession();
         if (m_completed)
             return;
-        if (gained) {
-            finish(true, false);
+        if (gained || !m_asked) {
+            finish(gained, false);
             return;
         }
         m_responseRequired = false;

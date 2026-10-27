@@ -30,6 +30,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - SylRGB's popup state no longer clashes with its shared colour, so `sylvaris rgb` reports `open` correctly and the device list refreshes after each change while the popup is open
 - Extracting chosen items from an archive passes their names to bsdtar after `--`, so an entry named like an option can no longer change what bsdtar does or run a program
 - Notifications show icons only from local files and icon names; a web address sent as the icon is ignored instead of fetched
+- The polkit agent stops instead of retrying in a loop when PAM fails without asking for a password, for example while the account is locked out
 
 ## [0.4.2] - 2026-10-20
 
