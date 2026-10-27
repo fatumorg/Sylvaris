@@ -50,3 +50,9 @@ export function rightOf(snap, skip) {
     }
     return { x: x, y: 0 }
 }
+
+const VNC_SCRIPT = 'f="$1"; d=$(dirname "$f"); if [ ! -f "$f" ]; then mkdir -p "$d" && (umask 077 && openssl genrsa -traditional -out "$d/rsa_key.pem" 2048 2>/dev/null && printf "%s\\n" use_relative_paths=true address=0.0.0.0 enable_auth=true username=sylvaris "password=$(openssl rand -hex 16)" rsa_private_key_file=rsa_key.pem > "$f") || { echo "Could not create the wayvnc config" >&2; exit 1; }; exit 0; fi; grep -qx username=sylvaris "$f" || exit 0; grep -qE "^password=[0-9a-fA-F]{32}$" "$f" && exit 0; grep -q "^password=" "$f" || exit 0; p=$(openssl rand -hex 16) && (umask 077 && sed "s/^password=.*/password=$p/" "$f" > "$f.new") && mv -f "$f.new" "$f" || { rm -f "$f.new"; echo "Could not update the wayvnc password" >&2; exit 1; }'
+
+export function vncConfigCommand(file) {
+    return ["sh", "-c", VNC_SCRIPT, "sylvaris-vnc", file]
+}

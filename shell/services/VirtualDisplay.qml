@@ -18,7 +18,7 @@ Singleton {
     readonly property int height: Settings.values.displays.virtual.height
     property bool demoActive: false
     readonly property bool active: root.demo ? root.demoActive : server.running
-    readonly property bool busy: clear.running || (server.running && !root.ready)
+    readonly property bool busy: clear.running || vncConfig.running || (server.running && !root.ready)
     property bool ready: false
     property bool stopping: false
     property var addresses: []
@@ -38,7 +38,7 @@ Singleton {
         root.start();
     }
 
-    readonly property string script: "n=$1; m=$2; sc=$3; pos=$4; d=$(dirname \"$5\"); if [ ! -f \"$5\" ]; then mkdir -p \"$d\" && (umask 077 && openssl genrsa -traditional -out \"$d/rsa_key.pem\" 2048 2>/dev/null && printf '%s\\n' use_relative_paths=true address=0.0.0.0 enable_auth=true username=sylvaris \"password=$(openssl rand -hex 8)\" rsa_private_key_file=rsa_key.pem > \"$5\") || { echo 'Could not create the wayvnc config' >&2; exit 1; }; fi; k=\"${XDG_RUNTIME_DIR:-/tmp}/sylvaris-wayvnc.sock\"; wayvncctl -S \"$k\" wayvnc-exit >/dev/null 2>&1; i=0; while [ -e \"$k\" ] && [ $i -lt 25 ]; do i=$((i + 1)); sleep 0.2; done; shift 5; \"$@\" >/dev/null || { echo 'The compositor could not create the virtual display' >&2; exit 1; }; i=0; until wlr-randr --output \"$n\" --custom-mode \"$m\" --scale \"$sc\" --pos \"$pos\" 2>/dev/null; do i=$((i + 1)); [ $i -lt 25 ] || { echo 'The virtual display did not come up' >&2; exit 1; }; sleep 0.2; done; echo ready; exec wayvnc -S \"$k\" -o \"$n\" -f 60"
+    readonly property string script: "n=$1; m=$2; sc=$3; pos=$4; k=\"${XDG_RUNTIME_DIR:-/tmp}/sylvaris-wayvnc.sock\"; wayvncctl -S \"$k\" wayvnc-exit >/dev/null 2>&1; i=0; while [ -e \"$k\" ] && [ $i -lt 25 ]; do i=$((i + 1)); sleep 0.2; done; shift 5; \"$@\" >/dev/null || { echo 'The compositor could not create the virtual display' >&2; exit 1; }; i=0; until wlr-randr --output \"$n\" --custom-mode \"$m\" --scale \"$sc\" --pos \"$pos\" 2>/dev/null; do i=$((i + 1)); [ $i -lt 25 ] || { echo 'The virtual display did not come up' >&2; exit 1; }; sleep 0.2; done; echo ready; exec wayvnc -S \"$k\" -o \"$n\" -f 60"
 
     function mode(w: int, h: int): string {
         return w + "x" + h + "@60.000Hz";
@@ -83,6 +83,11 @@ Singleton {
     }
 
     function launch(): void {
+        vncConfig.command = V.vncConfigCommand(root.configFile);
+        vncConfig.running = true;
+    }
+
+    function serve(): void {
         const pos = V.rightOf(root.shown(), root.name);
         server.command = ["sh", "-c", root.script, "sylvaris", root.name, root.mode(root.width, root.height), root.width >= 2200 ? "2" : "1", pos.x + "," + pos.y, root.configFile].concat(W.virtualOutput(Compositor.name, "create", root.name));
         server.running = true;
@@ -136,6 +141,19 @@ Singleton {
                 return;
             clear.launch = false;
             root.launch();
+        }
+    }
+
+    Process {
+        id: vncConfig
+        stderr: StdioCollector {
+            id: vncConfigErr
+        }
+        onExited: code => {
+            if (code === 0)
+                root.serve();
+            else
+                root.error = vncConfigErr.text.trim().split("\n").pop() || "Could not create the wayvnc config";
         }
     }
 

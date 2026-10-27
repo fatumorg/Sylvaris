@@ -41,6 +41,7 @@
                 pkgs.qt6.qtdeclarative
                 pkgs.findutils
                 pkgs.libarchive
+                pkgs.openssl
                 (pkgs.python3.withPackages (ps: [ ps.cryptography ]))
               ];
             }
