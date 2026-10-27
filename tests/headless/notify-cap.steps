@@ -1,0 +1,8 @@
+write sylvaris/config.json {"version":1,"notifications":{"server":true,"history":1}}
+sleep 1.5
+bg sh -c 'notify-send --wait -t 0 -a Mail "First" "dropped" > /dev/null; echo closed > "$OUT/first-closed"'
+sleep 0.5
+bg notify-send -t 0 -a Mail "Second" "kept"
+sleep 1
+syl state notifications
+check test -f "$OUT/first-closed"

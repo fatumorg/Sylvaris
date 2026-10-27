@@ -21,6 +21,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 - Each user now shares their login look in their own folder under `/var/lib/sylvaris-greet/shared`, which is now sticky (1775): another member of the share group could plant links there that made your Sylvaris overwrite your files, or change everyone's login screen. SylGreet shows the look of the user it has selected; after upgrading, log in once to share yours again
 - Theme `links` are no longer made while you only preview a theme in the picker, and switching to a theme without a link removes the one an earlier theme made and restores your backup
+- Notifications pushed out of the history by `notifications.history` are now closed, so their apps hear about it and their images no longer stay in memory
 
 ## [1.0.1] - 2026-10-27
 

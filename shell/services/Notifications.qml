@@ -26,7 +26,12 @@ Singleton {
             n: n,
             time: Date.now()
         };
-        root.list = N.insert(root.list, entry, root.cap);
+        const before = root.list;
+        root.list = N.insert(before, entry, root.cap);
+        for (const e of N.evicted(before, root.list)) {
+            if (typeof e.n.expire === "function")
+                e.n.expire();
+        }
         n.closed.connect(() => root.forget(entry.id));
         if (root.centerOpen || (root.dnd && n.urgency !== NotificationUrgency.Critical) || (root.island && I.takes(root.facts(n), Settings.values.island, n.urgency === NotificationUrgency.Critical)))
             return;

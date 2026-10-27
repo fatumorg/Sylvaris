@@ -13,6 +13,11 @@ export function insert(list, entry, cap) {
     return [entry].concat(rest).slice(0, cap)
 }
 
+export function evicted(before, after) {
+    const kept = new Set(after.map(e => e.id))
+    return before.filter(e => !kept.has(e.id))
+}
+
 export function remove(list, id) {
     return list.filter(e => e.id !== id)
 }

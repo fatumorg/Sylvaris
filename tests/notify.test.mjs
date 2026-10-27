@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { isPicture, timeoutFor, insert, remove, pushToast, groups, ago, cleanBody, plainText, iconSource, CRITICAL, toastShift } from "../shell/lib/notify.mjs"
+import { isPicture, timeoutFor, insert, remove, pushToast, groups, ago, cleanBody, plainText, iconSource, CRITICAL, toastShift, evicted } from "../shell/lib/notify.mjs"
 
 test("timeoutFor keeps critical and zero-timeout notifications up, honours the app, else the default", () => {
     assert.equal(timeoutFor(CRITICAL, 3000, 5000), 0)
@@ -77,4 +77,12 @@ test("toastShift moves toasts beside or below an open panel in the same corner o
     assert.deepEqual(toastShift("top-center", "A", Object.assign({}, panel, { corner: "top-center" }), 12), { x: 0, y: 612 })
     assert.deepEqual(toastShift("center-left", "A", Object.assign({}, panel, { corner: "center-left" }), 12), { x: 412, y: 0 })
     assert.deepEqual(toastShift("top-right", "A", null, 12), { x: 0, y: 0 })
+})
+
+test("evicted lists entries pushed out past the cap but not a replaced id", () => {
+    const a = { id: 1 }, b = { id: 2 }, c = { id: 3 }
+    const before = [b, a]
+    assert.deepEqual(evicted(before, insert(before, c, 2)), [a])
+    assert.deepEqual(evicted(before, insert(before, { id: 1 }, 2)), [])
+    assert.deepEqual(evicted([], insert([], c, 2)), [])
 })
