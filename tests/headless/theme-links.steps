@@ -20,7 +20,7 @@ sleep 1.5
 syl state theme
 check grep -q '"applied":"birch"' "$OUT/ipc.log"
 check ! test -L "$OUT/home/.config/demo/linked.json"
-bg wtype -k Shift_L -k Escape
+syl theme close
 sleep 1.5
 syl state theme
 check ! test -L "$OUT/home/.config/demo/linked.json"
