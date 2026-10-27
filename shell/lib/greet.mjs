@@ -9,7 +9,7 @@ export function parsePasswd(text) {
         const uid = Number(f[2])
         if (!(uid >= 1000 && uid < 60000) || NOLOGIN.test(f[6]))
             continue
-        out.push({ name: f[0], real: f[4].split(",")[0] || f[0], home: f[5] })
+        out.push({ name: f[0], real: f[4].split(",")[0] || f[0], home: f[5], uid: uid })
     }
     return out
 }

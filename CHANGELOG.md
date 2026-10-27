@@ -21,7 +21,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Security
 
-- Each user now shares their login look in their own folder under `/var/lib/sylvaris-greet/shared`, which is now sticky (1775): another member of the share group could plant links there that made your Sylvaris overwrite your files, or change everyone's login screen. SylGreet shows the look of the user it has selected; after upgrading, log in once to share yours again
+- Each user now shares their login look in their own folder under `/var/lib/sylvaris-greet/shared`, which is now sticky (1775): another member of the share group could plant links there that made your Sylvaris overwrite your files, or change everyone's login screen. SylGreet shows the look of the user it has selected, only from a folder that user owns; after upgrading, log in once to share yours again. Without Nix, run `sudo make install-greeter` again to make the folder sticky: Sylvaris does not share into one that is not
 - Theme `links` are no longer made while you only preview a theme in the picker, and switching to a theme without a link removes the one an earlier theme made and restores your backup
 - Notifications pushed out of the history by `notifications.history` are now closed, so their apps hear about it and their images no longer stay in memory
 - `sylvaris doctor` names the PAM service the lock uses and, when it falls back to `login` (whose failed-attempt lockout can shut you out), how to install the `sylvaris` one

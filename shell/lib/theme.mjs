@@ -237,7 +237,7 @@ export function parseLinkOutput(text) {
     return out
 }
 
-const SHARE_SCRIPT = 'r="$1"; d="$1/$2"; [ -d "$r" ] && [ -w "$r" ] || exit 0; umask 022; if [ ! -e "$d" ] && [ ! -L "$d" ]; then mkdir "$d" || exit 1; fi; [ ! -L "$d" ] && [ -d "$d" ] && [ "$(stat -c %u "$d")" = "$(id -u)" ] || exit 1; chmod 755 "$d" && mkdir -p "$d/themes" && chmod 755 "$d/themes" || exit 1; for p in wallpaper:"$4" avatar:"$5"; do n=${p%%:*}; f=${p#*:}; [ -f "$f" ] && cp -f "$f" "$d/$n.part" && chmod 644 "$d/$n.part" && mv -f "$d/$n.part" "$d/$n"; done; printf "%s" "$6" > "$d/themes/$3.json" && printf "%s" "$3" > "$d/theme" && chmod 644 "$d/themes/$3.json" "$d/theme"'
+const SHARE_SCRIPT = 'r="$1"; d="$1/$2"; [ -d "$r" ] && [ -w "$r" ] && [ -k "$r" ] || exit 0; umask 022; if [ ! -e "$d" ] && [ ! -L "$d" ]; then mkdir "$d" || exit 1; fi; [ ! -L "$d" ] && cd -P -- "$d" && [ "$(stat -c %u .)" = "$(id -u)" ] || exit 1; chmod 755 . && mkdir -p themes && chmod 755 themes || exit 1; for p in wallpaper:"$4" avatar:"$5"; do n=${p%%:*}; f=${p#*:}; [ -f "$f" ] && cp -f "$f" "$n.part" && chmod 644 "$n.part" && mv -f "$n.part" "$n"; done; printf "%s" "$6" > "themes/$3.json" && printf "%s" "$3" > theme && chmod 644 "themes/$3.json" theme'
 
 export function shareCommand(root, user, id, wallpaper, avatar, json) {
     if (!root || !/^[A-Za-z0-9_][A-Za-z0-9_.-]*$/.test(user || "") || !/^[A-Za-z0-9_.-]+$/.test(id || ""))

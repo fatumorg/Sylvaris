@@ -13,7 +13,8 @@ Scope {
     readonly property string sessionDirs: Stack.env("SYLVARIS_GREET_SESSIONS") || "/run/current-system/sw/share/wayland-sessions:/usr/local/share/wayland-sessions:/usr/share/wayland-sessions"
     readonly property bool dry: Stack.env("SYLVARIS_GREET_DRY") === "1"
     readonly property string shared: Stack.env("SYLVARIS_GREET_SHARED") || ""
-    readonly property string folder: root.shared === "" || root.user === null ? "" : root.shared + "/" + root.user.id
+    readonly property string candidate: root.shared === "" || root.user === null ? "" : root.shared + "/" + root.user.id
+    property string folder: ""
     property var users: []
     property var sessions: []
     property int userIndex: -1
@@ -98,6 +99,14 @@ Scope {
     }
 
     onFolderChanged: Theme.folder = root.folder
+    onCandidateChanged: {
+        root.folder = "";
+        ownerProc.running = false;
+        if (root.candidate === "")
+            return;
+        ownerProc.command = ["stat", "-c", "%u", "--", root.candidate];
+        ownerProc.running = true;
+    }
 
     function state(): var {
         return {
@@ -159,6 +168,16 @@ Scope {
             const cmd = root.session === null ? ["sh", "-l"] : G.splitExec(root.session.exec);
             root.launched = cmd.join(" ");
             Greetd.launch(cmd, [], true);
+        }
+    }
+
+    Process {
+        id: ownerProc
+        stdout: StdioCollector {
+            onStreamFinished: {
+                if (root.user !== null && text.trim() === String(root.user.uid) && ownerProc.command[4] === root.candidate)
+                    root.folder = root.candidate;
+            }
         }
     }
 

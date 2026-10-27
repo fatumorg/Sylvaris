@@ -12,8 +12,8 @@ test("parsePasswd keeps people who can log in", () => {
         "broken line"
     ].join("\n")
     assert.deepEqual(parsePasswd(text), [
-        { name: "naxce", real: "Naxce Hell", home: "/home/naxce" },
-        { name: "guest", real: "guest", home: "/home/guest" }
+        { name: "naxce", real: "Naxce Hell", home: "/home/naxce", uid: 1000 },
+        { name: "guest", real: "guest", home: "/home/guest", uid: 1001 }
     ])
 })
 

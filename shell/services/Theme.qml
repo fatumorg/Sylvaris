@@ -240,6 +240,10 @@ Singleton {
 
     Process {
         id: shareProc
+        onExited: code => {
+            if (code !== 0)
+                root.errors = root.errors.concat(["could not share the theme with the login screen: your folder in " + Config.values.greeterShare + " is a link or belongs to someone else"]);
+        }
     }
 
     Process {

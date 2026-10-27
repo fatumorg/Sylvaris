@@ -2,7 +2,7 @@ import { test } from "node:test"
 import assert from "node:assert/strict"
 import { DEFAULT_THEME, COLOR_KEYS, parseHex, withAlpha, validateTheme, tokens, nextThemeId, parseArgb, mixArgb, mixTokens, catalogEntry, linkCommand, parseLinkOutput, shareCommand, staleLinks } from "../shell/lib/theme.mjs"
 import { execFileSync } from "node:child_process"
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readlinkSync, symlinkSync, existsSync, statSync, lstatSync } from "node:fs"
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readlinkSync, symlinkSync, existsSync, statSync, lstatSync, chmodSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
@@ -228,6 +228,7 @@ test("a theme can carry its own colour for RGB lighting", () => {
 
 test("shareCommand writes the user's own folder with 755 folders and 644 files", () => {
     const root = mkdtempSync(join(tmpdir(), "syl-share-"))
+    chmodSync(root, 0o1755)
     const src = mkdtempSync(join(tmpdir(), "syl-src-"))
     writeFileSync(join(src, "wall.png"), "w")
     writeFileSync(join(src, "face"), "a")
@@ -245,6 +246,7 @@ test("shareCommand writes the user's own folder with 755 folders and 644 files",
 
 test("shareCommand refuses a symlinked user folder and leaves its target alone", () => {
     const root = mkdtempSync(join(tmpdir(), "syl-share-"))
+    chmodSync(root, 0o1755)
     const victim = mkdtempSync(join(tmpdir(), "syl-victim-"))
     writeFileSync(join(victim, "theme"), "mine")
     const mode = statSync(join(victim, "theme")).mode
@@ -254,6 +256,14 @@ test("shareCommand refuses a symlinked user folder and leaves its target alone",
     assert.equal(readFileSync(join(victim, "theme"), "utf8"), "mine")
     assert.equal(statSync(join(victim, "theme")).mode, mode)
     assert.ok(lstatSync(join(root, "ada")).isSymbolicLink())
+})
+
+test("shareCommand writes nothing into a share folder without the sticky bit", () => {
+    const root = mkdtempSync(join(tmpdir(), "syl-share-"))
+    chmodSync(root, 0o775)
+    const argv = shareCommand(root, "ada", "warm", "/nonexistent", "/nonexistent", "{}")
+    execFileSync(argv[0], argv.slice(1))
+    assert.ok(!existsSync(join(root, "ada")))
 })
 
 test("shareCommand skips unsafe names and an empty root", () => {
@@ -307,14 +317,5 @@ test("linkCommand removes a stale link that has no backup", () => {
     symlinkSync(join(home, "gone"), join(conf, "app", "a"))
     const argv = linkCommand({}, home, conf, [[join(home, "gone"), join(conf, "app", "a")]])
     assert.equal(parseLinkOutput(execFileSync(argv[0], argv.slice(1), { encoding: "utf8" })).removed, 1)
-    assert.ok(!existsSync(join(conf, "app", "a")) && !lstatExists(join(conf, "app", "a")))
+    assert.throws(() => lstatSync(join(conf, "app", "a")))
 })
-
-function lstatExists(p) {
-    try {
-        lstatSync(p)
-        return true
-    } catch {
-        return false
-    }
-}
