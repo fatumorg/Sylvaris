@@ -13,6 +13,7 @@ bg wtype -k Shift_L -s 400 Y
 sleep 2
 check test "$(stat -c %a "$HOME/.local/state/sylvaris/notes")" = 700
 check test "$(ls "$HOME/.local/state/sylvaris/notes" | wc -l)" = 1
+check test "$(stat -c %a "$HOME/.local/state/sylvaris/notes/"*.swp)" = 600
 shot notes
 restart
 sleep 2

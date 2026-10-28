@@ -164,6 +164,7 @@ FocusScope {
         if (!ed.notes.swapReady || ed.key === "")
             return;
         swapFile.path = ed.swapPath;
+        swapFile.first = !ed.swapped;
         swapFile.setText(JSON.stringify({
             key: ed.key,
             path: ed.path,
@@ -253,9 +254,15 @@ FocusScope {
 
     FileView {
         id: swapFile
+        property bool first: false
         preload: false
         atomicWrites: true
         printErrors: false
+        onSaved: {
+            if (swapFile.first)
+                Stack.execDetached(["chmod", "600", "--", swapFile.path]);
+            swapFile.first = false;
+        }
     }
 
     Timer {
