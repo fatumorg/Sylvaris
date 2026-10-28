@@ -4,6 +4,8 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-10-28
+
 ### Added
 
 - The bar has two more styles, `float` (one floating pill) and `minimal` (a thin line), and `bar.workspaceStyle` draws workspaces as dots, numbers, pills or app icons
@@ -19,12 +21,12 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 ### Changed
 
 - Lumen, the default Look, now floats the bar with dot workspaces, lays SylCenter out as bento, stacks notifications as cards, shows the giant lock clock, glows under open apps on SylDeck and morphs windows open; Classic keeps the 1.1 layout
-- The demo recordings in the README and on the site show 1.5, with new ones for SylWidget and SylTemp.
+- The demo recordings in the README and on the site show 1.5, with new ones for SylWidget and SylTemp
 
 ### Fixed
 
 - Photo widgets tinted or turned mono stay visible when Sylvaris draws without a GPU
-- The install guide lists the tools for brightness, tablets, drives, archives, replies and the terminal and visualizer widgets.
+- The install guide lists the tools for brightness, tablets, drives, archives, replies and the terminal and visualizer widgets
 
 ## [1.4.0] - 2026-10-28
 
@@ -389,7 +391,8 @@ The first official release, out of beta.
 - Relock a lock screen that is still closing and report locks that fail
 - Never prompt or hang on plugin clones and unfreeze settings once the file is gone
 
-[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/fatumorg/Sylvaris/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/fatumorg/Sylvaris/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/fatumorg/Sylvaris/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/fatumorg/Sylvaris/compare/v1.1.0...v1.2.0
