@@ -532,14 +532,20 @@ export function kittyOk(text) {
     return m !== null && (Number(m[1]) > 0 || Number(m[2]) >= 42)
 }
 
+function panelRect(rect, padding) {
+    const p = Math.max(0, Number(padding) || 0)
+    return { x: rect.x + p, y: rect.y + p, w: rect.w - 2 * p, h: rect.h - 2 * p }
+}
+
 export function kittyArgs(item, rect, screenName, socket) {
     const o = item.options
+    const r = panelRect(rect, o.padding)
     const args = ["+kitten", "panel", "--edge=none", "--layer", item.layer === "desktop" ? "bottom" : item.layer === "overlay" ? "overlay" : "top",
-        "--output-name", screenName, "--margin-left", String(rect.x), "--margin-top", String(rect.y),
-        "--columns", rect.w + "px", "--lines", rect.h + "px", "--class", "sylwidget-" + item.id,
+        "--output-name", screenName, "--margin-left", String(r.x), "--margin-top", String(r.y),
+        "--columns", r.w + "px", "--lines", r.h + "px", "--class", "sylwidget-" + item.id,
         "--focus-policy", o.typing ? "on-demand" : "not-allowed", "--listen-on", "unix:" + socket,
-        "-o", "allow_remote_control=socket-only", "-o", "background_opacity=" + o.opacity,
-        "-o", "font_size=" + o.fontSize, "-o", "window_padding_width=" + o.padding]
+        "-o", "allow_remote_control=socket-only", "-o", "background_opacity=" + o.opacity, "-o", "font_size=" + o.fontSize,
+        "-o", "window_padding_width=0", "-o", "window_margin_width=0", "-o", "single_window_margin_width=0", "-o", "window_border_width=0"]
     const command = String(o.command || "").trim()
     return command === "" ? args : args.concat(splitCommand(command))
 }
@@ -570,9 +576,10 @@ export function splitCommand(text) {
     return out
 }
 
-export function moveArgs(rect, socket) {
+export function moveArgs(rect, socket, padding) {
+    const r = panelRect(rect, padding)
     return ["@", "--to", "unix:" + socket, "resize-os-window", "--action=os-panel", "--incremental",
-        "margin-left=" + rect.x, "margin-top=" + rect.y, "columns=" + rect.w + "px", "lines=" + rect.h + "px"]
+        "margin-left=" + r.x, "margin-top=" + r.y, "columns=" + r.w + "px", "lines=" + r.h + "px"]
 }
 
 export function shouldRestart(exits, now) {

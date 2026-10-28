@@ -7,6 +7,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 ### Fixed
 
 - SylCenter's bento layout puts small tiles three to a row so labels like Performance fit, and stretches a short last row instead of leaving gaps
+- The terminal widget's kitty panel fits its widget exactly; the widget's padding is kept and margins, borders and padding from your kitty.conf no longer make it spill over
 
 ## [1.5.1] - 2026-10-28
 

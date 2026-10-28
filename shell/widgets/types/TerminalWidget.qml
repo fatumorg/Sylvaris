@@ -32,7 +32,7 @@ Item {
         if (root.rect === null || !kitty.running || JSON.stringify(root.rect) === root.launched)
             return;
         root.launched = JSON.stringify(root.rect);
-        mover.command = ["kitty"].concat(Wd.moveArgs(root.rect, root.socket));
+        mover.command = ["kitty"].concat(Wd.moveArgs(root.rect, root.socket, root.item.options.padding));
         mover.running = true;
     }
 

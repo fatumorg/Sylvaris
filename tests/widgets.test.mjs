@@ -192,9 +192,21 @@ test("kitty gets the command as argv, never through a shell", () => {
     assert.equal(a[a.indexOf("--layer") + 1], "bottom")
     assert.equal(a[a.indexOf("--focus-policy") + 1], "not-allowed")
     const shell = kittyArgs(Object.assign({}, item, { options: TYPES.terminal.defaults }), rect, "DP-1", "/run/s.sock")
-    assert.equal(shell[shell.length - 1].startsWith("window_padding_width="), true)
+    assert.equal(shell[shell.length - 1], "window_border_width=0")
     assert.deepEqual(splitCommand("btop --utf-force 'a b' \"\""), ["btop", "--utf-force", "a b", ""])
-    assert.ok(moveArgs(rect, "/run/s.sock").includes("--action=os-panel"))
+    assert.ok(moveArgs(rect, "/run/s.sock", 10).includes("--action=os-panel"))
+})
+
+test("the kitty panel fills the widget minus its padding, whatever kitty.conf adds", () => {
+    const item = { id: "k3f9", layer: "desktop", options: Object.assign({}, TYPES.terminal.defaults, { padding: 10 }) }
+    const rect = { x: 10, y: 20, w: 400, h: 200 }
+    const a = kittyArgs(item, rect, "DP-1", "/run/s.sock")
+    const at = flag => a[a.indexOf(flag) + 1]
+    assert.deepEqual([at("--margin-left"), at("--margin-top"), at("--columns"), at("--lines")], ["20", "30", "380px", "180px"])
+    for (const o of ["window_padding_width=0", "window_margin_width=0", "single_window_margin_width=0", "window_border_width=0"])
+        assert.ok(a.includes(o), o)
+    assert.deepEqual(moveArgs(rect, "/run/s.sock", 10).slice(-4), ["margin-left=20", "margin-top=30", "columns=380px", "lines=180px"])
+    assert.deepEqual(moveArgs(rect, "/run/s.sock", 0).slice(-2), ["columns=400px", "lines=200px"])
 })
 
 test("a terminal that keeps dying stops after three quick exits", () => {
