@@ -512,11 +512,25 @@ Scope {
         id: clockModule
 
         BarButton {
+            id: clockButton
             property var screenRef: null
             property var win: null
-            label: root.vertical ? "" : Qt.formatDate(root.now, "ddd d MMM") + "   " + Qt.formatTime(root.now, "HH:mm")
+            label: root.vertical ? "" : Qt.formatDate(root.now, "ddd d MMM")
             implicitHeight: root.vertical ? stack.implicitHeight + 16 : Tokens.barItemHeight
             width: root.vertical ? Tokens.barItemHeight : Math.max(implicitWidth, implicitHeight)
+
+            Digits {
+                visible: !root.vertical
+                anchors.verticalCenter: parent.verticalCenter
+                text: Qt.formatTime(root.now, "HH:mm")
+                color: clockButton.lit ? Theme.onAccent : Theme.text
+                font.family: Tokens.fontUi
+                font.pixelSize: Tokens.barText
+                font.weight: Font.Medium
+                font.features: {
+                    "tnum": 1
+                }
+            }
 
             Column {
                 id: stack
@@ -524,8 +538,7 @@ Scope {
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 3
 
-                Text {
-                    textFormat: Text.PlainText
+                Digits {
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: Qt.formatTime(root.now, "HH")
                     color: Theme.text
@@ -545,8 +558,7 @@ Scope {
                     color: Theme.accent
                 }
 
-                Text {
-                    textFormat: Text.PlainText
+                Digits {
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: Qt.formatTime(root.now, "mm")
                     color: Theme.textSoft

@@ -30,13 +30,22 @@ Item {
             offBorder: Theme.cardLine
         }
 
-        scale: bodyArea.pressed ? 0.97 : 1
+        scale: bodyArea.pressed ? 0.96 : 1
+        transform: Translate {
+            y: hover.hovered && !bodyArea.pressed && !Tokens.lite ? -1 : 0
+
+            Behavior on y {
+                NumberAnimation {
+                    duration: Tokens.stateDuration
+                }
+            }
+        }
 
         Behavior on scale {
             NumberAnimation {
-                duration: Tokens.ms(120)
+                duration: Tokens.ms(bodyArea.pressed ? 120 : 260)
                 easing.type: Easing.BezierSpline
-                easing.bezierCurve: Tokens.enterCurve
+                easing.bezierCurve: bodyArea.pressed ? Tokens.enterCurve : Tokens.springCurve
             }
         }
 

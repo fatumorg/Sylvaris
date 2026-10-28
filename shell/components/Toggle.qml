@@ -11,6 +11,7 @@ Item {
 
     implicitWidth: 48
     implicitHeight: 28
+    clip: ripple.visible
 
     Rectangle {
         anchors.fill: parent
@@ -24,6 +25,30 @@ Item {
             ColorAnimation {
                 duration: Tokens.stateDuration
             }
+        }
+    }
+
+    Rectangle {
+        id: ripple
+        property real at: 0
+        x: ripple.at - width / 2
+        anchors.verticalCenter: parent.verticalCenter
+        width: root.width * 1.6 * ripple.grow
+        height: width
+        radius: width / 2
+        antialiasing: true
+        property real grow: 0
+        color: Qt.alpha(root.checked ? Theme.onAccent : Theme.accent, 0.35)
+        opacity: 1 - ripple.grow
+        visible: ripple.grow > 0 && ripple.grow < 1
+
+        NumberAnimation on grow {
+            id: spread
+            running: false
+            from: 0
+            to: 1
+            duration: Tokens.ms(420)
+            easing.type: Easing.OutCubic
         }
     }
 
@@ -64,6 +89,12 @@ Item {
         anchors.fill: parent
         anchors.margins: -6
         cursorShape: Qt.PointingHandCursor
-        onClicked: root.toggled(!root.checked)
+        onClicked: mouse => {
+            if (!Tokens.lite && Tokens.motion >= 0.05) {
+                ripple.at = Math.max(0, Math.min(root.width, mouse.x - 6));
+                spread.restart();
+            }
+            root.toggled(!root.checked);
+        }
     }
 }

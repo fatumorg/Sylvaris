@@ -14,12 +14,21 @@ Rectangle {
     implicitWidth: root.label === "" ? Tokens.rowHeight : row.implicitWidth + 32
     radius: Tokens.radiusRow
     scale: area.pressed ? 0.96 : 1
+    transform: Translate {
+        y: hover.hovered && !area.pressed && !Tokens.lite ? -1 : 0
+
+        Behavior on y {
+            NumberAnimation {
+                duration: Tokens.stateDuration
+            }
+        }
+    }
 
     Behavior on scale {
         NumberAnimation {
-            duration: Tokens.ms(120)
+            duration: Tokens.ms(area.pressed ? 120 : 260)
             easing.type: Easing.BezierSpline
-            easing.bezierCurve: Tokens.enterCurve
+            easing.bezierCurve: area.pressed ? Tokens.enterCurve : Tokens.springCurve
         }
     }
     color: "transparent"

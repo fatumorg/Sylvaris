@@ -239,8 +239,7 @@ Item {
             Column {
                 id: clockColumn
 
-                Text {
-                    textFormat: Text.PlainText
+                Digits {
                     text: Qt.formatTime(root.now, "HH:mm")
                     color: Theme.text
                     font.family: Tokens.fontMono

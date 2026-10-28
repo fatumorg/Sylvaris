@@ -49,6 +49,31 @@ Rectangle {
         }
     }
 
+    Rectangle {
+        x: Math.max(4, Math.min(root.width - 8, root.width * Math.max(0, Math.min(1, root.value)) - 6))
+        anchors.verticalCenter: parent.verticalCenter
+        width: 4
+        height: root.height * (drag.pressed ? 0.62 : 0.3)
+        radius: width / 2
+        color: Theme.accentHi
+        opacity: drag.pressed && !Tokens.lite ? 0.9 : 0
+        visible: opacity > 0
+
+        Behavior on height {
+            NumberAnimation {
+                duration: Tokens.ms(220)
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Tokens.springCurve
+            }
+        }
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: Tokens.stateDuration
+            }
+        }
+    }
+
     MouseArea {
         id: drag
         anchors.fill: parent
