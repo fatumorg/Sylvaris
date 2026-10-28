@@ -222,13 +222,20 @@ The Wayland protocols it speaks ship inside `stack/protocols/`, so `wayland-prot
 | `curl` | clock, settings |
 | NetworkManager (`nmcli`) | center |
 | `wlr-randr` | center |
+| `brightnessctl` | center, for built-in screens |
+| `ddcutil` | center, for external monitors over DDC/CI |
+| `wayvnc`, `openssl`, `ip` | center, for a tablet as a second screen on Hyprland |
 | `wl-clipboard` | center, clip, capture |
 | `grim`, `slurp`, `wf-recorder`, `ffmpeg` | capture |
+| `udisksctl` (udisks2) | files, to mount drives |
+| `bsdtar` (libarchive) | archive |
+| `wtype` | island, to send replies |
+| `kitty`, `cava` | widgets, for the terminal and visualizer |
 | `pgrep` (procps) | sync |
 | `gdbus` (glib) | lock, only for "lock when the system asks" |
 | `git` | plugins, only to install from Git |
 
-`python3`, `notify-send` and `pw-play` serve Diver, which the bar, center, clock and settings show too; `python3` also talks to AirPods. Wi-Fi in the bar and center reads NetworkManager over D-Bus, so keep the daemon running. `ffmpeg` only tidies finished recordings so they upload everywhere.
+`python3`, `notify-send` and `pw-play` serve Diver, which the bar, center, clock and settings show too; `python3` also talks to AirPods. Wi-Fi in the bar and center reads NetworkManager over D-Bus, so keep the daemon running. `ffmpeg` only tidies finished recordings so they upload everywhere. `ddcutil` needs the `i2c-dev` kernel module and your user in the `i2c` group.
 
 ## SylGreet, the login screen
 

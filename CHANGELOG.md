@@ -24,6 +24,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 ### Fixed
 
 - Photo widgets tinted or turned mono stay visible when Sylvaris draws without a GPU
+- The install guide lists the tools for brightness, tablets, drives, archives, replies and the terminal and visualizer widgets.
 
 ## [1.4.0] - 2026-10-28
 
