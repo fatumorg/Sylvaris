@@ -15,6 +15,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 - The AUR git package depends on Qt Multimedia and Image Formats, and lists brightnessctl, ddcutil, wayvnc, udisks2, libarchive, wtype, kitty, cava and syntax-highlighting as optional
 - A widget added from the gallery or with `sylvaris widgets add` no longer lands on top of widgets saved without a screen, and Done moves those apart too
+- The visualizer widget draws with its own bar count, frame rate and smoothing, and picks up changes to them without a restart; before, any bar count but 32 left it flat
 
 ## [1.5.0] - 2026-10-28
 

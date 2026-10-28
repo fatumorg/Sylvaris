@@ -15,4 +15,6 @@ shot widgets-more-note
 syl plugins disable fatest
 sleep 1
 check sylvaris widgets list | grep -q "^w109	fatest.*inactive"
+write sylvaris/settings.json {"version":1,"widgets":{"items":[{"id":"w110","type":"visualizer","anchor":"center","col":0,"row":0,"w":6,"h":2,"options":{"bars":48}}]}}
+wait grep -q "^bars = 48$" "$XDG_RUNTIME_DIR/sylvaris/cava-w110.conf"
 killshell

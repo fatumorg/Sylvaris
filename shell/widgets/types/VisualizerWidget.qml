@@ -12,6 +12,9 @@ Item {
     readonly property int count: root.o.bars || 32
     readonly property bool live: root.visible && !(root.frame !== null && root.frame.paused) && !Tokens.paused
     readonly property string conf: (Stack.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris/cava-" + (root.frame !== null && root.frame.item !== null ? root.frame.item.id : "x") + ".conf"
+    readonly property bool ready: root.frame !== null && root.frame.item !== null
+    readonly property string setup: root.ready ? cava.command.join("\n") : ""
+    property bool restarting: false
     property var bars: []
     property string error: ""
     readonly property color tone: root.frame !== null ? root.frame.accent : Theme.accent
@@ -25,10 +28,14 @@ Item {
     }
 
     onCountChanged: root.bars = []
+    onSetupChanged: {
+        if (cava.running)
+            root.restarting = true;
+    }
 
     Process {
         id: cava
-        running: root.live && root.error === ""
+        running: root.ready && root.live && root.error === "" && !root.restarting
         command: ["sh", "-c", "mkdir -p \"$(dirname \"$2\")\" && printf '%s' \"$1\" > \"$2\" && exec cava -p \"$2\"", "sh", Wd.cavaConfig({
                 bars: root.count,
                 fps: root.o.fps || 60,
@@ -45,7 +52,9 @@ Item {
             id: cavaErr
         }
         onExited: code => {
-            if (code !== 0 && root.live)
+            if (root.restarting)
+                root.restarting = false;
+            else if (code !== 0 && root.live)
                 root.error = cavaErr.text.indexOf("not found") >= 0 ? "Install cava to see the visualizer" : "cava stopped (" + code + ")";
         }
     }
