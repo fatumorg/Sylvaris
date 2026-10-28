@@ -1,0 +1,15 @@
+body:
+  - type: textarea
+    id: preview
+    attributes:
+      label: Preview
+    validations:
+      required: true
+  - type: textarea
+    id: json
+    attributes:
+      label: Look or theme JSON
+      description: Paste the file from ~/.config/sylvaris/looks or themes.
+      render: json
+    validations:
+      required: true

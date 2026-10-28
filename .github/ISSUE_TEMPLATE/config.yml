@@ -1,0 +1,7 @@
+contact_links:
+  - name: Questions and help
+    url: https://github.com/fatumorg/Sylvaris/discussions/categories/q-a
+    about: Ask here; issues are for bugs.
+  - name: Show your desktop
+    url: https://github.com/fatumorg/Sylvaris/discussions/categories/show-your-desktop
+    about: Share screenshots, Looks and themes.

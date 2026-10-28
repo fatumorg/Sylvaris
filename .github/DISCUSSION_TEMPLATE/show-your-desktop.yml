@@ -1,0 +1,19 @@
+title: "[Desktop] "
+labels: ["showcase"]
+body:
+  - type: textarea
+    id: shot
+    attributes:
+      label: Screenshot or video
+      description: Drag images or a short clip here.
+    validations:
+      required: true
+  - type: input
+    id: setup
+    attributes:
+      label: Compositor, Look and theme
+      placeholder: Hyprland · Lumen · Midnight
+  - type: textarea
+    id: details
+    attributes:
+      label: Widgets, fonts, wallpaper credit, dotfiles link

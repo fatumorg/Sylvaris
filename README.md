@@ -162,6 +162,10 @@ Resident memory of the Sylvaris process, including SylStack, Qt and, with a GPU,
 
 The [documentation](docs/README.md) covers every part, command and setting, theme bundles, plugins, Nix and development, one page each. [ARCHITECTURE.md](ARCHITECTURE.md) explains how the shell is built, [CONTRIBUTING.md](CONTRIBUTING.md) how to work on it, and [CHANGELOG.md](CHANGELOG.md) what changed.
 
+## 💬 Community
+
+Sylvaris has a forum on [GitHub Discussions](https://github.com/fatumorg/Sylvaris/discussions): [ask a question](https://github.com/fatumorg/Sylvaris/discussions/categories/q-a), [show your desktop](https://github.com/fatumorg/Sylvaris/discussions/categories/show-your-desktop) and its Looks, and follow [announcements](https://github.com/fatumorg/Sylvaris/discussions/categories/announcements). Issues are for bugs.
+
 ## 💛 Credits
 
 The constellation idea is inspired by [ilyamiro/serpantinum](https://github.com/ilyamiro/serpantinum). Weather by [Open-Meteo](https://open-meteo.com). AirPods support follows the protocol documented by LibrePods. Made with AI assistance, all changes tested, reviewed and used daily by a real group of people.

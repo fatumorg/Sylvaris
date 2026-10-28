@@ -1,0 +1,21 @@
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Sylvaris version
+      description: Output of `sylvaris doctor | head -1`
+    validations:
+      required: true
+  - type: dropdown
+    id: compositor
+    attributes:
+      label: Compositor
+      options: ["Hyprland", "niri", "sway"]
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+    validations:
+      required: true
