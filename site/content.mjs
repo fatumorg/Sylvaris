@@ -28,12 +28,12 @@ export const NAV = [
 ]
 
 export const PARTS = [
-    { id: "bar", name: "SylBar", group: "every day", page: "parts/bar.md", text: "The bar, on any edge of any screen, as floating islands or one slab. Everything in it opens right where you clicked." },
-    { id: "center", name: "SylCenter", group: "every day", page: "parts/center.md", text: "Wi-Fi and Bluetooth as orbits you can pick devices from, night light, the hotspot, volume, displays and your theme, in one panel." },
+    { id: "bar", name: "SylBar", group: "every day", page: "parts/bar.md", text: "The bar, on any edge of any screen, as floating islands, one slab, a single floating pill or a thin line. Everything in it opens right where you clicked." },
+    { id: "center", name: "SylCenter", group: "every day", page: "parts/center.md", text: "Wi-Fi and Bluetooth as orbits you can pick devices from, night light, the hotspot, volume, displays and your theme, in one panel laid out as an even grid or a bento." },
     { id: "clock", name: "SylClock", group: "every day", page: "parts/clock.md", text: "Today's sky with the sun and moon where they really are, the weather for the next hours and days, and a calendar." },
-    { id: "notify", name: "SylNotify", group: "every day", page: "parts/notify.md", text: "Your notification daemon: quiet toasts, a history grouped by app, and Do Not Disturb that still lets urgent things through." },
+    { id: "notify", name: "SylNotify", group: "every day", page: "parts/notify.md", text: "Your notification daemon: quiet toasts or a fanned stack of cards, a history grouped by app, and Do Not Disturb that still lets urgent things through." },
     { id: "island", name: "SylIsland", group: "every day", page: "parts/island.md", text: "A pill that shows what is going on and turns into controls: music, recordings, calls, messages, timers, all side by side." },
-    { id: "deck", name: "SylDeck", group: "every day", page: "parts/deck.md", text: "A dock that can hide while windows are open, with pinned apps, running apps and a glow under the pointer." },
+    { id: "deck", name: "SylDeck", group: "every day", page: "parts/deck.md", text: "A dock that can hide while windows are open, with pinned apps, running apps that glow in your accent and a bloom under the pointer." },
     { id: "pad", name: "SylPad", group: "every day", page: "parts/pad.md", text: "Your apps across the screen over a blurred wallpaper, or a compact list. Start typing to search." },
     { id: "switcher", name: "SylSwitch", group: "tools", page: "parts/switcher.md", text: "Alt+Tab that works the same on Hyprland, niri and sway, with live previews where the compositor allows." },
     { id: "viewer", name: "SylViewer", group: "tools", page: "parts/viewer.md", text: "Images and videos over the desktop. Step through the folder, play, copy, trash or make one the wallpaper." },
@@ -45,12 +45,12 @@ export const PARTS = [
     { id: "media", name: "SylMedia", group: "tools", page: "parts/media.md", text: "The player for any MPRIS app, a 10-band equalizer for everything you hear, and the battery of every device." },
     { id: "power", name: "SylPower", group: "tools", page: "parts/power.md", text: "Lock, suspend, restart or shut down from a small constellation, with a countdown before anything ends your session." },
     { id: "paper", name: "SylPaper", group: "tools", page: "parts/paper.md", text: "Wallpapers that change with your theme, per screen if you like, with blur, dim and tint." },
-    { id: "widgets", name: "SylWidget", group: "tools", page: "parts/widgets.md", text: "Clocks, weather, a calendar, photos, a live terminal and an audio visualizer right on the desktop, dragged and resized in place." },
+    { id: "widgets", name: "SylWidget", group: "tools", page: "parts/widgets.md", text: "Clocks, weather, photos, sticky notes, now playing, system graphs, stickers, a live terminal and more right on the desktop, dragged and resized in place." },
     { id: "settings", name: "SylSettings", group: "system", page: "parts/settings.md", text: "Every setting in one place: seven hubs around a core, search that finds any option as you type, undo, and a picker for one screen at a time." },
     { id: "theme", name: "SylTheme", group: "system", page: "parts/theme.md", text: "Themes on a turning ring. The whole desktop previews a theme before you keep it." },
     { id: "sync", name: "SylSync", group: "system", page: "parts/sync.md", text: "Your theme's colours in GTK, Qt, kitty, foot, VS Code, Zed, Neovim and Firefox, every time you switch." },
     { id: "access", name: "SylAccessibility", group: "system", page: "parts/access.md", text: "Zoom, colour filters for colour-weak vision, bigger text and pointer, less motion and less transparency." },
-    { id: "lock", name: "SylLock", group: "system", page: "parts/lock.md", text: "A lock screen in its own process, so a crash elsewhere can never leave your session open. Experimental." },
+    { id: "lock", name: "SylLock", group: "system", page: "parts/lock.md", text: "A lock screen in its own process, so a crash elsewhere can never leave your session open, with the clock faces of the widgets. Experimental." },
     { id: "greet", name: "SylGreet", group: "system", page: "parts/greet.md", text: "A login screen for greetd that always looks like your desktop. Experimental." },
     { id: "plugins", name: "SylPlugins", group: "system", page: "plugins/README.md", text: "Your own widgets, panels and helpers, plus Diver, AirPods, FaTest, Keep Awake, SylRGB and SylTemp built in." }
 ]

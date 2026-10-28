@@ -38,7 +38,7 @@ nix run github:fatumorg/Sylvaris
 - **Three compositors.** The same shell runs on Hyprland, niri and sway.
 - **Scriptable and declarative.** Every switch is a `sylvaris` command, and every setting is a typed Home Manager option.
 - **One look everywhere.** Themes preview live, and SylSync makes GTK, Qt, terminals and editors follow them.
-- **Looks, not just colours.** Pick Lumen, Classic, Frost, Ink, Neon or Paper to change glass, corners, spacing and type at once, or make a theme from your wallpaper.
+- **Looks, not just colours.** Pick Lumen, Classic, Frost, Ink, Neon or Paper to change glass, corners, spacing and type at once, let Sylvaris shuffle them each day, or make a theme from your wallpaper.
 
 ## ✨ What's inside
 
@@ -46,14 +46,14 @@ nix run github:fatumorg/Sylvaris
   <tr>
     <td width="33%" valign="top">
       <h3>🧭 Everyday</h3>
-      <b>SylBar</b> glass bar on any edge<br>
-      <b>SylCenter</b> control center with orbits<br>
+      <b>SylBar</b> glass bar on any edge, or one floating pill<br>
+      <b>SylCenter</b> control center with orbits and bento tiles<br>
       <b>SylClock</b> live sky, weather, calendar<br>
-      <b>SylNotify</b> notifications that stay out of the way<br>
+      <b>SylNotify</b> notifications as quiet toasts or a fanned stack<br>
       <b>SylIsland</b> live activities you can control<br>
       <b>SylDeck</b> dock that hides when windows open<br>
       <b>SylPad</b> launcher, grid or list<br>
-      <b>SylWidget</b> clocks, weather and more on the desktop
+      <b>SylWidget</b> clocks, notes, now playing and more on the desktop
     </td>
     <td width="33%" valign="top">
       <h3>🛠️ Tools</h3>
