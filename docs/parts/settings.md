@@ -12,6 +12,10 @@ Start typing anywhere and the search pill takes it: every setting is listed by n
 
 By default (`settings.detail: "simple"`) the options most people never touch wait behind a **more options** row at the bottom of each section. **All options** in the tab strip, or `sylvaris set settings.detail full`, shows everything everywhere.
 
+## Style studio
+
+Look › Style starts with a live sample: a panel, a few chips and a title drawn with your Look. Point at another Look for half a second and the sample shows that one instead, with its name, material, corners and spacing; nothing changes until you click it.
+
 ## Changes, reset and undo
 
 A setting you changed carries a small accent dot next to its name; click it to reset that setting to its default (or to the Look's value). Every change made here shows an **Undo** toast, and Ctrl+Z undoes the last twenty changes. The same from a script: `sylvaris settings reset <key>` and `sylvaris settings undo`.

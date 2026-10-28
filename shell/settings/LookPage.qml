@@ -13,6 +13,11 @@ Column {
     property string fontQuery: ""
     property string saveName: ""
     property string saved: ""
+    property string hovered: ""
+    property string peek: ""
+    readonly property var studio: page.peek !== "" ? L.resolveLook({
+        preset: page.peek
+    }, {}, Look.userLooks) : Look.values
     readonly property real roundness: page.cfg.radius !== undefined ? page.cfg.radius : Look.corners === "sharp" ? Look.radius * 4 : Look.radius
     readonly property var fontMatches: {
         const q = page.fontQuery.trim().toLowerCase();
@@ -28,9 +33,156 @@ Column {
 
     spacing: 24
 
+    Timer {
+        id: peekTimer
+        interval: Tokens.previewDelay
+        onTriggered: page.peek = page.hovered
+    }
+
     Card {
         title: "Style"
-        note: "A Look is a whole style at once: glass, corners, spacing and type. Pick one, then change any part of it below."
+        note: "A Look is a whole style at once: glass, corners, spacing and type. Point at one to try it here, click to keep it, then change any part of it below."
+
+        Item {
+            id: stage
+            width: parent.width
+            height: 200
+
+            Rectangle {
+                anchors.fill: parent
+                anchors.margins: 6
+                radius: Tokens.r(16)
+                color: Theme.base
+                border.width: 1
+                border.color: Theme.cardLine
+                clip: true
+
+                Rectangle {
+                    width: parent.width * 0.6
+                    height: width
+                    x: -width * 0.2
+                    y: -height * 0.55
+                    radius: width / 2
+                    color: Qt.alpha(Theme.accent, 0.35)
+                }
+
+                Rectangle {
+                    width: parent.width * 0.4
+                    height: width
+                    x: parent.width - width * 0.7
+                    y: parent.height - height * 0.35
+                    radius: width / 2
+                    color: Qt.alpha(Theme.accent, 0.18)
+                }
+
+                Glass {
+                    id: sample
+                    x: 28
+                    y: 22
+                    width: Math.min(420, parent.width - 220)
+                    height: parent.height - 44
+                    radius: Tokens.r(18) * page.studio.radius
+                    preview: page.studio.glass
+
+                    Text {
+                        textFormat: Text.PlainText
+                        x: 20
+                        y: 16
+                        text: "Good evening"
+                        color: Theme.text
+                        font.family: L.pickFont(page.studio.fonts.display, Look.families, Tokens.fontDisplay)
+                        font.pixelSize: Tokens.titleSize
+                        font.weight: page.studio.weight === "light" ? Font.Normal : page.studio.weight === "medium" ? Font.Bold : Font.DemiBold
+                    }
+
+                    Text {
+                        textFormat: Text.PlainText
+                        x: 20
+                        y: 50
+                        text: "Wi-Fi, Bluetooth and sound"
+                        color: Theme.textDim
+                        font.family: L.pickFont(page.studio.fonts.ui, Look.families, Tokens.fontUi)
+                        font.pixelSize: Tokens.smallSize
+                    }
+
+                    Row {
+                        x: 20
+                        y: parent.height - height - 16
+                        spacing: Math.round(8 * page.studio.density)
+
+                        Repeater {
+                            model: ["Wi-Fi", "Night light", "12:40"]
+
+                            delegate: Glass {
+                                id: chip
+
+                                required property string modelData
+                                required property int index
+
+                                inner: true
+                                lit: chip.index === 0
+                                preview: page.studio.glass
+                                radius: Tokens.r(12) * page.studio.radius
+                                width: chipText.implicitWidth + 24
+                                height: 32
+
+                                Text {
+                                    id: chipText
+                                    textFormat: Text.PlainText
+                                    anchors.centerIn: parent
+                                    text: chip.modelData
+                                    color: chip.index === 0 ? Theme.onAccent : Theme.text
+                                    font.family: chip.index === 2 ? L.pickFont(page.studio.fonts.mono, Look.families, Tokens.fontMono) : L.pickFont(page.studio.fonts.ui, Look.families, Tokens.fontUi)
+                                    font.pixelSize: Tokens.smallSize
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Column {
+                    anchors.right: parent.right
+                    anchors.rightMargin: 24
+                    anchors.verticalCenter: parent.verticalCenter
+                    width: 160
+                    spacing: 4
+
+                    Text {
+                        textFormat: Text.PlainText
+                        width: parent.width
+                        horizontalAlignment: Text.AlignRight
+                        text: page.peek !== "" ? "Trying" : "Your Look"
+                        color: Theme.textDim
+                        font.family: Tokens.fontUi
+                        font.pixelSize: Tokens.tinySize
+                        font.capitalization: Font.AllUppercase
+                        font.letterSpacing: 0.6
+                    }
+
+                    Text {
+                        textFormat: Text.PlainText
+                        width: parent.width
+                        horizontalAlignment: Text.AlignRight
+                        elide: Text.ElideLeft
+                        text: page.studio.name
+                        color: Theme.text
+                        font.family: L.pickFont(page.studio.fonts.display, Look.families, Tokens.fontDisplay)
+                        font.pixelSize: Tokens.bodySize
+                        font.weight: Font.DemiBold
+                    }
+
+                    Text {
+                        textFormat: Text.PlainText
+                        width: parent.width
+                        horizontalAlignment: Text.AlignRight
+                        text: page.studio.material + " · " + page.studio.corners + " · " + page.studio.densityName
+                        color: Theme.textDim
+                        font.family: Tokens.fontUi
+                        font.pixelSize: Tokens.tinySize
+                    }
+                }
+            }
+        }
 
         Flow {
             width: parent.width
@@ -103,8 +255,23 @@ Column {
                     MouseArea {
                         id: cardArea
                         anchors.fill: parent
+                        hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: Look.set(card.modelData)
+                        onEntered: {
+                            page.hovered = card.modelData;
+                            peekTimer.restart();
+                        }
+                        onExited: {
+                            if (page.hovered !== card.modelData)
+                                return;
+                            page.hovered = "";
+                            page.peek = "";
+                            peekTimer.stop();
+                        }
+                        onClicked: {
+                            page.peek = "";
+                            Look.set(card.modelData);
+                        }
                     }
                 }
             }

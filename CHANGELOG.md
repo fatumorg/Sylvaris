@@ -10,6 +10,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - Simple and full detail (`settings.detail`): options most people never touch wait behind a more options row until you ask for them
 - Changed settings carry a dot that resets them, every change can be undone from a toast or with Ctrl+Z, and `sylvaris settings reset`, `undo`, `search` and `state` do the same from a script
 - Wallpaper fit, blur, dim, tint and parallax in SylSettings › Desktop › Wallpaper
+- Look › Style shows a live sample of your Look and tries any other Look on it while you point at it
 
 ## [1.2.0] - 2026-10-28
 
