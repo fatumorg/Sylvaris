@@ -80,3 +80,33 @@ test("the built site loads nothing from other servers and every page links to th
         rmSync(out, { recursive: true, force: true })
     }
 })
+
+test("every page links the forum, shares a local preview image and embeds nothing", async () => {
+    const { execFileSync } = await import("node:child_process")
+    const { mkdtempSync, readdirSync, readFileSync, rmSync, existsSync } = await import("node:fs")
+    const { tmpdir } = await import("node:os")
+    const { join } = await import("node:path")
+    const { FORUM } = await import("../site/content.mjs")
+    const out = mkdtempSync(join(tmpdir(), "sylsite-"))
+    try {
+        execFileSync("node", [new URL("../site/build.mjs", import.meta.url).pathname], { env: Object.assign({}, process.env, { SITE_OUT: out, SITE_NO_MEDIA: "1" }), stdio: "ignore" })
+        const pages = readdirSync(out, { recursive: true }).map(String).filter(f => f.endsWith(".html"))
+        for (const f of pages) {
+            const text = readFileSync(join(out, f), "utf8")
+            assert.ok(text.includes("href=\"" + FORUM + "\""), f + " does not link the forum")
+            assert.equal(/<iframe/i.test(text), false, f + " embeds a frame")
+            const og = /<meta property="og:image" content="([^"]+)"/.exec(text)
+            assert.ok(og !== null && og[1].startsWith("/"), f + " has no local og:image")
+            assert.ok(existsSync(join(out, og[1])), og[1] + " is missing")
+            assert.match(text, /<meta name="twitter:card" content="summary_large_image">/, f)
+        }
+        assert.match(readFileSync(join(out, "index.html"), "utf8"), /class="forum-notice"/)
+        const press = readFileSync(join(out, "docs/press.html"), "utf8")
+        const shots = [...press.matchAll(/<img src="([^"]+)"/g)].map(m => m[1])
+        assert.ok(shots.length >= 6, "the press kit shows its screenshots")
+        for (const s of shots)
+            assert.ok(existsSync(join(out, "docs", s)), s + " is missing from the built site")
+    } finally {
+        rmSync(out, { recursive: true, force: true })
+    }
+})

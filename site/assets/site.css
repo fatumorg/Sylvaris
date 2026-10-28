@@ -277,6 +277,10 @@ section { scroll-margin-top: 90px; }
 .sect-head p { margin: 0; color: var(--text-soft); max-width: 52ch; }
 .sect-head.narrow { grid-template-columns: 1fr; gap: 10px; }
 
+.forum-notice { max-width: 1320px; margin: 0 auto; padding: 0 24px; }
+.forum-notice p { margin: 0; padding: 14px 20px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--tint); color: var(--text-soft); text-align: center; }
+.forum-notice b { color: var(--text); }
+.forum-notice a { color: var(--accent-hi); font-weight: 600; white-space: nowrap; }
 .parts { padding: 96px 0 72px; }
 .part-filter { max-width: 1320px; margin: 28px auto 0; padding: 0 24px; display: flex; gap: 8px; flex-wrap: wrap; }
 .part-filter button, .tab-list button {

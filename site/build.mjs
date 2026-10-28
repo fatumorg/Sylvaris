@@ -1,9 +1,9 @@
-import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, copyFileSync, rmSync, statSync } from "node:fs"
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync, copyFileSync, cpSync, rmSync, statSync } from "node:fs"
 import { dirname, join, relative, normalize, posix } from "node:path"
 import { fileURLToPath } from "node:url"
 import { execFileSync } from "node:child_process"
 import { render, escape } from "./markdown.mjs"
-import { PARTS, NAV, LEGAL, REPO } from "./content.mjs"
+import { PARTS, NAV, LEGAL, REPO, FORUM } from "./content.mjs"
 
 const here = dirname(fileURLToPath(import.meta.url))
 const root = join(here, "..")
@@ -48,6 +48,8 @@ function linker(fromDoc) {
         const tail = anchor ? "#" + anchor : ""
         if (target.startsWith("docs/") && target.endsWith(".md"))
             return posix.relative(posix.dirname(urlOf(fromDoc)), urlOf(target.slice(5))) + tail
+        if (target.startsWith("docs/assets/"))
+            return posix.relative(posix.dirname(urlOf(fromDoc)), target)
         return REPO + "/blob/main/" + target + tail
     }
 }
@@ -79,7 +81,7 @@ function header(base, current) {
     const link = (href, label, key) => "<a href=\"" + base + href + "\"" + (current === key ? " aria-current=\"page\"" : "") + ">" + label + "</a>"
     return "<header class=\"top\"><div class=\"top-in\">" +
         "<a class=\"brand\" href=\"" + base + "index.html\"><img src=\"" + base + "assets/logo.svg\" alt=\"\" width=\"30\" height=\"30\"><span>Sylvaris</span></a>" +
-        "<nav class=\"main-nav\" aria-label=\"Main\">" + link("docs/index.html", "Docs", "docs") + link("docs/parts/index.html", "Parts", "parts") + link("docs/plugins/index.html", "Plugins", "plugins") + link("docs/nix.html", "Nix", "nix") + "</nav>" +
+        "<nav class=\"main-nav\" aria-label=\"Main\">" + link("docs/index.html", "Docs", "docs") + link("docs/parts/index.html", "Parts", "parts") + link("docs/plugins/index.html", "Plugins", "plugins") + link("docs/nix.html", "Nix", "nix") + "<a href=\"" + FORUM + "\" rel=\"noopener\">Community</a></nav>" +
         "<div class=\"top-tools\"><button type=\"button\" class=\"search-open\" data-search-open aria-haspopup=\"dialog\">" + ICON.search + "<span>Search</span><kbd>Ctrl K</kbd></button>" +
         themeDots() +
         "<a class=\"gh\" href=\"" + REPO + "\" aria-label=\"Sylvaris on GitHub\">" + ICON.github + "</a></div>" +
@@ -91,7 +93,7 @@ function footer(base) {
     return "<footer class=\"foot\"><div class=\"foot-in\">" +
         "<div class=\"foot-brand\"><img src=\"" + base + "assets/logo.svg\" alt=\"\" width=\"44\" height=\"44\"><p>Sylvaris " + VERSION + ". Free software under the MIT licence.<br>This site sets no cookies, keeps nothing in your browser and loads nothing from other servers.</p></div>" +
         "<nav aria-label=\"Documentation\"><h2>Read</h2>" + l("docs/start.html", "Getting started") + l("docs/parts/index.html", "Parts") + l("docs/commands.html", "Commands") + l("docs/nix.html", "Nix and Home Manager") + l("docs/reference/settings.html", "Settings reference") + "</nav>" +
-        "<nav aria-label=\"Project\"><h2>Project</h2><a href=\"" + REPO + "\">Source on GitHub</a><a href=\"" + REPO + "/blob/main/CHANGELOG.md\">Changelog</a><a href=\"" + REPO + "/issues\">Report a problem</a><a href=\"" + REPO + "/blob/main/LICENSE\">MIT licence</a></nav>" +
+        "<nav aria-label=\"Project\"><h2>Project</h2><a href=\"" + REPO + "\">Source on GitHub</a><a href=\"" + REPO + "/blob/main/CHANGELOG.md\">Changelog</a><a href=\"" + REPO + "/issues\">Report a problem</a><a href=\"" + FORUM + "\">Community forum</a>" + l("docs/press.html", "Press kit") + "<a href=\"" + REPO + "/blob/main/LICENSE\">MIT licence</a></nav>" +
         "<nav aria-label=\"Legal\" lang=\"pl\"><h2>Informacje prawne</h2>" + LEGAL.filter(p => p.lang === "pl").map(p => l("legal/" + p.slug + ".html", p.title)).join("") + "<span class=\"foot-en\" lang=\"en\">In English: " + LEGAL.filter(p => p.lang === "en").map(p => l("legal/" + p.slug + ".html", p.short)).join(", ") + "</span></nav>" +
         "</div></footer>"
 }
@@ -108,6 +110,8 @@ function page({ base, title, description, body, current, bodyClass, lang }) {
         "<meta name=\"color-scheme\" content=\"dark light\">\n<meta name=\"theme-color\" content=\"#140f0c\">\n" +
         "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'self'; img-src 'self' data:; media-src 'self'; style-src 'self'; script-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'\">\n" +
         "<meta name=\"referrer\" content=\"strict-origin-when-cross-origin\">\n" +
+        "<meta property=\"og:title\" content=\"" + escape(title) + "\">\n<meta property=\"og:description\" content=\"" + escape(description || "") + "\">\n" +
+        "<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:image\" content=\"/docs/assets/social.png\">\n<meta name=\"twitter:card\" content=\"summary_large_image\">\n" +
         "<link rel=\"icon\" href=\"" + base + "assets/logo.svg\" type=\"image/svg+xml\">\n" +
         "<link rel=\"preload\" href=\"" + base + "assets/fonts/atkinson-400.woff2\" as=\"font\" type=\"font/woff2\" crossorigin>\n" +
         "<link rel=\"preload\" href=\"" + base + "assets/fonts/fraunces-600.woff2\" as=\"font\" type=\"font/woff2\" crossorigin>\n" +
@@ -188,7 +192,7 @@ function buildLanding() {
     const tpl = readFileSync(join(here, "landing.html"), "utf8")
     const parts = PARTS.map(p => "<li><button type=\"button\" class=\"node\" data-part=\"" + p.id + "\" data-group=\"" + p.group + "\" aria-controls=\"part-card\"><span class=\"node-dot\" aria-hidden=\"true\"></span>" + p.name + "</button></li>").join("")
     const data = JSON.stringify(PARTS.map(p => ({ id: p.id, name: p.name, group: p.group, text: p.text, url: urlOf(p.page) })))
-    const body = tpl.replace("{{PARTS}}", parts).replace("{{VERSION}}", VERSION).replace(/\{\{REPO\}\}/g, REPO)
+    const body = tpl.replace("{{PARTS}}", parts).replace("{{VERSION}}", VERSION).replace(/\{\{REPO\}\}/g, REPO).replace(/\{\{FORUM\}\}/g, FORUM)
     write(join(dist, "index.html"), page({ base: "", title: "Sylvaris · a glass desktop shell for Hyprland, niri and sway", description: "A desktop shell for Hyprland, niri and sway: bar, control center, notifications, launcher, island, lock screen and more, every part optional, all in one warm glass.", body: body, current: "", bodyClass: "home" }))
     write(join(dist, "assets/parts.json"), data)
 }
@@ -226,6 +230,7 @@ function copyAssets() {
     for (const f of readdirSync(join(here, "assets/fonts")))
         copyFileSync(join(here, "assets/fonts", f), join(out, "fonts", f))
     copyFileSync(join(docs, "assets/logo.svg"), join(out, "logo.svg"))
+    cpSync(join(docs, "assets"), join(dist, "docs/assets"), { recursive: true })
 }
 
 rmSync(join(dist, "docs"), { recursive: true, force: true })

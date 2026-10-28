@@ -1,4 +1,5 @@
 export const REPO = "https://github.com/fatumorg/Sylvaris"
+export const FORUM = REPO + "/discussions"
 
 export const NAV = [
     {
