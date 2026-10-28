@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Window
 import qs
 import qs.services
 import qs.components
@@ -117,7 +118,18 @@ Item {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
-        onClicked: mouse => root.clicked(mouse)
+        onClicked: mouse => {
+            const p = root.mapToItem(null, root.width / 2, root.height / 2);
+            Tokens.tap = {
+                screen: root.Screen.name,
+                x: p.x,
+                y: p.y,
+                w: root.Window.width,
+                h: root.Window.height,
+                at: Date.now()
+            };
+            root.clicked(mouse);
+        }
         onWheel: event => {
             const d = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x;
             if (d !== 0)

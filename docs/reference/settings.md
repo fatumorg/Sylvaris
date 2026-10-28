@@ -136,6 +136,9 @@ Explained in [look](../look.md#motion-and-performance).
 | `motion.reduced` | `false` |  |
 | `motion.reveal` | `"edges"` |  |
 | `motion.preset` | `"smooth"` |  |
+| `motion.open` | `"grow"` |  |
+| `motion.stagger` | `0.35` |  |
+| `motion.springiness` | `-1` |  |
 
 ## power
 

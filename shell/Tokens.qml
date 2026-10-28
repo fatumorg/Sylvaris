@@ -10,6 +10,10 @@ Singleton {
 
     property real motion: 1
     property string preset: "smooth"
+    property string openStyle: "grow"
+    property real staggerSpread: 0.35
+    property real springiness: -1
+    property var tap: null
     readonly property var curves: M.presetTokens(root.preset)
     property bool lite: false
     property bool paused: false
@@ -30,7 +34,7 @@ Singleton {
     readonly property var enterCurve: root.curves.enter
     readonly property var exitCurve: root.curves.exit
     readonly property var moveCurve: root.curves.move
-    readonly property var springCurve: root.curves.spring
+    readonly property var springCurve: root.springiness >= 0 ? M.springCurve(root.springiness) : root.curves.spring
     readonly property int centerCompactWidth: 460
     readonly property int centerExpandedWidth: 620
     readonly property int centerHeight: 660

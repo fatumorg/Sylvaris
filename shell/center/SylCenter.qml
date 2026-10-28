@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import SylStack
 import qs
 import qs.services
@@ -26,6 +27,12 @@ Scope {
     readonly property int room: root.screenInfo ? Math.max(1, Sc.roomHeight(root.screenInfo.height, root.local.parts.bar ? root.local.bar : null, Tokens.barHeight, Tokens.barMargin, Tokens.edgeMargin) - Math.round(root.fromInset)) : Tokens.centerHeight
     readonly property int panelHeight: Math.min(Tokens.centerHeight, root.room)
     readonly property real grow: M.grow(root.phase, root.from !== "")
+    property var tapAt: null
+    readonly property var frame: M.openFrame(Tokens.openStyle, root.phase, root.corner, {
+        origin: root.tapAt,
+        emerging: root.from !== "",
+        reduced: Tokens.motion < 0.05
+    })
     readonly property var local: Settings.at(root.screenInfo ? root.screenInfo.name : Compositor.focusedName())
     readonly property string corner: root.from !== "" ? root.from : B.placeCorner(root.local.center.corner, root.local.parts.bar ? root.local.bar.position : "top")
     readonly property var origin: M.origin(root.corner)
@@ -52,6 +59,11 @@ Scope {
         root.screenInfo = screen;
         root.applyView(initial);
         if (!root.shown) {
+            root.tapAt = screen ? M.tapOrigin(Tokens.tap, {
+                name: screen.name,
+                w: screen.width,
+                h: screen.height
+            }, M.placedRect(root.corner, screen.width, screen.height, root.panelWidth, root.panelHeight, Tokens.edgeMargin), Date.now()) : null;
             root.shown = true;
             exitAnim.stop();
             enterAnim.restart();
@@ -291,12 +303,12 @@ Scope {
 
             Region {
                 id: blur
-                readonly property var r: M.scaledRect(panel.x, panel.y, panel.width, panel.height, root.corner, root.grow, (1 - root.phase) * 10 * M.rise(root.corner))
+                readonly property var r: M.frameRect(panel.x, panel.y, panel.width, panel.height, root.frame)
                 x: Math.round(blur.r.x) + 1
                 y: Math.round(blur.r.y) + 1
                 width: Math.round(blur.r.w) - 2
                 height: Math.round(blur.r.h) - 2
-                radius: Tokens.radiusPanel * root.grow - 1
+                radius: Tokens.blur(Tokens.radiusPanel) * root.frame.sx - 1
             }
 
             onVisibleChanged: {
@@ -321,16 +333,37 @@ Scope {
                 height: Math.min(root.expanded ? Tokens.centerHeight : compact.implicitHeight, root.room)
                 x: (win.width - width) * root.origin.h
                 y: (win.height - height) * root.origin.v
-                opacity: Math.min(1, root.phase * 1.6)
-                scale: root.grow
-                transformOrigin: [[Item.TopLeft, Item.Top, Item.TopRight], [Item.Left, Item.Center, Item.Right], [Item.BottomLeft, Item.Bottom, Item.BottomRight]][root.origin.v * 2][root.origin.h * 2]
+                opacity: root.frame.opacity
                 focus: true
                 clip: true
                 Keys.onEscapePressed: root.back()
-
-                transform: Translate {
-                    y: (1 - root.phase) * 10 * M.rise(root.corner)
+                layer.enabled: root.frame.blur > 0.01 && panel.GraphicsInfo.api !== GraphicsInfo.Software && panel.GraphicsInfo.api !== GraphicsInfo.Unknown
+                layer.effect: MultiEffect {
+                    blurEnabled: true
+                    blur: root.frame.blur
+                    blurMax: 48
                 }
+
+                transform: [
+                    Translate {
+                        x: root.frame.dx
+                        y: root.frame.dy
+                    },
+                    Scale {
+                        origin.x: panel.width * root.frame.ox
+                        origin.y: panel.height * root.frame.oy
+                        xScale: root.frame.sx
+                        yScale: root.frame.sy
+                    },
+                    Rotation {
+                        origin.x: panel.width * root.frame.ox
+                        origin.y: panel.height * root.frame.oy
+                        axis.x: 1
+                        axis.y: 0
+                        axis.z: 0
+                        angle: root.frame.angle
+                    }
+                ]
 
                 Behavior on width {
                     enabled: root.settled

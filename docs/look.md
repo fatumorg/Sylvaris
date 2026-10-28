@@ -98,8 +98,11 @@ Every panel opens, moves and closes with one set of curves.
 |---|---|---|
 | `motion.reveal` | `edges` | how full-screen backgrounds (SylSettings, SylPad, SylPower) open: `edges`, `center` or `fade` |
 | `motion.preset` | `smooth` | the feel of every animation: `calm` (slower, gentle), `smooth`, `snappy` (quicker, tighter) or `playful` (springy overshoot) |
+| `motion.open` | `grow` | how panels appear: `grow` from their corner, `morph` out of the bar button you clicked, `drop` in from the edge, `unfold`, `blur` into focus or `swing` down like a door |
+| `motion.stagger` | `0.35` | 0 to 0.9: how far apart the pieces of SylClock and the notification list arrive |
+| `motion.springiness` | `-1` | 0 to 1: how much buttons and badges overshoot; `-1` follows `motion.preset` |
 | `motion.scale` | `1` | stretches or shortens every animation; `0.5` is twice as fast |
-| `motion.reduced` | `false` | panels appear without moving |
+| `motion.reduced` | `false` | panels appear without moving; they only fade, whatever `motion.open` says |
 | `iconTint` | `true` | app icons in the bar, deck, launcher, switcher and notifications take the accent colour |
 | `performance` | `auto` | `off`, `auto` or `on`. Lite mode drops blurred backdrops, sheen and ambient movement, and shortens every animation. `auto` keeps the look and only pauses ambient movement (drift, pulses, orbits) while a full-screen window has focus, such as a game; `on` does all of it always |
 

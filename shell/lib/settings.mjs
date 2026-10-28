@@ -10,7 +10,7 @@ import { EXTRAS } from "./center.mjs"
 import { validateKeybinds } from "./keys.mjs"
 import { DEFAULT_PLUGINS, validatePlugins, BUILTIN, builtinOn } from "./plugins.mjs"
 import { DEFAULT_SYNC, validateSync } from "./sync.mjs"
-import { PRESETS } from "./motion.mjs"
+import { PRESETS, OPEN_STYLES } from "./motion.mjs"
 import { DEFAULT_BAR, DEFAULT_DECK, validateBar, validateDeck } from "./bar.mjs"
 import { DEFAULT_EQ, validateEq } from "./eq.mjs"
 import { DEFAULT_POWER, validatePower } from "./power.mjs"
@@ -108,7 +108,7 @@ export const DEFAULT_SETTINGS = {
     bar: DEFAULT_BAR,
     deck: DEFAULT_DECK,
     media: { eq: DEFAULT_EQ, airpods: "" },
-    motion: { scale: 1, reduced: false, reveal: "edges", preset: "smooth" },
+    motion: { scale: 1, reduced: false, reveal: "edges", preset: "smooth", open: "grow", stagger: 0.35, springiness: -1 },
     power: DEFAULT_POWER,
     paper: DEFAULT_PAPER,
     weather: DEFAULT_WEATHER,
@@ -344,7 +344,10 @@ export function validateSettings(raw, userLooks) {
         scale: typeof motion.scale === "number" && motion.scale >= 0.25 && motion.scale <= 2 ? motion.scale : d.motion.scale,
         reduced: motion.reduced === true,
         reveal: REVEALS.indexOf(motion.reveal) >= 0 ? motion.reveal : d.motion.reveal,
-        preset: PRESETS.indexOf(motion.preset) >= 0 ? motion.preset : d.motion.preset
+        preset: PRESETS.indexOf(motion.preset) >= 0 ? motion.preset : d.motion.preset,
+        open: OPEN_STYLES.indexOf(motion.open) >= 0 ? motion.open : d.motion.open,
+        stagger: typeof motion.stagger === "number" && motion.stagger >= 0 && motion.stagger <= 0.9 ? motion.stagger : d.motion.stagger,
+        springiness: motion.springiness === -1 || typeof motion.springiness === "number" && motion.springiness >= 0 && motion.springiness <= 1 ? motion.springiness : d.motion.springiness
     })
     v.performance = v.performance === true ? "on" : PERFORMANCE.indexOf(v.performance) >= 0 ? v.performance : d.performance
     v.iconTint = v.iconTint !== false

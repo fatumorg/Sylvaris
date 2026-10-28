@@ -1,0 +1,32 @@
+sleep 1.5
+syl set motion.scale 2
+syl set motion.open drop
+syl center open
+sleep 0.05
+shot open-drop
+syl center close
+sleep 1
+syl set motion.open blur
+syl center open
+sleep 0.05
+shot open-blur
+syl center close
+sleep 1
+syl set motion.open swing
+syl clock open
+sleep 0.05
+shot open-swing
+syl clock close
+sleep 1
+syl set motion.open unfold
+syl clock open
+sleep 2
+shot open-rest
+check sylvaris state | grep -q '"open":"unfold"'
+syl set motion.springiness 0.2
+check sylvaris settings get motion.springiness | grep -q 0.2
+syl set motion.open nope
+check sylvaris settings get motion.open | grep -q unfold
+syl settings open motion
+sleep 1.5
+shot motion-page

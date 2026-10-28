@@ -110,7 +110,10 @@
     "scale": 1,
     "reduced": false,
     "reveal": "edges",
-    "preset": "smooth"
+    "preset": "smooth",
+    "open": "grow",
+    "stagger": 0.35,
+    "springiness": -1
   },
   "power": {
     "actions": [

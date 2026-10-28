@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import SylStack
 import qs
 import qs.services
@@ -30,17 +31,23 @@ Scope {
     default property alias content: body.data
     readonly property bool live: root.shown || root.phase > 0
     readonly property real grow: M.grow(root.phase, root.from !== "")
+    property var tapAt: null
+    readonly property var frame: M.openFrame(Tokens.openStyle, root.phase, root.placed, {
+        origin: root.tapAt,
+        emerging: root.from !== "",
+        reduced: Tokens.motion < 0.05
+    })
 
     signal opened
     signal closed
 
-    function originItem(): int {
-        const o = M.origin(root.placed);
-        const table = [[Item.TopLeft, Item.Top, Item.TopRight], [Item.Left, Item.Center, Item.Right], [Item.BottomLeft, Item.Bottom, Item.BottomRight]];
-        return table[o.v * 2][o.h * 2];
-    }
-
     function reveal(): void {
+        const s = root.screenInfo;
+        root.tapAt = s ? M.tapOrigin(Tokens.tap, {
+            name: s.name,
+            w: s.width,
+            h: s.height
+        }, M.placedRect(root.placed, s.width, s.height, root.panelWidth, Math.min(root.panelHeight, root.room), Tokens.edgeMargin), Date.now()) : null;
         root.shown = true;
         exitAnim.stop();
         enterAnim.restart();
@@ -193,7 +200,7 @@ Scope {
                 height: root.shown ? win.height : 0
             }
             BackgroundEffect.blurRegion: Resin.enabled && root.phase > 0.02 ? blur : null
-            readonly property var visual: M.scaledRect(0, 0, win.width, win.height, root.placed, root.grow, (1 - root.phase) * 10 * M.rise(root.placed))
+            readonly property var visual: M.frameRect(0, 0, win.width, win.height, root.frame)
 
             Region {
                 id: blur
@@ -201,7 +208,7 @@ Scope {
                 y: Math.round(win.visual.y) + 1
                 width: Math.round(win.visual.w) - 2
                 height: Math.round(win.visual.h) - 2
-                radius: Tokens.blur(root.radius) * root.grow - 1
+                radius: Tokens.blur(root.radius) * root.frame.sx - 1
             }
 
             function focusIn(): void {
@@ -223,15 +230,36 @@ Scope {
                 id: panel
 
                 anchors.fill: parent
-                opacity: Math.min(1, root.phase * 1.6)
-                scale: root.grow
-                transformOrigin: root.originItem()
+                opacity: root.frame.opacity
                 focus: true
                 Keys.onEscapePressed: root.close()
-
-                transform: Translate {
-                    y: (1 - root.phase) * 10 * M.rise(root.placed)
+                layer.enabled: root.frame.blur > 0.01 && panel.GraphicsInfo.api !== GraphicsInfo.Software && panel.GraphicsInfo.api !== GraphicsInfo.Unknown
+                layer.effect: MultiEffect {
+                    blurEnabled: true
+                    blur: root.frame.blur
+                    blurMax: 48
                 }
+
+                transform: [
+                    Translate {
+                        x: root.frame.dx
+                        y: root.frame.dy
+                    },
+                    Scale {
+                        origin.x: panel.width * root.frame.ox
+                        origin.y: panel.height * root.frame.oy
+                        xScale: root.frame.sx
+                        yScale: root.frame.sy
+                    },
+                    Rotation {
+                        origin.x: panel.width * root.frame.ox
+                        origin.y: panel.height * root.frame.oy
+                        axis.x: 1
+                        axis.y: 0
+                        axis.z: 0
+                        angle: root.frame.angle
+                    }
+                ]
 
                 Glass {
                     role: root.role

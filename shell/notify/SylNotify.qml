@@ -143,7 +143,7 @@ Popup {
             id: group
             required property var modelData
             required property int index
-            readonly property real arrive: M.stagger(root.phase, Math.min(group.index, 6), 7, 0.5)
+            readonly property real arrive: M.stagger(root.phase, Math.min(group.index, 6), 7, Math.min(0.9, Tokens.staggerSpread * 10 / 7))
             width: list.width
             spacing: 8
             opacity: group.arrive

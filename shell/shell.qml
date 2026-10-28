@@ -1269,6 +1269,24 @@ ShellRoot {
     }
 
     Binding {
+        target: Tokens
+        property: "openStyle"
+        value: Settings.values.motion.open
+    }
+
+    Binding {
+        target: Tokens
+        property: "staggerSpread"
+        value: Settings.values.motion.stagger
+    }
+
+    Binding {
+        target: Tokens
+        property: "springiness"
+        value: Settings.values.motion.springiness
+    }
+
+    Binding {
         target: Ipc
         property: "commands"
         value: root.commands

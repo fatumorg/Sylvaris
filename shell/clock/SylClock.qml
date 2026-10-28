@@ -113,10 +113,10 @@ Popup {
     Item {
         id: leftColumn
         x: Tokens.panelPaddingX
-        y: 22 + 14 * (1 - M.stagger(root.phase, 0, 3))
+        y: 22 + 14 * (1 - M.stagger(root.phase, 0, 3, Tokens.staggerSpread))
         width: Tokens.clockSkyWidth
         height: Tokens.clockHeight - 44
-        opacity: M.stagger(root.phase, 0, 3)
+        opacity: M.stagger(root.phase, 0, 3, Tokens.staggerSpread)
 
         Row {
             id: timeRow
@@ -468,10 +468,10 @@ Popup {
     Item {
         id: rightColumn
         x: leftColumn.x + leftColumn.width + Tokens.clockColumnGap
-        y: 22 + 14 * (1 - M.stagger(root.phase, 1, 3))
+        y: 22 + 14 * (1 - M.stagger(root.phase, 1, 3, Tokens.staggerSpread))
         width: parent.width - x - Tokens.panelPaddingX
         height: Tokens.clockHeight - 44
-        opacity: M.stagger(root.phase, 1, 3)
+        opacity: M.stagger(root.phase, 1, 3, Tokens.staggerSpread)
 
         Item {
             id: moonCard
@@ -726,10 +726,10 @@ Popup {
         readonly property real hi: Math.max(...weatherCard.hours.map(h => h.temp), -99)
         visible: Weather.enabled
         x: Tokens.panelPaddingX
-        y: Tokens.clockHeight - 22 + Tokens.gap + 14 * (1 - M.stagger(root.phase, 2, 3))
+        y: Tokens.clockHeight - 22 + Tokens.gap + 14 * (1 - M.stagger(root.phase, 2, 3, Tokens.staggerSpread))
         width: parent.width - Tokens.panelPaddingX * 2
         height: Tokens.clockWeatherHeight
-        opacity: M.stagger(root.phase, 2, 3)
+        opacity: M.stagger(root.phase, 2, 3, Tokens.staggerSpread)
 
         function tempY(t: real): real {
             const span = Math.max(1, weatherCard.hi - weatherCard.lo);
