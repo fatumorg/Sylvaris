@@ -10,6 +10,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - Right-click the wallpaper for a desktop menu with widgets, wallpapers, your Look and SylSettings, or open it with `sylvaris paper menu`
 - SylTemp, a built-in plugin, shows every temperature from TempInfoCLI in a panel with history and peaks, a click-through overlay for games, a bar chip and a desktop widget, and warns when something runs hot (`sylvaris temp`)
 - SylFiles opens more than one window: Ctrl+N, right-click a folder › Open in a new window, or `sylvaris files window`; cut in one window and paste in another
+- SylNotes, a small text and code editor with tabs: it keeps line endings and the final newline as they were, saves in one step, opens binary and non-UTF-8 files read-only, and brings back unsaved typing after a crash (`sylvaris notes open`, `programs.sylvaris.defaultTextEditor`)
 
 ## [1.3.0] - 2026-10-28
 

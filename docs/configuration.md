@@ -32,7 +32,7 @@ sylvaris set parts.center false   # exclude SylCenter
 sylvaris set parts.center true    # bring it back, no reinstall or reload
 ```
 
-A part that is off is never loaded, along with anything only it uses, and it runs no process, timer or watcher. The parts are `access`, `bar`, `capture`, `center`, `clip`, `clock`, `deck`, `diver`, `fatest`, `island`, `lock`, `media`, `notify`, `pad`, `paper`, `plugins`, `polkit`, `power`, `settings`, `switcher`, `sync`, `temp`, `theme` and `widgets`. All are on by default except `island`. SylSettings lists them under General.
+A part that is off is never loaded, along with anything only it uses, and it runs no process, timer or watcher. The parts are `access`, `bar`, `capture`, `center`, `clip`, `clock`, `deck`, `diver`, `fatest`, `island`, `lock`, `media`, `notes`, `notify`, `pad`, `paper`, `plugins`, `polkit`, `power`, `settings`, `switcher`, `sync`, `temp`, `theme` and `widgets`. All are on by default except `island`. SylSettings lists them under General.
 
 With Nix, `programs.sylvaris.parts = { center = false; };` writes the same key and also leaves the tools only that part needs off the package's `PATH`. Parts are separate from `bar.left`, `bar.center` and `bar.right`, which only choose what the bar shows.
 

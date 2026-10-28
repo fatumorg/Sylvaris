@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=SylNotes
+GenericName=Text editor
+Comment=Edit notes, config files and code in Sylvaris
+Exec=sylvaris notes open %F
+Icon=sylvaris-notes
+Terminal=false
+NoDisplay=false
+Categories=Utility;TextEditor;
+Keywords=text;editor;notes;code;
+MimeType=text/plain;text/markdown;text/x-markdown;text/x-python;text/x-shellscript;application/x-shellscript;text/x-csrc;text/x-chdr;text/x-c++src;text/x-c++hdr;text/x-java;text/x-go;text/rust;text/x-rust;text/javascript;application/javascript;text/x-typescript;application/json;application/toml;text/x-toml;application/x-yaml;text/x-yaml;application/xml;text/xml;text/html;text/css;text/x-nix;text/x-lua;text/x-qml;text/x-makefile;text/x-cmake;text/x-diff;text/x-patch;text/x-log;text/csv;application/x-desktop;

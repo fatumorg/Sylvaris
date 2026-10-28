@@ -175,6 +175,19 @@ doctor)
 capture)
     if [ "${2:-}" = edit ] && [ -n "${3:-}" ]; then run capture edit "$(realpath -m -- "$3")"; else run "$@"; fi
     ;;
+notes)
+    case "${2:-}" in
+    open | window)
+        files=()
+        for p in "${@:3}"; do
+            case "$p" in "~" | "~/"*) p="$HOME${p#\~}" ;; esac
+            files+=("$(realpath -m -- "$p")")
+        done
+        run notes "$2" "${files[@]}"
+        ;;
+    *) run "$@" ;;
+    esac
+    ;;
 plugins)
     if [ "${2:-}" = install ]; then install_plugin "${@:3}"; else run "$@"; fi
     ;;

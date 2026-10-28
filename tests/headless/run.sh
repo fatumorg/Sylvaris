@@ -165,6 +165,17 @@ while read -r cmd rest; do
     killshell)
         kill -9 "$shell_pid"
         ;;
+    restart)
+        kill -9 "$shell_pid"
+        wait "$shell_pid" 2>/dev/null || true
+        rm -f "$rt/sylvaris/$ipc_sock"
+        "${hl_env[@]}" "$stack_bin" -p "$entry" >>"$out/shell.log" 2>&1 &
+        shell_pid=$!
+        for _ in $(seq 100); do
+            [ -S "$rt/sylvaris/$ipc_sock" ] && break
+            sleep 0.1
+        done
+        ;;
     pointer)
         if [ -z "${vnc_port:-}" ]; then
             vnc_port=$((5900 + $$ % 1000))

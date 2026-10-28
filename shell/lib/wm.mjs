@@ -213,7 +213,7 @@ export function niriReduce(state, event) {
     return s
 }
 
-const OWN_WINDOWS = [[" — SylFiles", "sylvaris-files"], [" — SylArchive", "sylvaris-archive"]]
+const OWN_WINDOWS = [[" — SylFiles", "sylvaris-files"], [" — SylArchive", "sylvaris-archive"], [" — SylNotes", "sylvaris-notes"]]
 
 export function appOf(appId, title) {
     const id = String(appId || "")

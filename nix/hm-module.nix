@@ -51,6 +51,7 @@ let
     );
   viewerMimes = mimesOf ../share/applications/sylvaris-viewer.desktop;
   archiveMimes = mimesOf ../share/applications/sylvaris-archive.desktop;
+  notesMimes = mimesOf ../share/applications/sylvaris-notes.desktop;
 in
 {
   options.programs.sylvaris = lib.mapAttrs (k: optionsFor [ k ]) schema // {
@@ -97,6 +98,12 @@ in
       description = "Make SylArchive the default app for zip, rar, 7z, tar and the other archives it opens, through xdg.mimeApps.";
     };
 
+    defaultTextEditor = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Make SylNotes the default app for plain text, Markdown, config files and source code, through xdg.mimeApps.";
+    };
+
     themes = lib.mkOption {
       type = lib.types.attrsOf json.type;
       default = { };
@@ -131,6 +138,9 @@ in
       })
       (lib.mkIf (cfg.defaultArchiveManager && (parts.archive or true)) (
         lib.genAttrs archiveMimes (_: [ "sylvaris-archive.desktop" ])
+      ))
+      (lib.mkIf (cfg.defaultTextEditor && (parts.notes or true)) (
+        lib.genAttrs notesMimes (_: [ "sylvaris-notes.desktop" ])
       ))
     ];
 

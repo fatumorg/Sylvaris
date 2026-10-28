@@ -7,3 +7,8 @@ check mkdir -p "$HOME/Box" && cd "$HOME/Box" && python3 -c 'import zipfile; z = 
 syl archive open ~/Box/a.zip
 sleep 2
 check sylvaris state compositor | grep -q '"appId":"sylvaris-archive","title":"a.zip — SylArchive"'
+check printf 'one\r\ntwo' > "$HOME/crlf.txt"
+syl notes open ~/crlf.txt
+wait sylvaris state compositor | grep -q '"appId":"sylvaris-notes","title":"crlf.txt — SylNotes"'
+bg wtype -k Shift_L -s 400 X
+wait sylvaris state compositor | grep -q '"appId":"sylvaris-notes","title":"• crlf.txt — SylNotes"'

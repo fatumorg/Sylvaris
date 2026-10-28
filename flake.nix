@@ -141,6 +141,7 @@
                       defaultViewer = true;
                       defaultFileManager = true;
                       defaultArchiveManager = true;
+                      defaultTextEditor = true;
                     };
                   };
                 }
@@ -158,6 +159,7 @@
             test ${lib.head eval.config.xdg.mimeApps.defaultApplications."video/x-matroska"} = sylvaris-viewer.desktop
             test ${lib.head eval.config.xdg.mimeApps.defaultApplications."inode/directory"} = sylvaris-files.desktop
             test ${lib.head eval.config.xdg.mimeApps.defaultApplications."application/zip"} = sylvaris-archive.desktop
+            test ${lib.head eval.config.xdg.mimeApps.defaultApplications."text/plain"} = sylvaris-notes.desktop
             test ${lib.head eval.config.xdg.mimeApps.defaultApplications."application/vnd.rar"} = sylvaris-archive.desktop
             echo ${lib.escapeShellArg eval.config.xdg.dataFile."dbus-1/services/org.freedesktop.FileManager1.service".text} | grep -q '^Exec=/nix/store/.*/bin/sylvaris filemanager1$'
             touch $out

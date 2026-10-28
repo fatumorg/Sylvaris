@@ -1,0 +1,42 @@
+sleep 1.5
+check printf 'one\r\ntwo\r\nthree' > "$HOME/crlf.txt" && printf 'ab\000cd' > "$HOME/blob.bin" && printf 'keep' > "$HOME/plain.txt"
+syl notes open ~/crlf.txt
+wait sylvaris notes state | grep -q '"eol":"crlf"'
+bg wtype -k Shift_L -s 400 X
+wait sylvaris notes state | grep -q '"dirty":true'
+syl notes save
+sleep 0.5
+check printf 'Xone\r\ntwo\r\nthree' | cmp - "$HOME/crlf.txt"
+check sylvaris notes state | grep -q '"dirty":false'
+check sylvaris get notes.recent | grep -q 'crlf.txt'
+bg wtype -k Shift_L -s 400 Y
+sleep 2
+check test "$(stat -c %a "$HOME/.local/state/sylvaris/notes")" = 700
+check test "$(ls "$HOME/.local/state/sylvaris/notes" | wc -l)" = 1
+shot notes
+restart
+sleep 2
+syl notes open ~/crlf.txt
+wait sylvaris notes state | grep -q '"recovered":1'
+check sylvaris notes state | grep -q '"dirty":true,"readOnly":false,"why":"","eol":"crlf","language":"","recovered":true'
+check printf 'Xone\r\ntwo\r\nthree' | cmp - "$HOME/crlf.txt"
+shot notes-recovered
+syl notes open ~/blob.bin
+wait sylvaris notes state | grep -q '"title":"blob.bin","dirty":false,"readOnly":true'
+check ! sylvaris notes save
+syl notes open ~/plain.txt
+wait sylvaris notes state | grep -q '"title":"plain.txt","dirty":false,"readOnly":false[^}]*"length":4'
+check printf 'changed on disk' > "$HOME/plain.txt"
+wait sylvaris notes state | grep -q '"title":"plain.txt","dirty":false,"readOnly":false[^}]*"length":15'
+syl notes new
+wait sylvaris notes state | grep -q '"title":"Untitled 1"'
+bg wtype -k Shift_L -s 400 -M ctrl -k w -m ctrl
+sleep 1
+check sylvaris notes state | grep -q '"asking":false'
+check ! sylvaris notes state | grep -q 'Untitled 1'
+syl notes window ~/plain.txt
+wait test "$(sylvaris notes state | grep -o '"windows":[0-9]*')" = '"windows":2'
+syl notes close
+sleep 1
+check sylvaris notes state | grep -q '"open":false'
+check test "$(ls "$HOME/.local/state/sylvaris/notes" | wc -l)" = 1

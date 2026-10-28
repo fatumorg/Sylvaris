@@ -42,6 +42,7 @@ Then start `sylvaris` from your compositor (see [getting started](start.md#2-sta
 | `programs.sylvaris.defaultViewer` | make [SylViewer](parts/viewer.md) the default app for images and videos (needs `xdg.mimeApps.enable`) |
 | `programs.sylvaris.defaultFileManager` | make [SylFiles](parts/files.md) the default app for folders and for "Show in folder" (`org.freedesktop.FileManager1`) (needs `xdg.mimeApps.enable`) |
 | `programs.sylvaris.defaultArchiveManager` | make [SylArchive](parts/archive.md) the default app for zip, rar, 7z, tar and other archives (needs `xdg.mimeApps.enable`) |
+| `programs.sylvaris.defaultTextEditor` | make [SylNotes](parts/notes.md) the default app for text, Markdown, config files and code (needs `xdg.mimeApps.enable`) |
 | `programs.sylvaris.themes.<id>` | theme bundles, written to `~/.config/sylvaris/themes/<id>.json` ([format](look.md#theme-bundles)) |
 | `programs.sylvaris.settings` | any JSON for `config.json`, merged over the typed options below |
 | `programs.sylvaris.<setting>` | one typed option for every key in the [settings reference](reference/settings.md), such as `bar.position`, `island.screens` or `capture.codec` |

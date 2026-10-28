@@ -36,6 +36,7 @@ export const SECTIONS = [
     { key: "viewer", label: "Viewer", glyph: GLYPHS.image, group: "apps" },
     { key: "capture", label: "Capture", glyph: GLYPHS.camera, group: "apps" },
     { key: "clip", label: "Clipboard", glyph: GLYPHS.clipboard, group: "apps" },
+    { key: "notes", label: "Notes", glyph: GLYPHS.pencil, group: "apps" },
     { key: "diver", label: "Diver", glyph: GLYPHS.planner, group: "apps", plugin: "diver" },
     { key: "fatest", label: "FaTest", glyph: GLYPHS.speed, group: "apps", plugin: "fatest" },
     { key: "temp", label: "SylTemp", glyph: GLYPHS.thermometer, group: "apps", plugin: "temp" },

@@ -24,6 +24,7 @@ import qs.clip
 import qs.viewer
 import qs.files
 import qs.archive
+import qs.notes
 import qs.island
 import qs.capture
 import qs.access
@@ -65,6 +66,7 @@ ShellRoot {
             files: filesLoader,
             widgets: widgetsLoader,
             archive: archiveLoader,
+            notes: notesLoader,
             access: accessLoader,
             plugins: pluginsLoader,
             sync: syncLoader
@@ -284,6 +286,7 @@ ShellRoot {
             viewer: root.part("viewer") !== null ? root.part("viewer").state() : undefined,
             files: root.part("files") !== null ? root.part("files").state() : undefined,
             archive: root.part("archive") !== null ? root.part("archive").state() : undefined,
+            notes: root.part("notes") !== null ? root.part("notes").state() : undefined,
             access: root.part("access") !== null ? root.part("access").state() : undefined,
             fatest: root.part("fatest") !== null ? root.part("fatest").state() : undefined,
             rgb: root.part("rgb") !== null ? root.part("rgb").state() : undefined,
@@ -572,6 +575,16 @@ ShellRoot {
         SylArchive {
             id: archivePart
             onOpened: root.solo(archivePart)
+        }
+    }
+
+    LazyLoader {
+        id: notesLoader
+        active: root.on("notes")
+
+        SylNotes {
+            id: notesPart
+            onOpened: root.solo(notesPart)
         }
     }
 
@@ -1079,6 +1092,15 @@ ShellRoot {
                 window: (...p) => root.need("files").newWindow(p.join(" ")),
                 windows: () => root.need("files").count,
                 state: () => root.need("files").state()
+            },
+            notes: {
+                default: "state",
+                open: (...p) => root.need("notes").open(p),
+                new: () => root.need("notes").newTab(),
+                window: (...p) => root.need("notes").newWindow(p),
+                save: () => root.need("notes").save(),
+                close: () => root.need("notes").close(),
+                state: () => root.need("notes").state()
             },
             archive: {
                 default: "state",

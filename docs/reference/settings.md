@@ -328,6 +328,18 @@ Explained in [island](../parts/island.md).
 | `archive.reveal` | `true` |  |
 | `archive.keys` | `{}` |  |
 
+## notes
+
+| Key | Default | Per screen |
+|---|---|:---:|
+| `notes.wrap` | `false` |  |
+| `notes.lineNumbers` | `true` |  |
+| `notes.highlight` | `true` |  |
+| `notes.tabWidth` | `4` |  |
+| `notes.spaces` | `true` |  |
+| `notes.size` | `14` |  |
+| `notes.recent` | `[]` |  |
+
 ## rgb
 
 Explained in [plugins/rgb](../plugins/rgb.md).
@@ -510,6 +522,7 @@ Explained in [configuration](../configuration.md#turning-parts-off).
 | `parts.files` | `true` |  |
 | `parts.widgets` | `true` |  |
 | `parts.archive` | `true` |  |
+| `parts.notes` | `true` |  |
 | `parts.access` | `true` |  |
 | `parts.plugins` | `true` |  |
 | `parts.sync` | `true` |  |

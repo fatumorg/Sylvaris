@@ -265,6 +265,15 @@
     "reveal": true,
     "keys": {}
   },
+  "notes": {
+    "wrap": false,
+    "lineNumbers": true,
+    "highlight": true,
+    "tabWidth": 4,
+    "spaces": true,
+    "size": 14,
+    "recent": []
+  },
   "rgb": {
     "on": true,
     "color": "",

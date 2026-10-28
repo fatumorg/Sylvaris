@@ -24,6 +24,7 @@ export const MODULES = {
     files: { label: "Files", section: "files", glyph: "folder" },
     widgets: { label: "Widgets", section: "widgets", glyph: "layers" },
     archive: { label: "Archive", section: "archive", glyph: "archive" },
+    notes: { label: "Notes", section: "notes", glyph: "pencil" },
     access: { label: "Accessibility", section: "access", glyph: "accessibility" },
     plugins: { label: "Plugins", section: "plugins", glyph: "puzzle" },
     sync: { label: "App colours", section: "sync", glyph: "sync" }
@@ -32,7 +33,7 @@ export const MODULES = {
 export const PRODUCT = {
     bar: "SylBar", deck: "SylDeck", center: "SylCenter", theme: "SylTheme", clock: "SylClock", notify: "SylNotify",
     pad: "SylPad", media: "SylMedia", settings: "SylSettings", power: "SylPower", paper: "SylPaper", diver: "SylDiver", fatest: "FaTest", rgb: "SylRGB", temp: "SylTemp",
-    switcher: "SylSwitch", lock: "SylLock", polkit: "SylPolkit", clip: "SylClip", island: "SylIsland", capture: "SylCapture", viewer: "SylViewer", files: "SylFiles", archive: "SylArchive", access: "SylAccessibility", plugins: "SylPlugins", sync: "SylSync", widgets: "SylWidget"
+    switcher: "SylSwitch", lock: "SylLock", polkit: "SylPolkit", clip: "SylClip", island: "SylIsland", capture: "SylCapture", viewer: "SylViewer", files: "SylFiles", archive: "SylArchive", notes: "SylNotes", access: "SylAccessibility", plugins: "SylPlugins", sync: "SylSync", widgets: "SylWidget"
 }
 
 export function tiles() {

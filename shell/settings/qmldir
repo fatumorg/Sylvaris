@@ -30,6 +30,7 @@ MiniScreen 1.0 MiniScreen.qml
 MoreOptions 1.0 MoreOptions.qml
 MotionPage 1.0 MotionPage.qml
 MotionPreview 1.0 MotionPreview.qml
+NotesPage 1.0 NotesPage.qml
 NotificationsPage 1.0 NotificationsPage.qml
 NotifyPreview 1.0 NotifyPreview.qml
 PadPreview 1.0 PadPreview.qml

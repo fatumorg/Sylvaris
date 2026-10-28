@@ -976,6 +976,7 @@ Scope {
                                     files: filesPage,
                                     widgets: widgetsPage,
                                     archive: archivePage,
+                                    notes: notesPage,
                                     island: islandPage,
                                     capture: capturePage,
                                     access: accessPage,
@@ -1097,6 +1098,12 @@ Scope {
         id: archivePage
 
         ArchivePage {}
+    }
+
+    Component {
+        id: notesPage
+
+        NotesPage {}
     }
 
     Component {

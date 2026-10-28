@@ -22,6 +22,7 @@ export const PART_PACKAGES = {
     viewer: ["wl-clipboard", "glib"],
     files: ["wl-clipboard", "glib", "python", "udisks"],
     archive: ["libarchive", "python"],
+    notes: [],
     widgets: ["cava"],
     access: [],
     plugins: ["git"],

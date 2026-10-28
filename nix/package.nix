@@ -106,6 +106,7 @@ let
       python
     ];
     widgets = [ cava ];
+    notes = [ ];
     access = [ ];
     fatest = [ ];
     rgb = [ python ];
@@ -167,6 +168,7 @@ stdenvNoCC.mkDerivation {
     install -Dm644 -t $out/share/applications share/applications/*.desktop
     install -Dm644 share/icons/hicolor/scalable/apps/sylvaris-files.svg $out/share/icons/hicolor/scalable/apps/sylvaris-files.svg
     install -Dm644 share/icons/hicolor/scalable/apps/sylvaris-archive.svg $out/share/icons/hicolor/scalable/apps/sylvaris-archive.svg
+    install -Dm644 share/icons/hicolor/scalable/apps/sylvaris-notes.svg $out/share/icons/hicolor/scalable/apps/sylvaris-notes.svg
     wrapProgram $out/bin/sylvaris \
       --set-default SYLVARIS_DIR $out/share/sylvaris \
       --prefix PATH : ${lib.makeBinPath tools} \
