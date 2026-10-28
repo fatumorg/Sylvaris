@@ -427,6 +427,16 @@ Explained in [look](../look.md#motion-and-performance).
 |---|---|:---:|
 | `iconTint` | `true` |  |
 
+## look
+
+Explained in [look](../look.md#looks).
+
+| Key | Default | Per screen |
+|---|---|:---:|
+| `look.preset` | `"lumen"` |  |
+| `look.followTheme` | `false` |  |
+| `look.parts` | `{}` |  |
+
 ## parts
 
 Explained in [configuration](../configuration.md#turning-parts-off).

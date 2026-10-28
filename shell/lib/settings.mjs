@@ -17,6 +17,7 @@ import { DEFAULT_POWER, validatePower } from "./power.mjs"
 import { DEFAULT_PAPER, validatePaper } from "./paper.mjs"
 import { DEFAULT_WEATHER, validateWeather } from "./weather.mjs"
 import { DEFAULT_RGB, validateRgb } from "./rgb.mjs"
+import { DEFAULT_LOOK, validateLook, lookDefaults } from "./look.mjs"
 
 export const CORNERS = ["top-left", "top-center", "top-right"]
 export const REVEALS = ["edges", "center", "fade"]
@@ -130,6 +131,7 @@ export const DEFAULT_SETTINGS = {
     sync: DEFAULT_SYNC,
     performance: "auto",
     iconTint: true,
+    look: DEFAULT_LOOK,
     parts: partFlags({})
 }
 
@@ -268,7 +270,7 @@ export function validateConfig(raw) {
     return v
 }
 
-export function validateSettings(raw) {
+export function validateSettings(raw, userLooks) {
     const v = migrate(raw)
     const d = DEFAULT_SETTINGS
 
@@ -398,6 +400,7 @@ export function validateSettings(raw) {
         eq: validateEq(media.eq),
         airpods: typeof media.airpods === "string" && /^([0-9A-F]{2}:){5}[0-9A-F]{2}$/i.test(media.airpods) ? media.airpods.toUpperCase() : ""
     })
+    v.look = validateLook(v.look, userLooks).values
     v.screens = validateScreens(v.screens, v)
     return v
 }
@@ -488,8 +491,11 @@ export function settingsLayer(config) {
     return out
 }
 
-export function effectiveSettings(config, raw) {
-    return validateSettings(deepMerge(settingsLayer(config), isObject(raw) ? raw : {}))
+export function effectiveSettings(config, raw, userLooks) {
+    const layer = settingsLayer(config)
+    const mine = isObject(raw) ? raw : {}
+    const look = deepMerge(isObject(layer.look) ? layer.look : {}, isObject(mine.look) ? mine.look : {})
+    return validateSettings(deepMerge(deepMerge(lookDefaults(look, userLooks), layer), mine), userLooks)
 }
 
 export function merge(config, settings) {
@@ -527,8 +533,8 @@ export function serialize(obj) {
     return JSON.stringify(obj, null, 2) + "\n"
 }
 
-export function resolveGlass(config, settings) {
-    const values = clone(DEFAULT_GLASS)
+export function resolveGlass(config, settings, base) {
+    const values = clone(base === undefined ? DEFAULT_GLASS : base)
     const errors = []
     for (const [source, raw] of [["config.json", config], ["settings.json", settings]]) {
         if (raw === undefined || raw === null)

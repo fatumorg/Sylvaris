@@ -218,7 +218,11 @@
     "thumbnails": true,
     "icons": "glyphs",
     "sidebar": true,
-    "sections": ["places", "bookmarks", "devices"],
+    "sections": [
+      "places",
+      "bookmarks",
+      "devices"
+    ],
     "placeOrder": [],
     "deviceOrder": [],
     "details": false,
@@ -308,6 +312,11 @@
   },
   "performance": "auto",
   "iconTint": true,
+  "look": {
+    "preset": "lumen",
+    "followTheme": false,
+    "parts": {}
+  },
   "glass": {
     "enabled": true,
     "opacity": 0.55,

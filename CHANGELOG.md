@@ -6,6 +6,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Added
 
+- Looks: `look.preset` picks a whole style (Lumen, the new default, plus Classic for the 1.1 look, Frost, Ink, Neon and Paper), and keys under `look` override its material, corners, radius, density, fonts, weight, shadow, grain, highlight, glow, accent and per-part material
 - Brightness sliders in SylCenter's displays view for laptop backlights (brightnessctl) and external monitors over DDC/CI (ddcutil), plus `sylvaris brightness up`, `down`, `set` and `state`
 
 ## [1.1.0] - 2026-10-27

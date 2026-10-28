@@ -1,5 +1,35 @@
 # Look and motion
 
+## Looks
+
+A Look is a whole style in one word: a glass material, a corner shape, how round and how roomy things are, fonts and a type weight. Pick one with `look.preset`:
+
+| Look | Material | Feel |
+|---|---|---|
+| `lumen` (default) | lumen | bright glass with a soft highlight, glow and shadow, squircle corners, Inter Display titles |
+| `classic` | resin | Sylvaris 1.1 exactly, for anyone who liked it as it was |
+| `frost` | frost | thick frosted glass, roomy, light type |
+| `ink` | ink | nearly solid dark panels, tight and compact |
+| `neon` | neon | thin glass with a glowing rim and bevelled corners |
+| `paper` | paper | matte and grainy, serif titles |
+
+Change any part of a Look without leaving it. Each key under `look` overrides the preset:
+
+| Key | Values | What it does |
+|---|---|---|
+| `material` | `lumen` `resin` `frost` `ink` `neon` `paper` | the glass recipe |
+| `corners` | `round` `squircle` `bevel` `sharp` | corner shape |
+| `radius` | 0 to 2 | how round, as a multiple of the normal radius |
+| `density` | `compact` `cozy` `roomy` | padding, gaps and row heights |
+| `fonts.ui`, `fonts.mono`, `fonts.display` | a font family | an installed font; a missing one falls back to the Look's |
+| `weight` | `light` `regular` `medium` | weight of titles |
+| `shadow`, `grain`, `highlight`, `glow` | 0 to 1 | extra layers on the glass |
+| `accent` | `theme` `wallpaper` or `#rrggbb` | where the accent colour comes from |
+| `parts.<part>` | `material`, `radius` and any glass key | a different material for one part, such as `"parts": {"bar": {"material": "ink"}}` |
+| `followTheme` | `true` `false` | switch to the Look a theme names when you apply that theme |
+
+Your own `glass` keys still beat the material. Picking a Look clears the overrides above and your glass levels, so it shows as designed.
+
 ## Resin Glass
 
 Every Sylvaris surface is drawn in Resin Glass: a translucent body the compositor blurs, the theme's accent suspended in it, a soft light that drifts like liquid and leans toward the pointer and a lit rim. Tune it with a `glass` block in `config.json` (or from Nix) and in `settings.json`; `settings.json` wins, and changes apply live.

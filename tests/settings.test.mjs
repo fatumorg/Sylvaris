@@ -387,3 +387,19 @@ test("validateSettings checks the virtual display size", () => {
     const bad = validateSettings({ displays: { virtual: { enabled: 1, width: 100, height: 99999.5 } } })
     assert.deepEqual(bad.displays.virtual, { enabled: false, width: 2388, height: 1668 })
 })
+
+test("the default look is lumen", () => assert.equal(effectiveSettings({}, {}).look.preset, "lumen"))
+
+test("a look's settings sit under config and user values", () => {
+    const looks = { mine: { name: "Mine", material: "ink", corners: "round", radius: 1, density: "cozy", fonts: {}, weight: "regular", settings: { motion: { preset: "calm" } } } }
+    assert.equal(effectiveSettings({}, { look: { preset: "mine" } }, looks).motion.preset, "calm")
+    assert.equal(effectiveSettings({}, { look: { preset: "mine" }, motion: { preset: "snappy" } }, looks).motion.preset, "snappy")
+    assert.equal(effectiveSettings({ motion: { preset: "playful" } }, { look: { preset: "mine" } }, looks).motion.preset, "playful")
+    assert.equal(effectiveSettings({ look: { preset: "mine" } }, {}, looks).motion.preset, "calm")
+    assert.equal(effectiveSettings({}, { look: { preset: "mine" } }, {}).look.preset, "lumen")
+})
+
+test("resolveGlass layers over a given base", () => {
+    assert.deepEqual(resolveGlass(undefined, { sheen: 0.2 }, {}).values, { sheen: 0.2 })
+    assert.equal(resolveGlass(undefined, undefined).values.sheen, DEFAULT_GLASS.sheen)
+})
