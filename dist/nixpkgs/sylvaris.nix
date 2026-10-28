@@ -156,6 +156,8 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [ makeWrapper ];
 
+  dontBuild = true;
+
   installPhase = ''
     runHook preInstall
     mkdir -p $out/share/sylvaris
