@@ -27,13 +27,13 @@ sleep 0.5
 shot capture-editor
 syl state capture
 check tail -n 3 "$OUT/ipc.log" | grep -q '"marks":4'
-bg wtype -k Shift_L -M ctrl z -m ctrl
-sleep 0.4
+bg wtype -k Shift_L -s 400 -M ctrl z -m ctrl
+sleep 1
 syl state capture
 check tail -n 3 "$OUT/ipc.log" | grep -q '"marks":3,"undo":1'
-bg wtype -k Shift_L -M ctrl -M shift z -m shift -m ctrl
-sleep 0.4
-bg wtype -k Shift_L -M ctrl s -m ctrl
+bg wtype -k Shift_L -s 400 -M ctrl -M shift z -m shift -m ctrl
+sleep 1
+bg wtype -k Shift_L -s 400 -M ctrl s -m ctrl
 sleep 1.5
 check ls "$HOME/Pictures/Screenshots/" | grep -q ' edited.png$'
 bg wtype -k Shift_L t
