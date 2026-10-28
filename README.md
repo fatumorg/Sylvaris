@@ -38,6 +38,7 @@ nix run github:fatumorg/Sylvaris
 - **Three compositors.** The same shell runs on Hyprland, niri and sway.
 - **Scriptable and declarative.** Every switch is a `sylvaris` command, and every setting is a typed Home Manager option.
 - **One look everywhere.** Themes preview live, and SylSync makes GTK, Qt, terminals and editors follow them.
+- **Looks, not just colours.** Pick Lumen, Classic, Frost, Ink, Neon or Paper to change glass, corners, spacing and type at once, or make a theme from your wallpaper.
 
 ## ✨ What's inside
 

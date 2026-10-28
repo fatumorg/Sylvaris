@@ -13,6 +13,8 @@ A Look is a whole style in one word: a glass material, a corner shape, how round
 | `neon` | neon | thin glass with a glowing rim and bevelled corners |
 | `paper` | paper | matte and grainy, serif titles |
 
+SylSettings › Style shows every Look as a card and has a control for each key below, plus a font finder and a button to save what you made.
+
 Change any part of a Look without leaving it. Each key under `look` overrides the preset:
 
 | Key | Values | What it does |

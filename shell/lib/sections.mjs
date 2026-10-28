@@ -16,6 +16,7 @@ export const SECTIONS = [
     { key: "power", label: "Power", glyph: GLYPHS.power, group: "system" },
     { key: "access", label: "Accessibility", glyph: GLYPHS.accessibility, group: "system" },
     { key: "rgb", label: "Lighting", glyph: GLYPHS.rgb, group: "system", plugin: "rgb" },
+    { key: "look", label: "Style", glyph: GLYPHS.palette, group: "look" },
     { key: "appearance", label: "Appearance", glyph: GLYPHS.theme, group: "look" },
     { key: "wallpaper", label: "Wallpaper", glyph: GLYPHS.image, group: "look" },
     { key: "motion", label: "Motion", glyph: GLYPHS.bolt, group: "look" },

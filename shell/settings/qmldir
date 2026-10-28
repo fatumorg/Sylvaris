@@ -25,6 +25,7 @@ KeybindsCard 1.0 KeybindsCard.qml
 KeybindsPage 1.0 KeybindsPage.qml
 LauncherPage 1.0 LauncherPage.qml
 LockPage 1.0 LockPage.qml
+LookPage 1.0 LookPage.qml
 MiniScreen 1.0 MiniScreen.qml
 MotionPage 1.0 MotionPage.qml
 MotionPreview 1.0 MotionPreview.qml

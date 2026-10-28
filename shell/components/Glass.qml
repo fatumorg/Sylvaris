@@ -21,7 +21,8 @@ Item {
     property real drift: 0
     property point light: root.rest
 
-    readonly property var g: root.role === "" ? Resin.values : Look.glassFor(root.role)
+    property var preview: null
+    readonly property var g: root.preview !== null ? root.preview : root.role === "" ? Resin.values : Look.glassFor(root.role)
     readonly property real r: root.role === "" || Look.radius <= 0 ? root.radius : root.radius * root.g.radius / Look.radius
     readonly property bool on: root.g.enabled
     readonly property bool panel: !root.inner

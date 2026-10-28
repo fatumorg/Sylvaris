@@ -42,3 +42,7 @@ check sylvaris state settingsPanel | grep -q '"group":"advanced"'
 syl settings open files
 sleep 1
 check sylvaris state settingsPanel | grep -q '"section":"files","group":"apps"'
+syl settings open look
+sleep 1.5
+shot settings-look
+check sylvaris state | grep -q '"section":"look"'

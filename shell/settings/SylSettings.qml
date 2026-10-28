@@ -831,6 +831,7 @@ Scope {
                         y: (1 - root.swap) * 18
                         sourceComponent: ({
                                 general: generalPage,
+                                look: lookPage,
                                 appearance: appearancePage,
                                 motion: motionPage,
                                 wallpaper: wallpaperPage,
@@ -1028,6 +1029,14 @@ Scope {
         id: weatherPage
 
         WeatherPage {
+            host: root
+        }
+    }
+
+    Component {
+        id: lookPage
+
+        LookPage {
             host: root
         }
     }
