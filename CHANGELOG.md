@@ -19,6 +19,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 ### Changed
 
 - Lumen, the default Look, now floats the bar with dot workspaces, lays SylCenter out as bento, stacks notifications as cards, shows the giant lock clock, glows under open apps on SylDeck and morphs windows open; Classic keeps the 1.1 layout
+- The demo recordings in the README and on the site show 1.5, with new ones for SylWidget and SylTemp.
 
 ### Fixed
 

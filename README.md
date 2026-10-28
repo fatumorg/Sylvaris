@@ -90,6 +90,10 @@ nix run github:fatumorg/Sylvaris
     <td width="50%"><img src="docs/demo/pad.gif" alt="SylPad and SylSwitch"><br><sub><b>SylPad</b> and <b>SylSwitch</b></sub></td>
     <td width="50%"><img src="docs/demo/tools.gif" alt="SylDiver, SylClip, SylCapture, SylPower"><br><sub><b>SylDiver</b>, <b>SylClip</b>, <b>SylCapture</b> and <b>SylPower</b></sub></td>
   </tr>
+  <tr>
+    <td width="50%"><img src="docs/demo/widgets.gif" alt="SylWidget"><br><sub><b>SylWidget</b> places clocks, notes and now playing on the desktop</sub></td>
+    <td width="50%"><img src="docs/demo/temp.gif" alt="SylTemp"><br><sub><b>SylTemp</b> shows temperatures in a panel or over a game</sub></td>
+  </tr>
 </table>
 
 <p align="center"><img src="docs/demo/lock.gif" width="560" alt="SylLock"><br><sub><b>SylLock</b>, and SylGreet looks the same at login (both experimental)</sub></p>
