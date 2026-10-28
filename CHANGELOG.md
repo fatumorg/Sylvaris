@@ -4,6 +4,10 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Fixed
+
+- The AUR git package depends on Qt Multimedia and Image Formats, and lists brightnessctl, ddcutil, wayvnc, udisks2, libarchive, wtype, kitty, cava and syntax-highlighting as optional
+
 ## [1.5.0] - 2026-10-28
 
 ### Added

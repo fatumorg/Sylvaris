@@ -5,10 +5,10 @@ pkgdesc="Modular desktop shell for Hyprland, niri and sway, built on SylStack"
 arch=('x86_64' 'aarch64')
 url="https://github.com/fatumorg/Sylvaris"
 license=('MIT')
-depends=('qt6-base' 'qt6-declarative' 'qt6-wayland' 'qt6-svg' 'layer-shell-qt' 'polkit-qt6' 'libpipewire' 'pam' 'wayland' 'inter-font' 'ttf-jetbrains-mono-nerd' 'bash' 'coreutils' 'procps-ng')
+depends=('qt6-base' 'qt6-declarative' 'qt6-wayland' 'qt6-svg' 'qt6-multimedia' 'qt6-imageformats' 'layer-shell-qt' 'polkit-qt6' 'libpipewire' 'pam' 'wayland' 'inter-font' 'ttf-jetbrains-mono-nerd' 'bash' 'coreutils' 'procps-ng')
 makedepends=('git' 'make' 'cmake')
 optdepends=(
-  'pipewire: audio, media, equalizer and Diver alarm sounds'
+  'pipewire: audio, media, equalizer, UI sounds and Diver alarm sounds'
   'pipewire-pulse: volume and output switching'
   'libpulse: pactl for audio and screen recording with sound'
   'python-cryptography: AirPods and Diver helpers'
@@ -16,6 +16,9 @@ optdepends=(
   'libnotify: notifications from capture, Diver and settings'
   'networkmanager: Wi-Fi and hotspot in SylCenter'
   'wlr-randr: display layouts'
+  'wayvnc: virtual displays for a tablet, with openssl and iproute2'
+  'brightnessctl: brightness of built-in screens'
+  'ddcutil: brightness of external monitors'
   'wlsunset: night light'
   'curl: weather'
   'wl-clipboard: clipboard history and copying screenshots'
@@ -23,8 +26,14 @@ optdepends=(
   'slurp: choosing an area or window to capture'
   'wf-recorder: screen recording'
   'ffmpeg: recordings that upload everywhere'
+  'udisks2: mounting drives in SylFiles'
+  'libarchive: SylArchive'
+  'wtype: replying from SylIsland'
   'glib2: locking when logind asks (gdbus)'
   'git: installing plugins from git'
+  'kitty: terminal widget'
+  'cava: visualizer widget'
+  'syntax-highlighting: SylNotes syntax highlighting'
 )
 provides=('sylvaris')
 conflicts=('sylvaris')
