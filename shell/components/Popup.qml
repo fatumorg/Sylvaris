@@ -134,6 +134,8 @@ Scope {
         anchors.fill: parent
     }
 
+    onShownChanged: Sounds.play(root.shown ? "open" : "close")
+
     onLiveChanged: {
         if (!root.live)
             keep.restart();

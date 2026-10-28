@@ -72,4 +72,46 @@ Column {
             }
         }
     }
+
+    Card {
+        title: "UI sounds"
+        note: "Put toggle, open, close and notify files (.oga, .ogg, .wav or .flac) in a folder; any you leave out stay quiet."
+
+        SettingRow {
+            title: "UI sounds"
+            key: "sounds.enabled"
+            subtitle: "Play a short sound for toggles, panels and notifications"
+
+            Toggle {
+                checked: Settings.shown.sounds.enabled
+                onToggled: v => Settings.put("sounds.enabled", v)
+            }
+        }
+
+        SettingRow {
+            title: "Sound pack"
+            key: "sounds.pack"
+            subtitle: "The folder with the sounds"
+
+            TextBox {
+                width: 300
+                text: Settings.shown.sounds.pack
+                placeholder: "~/.local/share/sounds/sylvaris"
+                onAccepted: Settings.put("sounds.pack", text.trim())
+            }
+        }
+
+        SettingRow {
+            title: "Sound volume"
+            key: "sounds.volume"
+            last: true
+
+            Slider {
+                width: 300
+                value: Settings.shown.sounds.volume
+                label: Math.round(Settings.shown.sounds.volume * 100) + "%"
+                onMoved: v => Settings.put("sounds.volume", Math.round(v * 100) / 100)
+            }
+        }
+    }
 }

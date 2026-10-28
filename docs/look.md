@@ -113,3 +113,7 @@ Every panel opens, moves and closes with one set of curves.
 | `performance` | `auto` | `off`, `auto` or `on`. Lite mode drops blurred backdrops, sheen and ambient movement, and shortens every animation. `auto` keeps the look and only pauses ambient movement (drift, pulses, orbits) while a full-screen window has focus, such as a game; `on` does all of it always |
 
 With `on`, Hyprland and sway also lose their animations, blur, shadows and gaps, and leaving `on` reloads the compositor config to bring them back. `auto` never touches the compositor. The Performance tile in SylCenter switches between `on` and `auto`. An older `true` reads as `on` and an older `false` as `auto`.
+
+## Sounds
+
+SylSettings › Sound › UI sounds plays a short sound when you flip a toggle, open or close a panel and when a notification pops up. Sylvaris ships no sounds of its own: point `sounds.pack` at a folder holding `toggle`, `open`, `close` and `notify` files (`.oga`, `.ogg`, `.wav` or `.flac`); any you leave out stay quiet. `sounds.volume` runs from 0 to 1, and sounds play through `pw-play`.

@@ -9,7 +9,7 @@ const PAGES = {
     motion: "look.md#motion-and-performance", glass: "look.md#resin-glass", look: "look.md#looks", keybinds: "keybinds.md", eq: "parts/media.md",
     nightLight: "parts/center.md", displays: "parts/center.md#displays", hotspot: "parts/center.md#hotspot", toggleState: "configuration.md#custom-toggles",
     constellation: "parts/settings.md", performance: "look.md#motion-and-performance", iconTint: "look.md#motion-and-performance",
-    corners: "configuration.md#hot-corners"
+    corners: "configuration.md#hot-corners", sounds: "look.md#sounds"
 }
 
 function isObject(v) {

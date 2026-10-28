@@ -141,6 +141,7 @@ export const DEFAULT_SETTINGS = {
     plugins: DEFAULT_PLUGINS,
     sync: DEFAULT_SYNC,
     corners: DEFAULT_CORNERS,
+    sounds: { enabled: false, pack: "", volume: 0.5 },
     performance: "auto",
     iconTint: true,
     look: DEFAULT_LOOK,
@@ -409,6 +410,12 @@ export function validateSettings(raw, userLooks) {
     v.widgets = validateWidgets(v.widgets, v.plugins).values
     v.sync = validateSync(v.sync)
     v.corners = validateCorners(v.corners)
+    const snd = isObject(v.sounds) ? v.sounds : {}
+    v.sounds = Object.assign({}, snd, {
+        enabled: snd.enabled === true,
+        pack: typeof snd.pack === "string" ? snd.pack : "",
+        volume: typeof snd.volume === "number" && snd.volume >= 0 && snd.volume <= 1 ? snd.volume : d.sounds.volume
+    })
 
     const sw = isObject(v.switcher) ? v.switcher : {}
     v.switcher = Object.assign({}, sw, {

@@ -483,6 +483,16 @@ Explained in [configuration](../configuration.md#hot-corners).
 | `corners.dwell` | `250` |  |
 | `corners.actions` | `{}` |  |
 
+## sounds
+
+Explained in [look](../look.md#sounds).
+
+| Key | Default | Per screen |
+|---|---|:---:|
+| `sounds.enabled` | `false` |  |
+| `sounds.pack` | `""` |  |
+| `sounds.volume` | `0.5` |  |
+
 ## performance
 
 Explained in [look](../look.md#motion-and-performance).

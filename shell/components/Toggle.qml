@@ -95,6 +95,7 @@ Item {
                 ripple.at = Math.max(0, Math.min(root.width, mouse.x - 6));
                 spread.restart();
             }
+            Sounds.play("toggle");
             root.toggled(!root.checked);
         }
     }

@@ -36,6 +36,7 @@ Singleton {
         if (root.centerOpen || (root.dnd && n.urgency !== NotificationUrgency.Critical) || (root.island && I.takes(root.facts(n), Settings.values.island, n.urgency === NotificationUrgency.Critical)))
             return;
         root.toasts = N.pushToast(root.toasts, entry.id, 4);
+        Sounds.play("notify");
     }
 
     function facts(n: var): var {

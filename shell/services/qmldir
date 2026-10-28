@@ -25,6 +25,7 @@ singleton Privacy 1.0 Privacy.qml
 singleton Resin 1.0 Resin.qml
 singleton Settings 1.0 Settings.qml
 singleton Sky 1.0 Sky.qml
+singleton Sounds 1.0 Sounds.qml
 singleton Sync 1.0 Sync.qml
 singleton Theme 1.0 Theme.qml
 singleton ThemePreview 1.0 ThemePreview.qml

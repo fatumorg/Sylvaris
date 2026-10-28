@@ -106,7 +106,10 @@ Item {
                 id: iconArea
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
-                onClicked: root.iconClicked()
+                onClicked: {
+                    Sounds.play("toggle");
+                    root.iconClicked();
+                }
             }
         }
 

@@ -369,6 +369,11 @@
     "dwell": 250,
     "actions": {}
   },
+  "sounds": {
+    "enabled": false,
+    "pack": "",
+    "volume": 0.5
+  },
   "performance": "auto",
   "iconTint": true,
   "look": {
