@@ -2,3 +2,10 @@ sleep 1.5
 syl center view displays
 sleep 1.2
 shot displays
+check sylvaris brightness state | grep -q '"DP-1":0.6'
+syl brightness set 30 DP-1
+check sylvaris state | grep -q '"DP-1":0.3'
+syl brightness up 10
+check sylvaris brightness state | grep -q '"DP-1":0.4'
+sleep 0.5
+shot displays-brightness

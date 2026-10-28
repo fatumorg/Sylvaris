@@ -37,6 +37,7 @@ To show the version in fastfetch, add `{ "type": "command", "key": "DE", "text":
 | `audio` | `up [step]` `down [step]` `set <0..100>` `mute` |
 | `awake` | `toggle` `on` `off` `state`: see [Keep Awake](plugins/awake.md) |
 | `bluetooth` | `toggle` `on` `off` `connect <address>` `disconnect [address]` |
+| `brightness` | `state` `up [step] [output]` `down [step] [output]` `set <0-100\|+N\|-N> [output]` `refresh` |
 | `capture` | `toggle` `open` `close` `shot <area\|window\|screen>` `record <area\|screen>` `stop` `edit [file]` `state` |
 | `center` | `toggle` `open` `close` `view <name>` |
 | `clip` | `toggle` `open` `close` `clear` `list` `copy <n>` `state` |

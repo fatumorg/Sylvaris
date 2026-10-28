@@ -24,6 +24,8 @@ Item {
     readonly property bool virtualSelected: root.selected === VirtualDisplay.name && VirtualDisplay.active
     property bool reveal: false
 
+    Component.onCompleted: Brightness.refresh()
+
     Connections {
         target: Displays
 
@@ -429,6 +431,28 @@ Item {
                     }
                 }
             }
+        }
+
+        Slider {
+            width: parent.width
+            visible: Brightness.has(root.selected) && !root.virtualSelected
+            readonly property real level: Brightness.levels[root.selected] === undefined ? -1 : Brightness.levels[root.selected]
+            value: Math.max(0, level)
+            icon: Icons.GLYPHS.brightness
+            label: level < 0 ? "Reading…" : Math.round(level * 100) + "%"
+            trailing: Brightness.has(root.selected) && Brightness.targets[root.selected].kind === "backlight" ? "Backlight" : "Monitor"
+            onMoved: v => Brightness.set(root.selected, v)
+        }
+
+        Text {
+            textFormat: Text.PlainText
+            width: parent.width
+            visible: Brightness.error !== ""
+            wrapMode: Text.WordWrap
+            text: Brightness.error
+            color: Theme.danger
+            font.family: Tokens.fontUi
+            font.pixelSize: Tokens.smallSize
         }
     }
 

@@ -5,6 +5,8 @@
   callPackage,
   sylstack ? callPackage ./sylstack.nix { },
   wlr-randr,
+  brightnessctl,
+  ddcutil,
   wayvnc,
   openssl,
   iproute2,
@@ -46,6 +48,8 @@ let
     ];
     center = [
       wlr-randr
+      brightnessctl
+      ddcutil
       wayvnc
       openssl
       iproute2

@@ -4,6 +4,7 @@ singleton Audio 1.0 Audio.qml
 singleton Awake 1.0 Awake.qml
 singleton Battery 1.0 Battery.qml
 singleton BluetoothService 1.0 BluetoothService.qml
+singleton Brightness 1.0 Brightness.qml
 singleton Compositor 1.0 Compositor.qml
 singleton Config 1.0 Config.qml
 singleton Demo 1.0 Demo.qml

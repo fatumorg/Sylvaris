@@ -150,3 +150,71 @@ export function canApply(snap) {
     }
     return false
 }
+
+export function parseDdc(text) {
+    const out = []
+    for (const block of String(text).split(/\n\s*\n/)) {
+        if (!/^\s*Display \d+/.test(block))
+            continue
+        const bus = block.match(/I2C bus:\s*\/dev\/i2c-(\d+)/)
+        const drm = block.match(/DRM connector:\s*card\d+-(\S+)/)
+        if (bus !== null && drm !== null)
+            out.push({ output: drm[1], bus: bus[1] })
+    }
+    return out
+}
+
+export function parseVcp(text) {
+    const out = {}
+    let bus = ""
+    for (const line of String(text).split("\n")) {
+        const head = line.match(/^bus (\d+)$/)
+        if (head !== null) {
+            bus = head[1]
+            continue
+        }
+        const vcp = line.match(/^VCP 10 C (\d+) (\d+)/)
+        if (vcp !== null && bus !== "" && Number(vcp[2]) > 0)
+            out[bus] = Math.min(1, Number(vcp[1]) / Number(vcp[2]))
+    }
+    return out
+}
+
+export function parseBacklight(text) {
+    const out = []
+    for (const line of String(text).split("\n")) {
+        const f = line.split(",")
+        if (f.length < 5 || f[1] !== "backlight" || !(Number(f[4]) > 0))
+            continue
+        out.push({ id: f[0], level: Math.min(1, Number(f[2]) / Number(f[4])) })
+    }
+    return out
+}
+
+export function brightnessTargets(names, ddc, backlights) {
+    const out = {}
+    const panel = names.find(n => /^(eDP|LVDS|DSI)-/.test(n))
+    if (panel !== undefined && backlights.length > 0)
+        out[panel] = { kind: "backlight", id: backlights[0].id, level: backlights[0].level }
+    for (const d of ddc) {
+        if (names.indexOf(d.output) >= 0 && out[d.output] === undefined)
+            out[d.output] = { kind: "ddc", id: d.bus, level: -1 }
+    }
+    return out
+}
+
+export function stepLevel(level, arg) {
+    const m = String(arg).match(/^([+-]?)(\d+(?:\.\d+)?)%?$/)
+    if (m === null)
+        return null
+    const n = Number(m[2]) / 100
+    const v = m[1] === "+" ? level + n : m[1] === "-" ? level - n : n
+    return Math.round(Math.max(0, Math.min(1, v)) * 100) / 100
+}
+
+export function brightnessArgs(target, level) {
+    const pct = Math.round(Math.max(0, Math.min(1, level)) * 100)
+    if (target.kind === "backlight")
+        return ["brightnessctl", "-q", "-d", target.id, "set", Math.max(1, pct) + "%"]
+    return ["ddcutil", "setvcp", "10", String(pct), "--bus", target.id, "--noverify"]
+}

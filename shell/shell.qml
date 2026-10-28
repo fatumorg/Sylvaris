@@ -92,6 +92,7 @@ ShellRoot {
             NetworkService: () => NetworkService,
             Hotspot: () => Hotspot,
             Displays: () => Displays,
+            Brightness: () => Brightness,
             VirtualDisplay: () => VirtualDisplay,
             Plugins: () => Plugins,
             Sync: () => Sync
@@ -222,6 +223,15 @@ ShellRoot {
                 countdown: Displays.countdown,
                 enabled: Object.keys(Displays.current).filter(k => Displays.current[k].enabled),
                 error: Displays.error
+            } : undefined,
+            brightness: root.on("Brightness") ? {
+                available: Brightness.available,
+                levels: Brightness.levels,
+                kinds: Object.keys(Brightness.targets).reduce((o, k) => {
+                    o[k] = Brightness.targets[k].kind;
+                    return o;
+                }, {}),
+                error: Brightness.error
             } : undefined,
             virtualDisplay: root.on("VirtualDisplay") ? {
                 available: VirtualDisplay.available,
@@ -661,6 +671,7 @@ ShellRoot {
             eq: "Equalizer",
             headphones: "Headphones",
             nightlight: "NightLight",
+            brightness: "Brightness",
             dnd: "Dnd",
             wifi: "NetworkService",
             bluetooth: "BluetoothService"
@@ -1100,6 +1111,18 @@ ShellRoot {
                 on: () => Privacy.set(true),
                 off: () => Privacy.set(false),
                 state: () => Privacy.state()
+            },
+            brightness: {
+                default: "state",
+                up: (step, output) => Brightness.step(output || "", "+" + Number(step || 5)),
+                down: (step, output) => Brightness.step(output || "", "-" + Number(step || 5)),
+                set: (v, output) => {
+                    if (v === undefined)
+                        throw new Error("usage: brightness set <0-100|+N|-N> [output]");
+                    return output === undefined ? Brightness.stepAll(String(v)) : Brightness.step(output, String(v));
+                },
+                state: () => Brightness.levels,
+                refresh: () => Brightness.refresh()
             },
             nightlight: {
                 toggle: () => NightLight.setEnabled(!NightLight.enabled),
