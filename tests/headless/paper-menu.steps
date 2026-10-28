@@ -1,0 +1,13 @@
+sleep 1.5
+syl paper menu
+sleep 1
+shot paper-menu
+bg wtype -k Shift_L -s 400 -k Escape
+sleep 1
+pointer move 1500 900 pause 0.2 move 1502 902 click 3
+sleep 1
+shot paper-menu-click
+pointer move 1560 930 pause 0.2 move 1562 932 click 1
+sleep 1
+shot paper-menu-closed
+check sylvaris widgets state | grep -q '"editing":true'

@@ -10,6 +10,7 @@ PanelWindow {
     id: root
 
     required property var modelData
+    property var host: null
     readonly property var cfg: Settings.at(root.modelData.name).paper
     readonly property string path: S.expandHome(W.resolve(root.cfg, Theme.currentId, Theme.wallpaper, root.modelData.name), Stack.env("HOME"))
     property bool flip: false
@@ -173,5 +174,12 @@ PanelWindow {
         anchors.fill: parent
         visible: root.cfg.dim > 0
         color: Qt.alpha("#000000", root.cfg.dim)
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        enabled: root.host !== null
+        acceptedButtons: Qt.RightButton
+        onClicked: m => root.host.showMenu(root.modelData, m.x, m.y)
     }
 }

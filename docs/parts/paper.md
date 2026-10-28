@@ -9,7 +9,10 @@ sylvaris paper next          # also: prev
 sylvaris paper set ~/Pictures/wallpapers/lake.jpg
 sylvaris paper reset         # back to the theme's own wallpaper
 sylvaris paper current
+sylvaris paper menu          # the desktop menu, in the middle of the focused screen
 ```
+
+Right-click the wallpaper for the desktop menu: edit widgets, the next wallpaper, the picker, your Look and SylSettings.
 
 | Key (`paper.`) | Default | Meaning |
 |---|---|---|

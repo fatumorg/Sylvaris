@@ -4,6 +4,7 @@ import SylStack
 import qs
 import qs.services
 import qs.components
+import qs.files
 import "../lib/paper.mjs" as W
 import "../lib/settings.mjs" as S
 import "../lib/icons.mjs" as Icons
@@ -15,6 +16,8 @@ Popup {
     readonly property string folderPath: S.expandHome(root.cfg.folder, Stack.env("HOME"))
     readonly property string current: S.expandHome(W.resolve(root.cfg, Theme.currentId, Theme.wallpaper, root.screenInfo ? root.screenInfo.name : ""), Stack.env("HOME"))
     property string scope: "theme"
+    property var menuAt: null
+    property var menuScreen: null
 
     namespace: "sylpaper-picker"
     corner: "center"
@@ -62,10 +65,107 @@ Popup {
         root.pick(list[(at + d + list.length) % list.length]);
     }
 
+    function showMenu(screen: var, x: real, y: real): void {
+        desk.menu = null;
+        root.menuScreen = screen;
+        root.menuAt = {
+            screen: screen,
+            x: x,
+            y: y
+        };
+    }
+
+    function menu(): void {
+        const screen = Compositor.screenFor(Compositor.focusedName());
+        if (screen === null)
+            throw new Error("there is no screen to show the menu on");
+        root.showMenu(screen, screen.width / 2 - 130, screen.height / 2 - 100);
+    }
+
     Variants {
         model: root.cfg.enabled ? Stack.screens : []
 
-        delegate: PaperLayer {}
+        delegate: PaperLayer {
+            host: root
+        }
+    }
+
+    QtObject {
+        id: desk
+
+        property var menu: null
+        property var keys: ({
+                byAction: ({})
+            })
+        property string dialog: ""
+        property string renaming: ""
+        property bool asking: false
+
+        signal focusView
+
+        function act(id: string): void {
+        }
+
+        function menuOf(at: var, item: var): var {
+            const sep = {
+                sep: true
+            };
+            const run = words => () => Ipc.run(words);
+            const out = [];
+            if (Settings.values.parts.widgets)
+                out.push(item("Edit widgets", Icons.GLYPHS.pencil, "", {
+                    run: run(["widgets", "edit"])
+                }), sep);
+            out.push(item("Next wallpaper", Icons.GLYPHS.image, "", {
+                run: () => root.step(1),
+                enabled: folder.count > 1
+            }), item("Choose a wallpaper…", Icons.GLYPHS.image, "", {
+                run: () => root.toggleOn(at.screen)
+            }), sep, item("Look…", Icons.GLYPHS.palette, "", {
+                run: run(["settings", "open", "look"])
+            }), item("Settings…", Icons.GLYPHS.tune, "", {
+                run: run(["settings", "open"])
+            }));
+            return out;
+        }
+
+        onMenuChanged: {
+            if (desk.menu === null)
+                Qt.callLater(() => {
+                    if (desk.menu === null)
+                        root.menuAt = null;
+                });
+        }
+    }
+
+    LazyLoader {
+        active: root.menuAt !== null
+
+        PanelWindow {
+            screen: root.menuScreen
+            anchors {
+                top: true
+                bottom: true
+                left: true
+                right: true
+            }
+            color: "transparent"
+            exclusionMode: ExclusionMode.Ignore
+            WlrLayershell.layer: WlrLayer.Overlay
+            WlrLayershell.namespace: "sylpaper-menu"
+            WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+
+            FilesMenu {
+                anchors.fill: parent
+                files: desk
+            }
+
+            Component.onCompleted: desk.menu = {
+                x: root.menuAt.x,
+                y: root.menuAt.y,
+                screen: root.menuAt.screen
+            }
+        }
     }
 
     FolderListModel {

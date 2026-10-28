@@ -895,6 +895,7 @@ ShellRoot {
                 close: () => root.need("paper").close(),
                 set: (...p) => root.need("paper").set(p.join(" ")),
                 next: () => root.need("paper").step(1),
+                menu: () => root.need("paper").menu(),
                 prev: () => root.need("paper").step(-1),
                 reset: () => root.need("paper").reset(),
                 current: () => root.need("paper").current
