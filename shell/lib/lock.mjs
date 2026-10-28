@@ -1,5 +1,6 @@
 export const PAM_SERVICES = ["sylvaris", "hyprlock", "swaylock", "login"]
-export const DEFAULT_LOCK = { pam: "", logind: false, seconds: false }
+export const LOCK_FACES = ["default", "digital", "flip", "analog", "word", "giant"]
+export const DEFAULT_LOCK = { pam: "", logind: false, seconds: false, face: "default" }
 
 export function pamService(setting, existing) {
     if (setting)
@@ -28,6 +29,7 @@ export function validateLock(raw) {
     return Object.assign({}, v, {
         pam: typeof v.pam === "string" && /^[a-z0-9._-]*$/.test(v.pam) && v.pam.indexOf("..") < 0 ? v.pam : DEFAULT_LOCK.pam,
         logind: v.logind === true,
-        seconds: v.seconds === true
+        seconds: v.seconds === true,
+        face: LOCK_FACES.indexOf(v.face) >= 0 ? v.face : DEFAULT_LOCK.face
     })
 }

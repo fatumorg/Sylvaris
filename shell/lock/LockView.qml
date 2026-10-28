@@ -45,7 +45,21 @@ Item {
         dim: 0.45
     }
 
+    ClockFace {
+        visible: root.lock.cfg.face !== "default"
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: Math.round(parent.height * 0.08 + (1 - root.reveal) * -30)
+        width: Math.min(parent.width * 0.7, 900)
+        height: Math.round(parent.height * 0.36)
+        opacity: root.reveal
+        face: root.lock.cfg.face === "default" ? "digital" : root.lock.cfg.face
+        seconds: root.lock.cfg.seconds
+        dateFormat: "dddd, d MMMM"
+        paused: !visible
+    }
+
     Column {
+        visible: root.lock.cfg.face === "default"
         anchors.horizontalCenter: parent.horizontalCenter
         y: Math.round(parent.height * 0.14 + (1 - root.reveal) * -30)
         opacity: root.reveal

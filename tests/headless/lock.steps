@@ -27,6 +27,13 @@ syl lock now
 sleep 2.5
 shot lock-relock
 check grep -q '"locked":true' "$XDG_RUNTIME_DIR/sylvaris/lock.json"
+syl set lock.face giant
+sleep 1
+shot lock-giant
+syl set lock.face flip
+sleep 1
+shot lock-flip
+syl set lock.face default
 syl lock now
 sleep 7
 syl state lock

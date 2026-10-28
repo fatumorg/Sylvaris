@@ -3,6 +3,7 @@ import qs
 import qs.services
 import qs.components
 import "../lib/icons.mjs" as Icons
+import "../lib/lock.mjs" as L
 
 Column {
     id: root
@@ -114,6 +115,29 @@ Column {
                 ]
                 current: root.cfg.pam
                 onPicked: key => Settings.put("lock.pam", key)
+            }
+        }
+
+        SettingRow {
+            title: "Clock face"
+            key: "lock.face"
+            subtitle: "The same faces as the clock widget"
+        }
+
+        Flow {
+            width: parent.width
+            spacing: 6
+            bottomPadding: 8
+
+            Repeater {
+                model: L.LOCK_FACES
+
+                delegate: Chip {
+                    required property string modelData
+                    text: modelData.charAt(0).toUpperCase() + modelData.slice(1)
+                    lit: root.cfg.face === modelData
+                    onClicked: Settings.put("lock.face", modelData)
+                }
             }
         }
 

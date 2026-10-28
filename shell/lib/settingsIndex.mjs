@@ -107,6 +107,7 @@ const ROWS = [
     {key: "pad.columns", title: "Columns", tab: "launcher"},
     {key: "pad.rows", title: "Rows", tab: "launcher"},
     {key: "lock.pam", title: "PAM service", tab: "lock", advanced: true, words: ["password", "fingerprint", "authentication"]},
+    {key: "lock.face", title: "Clock face", tab: "lock", subtitle: "The same faces as the clock widget", words: ["flip", "analog", "word", "giant", "digital"]},
     {key: "lock.seconds", title: "Show seconds", tab: "lock", subtitle: "On the lock screen clock"},
     {key: "lock.logind", title: "Lock when the system asks", tab: "lock", subtitle: "Also lock on “loginctl lock-session”, for example from an idle daemon. Turn off any other locker first.", advanced: true},
     {key: "lock.now", title: "Lock now", tab: "lock", subtitle: "Try it out"},

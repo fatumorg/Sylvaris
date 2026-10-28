@@ -13,5 +13,6 @@ Passwords are checked by PAM with the first of the `sylvaris`, `hyprlock`, `sway
 | `pam` | `""` | PAM service; empty picks the first one that exists |
 | `logind` | `false` | lock whenever something runs `loginctl lock-session`, such as hypridle |
 | `seconds` | `false` | show seconds on the clock |
+| `face` | `default` | the clock: `default`, or one of the clock widget faces, `digital`, `flip`, `analog`, `word` or `giant` |
 
 Set `lockCommand` in `config.json` to `sylvaris lock` so SylPower's Lock uses it.

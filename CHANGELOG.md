@@ -9,6 +9,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - The bar has two more styles, `float` (one floating pill) and `minimal` (a thin line), and `bar.workspaceStyle` draws workspaces as dots, numbers, pills or app icons
 - SylCenter has a bento layout, `center.layout = "bento"`: two wide tiles over small squares that slide into place
 - Notifications can stack as a fanned deck of cards that spreads when you point at it (`notifications.stack = "cards"`)
+- The lock screen can show the clock widget's faces: flip, analog, word, giant or digital (`lock.face`)
 
 ## [1.4.0] - 2026-10-28
 

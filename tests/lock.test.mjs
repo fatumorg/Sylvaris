@@ -32,4 +32,7 @@ test("validateLock keeps a safe service name and booleans", () => {
     assert.equal(validateLock({}).seconds, false)
     assert.equal(validateLock({ seconds: true }).seconds, true)
     assert.equal(validateLock({ seconds: "yes" }).seconds, false)
+    assert.equal(validateLock({}).face, "default")
+    assert.equal(validateLock({ face: "flip" }).face, "flip")
+    assert.equal(validateLock({ face: "orbit" }).face, "default")
 })

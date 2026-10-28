@@ -175,7 +175,8 @@
   "lock": {
     "pam": "",
     "logind": false,
-    "seconds": false
+    "seconds": false,
+    "face": "default"
   },
   "clip": {
     "limit": 50,

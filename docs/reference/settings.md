@@ -233,6 +233,7 @@ Explained in [lock](../parts/lock.md).
 | `lock.pam` | `""` |  |
 | `lock.logind` | `false` |  |
 | `lock.seconds` | `false` |  |
+| `lock.face` | `"default"` |  |
 
 ## clip
 
