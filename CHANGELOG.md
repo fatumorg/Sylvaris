@@ -4,6 +4,8 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-10-28
+
 ### Added
 
 - Looks: `look.preset` picks a whole style (Lumen, the new default, plus Classic for the 1.1 look, Frost, Ink, Neon and Paper), and keys under `look` override its material, corners, radius, density, fonts, weight, shadow, grain, highlight, glow, accent and per-part material
@@ -344,7 +346,8 @@ The first official release, out of beta.
 - Relock a lock screen that is still closing and report locks that fail
 - Never prompt or hang on plugin clones and unfreeze settings once the file is gone
 
-[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/fatumorg/Sylvaris/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/fatumorg/Sylvaris/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/fatumorg/Sylvaris/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/fatumorg/Sylvaris/compare/v0.4.2...v1.0.0
