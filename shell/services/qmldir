@@ -15,6 +15,7 @@ singleton Headphones 1.0 Headphones.qml
 singleton Hotspot 1.0 Hotspot.qml
 singleton Ipc 1.0 Ipc.qml
 singleton Keybinds 1.0 Keybinds.qml
+singleton Look 1.0 Look.qml
 singleton Media 1.0 Media.qml
 singleton NetworkService 1.0 NetworkService.qml
 singleton NightLight 1.0 NightLight.qml

@@ -97,7 +97,7 @@ ShellRoot {
             Plugins: () => Plugins,
             Sync: () => Sync
         })
-    readonly property var boot: [Tokens, Ipc, Config, Settings, Theme, Resin, Compositor, Keybinds].concat(root.live.filter(name => root.services[name] !== undefined).map(name => root.services[name]()))
+    readonly property var boot: [Tokens, Ipc, Config, Settings, Look, Theme, Resin, Compositor, Keybinds].concat(root.live.filter(name => root.services[name] !== undefined).map(name => root.services[name]()))
 
     readonly property var openPanel: {
         for (const name of ["center", "clock", "media", "notify", "paper", "clip", "capture", "access", "diver", "fatest", "rgb"]) {
@@ -289,7 +289,17 @@ ShellRoot {
             settingsNotice: Settings.notice,
             glass: {
                 values: Resin.values,
-                notice: Resin.notice
+                notice: Look.notice
+            },
+            look: {
+                preset: Look.values.preset,
+                material: Look.material,
+                corners: Look.corners,
+                radius: Look.radius,
+                density: Look.density,
+                fonts: Look.fonts,
+                user: Object.keys(Look.userLooks),
+                notice: Look.notice
             },
             theme: {
                 id: Theme.currentId,
@@ -1189,6 +1199,8 @@ ShellRoot {
         }
         return out;
     }
+
+    LookBindings {}
 
     Binding {
         target: Tokens

@@ -32,7 +32,7 @@ MiniScreen {
 
         Rectangle {
             anchors.fill: parent
-            radius: 6
+            radius: Tokens.r(6)
             color: Qt.alpha(Theme.surface, 0.92)
             border.width: 1
             border.color: Theme.line
@@ -44,7 +44,7 @@ MiniScreen {
             y: 5
             width: win.width * 0.24
             height: win.height - 10
-            radius: 4
+            radius: Tokens.r(4)
             color: Qt.alpha(Theme.text, 0.08)
 
             Column {
@@ -72,7 +72,7 @@ MiniScreen {
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: side.width - 14
                     height: 8
-                    radius: 4
+                    radius: Tokens.r(4)
                     color: Theme.accent
                 }
 
@@ -80,7 +80,7 @@ MiniScreen {
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: side.width - 14
                     height: 8
-                    radius: 4
+                    radius: Tokens.r(4)
                     color: Qt.alpha(Theme.text, 0.16)
                 }
             }

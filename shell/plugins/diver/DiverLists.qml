@@ -76,7 +76,7 @@ Item {
 
         Glass {
             anchors.fill: parent
-            radius: 12
+            radius: Tokens.r(12)
             inner: true
             visible: node.selectable && root.current === node.path || nodeArea.containsMouse
             lit: node.selectable && root.current === node.path

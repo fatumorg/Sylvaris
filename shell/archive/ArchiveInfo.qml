@@ -64,7 +64,7 @@ Item {
                     anchors.centerIn: parent
                     width: 96
                     height: 96
-                    radius: 28
+                    radius: Tokens.r(28)
                     inner: true
                     flowing: false
                     offColor: Theme.tintMid

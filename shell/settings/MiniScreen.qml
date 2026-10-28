@@ -43,7 +43,7 @@ Item {
 
         Rectangle {
             anchors.fill: parent
-            radius: 12
+            radius: Tokens.r(12)
             color: Theme.base
             border.width: 1
             border.color: Theme.line
@@ -110,7 +110,7 @@ Item {
                         delegate: Rectangle {
                             width: 4
                             height: 4
-                            radius: 2
+                            radius: Tokens.r(2)
                             color: index === 0 ? Theme.accent : Qt.alpha(Theme.text, 0.6)
                         }
                     }

@@ -129,7 +129,7 @@ Item {
                 y: baseY + dy
                 width: o.width / o.scale * root.fit.factor
                 height: o.height / o.scale * root.fit.factor
-                radius: 8
+                radius: Tokens.r(8)
                 color: modelData === root.selected ? Theme.fill : "transparent"
 
                 Behavior on color {
@@ -208,7 +208,7 @@ Item {
                     required property string modelData
                     width: chipText.implicitWidth + 28
                     height: 34
-                    radius: 17
+                    radius: Tokens.r(17)
                     color: modelData === root.selected ? Qt.alpha(Theme.accent, Resin.litAlpha) : "transparent"
 
                     Behavior on color {
@@ -339,7 +339,7 @@ Item {
                     readonly property bool on: root.selectedDraft !== null && root.selectedDraft.width === modelData.width && root.selectedDraft.height === modelData.height && Math.abs(root.selectedDraft.refresh - modelData.refresh) < 0.01
                     width: modeText.implicitWidth + 24
                     height: 32
-                    radius: 10
+                    radius: Tokens.r(10)
                     color: on ? Theme.fill : "transparent"
 
                     Behavior on color {
@@ -393,7 +393,7 @@ Item {
                     readonly property bool on: root.selectedDraft !== null && Math.abs(root.selectedDraft.scale - modelData) < 0.001
                     width: 64
                     height: 32
-                    radius: 10
+                    radius: Tokens.r(10)
                     color: on ? Theme.fill : "transparent"
 
                     Behavior on color {

@@ -187,9 +187,9 @@ Popup {
                             maximumLineCount: 2
                             elide: Text.ElideRight
                             color: Theme.text
-                            font.family: Tokens.fontUi
+                            font.family: Tokens.fontDisplay
                             font.pixelSize: Tokens.titleSize + 2
-                            font.weight: Font.DemiBold
+                            font.weight: Tokens.titleWeight
                         }
 
                         Text {
@@ -237,13 +237,13 @@ Popup {
                         y: 4
                         width: parent.width
                         height: 6
-                        radius: 3
+                        radius: Tokens.r(3)
                         color: Qt.alpha(Theme.text, 0.14)
 
                         Rectangle {
                             width: parent.width * Math.min(1, Media.position / Math.max(1, Media.length))
                             height: parent.height
-                            radius: 3
+                            radius: Tokens.r(3)
                             color: Theme.accent
                         }
 
@@ -451,9 +451,9 @@ Popup {
                         anchors.verticalCenter: parent.verticalCenter
                         text: "Equalizer"
                         color: Theme.text
-                        font.family: Tokens.fontUi
+                        font.family: Tokens.fontDisplay
                         font.pixelSize: Tokens.titleSize
-                        font.weight: Font.DemiBold
+                        font.weight: Tokens.titleWeight
                     }
 
                     Toggle {
@@ -563,12 +563,12 @@ Popup {
                                     y: bandItem.railTop
                                     width: 4
                                     height: Tokens.eqHeight
-                                    radius: 2
+                                    radius: Tokens.r(2)
                                     color: Qt.alpha(Theme.text, 0.1)
 
                                     Rectangle {
                                         width: parent.width
-                                        radius: 2
+                                        radius: Tokens.r(2)
                                         color: Theme.accent
                                         y: bandItem.gain >= 0 ? rail.height / 2 - rail.height / 2 * bandItem.gain / E.LIMIT : rail.height / 2
                                         height: Math.abs(bandItem.gain) / E.LIMIT * rail.height / 2
@@ -580,7 +580,7 @@ Popup {
                                     y: bandItem.railTop + rail.height / 2 - rail.height / 2 * bandItem.gain / E.LIMIT - height / 2
                                     width: 18
                                     height: 18
-                                    radius: 9
+                                    radius: Tokens.r(9)
                                     color: Theme.text
                                     border.width: 3
                                     border.color: Theme.accent
@@ -699,9 +699,9 @@ Popup {
                     textFormat: Text.PlainText
                     text: "Batteries"
                     color: Theme.text
-                    font.family: Tokens.fontUi
+                    font.family: Tokens.fontDisplay
                     font.pixelSize: Tokens.titleSize
-                    font.weight: Font.DemiBold
+                    font.weight: Tokens.titleWeight
                 }
 
                 Text {
@@ -749,13 +749,13 @@ Popup {
                             anchors.verticalCenter: parent.verticalCenter
                             width: 90
                             height: 6
-                            radius: 3
+                            radius: Tokens.r(3)
                             color: Qt.alpha(Theme.text, 0.12)
 
                             Rectangle {
                                 width: parent.width * modelData.level / 100
                                 height: parent.height
-                                radius: 3
+                                radius: Tokens.r(3)
                                 color: modelData.level < 20 ? Theme.danger : Theme.accent
                             }
                         }

@@ -124,7 +124,7 @@ Item {
                     x: 16
                     width: parent.width - 16
                     height: parent.height
-                    radius: 8
+                    radius: Tokens.r(8)
                     color: Qt.alpha(Theme.text, 0.07)
                     opacity: rowArea.containsMouse ? 1 : 0
 
@@ -151,7 +151,7 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     width: 14
                     height: 14
-                    radius: 7
+                    radius: Tokens.r(7)
                     color: tickArea.containsMouse ? Qt.alpha(Theme.accent, 0.4) : "transparent"
                     border.width: 1.5
                     border.color: entry.modelData.task.alarm ? Theme.danger : Theme.accent
@@ -209,7 +209,7 @@ Item {
 
         Rectangle {
             anchors.fill: parent
-            radius: 10
+            radius: Tokens.r(10)
             color: Qt.alpha(Theme.text, 0.06)
             border.width: 1
             border.color: input.activeFocus ? Theme.accent : Qt.alpha(Theme.text, 0.1)

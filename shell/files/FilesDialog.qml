@@ -131,9 +131,9 @@ FocusScope {
                             openWith: "Open " + dialog.what + " with"
                         })[dialog.kind] || ""
                     color: Theme.text
-                    font.family: Tokens.fontUi
+                    font.family: Tokens.fontDisplay
                     font.pixelSize: Tokens.titleSize
-                    font.weight: Font.DemiBold
+                    font.weight: Tokens.titleWeight
                 }
             }
 
@@ -232,7 +232,7 @@ FocusScope {
 
                     Glass {
                         anchors.fill: parent
-                        radius: 12
+                        radius: Tokens.r(12)
                         inner: true
                         flowing: false
                         hot: appArea.containsMouse

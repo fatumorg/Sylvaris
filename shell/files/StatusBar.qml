@@ -40,7 +40,7 @@ Item {
 
             Rectangle {
                 anchors.fill: parent
-                radius: 3
+                radius: Tokens.r(3)
                 color: Qt.alpha(Theme.text, 0.12)
             }
 
@@ -48,7 +48,7 @@ Item {
                 width: status.files.total > 0 ? parent.width * status.share : parent.width * 0.3
                 x: status.files.total > 0 ? 0 : (parent.width - width) * (0.5 + 0.5 * Math.sin(sweep.t))
                 height: parent.height
-                radius: 3
+                radius: Tokens.r(3)
                 color: Theme.accent
 
                 Behavior on width {

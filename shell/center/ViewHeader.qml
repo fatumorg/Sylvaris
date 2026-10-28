@@ -37,8 +37,8 @@ Item {
         anchors.verticalCenter: arrow.verticalCenter
         text: root.title
         color: Theme.text
-        font.family: Tokens.fontUi
+        font.family: Tokens.fontDisplay
         font.pixelSize: Tokens.titleSize
-        font.weight: Font.DemiBold
+        font.weight: Tokens.titleWeight
     }
 }

@@ -31,7 +31,7 @@ MiniScreen {
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: 34
                     height: 34
-                    radius: 17
+                    radius: Tokens.r(17)
                     color: index === 0 ? Theme.accent : Qt.alpha(Theme.surface, 0.9)
                     border.width: 1
                     border.color: Theme.line

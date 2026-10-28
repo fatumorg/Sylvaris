@@ -101,9 +101,9 @@ Popup {
                     textFormat: Text.PlainText
                     text: "SylPaper"
                     color: Theme.text
-                    font.family: Tokens.fontUi
+                    font.family: Tokens.fontDisplay
                     font.pixelSize: Tokens.titleSize + 3
-                    font.weight: Font.DemiBold
+                    font.weight: Tokens.titleWeight
                 }
 
                 Text {

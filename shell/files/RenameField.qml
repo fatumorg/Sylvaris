@@ -30,7 +30,7 @@ Item {
 
     Glass {
         anchors.fill: parent
-        radius: 8
+        radius: Tokens.r(8)
         raised: true
         flowing: false
         offColor: Theme.surface
@@ -39,7 +39,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: 8
+        radius: Tokens.r(8)
         color: "transparent"
         border.width: 1.5
         border.color: root.files.renameError === "" ? Theme.accent : Theme.danger

@@ -362,7 +362,7 @@ Popup {
                         anchors.centerIn: parent
                         width: 20
                         height: 20
-                        radius: 10
+                        radius: Tokens.r(10)
                         antialiasing: true
                         color: sunBody.tone
                         border.width: 2
@@ -458,7 +458,7 @@ Popup {
                         color: Theme.text
                         font.family: Tokens.fontMono
                         font.pixelSize: Tokens.titleSize
-                        font.weight: Font.DemiBold
+                        font.weight: Tokens.titleWeight
                     }
                 }
             }
@@ -678,7 +678,7 @@ Popup {
                             anchors.bottomMargin: -3
                             width: dayCell.count > 1 ? 9 : 4
                             height: 4
-                            radius: 2
+                            radius: Tokens.r(2)
                             visible: dayCell.count > 0
                             color: dayCell.isToday ? Theme.onAccent : Theme.accent
                             z: 2
@@ -898,7 +898,7 @@ Popup {
                         y: 34 + weatherCard.tempY(modelData.temp) - 3
                         width: 6
                         height: 6
-                        radius: 3
+                        radius: Tokens.r(3)
                         color: Theme.accent
                     }
 

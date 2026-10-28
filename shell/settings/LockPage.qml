@@ -55,7 +55,7 @@ Column {
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: 44
                     height: 44
-                    radius: 22
+                    radius: Tokens.r(22)
                     color: "transparent"
                     border.width: 2
                     border.color: Qt.alpha(Theme.accentHi, 0.7)
@@ -72,7 +72,7 @@ Column {
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: 180
                     height: 28
-                    radius: 14
+                    radius: Tokens.r(14)
                     color: Theme.tintMid
                     border.width: 1
                     border.color: Theme.cardLine

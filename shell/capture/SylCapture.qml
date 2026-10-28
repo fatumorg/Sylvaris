@@ -259,7 +259,7 @@ Popup {
                         anchors.verticalCenter: parent.verticalCenter
                         width: 10
                         height: 10
-                        radius: 5
+                        radius: Tokens.r(5)
                         color: Theme.danger
 
                         SequentialAnimation on opacity {
@@ -290,14 +290,14 @@ Popup {
                         anchors.verticalCenter: parent.verticalCenter
                         width: 26
                         height: 26
-                        radius: 13
+                        radius: Tokens.r(13)
                         color: stopArea.containsMouse ? Theme.danger : Qt.alpha(Theme.danger, 0.75)
 
                         Rectangle {
                             anchors.centerIn: parent
                             width: 9
                             height: 9
-                            radius: 2
+                            radius: Tokens.r(2)
                             color: Theme.base
                         }
 
@@ -334,9 +334,9 @@ Popup {
                 anchors.verticalCenter: parent.verticalCenter
                 text: "Capture"
                 color: Theme.text
-                font.family: Tokens.fontUi
+                font.family: Tokens.fontDisplay
                 font.pixelSize: Tokens.titleSize
-                font.weight: Font.DemiBold
+                font.weight: Tokens.titleWeight
             }
         }
 

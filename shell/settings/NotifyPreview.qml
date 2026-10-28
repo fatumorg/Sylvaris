@@ -1,4 +1,5 @@
 import QtQuick
+import qs
 import qs.services
 import "../lib/bar.mjs" as B
 
@@ -17,7 +18,7 @@ MiniScreen {
             y: at.y + (root.corner.indexOf("bottom") === 0 ? (1 - index) : index) * 106 * root.k
             width: 380 * root.k
             height: 96 * root.k
-            radius: 6
+            radius: Tokens.r(6)
             opacity: Settings.shown.notifications.dnd ? 0.25 : 1
             color: Qt.alpha(Theme.surface, 0.92)
             border.width: 1
@@ -40,7 +41,7 @@ MiniScreen {
                 Rectangle {
                     width: 60
                     height: 4
-                    radius: 2
+                    radius: Tokens.r(2)
                     color: Theme.text
                 }
 

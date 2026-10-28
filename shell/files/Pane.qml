@@ -255,7 +255,7 @@ FocusScope {
                 Glass {
                     anchors.fill: parent
                     anchors.margins: 2
-                    radius: 8
+                    radius: Tokens.r(8)
                     inner: true
                     flowing: false
                     hot: colArea.containsMouse
@@ -431,7 +431,7 @@ FocusScope {
             y: Math.min(pane.origin.y, pane.reach.y) - pane.view.contentY + pane.view.y
             width: Math.abs(pane.reach.x - pane.origin.x)
             height: Math.abs(pane.reach.y - pane.origin.y)
-            radius: 6
+            radius: Tokens.r(6)
             color: Qt.alpha(Theme.accent, 0.14)
             border.width: 1
             border.color: Qt.alpha(Theme.accent, 0.7)
@@ -546,9 +546,9 @@ FocusScope {
                         inside: "Nothing in here"
                     })[empty.kind]
                 color: Theme.text
-                font.family: Tokens.fontUi
+                font.family: Tokens.fontDisplay
                 font.pixelSize: Tokens.titleSize
-                font.weight: Font.DemiBold
+                font.weight: Tokens.titleWeight
                 wrapMode: Text.Wrap
             }
 

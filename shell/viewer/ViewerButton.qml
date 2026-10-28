@@ -32,7 +32,7 @@ Item {
 
     Rectangle {
         anchors.fill: parent
-        radius: 13
+        radius: Tokens.r(13)
         color: root.danger ? (area.pressed ? Qt.darker(Theme.danger, 1.2) : Theme.danger) : root.strong ? (area.pressed ? Qt.darker(Theme.accent, 1.15) : area.containsMouse ? Theme.accentHi : Theme.accent) : root.lit ? Qt.alpha(Theme.accent, area.pressed ? 0.45 : area.containsMouse ? 0.35 : 0.24) : area.pressed ? Qt.alpha(Theme.text, 0.18) : area.containsMouse || root.activeFocus ? Qt.alpha(Theme.text, 0.1) : "transparent"
         border.width: root.activeFocus ? 1 : 0
         border.color: Theme.accent
@@ -61,7 +61,7 @@ Item {
 
         Glass {
             anchors.fill: parent
-            radius: 8
+            radius: Tokens.r(8)
             raised: true
             flowing: false
             offColor: Theme.surface

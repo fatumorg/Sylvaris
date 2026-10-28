@@ -29,7 +29,7 @@ MiniScreen {
 
         Rectangle {
             anchors.fill: parent
-            radius: 6
+            radius: Tokens.r(6)
             color: Qt.alpha(Theme.surface, 0.92)
             border.width: 1
             border.color: Theme.line
@@ -42,7 +42,7 @@ MiniScreen {
             width: root.cfg.sidebar ? win.width * 0.2 : 0
             height: win.height - 10
             visible: width > 0
-            radius: 4
+            radius: Tokens.r(4)
             color: Qt.alpha(Theme.text, 0.08)
 
             Column {
@@ -57,7 +57,7 @@ MiniScreen {
                         required property int index
                         width: side.width - 10
                         height: 5
-                        radius: 2
+                        radius: Tokens.r(2)
                         color: index === 1 ? Theme.accent : Qt.alpha(Theme.text, 0.18)
                     }
                 }
@@ -72,7 +72,7 @@ MiniScreen {
             width: root.cfg.details ? win.width * 0.2 : 0
             height: win.height - 10
             visible: width > 0
-            radius: 4
+            radius: Tokens.r(4)
             color: Qt.alpha(Theme.text, 0.08)
 
             Glyph {

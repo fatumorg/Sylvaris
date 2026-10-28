@@ -121,9 +121,9 @@ Popup {
                 anchors.verticalCenter: parent.verticalCenter
                 text: "Diver"
                 color: Theme.text
-                font.family: Tokens.fontUi
+                font.family: Tokens.fontDisplay
                 font.pixelSize: Tokens.titleSize + 3
-                font.weight: Font.DemiBold
+                font.weight: Tokens.titleWeight
             }
 
             Segmented {

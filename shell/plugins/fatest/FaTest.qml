@@ -134,9 +134,9 @@ Popup {
                     textFormat: Text.PlainText
                     text: "FaTest"
                     color: Theme.text
-                    font.family: Tokens.fontUi
+                    font.family: Tokens.fontDisplay
                     font.pixelSize: Tokens.titleSize
-                    font.weight: Font.DemiBold
+                    font.weight: Tokens.titleWeight
                 }
 
                 Text {

@@ -111,9 +111,9 @@ Item {
             visible: root.name !== ""
             text: root.name
             color: Theme.text
-            font.family: Tokens.fontUi
+            font.family: Tokens.fontDisplay
             font.pixelSize: Tokens.titleSize + 2
-            font.weight: Font.DemiBold
+            font.weight: Tokens.titleWeight
         }
 
         Item {

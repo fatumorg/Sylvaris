@@ -387,7 +387,7 @@ Item {
             anchors.topMargin: press.square ? -3 : 0
             width: Math.max(16, badgeText.implicitWidth + 8)
             height: 16
-            radius: 8
+            radius: Tokens.r(8)
             color: Theme.accent
 
             Text {
@@ -561,13 +561,13 @@ Item {
             anchors.bottom: parent.bottom
             anchors.bottomMargin: row.big ? 13 : 12
             height: 4
-            radius: 2
+            radius: Tokens.r(2)
             color: Qt.alpha(Theme.text, 0.14)
 
             Rectangle {
                 width: parent.width * Math.max(0, Math.min(1, row.a === null ? 0 : row.modelData === "volume" ? row.a.value : root.progress))
                 height: parent.height
-                radius: 2
+                radius: Tokens.r(2)
                 color: row.a !== null && row.a.muted ? Theme.textDim : Theme.accent
 
                 Behavior on width {
@@ -693,13 +693,13 @@ Item {
                 y: root.atTop ? parent.height - 4 : 2
                 width: parent.width - 48
                 height: 2
-                radius: 1
+                radius: Tokens.r(1)
                 color: Qt.alpha(Theme.text, 0.12)
 
                 Rectangle {
                     width: parent.width * Math.max(0, Math.min(1, root.progress))
                     height: parent.height
-                    radius: 1
+                    radius: Tokens.r(1)
                     color: Theme.accent
                 }
             }
@@ -757,7 +757,7 @@ Item {
                     visible: root.idle !== "clock" && !root.quiet && root.unread === 0
                     width: 28
                     height: 4
-                    radius: 2
+                    radius: Tokens.r(2)
                     color: Qt.alpha(Theme.text, 0.35)
                 }
             }

@@ -166,9 +166,9 @@ FocusScope {
                     text: clash.open ? clash.view.title : ""
                     elide: Text.ElideMiddle
                     color: Theme.text
-                    font.family: Tokens.fontUi
+                    font.family: Tokens.fontDisplay
                     font.pixelSize: Tokens.titleSize
-                    font.weight: Font.DemiBold
+                    font.weight: Tokens.titleWeight
                 }
             }
 

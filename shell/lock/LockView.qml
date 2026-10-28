@@ -69,7 +69,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             text: Qt.formatDate(new Date(root.lock.now), "dddd, d MMMM")
             color: Theme.textSoft
-            font.family: Tokens.fontUi
+            font.family: Tokens.fontDisplay
             font.pixelSize: Tokens.titleSize + 4
         }
     }

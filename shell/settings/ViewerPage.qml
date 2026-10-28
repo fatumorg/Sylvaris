@@ -31,7 +31,7 @@ Column {
                 anchors.centerIn: parent
                 width: 220
                 height: 124
-                radius: 10
+                radius: Tokens.r(10)
                 gradient: Gradient {
                     orientation: Gradient.Horizontal
                     GradientStop {
@@ -86,7 +86,7 @@ Column {
 
                 Glass {
                     anchors.fill: parent
-                    radius: 12
+                    radius: Tokens.r(12)
                     raised: true
                     flowing: false
                     offColor: Theme.surface

@@ -89,7 +89,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             text: Qt.formatDate(new Date(root.greet.now), "dddd, d MMMM")
             color: Theme.textSoft
-            font.family: Tokens.fontUi
+            font.family: Tokens.fontDisplay
             font.pixelSize: Tokens.titleSize + 4
         }
     }
@@ -126,7 +126,7 @@ Item {
                 y: 34
                 width: 40
                 height: 40
-                radius: 20
+                radius: Tokens.r(20)
                 color: arrowArea.containsMouse ? Theme.tintStrong : Theme.tintSoft
                 border.width: 1
                 border.color: Theme.cardLine
@@ -195,7 +195,7 @@ Item {
                         readonly property bool chosen: index === root.greet.sessionIndex
                         width: sessionList.width
                         height: 40
-                        radius: 12
+                        radius: Tokens.r(12)
                         color: chosen ? Theme.accent : pickArea.containsMouse ? Theme.tintStrong : "transparent"
 
                         Text {

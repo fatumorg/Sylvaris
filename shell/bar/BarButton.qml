@@ -86,7 +86,7 @@ Item {
         y: -1
         width: Math.max(16, badgeText.implicitWidth + 8)
         height: 16
-        radius: 8
+        radius: Tokens.r(8)
         color: Theme.accent
         border.width: 2
         border.color: Qt.alpha(Theme.base, 0.6)

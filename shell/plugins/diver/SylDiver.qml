@@ -146,7 +146,7 @@ Scope {
                     y: 20
                     width: 120
                     height: 120
-                    radius: 60
+                    radius: Tokens.r(60)
                     color: "transparent"
                     border.width: 3
                     border.color: Theme.danger

@@ -62,9 +62,9 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 text: Qt.formatDate(new Date(root.year, root.month, 1), "MMMM yyyy")
                 color: Theme.text
-                font.family: Tokens.fontUi
+                font.family: Tokens.fontDisplay
                 font.pixelSize: Tokens.titleSize
-                font.weight: Font.DemiBold
+                font.weight: Tokens.titleWeight
             }
 
             Glyph {
@@ -122,7 +122,7 @@ Item {
                     Glass {
                         anchors.fill: parent
                         visible: cell.date > 0
-                        radius: 12
+                        radius: Tokens.r(12)
                         inner: true
                         lit: cell.picked
                         hot: dayArea.containsMouse
@@ -176,9 +176,9 @@ Item {
             verticalAlignment: Text.AlignVCenter
             text: P.dayLabel(root.day) + (root.day === Diver.today ? "  ·  today" : "")
             color: Theme.text
-            font.family: Tokens.fontUi
+            font.family: Tokens.fontDisplay
             font.pixelSize: Tokens.titleSize
-            font.weight: Font.DemiBold
+            font.weight: Tokens.titleWeight
         }
 
         Row {

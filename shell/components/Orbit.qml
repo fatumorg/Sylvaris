@@ -105,7 +105,7 @@ Item {
         y: root.centerY + Tokens.coreLabelOffset - 4
         width: labelColumn.width + 20
         height: labelColumn.height + 8
-        radius: 10
+        radius: Tokens.r(10)
         color: "transparent"
 
         Glass {
@@ -130,9 +130,9 @@ Item {
                 text: root.coreName
                 elide: Text.ElideRight
                 color: Theme.text
-                font.family: Tokens.fontUi
+                font.family: Tokens.fontDisplay
                 font.pixelSize: Tokens.titleSize
-                font.weight: Font.DemiBold
+                font.weight: Tokens.titleWeight
             }
 
             Text {

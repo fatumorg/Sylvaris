@@ -410,9 +410,9 @@ Popup {
                         textFormat: Text.PlainText
                         text: "Lighting"
                         color: Theme.text
-                        font.family: Tokens.fontUi
+                        font.family: Tokens.fontDisplay
                         font.pixelSize: Tokens.titleSize
-                        font.weight: Font.DemiBold
+                        font.weight: Tokens.titleWeight
                     }
 
                     Text {
@@ -694,7 +694,7 @@ Popup {
                 anchors.verticalCenter: parent.verticalCenter
                 width: 14
                 height: 14
-                radius: 7
+                radius: Tokens.r(7)
                 visible: row.device.color !== ""
                 color: row.device.color !== "" ? row.device.color : "transparent"
                 border.width: 1

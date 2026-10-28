@@ -755,7 +755,7 @@ Scope {
                     y: win.place.top ? 2 : parent.height - height - 2
                     width: stripArea.containsMouse ? 72 : 48
                     height: 4
-                    radius: 2
+                    radius: Tokens.r(2)
                     color: root.items.length > 0 ? Theme.accent : Qt.alpha(Theme.text, 0.5)
                     opacity: (1 - win.reveal) * 0.85
 

@@ -296,7 +296,7 @@ Scope {
                                 visible: ws.look.mode === "dots" && !pill.on
                                 width: 8
                                 height: 8
-                                radius: 4
+                                radius: Tokens.r(4)
                                 color: modelData.active ? Theme.accentHi : Theme.text
                                 opacity: pill.busy ? 1 : 0.35
                             }
@@ -540,7 +540,7 @@ Scope {
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: 12
                     height: 2
-                    radius: 1
+                    radius: Tokens.r(1)
                     color: Theme.accent
                 }
 

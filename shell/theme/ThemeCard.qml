@@ -161,7 +161,7 @@ Item {
                 required property string modelData
                 width: 34
                 height: 34
-                radius: 17
+                radius: Tokens.r(17)
                 antialiasing: true
                 color: modelData
                 border.width: 2

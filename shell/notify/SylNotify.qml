@@ -31,9 +31,9 @@ Popup {
             anchors.verticalCenter: parent.verticalCenter
             text: "Notifications"
             color: Theme.text
-            font.family: Tokens.fontUi
+            font.family: Tokens.fontDisplay
             font.pixelSize: Tokens.titleSize + 3
-            font.weight: Font.DemiBold
+            font.weight: Tokens.titleWeight
         }
 
         Rectangle {
@@ -43,7 +43,7 @@ Popup {
             anchors.verticalCenter: parent.verticalCenter
             width: Math.max(24, countText.implicitWidth + 14)
             height: 24
-            radius: 12
+            radius: Tokens.r(12)
             color: Theme.accent
 
             Text {
@@ -86,7 +86,7 @@ Popup {
 
                     Glass {
                         anchors.fill: parent
-                        radius: 20
+                        radius: Tokens.r(20)
                         inner: true
                         lit: modelData.lit
                         hot: area.containsMouse

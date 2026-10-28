@@ -21,7 +21,7 @@ Item {
         anchors.rightMargin: 4
         anchors.topMargin: 1
         anchors.bottomMargin: 1
-        radius: 10
+        radius: Tokens.r(10)
         files: row.files
         entry: row.modelData
 

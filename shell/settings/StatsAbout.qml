@@ -157,9 +157,9 @@ Column {
                 textFormat: Text.PlainText
                 text: "Sylvaris " + root.version
                 color: Theme.text
-                font.family: Tokens.fontUi
+                font.family: Tokens.fontDisplay
                 font.pixelSize: Tokens.titleSize
-                font.weight: Font.DemiBold
+                font.weight: Tokens.titleWeight
             }
 
             Text {

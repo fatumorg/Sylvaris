@@ -45,7 +45,7 @@ Column {
                             required property string modelData
                             width: 26
                             height: 26
-                            radius: 8
+                            radius: Tokens.r(8)
                             color: modelData
                             border.width: 1
                             border.color: Theme.line
@@ -64,7 +64,7 @@ Column {
                             required property string modelData
                             width: 14
                             height: 14
-                            radius: 4
+                            radius: Tokens.r(4)
                             color: modelData
                         }
                     }

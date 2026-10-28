@@ -50,7 +50,7 @@ MiniScreen {
             z: index === 2 ? 2 : 1
             width: modelData.w * root.k
             height: modelData.h * root.k
-            radius: 6
+            radius: Tokens.r(6)
             color: Qt.alpha(index === 2 ? Theme.accent : Theme.surface, index === 2 ? 0.8 : 0.9)
             border.width: 1
             border.color: index === 2 ? Theme.accentHi : Theme.line

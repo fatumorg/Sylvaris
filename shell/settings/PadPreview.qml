@@ -1,4 +1,5 @@
 import QtQuick
+import qs
 import qs.services
 
 MiniScreen {
@@ -32,7 +33,7 @@ MiniScreen {
         visible: root.pad.mode === "list"
         width: parent.width * 0.34
         height: parent.height * 0.7
-        radius: 8
+        radius: Tokens.r(8)
         color: Qt.alpha(Theme.surface, 0.92)
         border.width: 1
         border.color: Theme.line
@@ -49,7 +50,7 @@ MiniScreen {
                     required property int index
                     width: parent.width
                     height: 10
-                    radius: 3
+                    radius: Tokens.r(3)
                     color: index === 0 ? Theme.accent : Qt.alpha(Theme.text, 0.15)
                 }
             }

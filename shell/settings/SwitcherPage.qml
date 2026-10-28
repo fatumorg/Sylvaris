@@ -71,7 +71,7 @@ Column {
                             y: 7
                             width: parent.width - 14
                             height: root.cfg.previews ? 62 : parent.width - 14
-                            radius: 8
+                            radius: Tokens.r(8)
                             color: root.cfg.previews ? Qt.alpha(Theme.text, 0.08) : "transparent"
 
                             Glyph {

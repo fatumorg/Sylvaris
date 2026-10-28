@@ -1,8 +1,11 @@
 import QtQuick
 import SylStack
 import qs.lock
+import qs
 
 ShellRoot {
+    LookBindings {}
+
     LockSession {
         id: session
     }

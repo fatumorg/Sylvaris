@@ -11,7 +11,7 @@ Singleton {
     readonly property string dir: (Stack.env("XDG_CONFIG_HOME") || (root.home + "/.config")) + "/sylvaris"
     readonly property string path: root.dir + "/settings.json"
     property var raw: ({})
-    readonly property var values: S.effectiveSettings(Config.values, root.raw)
+    readonly property var values: S.effectiveSettings(Config.values, root.raw, Look.userLooks)
     property string notice: ""
     property string editing: ""
     readonly property var shown: root.editing === "" ? root.values : S.screenSettings(root.values, root.editing)
@@ -43,7 +43,7 @@ Singleton {
     function trySet(key: string, value: var): bool {
         if (root.frozen || !Object.prototype.hasOwnProperty.call(S.DEFAULT_SETTINGS, key.split(".")[0]) || key.split(".")[0] === "version")
             return false;
-        const next = S.effectiveSettings(Config.values, S.setPath(root.raw, key, value));
+        const next = S.effectiveSettings(Config.values, S.setPath(root.raw, key, value), Look.userLooks);
         if (JSON.stringify(S.getPath(next, key)) !== JSON.stringify(value))
             return false;
         root.set(key, value);

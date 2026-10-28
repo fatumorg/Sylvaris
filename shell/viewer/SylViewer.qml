@@ -609,7 +609,7 @@ Scope {
 
                 Glass {
                     anchors.fill: parent
-                    radius: 22
+                    radius: Tokens.r(22)
                     raised: true
                     offColor: Theme.surface
                     offBorder: Theme.line
@@ -701,7 +701,7 @@ Scope {
                                 anchors.verticalCenter: parent.verticalCenter
                                 width: 14
                                 height: 14
-                                radius: 7
+                                radius: Tokens.r(7)
                                 visible: seekArea.containsMouse || seekArea.pressed
                                 color: Theme.accentHi
                             }

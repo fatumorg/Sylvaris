@@ -11,7 +11,7 @@ Rectangle {
     signal picked(string key)
 
     implicitHeight: Tokens.segmentedHeight
-    radius: 16
+    radius: Tokens.r(16)
     color: "transparent"
 
     Glass {
@@ -36,7 +36,7 @@ Rectangle {
                 readonly property bool on: modelData.key === root.current
                 width: (row.width - row.spacing * (root.options.length - 1)) / Math.max(1, root.options.length)
                 height: row.height
-                radius: 12
+                radius: Tokens.r(12)
                 color: on ? Qt.alpha(Theme.accent, Resin.litAlpha) : "transparent"
 
                 Behavior on color {

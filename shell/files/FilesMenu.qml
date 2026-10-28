@@ -218,7 +218,7 @@ FocusScope {
 
         Glass {
             anchors.fill: parent
-            radius: 14
+            radius: Tokens.r(14)
             raised: true
             offColor: Theme.surface
             offBorder: Theme.line
@@ -258,7 +258,7 @@ FocusScope {
                     Glass {
                         visible: !row.modelData.sep
                         anchors.fill: parent
-                        radius: 9
+                        radius: Tokens.r(9)
                         inner: true
                         flowing: false
                         hot: row.on

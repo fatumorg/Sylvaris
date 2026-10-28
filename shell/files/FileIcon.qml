@@ -1,4 +1,5 @@
 import QtQuick
+import qs
 import SylStack
 import qs.services
 import qs.components
@@ -50,7 +51,7 @@ Item {
         anchors.centerIn: parent
         width: pic.paintedWidth + 2
         height: pic.paintedHeight + 2
-        radius: 4
+        radius: Tokens.r(4)
         color: "transparent"
         border.width: 1
         border.color: Qt.alpha(Theme.text, 0.14)

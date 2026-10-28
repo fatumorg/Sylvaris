@@ -475,7 +475,7 @@ Item {
                 required property var modelData
                 width: ListView.view.width
                 height: 48
-                radius: 12
+                radius: Tokens.r(12)
                 color: rowHover.hovered ? Theme.tintMid : "transparent"
 
                 Behavior on color {

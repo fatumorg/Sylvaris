@@ -297,7 +297,7 @@ Item {
         y: parent.height - 3
         width: (parent.width - Tokens.radiusPanel * 2) * root.progress
         height: 2
-        radius: 1
+        radius: Tokens.r(1)
         color: Qt.alpha(Theme.accent, 0.7)
     }
 }

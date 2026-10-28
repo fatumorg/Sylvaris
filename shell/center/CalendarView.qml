@@ -124,7 +124,7 @@ Item {
                         delegate: Rectangle {
                             width: 4
                             height: 4
-                            radius: 2
+                            radius: Tokens.r(2)
                             color: dayCell.isToday ? Theme.onAccent : Theme.accent
                         }
                     }

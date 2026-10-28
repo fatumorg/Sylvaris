@@ -563,9 +563,9 @@ Scope {
                         anchors.horizontalCenter: parent.horizontalCenter
                         text: root.query === "" ? "No applications found" : "Nothing matches “" + root.query + "”"
                         color: Theme.text
-                        font.family: Tokens.fontUi
+                        font.family: Tokens.fontDisplay
                         font.pixelSize: Tokens.titleSize
-                        font.weight: Font.DemiBold
+                        font.weight: Tokens.titleWeight
                     }
                 }
 
@@ -770,7 +770,7 @@ Scope {
                             anchors.verticalCenter: parent.verticalCenter
                             width: 30
                             height: 30
-                            radius: 9
+                            radius: Tokens.r(9)
                             visible: rowIcon.status !== Image.Ready
                             gradient: Gradient {
                                 GradientStop {

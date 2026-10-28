@@ -1,8 +1,11 @@
 import QtQuick
 import SylStack
 import qs.greet
+import qs
 
 ShellRoot {
+    LookBindings {}
+
     SylGreet {
         id: greet
     }

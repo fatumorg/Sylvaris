@@ -116,7 +116,7 @@ Item {
 
                             Glass {
                                 anchors.fill: parent
-                                radius: 10
+                                radius: Tokens.r(10)
                                 inner: true
                                 flowing: false
                                 hot: place.hot || drop.containsDrag
