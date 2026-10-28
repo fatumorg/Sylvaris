@@ -26,6 +26,8 @@ Scope {
     readonly property var packing: Settings.values.archive
     readonly property bool archiveOn: Settings.values.parts.archive === true
     property bool picker: false
+    property var hub: null
+    property int hubSlot: 0
     property var chooser: null
     property string pickName: ""
     property string pickError: ""
@@ -69,10 +71,11 @@ Scope {
     property string renameError: ""
     property string problem: ""
     property real free: -1
-    property var clip: ({
+    property var ownClip: ({
             mode: "",
             items: []
         })
+    readonly property var clip: root.hub !== null ? root.hub.clip : root.ownClip
     property var history: []
     property var queue: []
     property var job: null
@@ -237,6 +240,8 @@ Scope {
         root.dialog = "";
         root.asking = null;
         root.renaming = "";
+        if (root.hub !== null && root.hubSlot !== 0)
+            root.hub.drop(root.hubSlot);
     }
 
     function raise(): void {
@@ -322,6 +327,11 @@ Scope {
         ]);
         root.tab = root.tabs.length - 1;
         root.arrived("");
+    }
+
+    function newWindow(p: string): void {
+        if (root.hub !== null)
+            root.hub.newWindow(p);
     }
 
     function openTab(text: string): void {
@@ -707,12 +717,19 @@ Scope {
         const items = root.itemsOf(root.selected);
         if (items.length === 0)
             return;
-        root.clip = {
+        root.setClip({
             mode: mode,
             items: items
-        };
+        });
         Stack.execDetached(["wl-copy", "-t", "text/uri-list", F.urisOf(items.map(i => i.path))]);
         root.say((items.length === 1 ? "“" + F.nameOf(items[0].path) + "”" : items.length + " items") + (mode === "cut" ? " will move when you paste" : " copied"), false);
+    }
+
+    function setClip(c: var): void {
+        if (root.hub !== null)
+            root.hub.clip = c;
+        else
+            root.ownClip = c;
     }
 
     function copyPath(): void {
@@ -745,10 +762,10 @@ Scope {
                 }));
         root.transfer(items, dest, cut ? "move" : "copy");
         if (cut)
-            root.clip = {
+            root.setClip({
                 mode: "",
                 items: []
-            };
+            });
     }
 
     function transfer(items: var, dest: string, mode: string): void {
@@ -1203,6 +1220,7 @@ Scope {
             compress: () => root.askCompress(),
             extract: () => root.extractSelected(root.packing.extract),
             newTab: () => root.newTab(root.path),
+            newWindow: () => root.newWindow(root.path),
             closeTab: () => root.closeTab(root.tab),
             nextTab: () => root.selectTab((root.tab + 1) % root.tabs.length),
             prevTab: () => root.selectTab((root.tab - 1 + root.tabs.length) % root.tabs.length),

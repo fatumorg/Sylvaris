@@ -9,6 +9,7 @@ FileTile 1.0 FileTile.qml
 FilesDialog 1.0 FilesDialog.qml
 FilesMenu 1.0 FilesMenu.qml
 FilesWindow 1.0 FilesWindow.qml
+FilesWindows 1.0 FilesWindows.qml
 FilterField 1.0 FilterField.qml
 Pane 1.0 Pane.qml
 PathBar 1.0 PathBar.qml

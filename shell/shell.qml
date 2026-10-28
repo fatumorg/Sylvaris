@@ -543,7 +543,7 @@ ShellRoot {
         id: filesLoader
         active: root.on("files")
 
-        SylFiles {
+        FilesWindows {
             id: filesPart
             onOpened: root.solo(filesPart)
         }
@@ -1059,23 +1059,25 @@ ShellRoot {
             },
             files: {
                 default: "state",
-                open: (...p) => root.need("files").open(p.join(" ")),
-                toggle: () => root.need("files").toggle(),
-                close: () => root.need("files").close(),
-                go: (...p) => root.need("files").goTo(p.join(" ")),
-                tab: (...p) => root.need("files").openTab(p.join(" ")),
-                select: (...names) => root.need("files").selectNames(names),
-                search: (...q) => root.need("files").search(q.join(" ")),
-                rename: (...n) => root.need("files").renameTo(n.join(" ")),
-                compress: (...n) => root.need("files").compressTo(n.join(" ")),
-                act: action => root.need("files").act(String(action || "")),
-                drives: () => root.need("files").drives,
+                open: (...p) => root.need("files").current.open(p.join(" ")),
+                toggle: () => root.need("files").current.toggle(),
+                close: () => root.need("files").current.close(),
+                go: (...p) => root.need("files").current.goTo(p.join(" ")),
+                tab: (...p) => root.need("files").current.openTab(p.join(" ")),
+                select: (...names) => root.need("files").current.selectNames(names),
+                search: (...q) => root.need("files").current.search(q.join(" ")),
+                rename: (...n) => root.need("files").current.renameTo(n.join(" ")),
+                compress: (...n) => root.need("files").current.compressTo(n.join(" ")),
+                act: action => root.need("files").current.act(String(action || "")),
+                drives: () => root.need("files").current.drives,
                 pick: (mode, multiple, out, ...p) => root.picker().startPick(String(mode || ""), String(multiple || "0"), String(out || ""), p.join(" ")),
                 picking: out => root.picker().picking(String(out || "")),
                 picker: () => root.picker().state(),
-                mount: (...n) => root.need("files").driveVerb("open", n.join(" ")),
-                eject: (...n) => root.need("files").driveVerb("eject", n.join(" ")),
-                clash: (...w) => root.need("files").clashCommand(w),
+                mount: (...n) => root.need("files").current.driveVerb("open", n.join(" ")),
+                eject: (...n) => root.need("files").current.driveVerb("eject", n.join(" ")),
+                clash: (...w) => root.need("files").current.clashCommand(w),
+                window: (...p) => root.need("files").newWindow(p.join(" ")),
+                windows: () => root.need("files").count,
                 state: () => root.need("files").state()
             },
             archive: {

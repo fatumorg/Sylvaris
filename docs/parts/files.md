@@ -8,7 +8,7 @@ sylvaris files open ~/Downloads
 sylvaris files open ~/Pictures/cat.png   # opens the folder with the file selected
 ```
 
-Bind `files open` to a key under SylSettings › Advanced › Key bindings (Super+E is the classic), or open it from SylPad: it ships a `sylvaris-files.desktop` entry. Opening a folder while the window is up adds a tab instead of a second window. The window has its own icon, so SylBar, SylDeck and SylSwitch show it as SylFiles and you can pin it to the deck.
+Bind `files open` to a key under SylSettings › Advanced › Key bindings (Super+E is the classic), or open it from SylPad: it ships a `sylvaris-files.desktop` entry. Opening a folder while the window is up adds a tab instead of a second window; for a second window press Ctrl+N, right-click a folder › Open in a new window, or run `sylvaris files window [folder]`. Cut in one window and paste in another moves the files. Commands go to the window you used last. The window has its own icon, so SylBar, SylDeck and SylSwitch show it as SylFiles and you can pin it to the deck.
 
 ## The window
 
@@ -16,7 +16,7 @@ Bind `files open` to a key under SylSettings › Advanced › Key bindings (Supe
 - **Path bar**: click any part of the path to go there, or click the empty space (or press Ctrl+L) to type a location. `~`, relative paths and `file://` links work.
 - **Filter**: Ctrl+F, `/` or simply start typing. Esc clears it.
 - **Grid or list**: Ctrl+1 and Ctrl+2. The list has Size, Modified and Kind columns; click a heading to sort by it, again to reverse. Ctrl and the mouse wheel, or Ctrl+plus and Ctrl+minus, change the icon size.
-- **Tabs**: Ctrl+T, Ctrl+W, Ctrl+Tab. Middle-click a folder to open it in a new tab.
+- **Tabs and windows**: Ctrl+T, Ctrl+W, Ctrl+Tab. Middle-click a folder to open it in a new tab. Ctrl+N opens another window.
 - **Details pane** (Alt+Enter): a big preview, the kind, size or folder contents, the date and the permissions of what you select.
 - **Status bar**: how many items, how much is selected, the free space, and the progress of copies and moves with a × to stop them.
 
@@ -103,7 +103,7 @@ Every key above can be changed in SylSettings › Files › Keys in SylFiles: cl
 { "files": { "keys": { "rename": ["CTRL+E"], "terminal": [] } } }
 ```
 
-The actions are `open`, `openTab`, `openWith`, `back`, `forward`, `up`, `home`, `reload`, `location`, `search`, `newFolder`, `newFile`, `rename`, `copy`, `cut`, `paste`, `copyPath`, `compress`, `extract`, `trash`, `delete`, `undo`, `selectAll`, `invert`, `hidden`, `grid`, `list`, `zoomIn`, `zoomOut`, `zoomReset`, `sidebar`, `details`, `bookmark`, `terminal`, `newTab`, `closeTab`, `nextTab`, `prevTab` and `quit`.
+The actions are `open`, `openTab`, `openWith`, `back`, `forward`, `up`, `home`, `reload`, `location`, `search`, `newFolder`, `newFile`, `rename`, `copy`, `cut`, `paste`, `copyPath`, `compress`, `extract`, `trash`, `delete`, `undo`, `selectAll`, `invert`, `hidden`, `grid`, `list`, `zoomIn`, `zoomOut`, `zoomReset`, `sidebar`, `details`, `bookmark`, `terminal`, `newTab`, `newWindow`, `closeTab`, `nextTab`, `prevTab` and `quit`.
 
 ## Make it the default file manager
 
@@ -145,6 +145,8 @@ It also makes SylFiles answer "Show in folder" from other apps such as Firefox (
 ```sh
 sylvaris files go ~/Music       # in the open tab
 sylvaris files tab /srv         # in a new tab
+sylvaris files window ~/Code    # in a new window
+sylvaris files windows          # how many windows are open
 sylvaris files select a.txt b.txt
 sylvaris files search draft
 sylvaris files act newFolder    # any action from the list above

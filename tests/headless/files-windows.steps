@@ -1,0 +1,33 @@
+sleep 1.5
+check mkdir -p "$HOME/Left" "$HOME/Right" && printf 'moved' > "$HOME/Left/travel.txt"
+syl files open ~/Left
+sleep 1.5
+check test "$(sylvaris files windows)" = 1
+syl files window ~/Right
+sleep 1.5
+check test "$(sylvaris files windows)" = 2
+check sylvaris files state | grep -q '"path":"[^"]*/Right"'
+shot files-windows
+sway [title=^Left] focus
+wait sylvaris files state | grep -q '"path":"[^"]*/Left"'
+syl files select travel.txt
+syl files act cut
+sleep 0.5
+sway [title=^Right] focus
+wait sylvaris files state | grep -q '"path":"[^"]*/Right"'
+syl files act paste
+sleep 2
+check test ! -e "$HOME/Left/travel.txt" && test "$(cat "$HOME/Right/travel.txt")" = moved
+syl files act quit
+sleep 1
+check test "$(sylvaris files windows)" = 1
+check sylvaris files state | grep -q '"path":"[^"]*/Left"'
+bg wtype -k Shift_L -s 400 -M ctrl -k n -m ctrl
+sleep 1.5
+check test "$(sylvaris files windows)" = 2
+syl files close
+sleep 1
+syl files close
+sleep 1
+check test "$(sylvaris files windows)" = 0
+check sylvaris files state | grep -q '"open":false'

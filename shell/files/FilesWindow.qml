@@ -45,6 +45,10 @@ FloatingWindow {
         id: body
         anchors.fill: parent
         focus: true
+        Window.onActiveChanged: {
+            if (Window.active && win.files.hub !== null)
+                win.files.hub.last = win.files;
+        }
 
         Keys.onPressed: event => {
             if (win.files.dialog === "" && win.files.asking === null && win.files.key(F.comboOf(event.key, event.modifiers)))

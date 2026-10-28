@@ -120,6 +120,10 @@ FocusScope {
         const out = [menu.item("Open", dirOne ? F.GLYPH.folderOpen : Icons.GLYPHS.open, "open")];
         if (dirOne)
             out.push(menu.item("Open in a new tab", F.GLYPH.newTab, "openTab"));
+        if (dirOne && f.hub !== null)
+            out.push(menu.item("Open in a new window", F.GLYPH.newWindow, "", {
+                run: () => f.newWindow(full)
+            }));
         if (anyFile)
             out.push(menu.item("Open with…", F.GLYPH.openWith, "openWith"));
         out.push(sep, menu.item("Cut", F.GLYPH.cut, "cut"), menu.item("Copy", Icons.GLYPHS.copy, "copy"));

@@ -74,6 +74,7 @@ test("keymap merges overrides over defaults and an override wins a key a default
     assert.equal(keymap({}).byCombo.F2, "rename")
     assert.equal(keymap({}).byCombo.BackSpace, "back")
     assert.equal(keymap({ back: [] }).byCombo.BackSpace, undefined)
+    assert.equal(keymap({}).byCombo["CTRL+N"], "newWindow")
 })
 
 test("comboOf turns Qt key events into combos, folding shift into symbols", () => {

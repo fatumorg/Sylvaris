@@ -7,6 +7,7 @@ export const ACTIONS = [
     { id: "notify toggle", label: "Notifications" },
     { id: "clip toggle", label: "Clipboard history" },
     { id: "files open", label: "Files" },
+    { id: "files window", label: "New Files window" },
     { id: "capture toggle", label: "Capture panel" },
     { id: "capture shot area", label: "Screenshot of an area" },
     { id: "capture shot window", label: "Screenshot of a window" },
