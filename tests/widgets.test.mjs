@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { TYPES, DEFAULT_WIDGETS, validateWidgets, place, nudge, newId, covered, tooMany, servicesFor, span } from "../shell/lib/widgets.mjs"
+import { TYPES, DEFAULT_WIDGETS, validateWidgets, place, nudge, newId, covered, tooMany, servicesFor, span, cpuDelta, memUsed, netRate, daysUntil, validateOptions } from "../shell/lib/widgets.mjs"
 
 const ON = { enabled: { diver: true, temp: true } }
 
@@ -236,4 +236,39 @@ test("zoneTime reads a label and a UTC offset and rejects the rest", () => {
     assert.equal(zoneTime(utc, "-5", false).label, "UTC-5")
     assert.equal(zoneTime(utc, "Europe/Paris", true), null)
     assert.equal(zoneTime(utc, "Mars +30", true), null)
+})
+
+test("cpuDelta is the busy share between two /proc/stat samples", () => {
+    const a = "cpu  100 0 100 700 100 0 0 0 0 0\ncpu0 1 2 3 4"
+    const b = "cpu  150 0 150 800 100 0 0 0 0 0\ncpu0 1 2 3 4"
+    assert.equal(cpuDelta(a, b), 0.5)
+    assert.equal(cpuDelta(a, a), 0)
+    assert.equal(cpuDelta("", b), 0)
+})
+
+test("memUsed counts what is not available", () => {
+    assert.deepEqual(memUsed("MemTotal:       16000 kB\nMemFree:  1000 kB\nMemAvailable:    6000 kB\n"), { used: 10000 * 1024, total: 16000 * 1024 })
+    assert.deepEqual(memUsed("nonsense"), { used: 0, total: 0 })
+})
+
+test("netRate sums every interface but loopback per second", () => {
+    const head = "Inter-|   Receive |  Transmit\n face |bytes    packets errs drop fifo frame compressed multicast|bytes packets\n"
+    const a = head + "    lo: 5000 0 0 0 0 0 0 0 5000 0 0 0 0 0 0 0\n  eth0: 1000 0 0 0 0 0 0 0 2000 0 0 0 0 0 0 0\n wlan0: 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n"
+    const b = head + "    lo: 9000 0 0 0 0 0 0 0 9000 0 0 0 0 0 0 0\n  eth0: 3000 0 0 0 0 0 0 0 2500 0 0 0 0 0 0 0\n wlan0: 1000 0 0 0 0 0 0 0 500 0 0 0 0 0 0 0\n"
+    assert.deepEqual(netRate(a, b, 2000), { rx: 1500, tx: 500 })
+    assert.deepEqual(netRate(a, b, 0), { rx: 0, tx: 0 })
+    assert.deepEqual(netRate(b, a, 1000), { rx: 0, tx: 0 })
+})
+
+test("daysUntil counts calendar days in local time", () => {
+    const now = new Date(2026, 9, 28, 23, 30).getTime()
+    assert.equal(daysUntil("2026-10-29", now), 1)
+    assert.equal(daysUntil("2026-10-28", now), 0)
+    assert.equal(daysUntil("2026-10-20", now), -8)
+    assert.equal(daysUntil("2027-10-28", now), 365)
+    assert.equal(daysUntil("soon", now), null)
+})
+
+test("a note keeps at most 20 000 characters", () => {
+    assert.equal(validateOptions("note", { text: "x".repeat(25000) }).text.length, 20000)
 })

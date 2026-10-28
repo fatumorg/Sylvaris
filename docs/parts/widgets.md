@@ -1,6 +1,6 @@
 # SylWidget
 
-Widgets on the desktop: a clock, the weather, a calendar, device batteries, photos, a terminal, an audio visualizer, your Diver plans and stacks that hold several of them. They sit under your windows by default, take their glass from your Look and hide while a window is full screen or maximized on their screen.
+Widgets on the desktop: a clock, the weather, a calendar, device batteries, photos, a terminal, an audio visualizer, what is playing, system load, the sky, sticky notes, countdowns, a shelf of apps, text, stickers, your Diver plans, FaTest and stacks that hold several of them. They sit under your windows by default, take their glass from your Look and hide while a window is full screen or maximized on their screen.
 
 ```sh
 sylvaris widgets add clock
@@ -31,6 +31,15 @@ Changes are saved when you are done; two widgets that ended up on top of each ot
 | `visualizer` | bars, mirrored bars, dots, a wave or a ring from `cava` | style, bars, frame rate, smoothing, colour, glow |
 | `diver` | today's plans (with the Diver plugin) | how many, done ones |
 | `stack` | several widgets in one place; scroll to flip, or let it turn by itself | seconds per turn |
+| `media` | the cover, title and artist of what is playing, with previous, play and next | spin the cover like a record, recolour (tint or mono), buttons |
+| `system` | processor and memory use and network speed as small graphs, and how full the disk is | which of the four to show, seconds between readings |
+| `sky` | the sun's path through today with sunrise and sunset, and the moon's phase (needs a location, like [SylClock](clock.md)) | moon, sunrise and sunset |
+| `note` | a sticky note; click it and type, it saves as you go (up to 20 000 characters) | text size, sticky note colour |
+| `countdown` | days until (or since) a date | the date, like `2026-12-24`, and what happens then |
+| `shelf` | app icons that open with a click; empty means the apps pinned to [SylDeck](deck.md) | apps by desktop id, names |
+| `text` | any text in any font, filled or outlined, sized to fit | text, font, style, align, colour |
+| `sticker` | a picture or GIF without a frame of its own | picture or GIF, recolour (tint or mono), strength |
+| `fatest` | the last speed test and a button that runs one (with the FaTest plugin) | upload, ping |
 
 The terminal widget needs kitty 0.42 or newer; Sylvaris starts `kitty +kitten panel` at the widget's place and moves it with the widget. The command runs as given, never through a shell. The visualizer needs `cava`, which the Nix package brings along.
 
@@ -52,7 +61,7 @@ Each item has an `id`, a `type`, the `screen` it is on (empty means the first sc
 { "id": "w000", "type": "clock", "anchor": "top-right", "col": 0, "row": 1, "w": 4, "h": 2, "options": { "face": "analog" } }
 ```
 
-A widget whose plugin is off (Diver, SylTemp) stays in the list and comes back when the plugin does. Up to 24 widgets fit.
+A widget whose plugin is off (Diver, SylTemp, FaTest) stays in the list and comes back when the plugin does. Up to 24 widgets fit.
 
 ## Commands
 

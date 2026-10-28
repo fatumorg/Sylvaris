@@ -117,6 +117,87 @@ export const TYPES = {
         fields: [
             { key: "every", label: "Turn every (seconds, 0 = never)", kind: "number", min: 0, max: 3600 }
         ]
+    },
+    media: {
+        label: "Now playing", glyph: "music", sizes: sized([2, 2], [8, 4]), size: [4, 2], services: ["Media"],
+        defaults: { vinyl: false, recolour: "off", controls: true },
+        fields: [
+            { key: "vinyl", label: "Spin the cover like a record", kind: "toggle" },
+            { key: "recolour", label: "Recolour the cover", kind: "choice", choices: ["off", "tint", "mono"] },
+            { key: "controls", label: "Buttons", kind: "toggle" }
+        ]
+    },
+    system: {
+        label: "System", glyph: "chart", sizes: sized([2, 2], [8, 6]), size: [4, 2], services: [],
+        defaults: { cpu: true, memory: true, disk: true, network: true, every: 2 },
+        fields: [
+            { key: "cpu", label: "Processor", kind: "toggle" },
+            { key: "memory", label: "Memory", kind: "toggle" },
+            { key: "disk", label: "Disk space", kind: "toggle" },
+            { key: "network", label: "Network", kind: "toggle" },
+            { key: "every", label: "Seconds between readings", kind: "number", min: 1, max: 10 }
+        ]
+    },
+    sky: {
+        label: "Sky", glyph: "moon", sizes: sized([2, 2], [8, 4]), size: [4, 2], services: ["Sky"],
+        defaults: { moon: true, times: true },
+        fields: [
+            { key: "moon", label: "Moon", kind: "toggle" },
+            { key: "times", label: "Sunrise and sunset", kind: "toggle" }
+        ]
+    },
+    note: {
+        label: "Note", glyph: "pencil", sizes: sized([2, 2], [8, 8]), size: [3, 3], services: [],
+        defaults: { text: "", size: 14, paper: true },
+        fields: [
+            { key: "text", label: "Text", kind: "text", max: 20000, hidden: true },
+            { key: "size", label: "Text size", kind: "number", min: 9, max: 40 },
+            { key: "paper", label: "Sticky note colour", kind: "toggle" }
+        ]
+    },
+    countdown: {
+        label: "Countdown", glyph: "timer", sizes: sized([2, 1], [6, 4]), size: [2, 2], services: [],
+        defaults: { date: "", title: "" },
+        fields: [
+            { key: "date", label: "Date, like 2026-12-24", kind: "text" },
+            { key: "title", label: "What happens then", kind: "text" }
+        ]
+    },
+    shelf: {
+        label: "Shelf", glyph: "apps", sizes: sized([1, 1], [12, 6]), size: [4, 1], services: ["Apps"],
+        defaults: { apps: [], labels: false },
+        fields: [
+            { key: "apps", label: "Apps (desktop ids, empty = SylDeck's)", kind: "list" },
+            { key: "labels", label: "Names", kind: "toggle" }
+        ]
+    },
+    text: {
+        label: "Text", glyph: "text", sizes: sized([1, 1], [16, 8]), size: [4, 1], services: [],
+        defaults: { text: "Sylvaris", font: "", style: "filled", align: "center", colour: "" },
+        fields: [
+            { key: "text", label: "Text", kind: "text", max: 500 },
+            { key: "font", label: "Font", kind: "text" },
+            { key: "style", label: "Style", kind: "choice", choices: ["filled", "outlined"] },
+            { key: "align", label: "Align", kind: "choice", choices: ["left", "center", "right"] },
+            { key: "colour", label: "Colour, like #ff8800 (empty = theme)", kind: "color" }
+        ]
+    },
+    sticker: {
+        label: "Sticker", glyph: "starFour", sizes: sized([1, 1], [12, 10]), size: [2, 2], services: [],
+        defaults: { source: "", recolour: "off", strength: 0.6 },
+        fields: [
+            { key: "source", label: "Picture or GIF", kind: "path" },
+            { key: "recolour", label: "Recolour", kind: "choice", choices: ["off", "tint", "mono"] },
+            { key: "strength", label: "Strength", kind: "number", min: 0, max: 1 }
+        ]
+    },
+    fatest: {
+        label: "FaTest", glyph: "speed", sizes: sized([2, 1], [6, 4]), size: [2, 2], services: [], plugin: "fatest",
+        defaults: { upload: true, ping: true },
+        fields: [
+            { key: "upload", label: "Upload", kind: "toggle" },
+            { key: "ping", label: "Ping", kind: "toggle" }
+        ]
     }
 }
 
@@ -157,7 +238,7 @@ export function validateOptions(type, raw) {
         else if (f.kind === "list")
             out[f.key] = Array.isArray(v) ? v.filter(x => typeof x === "string") : d
         else
-            out[f.key] = typeof v === "string" ? v : d
+            out[f.key] = typeof v === "string" ? v.slice(0, f.max || v.length) : d
     }
     return out
 }
@@ -544,4 +625,62 @@ export function nextPhoto(i, n, shuffle, seed) {
     const x = Math.sin((seed + 1) * 12.9898 + i * 78.233) * 43758.5453
     const j = Math.floor((x - Math.floor(x)) * (n - 1))
     return j >= i ? j + 1 : j
+}
+
+function cpuTimes(stat) {
+    const line = String(stat || "").split("\n").find(l => /^cpu\s/.test(l))
+    if (line === undefined)
+        return null
+    const n = line.trim().split(/\s+/).slice(1, 9).map(Number)
+    const total = n.reduce((a, b) => a + b, 0)
+    return { idle: n[3] + n[4], total: total }
+}
+
+export function cpuDelta(prev, next) {
+    const a = cpuTimes(prev)
+    const b = cpuTimes(next)
+    if (a === null || b === null || b.total <= a.total)
+        return 0
+    return Math.max(0, Math.min(1, 1 - (b.idle - a.idle) / (b.total - a.total)))
+}
+
+export function memUsed(meminfo) {
+    const kb = key => {
+        const m = String(meminfo || "").match(new RegExp("^" + key + ":\\s+(\\d+)", "m"))
+        return m === null ? 0 : Number(m[1]) * 1024
+    }
+    const total = kb("MemTotal")
+    return total === 0 ? { used: 0, total: 0 } : { used: total - kb("MemAvailable"), total: total }
+}
+
+function netTotals(dev) {
+    let rx = 0
+    let tx = 0
+    for (const line of String(dev || "").split("\n")) {
+        const at = line.indexOf(":")
+        if (at < 0 || line.slice(0, at).trim() === "lo")
+            continue
+        const n = line.slice(at + 1).trim().split(/\s+/).map(Number)
+        rx += n[0] || 0
+        tx += n[8] || 0
+    }
+    return { rx: rx, tx: tx }
+}
+
+export function netRate(prev, next, ms) {
+    if (!(ms > 0))
+        return { rx: 0, tx: 0 }
+    const a = netTotals(prev)
+    const b = netTotals(next)
+    return { rx: Math.max(0, (b.rx - a.rx) * 1000 / ms), tx: Math.max(0, (b.tx - a.tx) * 1000 / ms) }
+}
+
+export function daysUntil(dateIso, nowMs) {
+    const m = String(dateIso || "").match(/^(\d{4})-(\d{2})-(\d{2})$/)
+    if (m === null)
+        return null
+    const now = new Date(nowMs)
+    const from = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+    const to = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])).getTime()
+    return Math.round((to - from) / 86400000)
 }

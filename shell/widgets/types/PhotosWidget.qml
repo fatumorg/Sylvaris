@@ -78,7 +78,7 @@ Item {
         anchors.horizontalCenter: root.o.frame === "circle" ? parent.horizontalCenter : undefined
         radius: root.r
         source: root.current === "" ? "" : "file://" + root.current
-        layer.enabled: root.o.recolour === "tint" || root.o.recolour === "mono"
+        layer.enabled: (root.o.recolour === "tint" || root.o.recolour === "mono") && photo.gpu
         layer.effect: MultiEffect {
             saturation: root.o.recolour === "mono" ? -1 : -0.4 * (root.o.strength || 0.6)
             colorization: root.o.recolour === "tint" ? root.o.strength || 0.6 : 0

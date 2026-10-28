@@ -193,7 +193,7 @@ const ROWS = [
     {key: "widgets.edit", title: "Edit on the desktop", tab: "widgets", words: ["widgets", "move", "resize", "arrange"]},
     {key: "widgets.cell", title: "Grid size", tab: "widgets", words: ["widgets", "cell", "snap"], advanced: true},
     {key: "widgets.gap", title: "Gap", tab: "widgets", words: ["widgets", "spacing"], advanced: true},
-    {key: "widgets.add", title: "Add a widget", tab: "widgets", words: ["new", "clock", "weather", "calendar", "batteries", "photos", "terminal", "visualizer", "stack"]},
+    {key: "widgets.add", title: "Add a widget", tab: "widgets", words: ["new", "clock", "weather", "calendar", "batteries", "photos", "terminal", "visualizer", "stack", "media", "system", "sky", "note", "countdown", "shelf", "text", "sticker", "fatest"]},
     {key: "widgets.size", title: "Size", tab: "widgets", words: ["widget", "small", "medium", "large"]},
     {key: "widgets.layer", title: "Layer", tab: "widgets", words: ["widget", "above", "below", "overlay"]},
     {key: "widgets.clickThrough", title: "Click through", tab: "widgets", words: ["widget", "input", "mouse"]},

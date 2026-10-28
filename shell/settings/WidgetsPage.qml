@@ -166,7 +166,7 @@ Column {
         title: page.picked === null ? "" : Wd.TYPES[page.picked.type].label + " " + page.picked.id
 
         Repeater {
-            model: page.picked === null ? [] : Wd.TYPES[page.picked.type].fields
+            model: page.picked === null ? [] : Wd.TYPES[page.picked.type].fields.filter(f => f.hidden !== true)
 
             delegate: SettingRow {
                 id: field

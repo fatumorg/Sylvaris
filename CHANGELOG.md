@@ -11,10 +11,15 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - Notifications can stack as a fanned deck of cards that spreads when you point at it (`notifications.stack = "cards"`)
 - The lock screen can show the clock widget's faces: flip, analog, word, giant or digital (`lock.face`)
 - SylDeck can glow in your accent under apps that have a window (`deck.glow`), and SylTheme draws each theme's card in the Look the theme was made for
+- Nine more widgets: now playing (it can spin like a record), system graphs, the sky's sun path and moon, sticky notes you type into, countdowns, a shelf of apps, text in any font, stickers and FaTest
 
 ### Changed
 
 - Lumen, the default Look, now floats the bar with dot workspaces, lays SylCenter out as bento, stacks notifications as cards, shows the giant lock clock, glows under open apps on SylDeck and morphs windows open; Classic keeps the 1.1 layout
+
+### Fixed
+
+- Photo widgets tinted or turned mono stay visible when Sylvaris draws without a GPU
 
 ## [1.4.0] - 2026-10-28
 

@@ -33,7 +33,7 @@ Item {
         });
     }
     readonly property string file: !root.item ? "" : root.item.type.charAt(0).toUpperCase() + root.item.type.slice(1) + "Widget.qml"
-    readonly property real pad: !root.item ? 0 : root.item.type === "terminal" ? 0 : root.item.type === "photos" ? 8 : 16
+    readonly property real pad: !root.item ? 0 : root.item.type === "terminal" ? 0 : root.item.type === "photos" || root.item.type === "sticker" ? 8 : 16
 
     Glass {
         anchors.fill: parent

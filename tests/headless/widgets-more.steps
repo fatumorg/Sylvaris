@@ -1,0 +1,18 @@
+sleep 1.5
+shot sticker-src
+check cp "$OUT/sticker-src.png" "$HOME/sticker.png"
+write sylvaris/settings.json {"version":1,"plugins":{"enabled":{"fatest":true}},"widgets":{"items":[{"id":"w100","type":"media","anchor":"top-left","col":0,"row":1,"w":4,"h":2,"options":{"vinyl":true}},{"id":"w101","type":"system","anchor":"top-left","col":0,"row":3,"w":4,"h":2},{"id":"w102","type":"sky","anchor":"top-left","col":0,"row":5,"w":4,"h":2},{"id":"w103","type":"note","anchor":"top-right","col":0,"row":1,"w":3,"h":3,"options":{"text":"Buy milk\nCall Ana"}},{"id":"w104","type":"countdown","anchor":"top-right","col":3,"row":1,"w":2,"h":2,"options":{"date":"2030-01-01","title":"2030"}},{"id":"w105","type":"shelf","anchor":"bottom-left","col":0,"row":0,"w":4,"h":1,"options":{"apps":["firefox","kitty","files"],"labels":true}},{"id":"w106","type":"text","anchor":"center","col":0,"row":-2,"w":6,"h":2,"options":{"text":"Outlined","style":"outlined"}},{"id":"w107","type":"text","anchor":"center","col":0,"row":1,"w":6,"h":1,"options":{"text":"Filled words"}},{"id":"w108","type":"sticker","anchor":"bottom-right","col":0,"row":0,"w":2,"h":2,"options":{"source":"~/sticker.png","recolour":"tint"}},{"id":"w109","type":"fatest","anchor":"bottom-right","col":2,"row":0,"w":3,"h":2}]}}
+sleep 3
+shot widgets-more
+check test "$(sylvaris widgets list | wc -l)" -eq 10
+check ! sylvaris widgets list | grep -q inactive
+pointer move 2400 300 click 1
+sleep 0.6
+bg wtype -k Shift_L -s 400 -k End -k Return -s 100 Eggs
+sleep 2
+check grep -q 'Call Ana\\nEggs' "$HOME/.config/sylvaris/settings.json"
+shot widgets-more-note
+syl plugins disable fatest
+sleep 1
+check sylvaris widgets list | grep -q "^w109	fatest.*inactive"
+killshell
