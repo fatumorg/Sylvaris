@@ -4,6 +4,8 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-10-28
+
 ### Added
 
 - SylWidget puts clocks, weather, a calendar, Diver, batteries, photos, a live terminal, an audio visualizer and stacks of them on the desktop; `sylvaris widgets edit` lets you drag, resize, add and remove them in place, and SylSettings › Desktop › Widgets tunes each one
@@ -365,7 +367,8 @@ The first official release, out of beta.
 - Relock a lock screen that is still closing and report locks that fail
 - Never prompt or hang on plugin clones and unfreeze settings once the file is gone
 
-[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/fatumorg/Sylvaris/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/fatumorg/Sylvaris/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/fatumorg/Sylvaris/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/fatumorg/Sylvaris/compare/v1.0.1...v1.1.0

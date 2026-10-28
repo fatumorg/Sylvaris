@@ -47,7 +47,7 @@ test("problems reports values the validator replaced or dropped", () => {
 })
 
 const facts = {
-    version: "1.3.0",
+    version: "1.4.0",
     commit: "abc1234",
     sylstack: "SylStack 1.0.0 (Qt 6.11.2)",
     compositor: "hyprland 0.51.0",
