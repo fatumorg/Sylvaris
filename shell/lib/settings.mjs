@@ -437,7 +437,7 @@ export function validateSettings(raw, userLooks) {
 }
 
 export const SCREEN_KEYS = [
-    "bar", "deck.enabled", "deck.pad", "deck.power", "deck.effect", "deck.hide", "deck.peek", "deck.peekSize", "deck.reserve", "deck.size",
+    "bar", "deck.enabled", "deck.pad", "deck.power", "deck.effect", "deck.glow", "deck.hide", "deck.peek", "deck.peekSize", "deck.reserve", "deck.size",
     "center.corner", "clock.corner", "notifications.corner", "placement", "island.position", "island.idle", "island.reveal", "island.shortcuts",
     "paper.fit", "paper.blur", "paper.dim", "paper.tint", "paper.drift", "paper.transition", "paper.duration"
 ]

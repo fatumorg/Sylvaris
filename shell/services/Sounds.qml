@@ -4,6 +4,7 @@ import QtQuick
 import Qt.labs.folderlistmodel
 import SylStack
 import "../lib/settings.mjs" as S
+import "../lib/capture.mjs" as C
 
 Singleton {
     id: root
@@ -33,7 +34,7 @@ Singleton {
 
     FolderListModel {
         id: folder
-        folder: root.cfg.enabled && root.dir.startsWith("/") ? "file://" + root.dir : ""
+        folder: root.cfg.enabled && root.dir.startsWith("/") ? C.fileUri(root.dir) : ""
         nameFilters: ["*.oga", "*.ogg", "*.wav", "*.flac"]
         showDirs: false
         onCountChanged: root.refresh()

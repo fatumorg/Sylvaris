@@ -681,6 +681,8 @@ export function daysUntil(dateIso, nowMs) {
         return null
     const now = new Date(nowMs)
     const from = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
-    const to = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])).getTime()
-    return Math.round((to - from) / 86400000)
+    const day = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]))
+    if (day.getMonth() !== Number(m[2]) - 1 || day.getDate() !== Number(m[3]))
+        return null
+    return Math.round((day.getTime() - from) / 86400000)
 }

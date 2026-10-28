@@ -267,6 +267,8 @@ test("daysUntil counts calendar days in local time", () => {
     assert.equal(daysUntil("2026-10-20", now), -8)
     assert.equal(daysUntil("2027-10-28", now), 365)
     assert.equal(daysUntil("soon", now), null)
+    assert.equal(daysUntil("2026-02-31", now), null)
+    assert.equal(daysUntil("2026-13-01", now), null)
 })
 
 test("a note keeps at most 20 000 characters", () => {

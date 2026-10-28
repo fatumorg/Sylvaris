@@ -165,7 +165,7 @@ Scope {
                     duration: N.timeoutFor(card.n.urgency, card.n.expireTimeout, Notifications.timeout)
                     scale: (0.96 + 0.04 * card.enter) * card.frame.scale
                     opacity: card.enter * (1 - card.leave) * card.frame.opacity
-                    transformOrigin: Item.Bottom
+                    transformOrigin: root.spread ? Item.Center : Item.Bottom
 
                     Component.onCompleted: enterAnim.start()
 

@@ -4,6 +4,7 @@ import SylStack
 import qs
 import qs.services
 import "../../lib/settings.mjs" as S
+import "../../lib/capture.mjs" as C
 
 Item {
     id: root
@@ -39,7 +40,7 @@ Item {
         AnimatedImage {
             id: picture
             anchors.fill: parent
-            source: root.path === "" ? "" : "file://" + root.path
+            source: root.path === "" ? "" : C.fileUri(root.path)
             fillMode: Image.PreserveAspectFit
             asynchronous: true
             smooth: true
