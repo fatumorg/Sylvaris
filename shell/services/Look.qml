@@ -27,6 +27,7 @@ Singleton {
             display: L.pickFont(root.values.fonts.display, root.families, L.pickFont(root.values.fonts.ui, root.families, "Inter"))
         })
     readonly property int weight: root.values.weight === "light" ? Font.Normal : root.values.weight === "medium" ? Font.Bold : Font.DemiBold
+    property string followed: ""
     readonly property string notice: {
         const errors = root.glassResult.errors.concat(root.lookErrors);
         return errors.length === 0 ? "" : "Look: " + errors.join("; ");
@@ -39,6 +40,82 @@ Singleton {
 
     function glassFor(role: string): var {
         return L.glassFor(root.values, role);
+    }
+
+    function list(): var {
+        return Object.keys(L.LOOKS).concat(Object.keys(root.userLooks).sort());
+    }
+
+    function set(id: string): void {
+        if (L.LOOKS[id] === undefined && root.userLooks[id] === undefined)
+            throw new Error("unknown look: " + id);
+        if (!Settings.ready || Settings.frozen)
+            throw new Error(Settings.notice || "settings are still loading");
+        Settings.setRaw(L.applyLook(Settings.raw, id, root.userLooks));
+    }
+
+    function write(path: string, look: var): void {
+        writer.path = path;
+        writer.setText(JSON.stringify(look, null, 2) + "\n");
+    }
+
+    function filePath(path: string): string {
+        const p = S.expandHome(String(path || ""), Settings.home);
+        if (!p.startsWith("/"))
+            throw new Error("give a full path, like ~/my-look.json");
+        return p;
+    }
+
+    function store(id: string, look: var): void {
+        root.write(root.dir + "/" + id + ".json", look);
+        root.remember(id, JSON.stringify(look));
+        if (root.ids.indexOf(id) < 0)
+            root.ids = root.ids.concat([id]).sort();
+    }
+
+    function save(name: string): string {
+        const id = L.slugLook(name);
+        if (id === "")
+            throw new Error(String(name).trim() === "" ? "usage: look save <name>" : "pick a name that is not a built-in look");
+        root.store(id, L.lookFile(name, root.values, L.lookDefaults(Settings.values.look, root.userLooks)));
+        return id;
+    }
+
+    function exportTo(path: string, id: string): string {
+        const p = root.filePath(path);
+        if (id && root.userLooks[id] === undefined)
+            throw new Error("only your own looks can be exported: " + Object.keys(root.userLooks).sort().join(", "));
+        const key = id || Settings.values.look.preset;
+        root.write(p, root.userLooks[key] !== undefined ? root.userLooks[key] : L.lookFile(root.values.name + " custom", root.values, L.lookDefaults(Settings.values.look, root.userLooks)));
+        return p;
+    }
+
+    function importFrom(path: string): string {
+        reader.path = root.filePath(path);
+        reader.reload();
+        const p = S.parseJson(reader.text());
+        const look = p.ok ? L.validateUserLook(p.value) : null;
+        if (look === null)
+            throw new Error("not a look file: " + reader.path);
+        const id = L.slugLook(look.name);
+        if (id === "")
+            throw new Error("a look cannot be named like a built-in one: " + look.name);
+        if (root.userLooks[id] !== undefined)
+            throw new Error("you already have a look called " + id);
+        root.store(id, look);
+        return id;
+    }
+
+    function follow(): void {
+        if (!Settings.ready || !Settings.values.look.followTheme || Theme.currentId === "" || Theme.currentId === root.followed)
+            return;
+        const entry = Theme.catalog[Theme.currentId];
+        if (entry === undefined)
+            return;
+        root.followed = Theme.currentId;
+        const want = entry.look || "";
+        if (want !== "" && want !== Settings.values.look.preset && (L.LOOKS[want] !== undefined || root.userLooks[want] !== undefined))
+            root.set(want);
     }
 
     function remember(id: string, text: string): void {
@@ -68,9 +145,47 @@ Singleton {
         root.userLooks = next;
     }
 
+    Connections {
+        target: Theme
+
+        function onCurrentIdChanged(): void {
+            root.follow();
+        }
+
+        function onCatalogChanged(): void {
+            root.follow();
+        }
+    }
+
+    Connections {
+        target: Settings
+
+        function onReadyChanged(): void {
+            root.follow();
+        }
+    }
+
+    FileView {
+        id: writer
+        preload: false
+        atomicWrites: true
+        printErrors: false
+    }
+
+    FileView {
+        id: reader
+        preload: false
+        printErrors: false
+    }
+
+    Process {
+        running: true
+        command: ["mkdir", "-p", root.dir]
+        onExited: folder.folder = "file://" + root.dir
+    }
+
     FolderListModel {
         id: folder
-        folder: "file://" + root.dir
         nameFilters: ["*.json"]
         showDirs: false
         onCountChanged: root.refreshIds()

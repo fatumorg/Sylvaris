@@ -702,6 +702,27 @@ ShellRoot {
                         root.need("center").setView(name);
                 }
             },
+            look: {
+                default: "state",
+                list: () => Look.list(),
+                set: id => {
+                    if (id === undefined)
+                        throw new Error("usage: look set <" + Look.list().join("|") + ">");
+                    Look.set(id);
+                },
+                save: (...name) => Look.save(name.join(" ")),
+                export: (path, id) => Look.exportTo(path, id || ""),
+                import: path => Look.importFrom(path),
+                state: () => ({
+                        preset: Look.values.preset,
+                        name: Look.values.name,
+                        material: Look.material,
+                        corners: Look.corners,
+                        density: Look.values.densityName,
+                        fonts: Look.fonts,
+                        user: Object.keys(Look.userLooks).sort()
+                    })
+            },
             theme: {
                 toggle: () => root.need("theme").toggle(),
                 open: () => root.need("theme").open(),

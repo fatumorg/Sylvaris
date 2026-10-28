@@ -30,6 +30,14 @@ Change any part of a Look without leaving it. Each key under `look` overrides th
 
 Your own `glass` keys still beat the material. Picking a Look clears the overrides above and your glass levels, so it shows as designed.
 
+### Your own Looks
+
+`sylvaris look save Night Owl` keeps the Look you have now, overrides and all, as `~/.config/sylvaris/looks/night-owl.json`; it then shows in `sylvaris look list` and `look.preset` takes `night-owl`. A Look file can also carry a `settings` block, such as `{"motion": {"preset": "calm"}}`, and picking that Look applies it.
+
+Share one with `sylvaris look export ~/night-owl.json night-owl` (leave out the name to export the Look you have now) and add a friend's with `sylvaris look import ~/their-look.json`. Importing never replaces a Look you already have, and a Look cannot take the name of a built-in one.
+
+A theme can name the Look it was made for with a `"look"` key. Turn on `look.followTheme` and applying that theme switches to its Look as well.
+
 ## Resin Glass
 
 Every Sylvaris surface is drawn in Resin Glass: a translucent body the compositor blurs, the theme's accent suspended in it, a soft light that drifts like liquid and leans toward the pointer and a lit rim. Tune it with a `glass` block in `config.json` (or from Nix) and in `settings.json`; `settings.json` wins, and changes apply live.

@@ -116,6 +116,7 @@ export function validateTheme(raw) {
             description: typeof raw.description === "string" ? raw.description : "",
             wallpaper: typeof raw.wallpaper === "string" ? raw.wallpaper : "",
             workspaceIcon: typeof raw.workspaceIcon === "string" && /^[a-z]{1,20}$/.test(raw.workspaceIcon) ? raw.workspaceIcon : "",
+            look: typeof raw.look === "string" && /^[a-z0-9][a-z0-9-]{0,39}$/.test(raw.look) ? raw.look : "",
             colors: colors,
             alpha: alpha,
             links: links
@@ -197,7 +198,7 @@ export function catalogEntry(id, raw) {
     const named = isObject(raw) && typeof raw.name === "string" && raw.name.trim() !== ""
     const name = named ? raw.name : id
     const t = validateTheme(isObject(raw) ? Object.assign({}, raw, { id: ID.test(id) ? id : "theme", name: name }) : raw).theme
-    return { id: id, name: name, description: t.description, wallpaper: t.wallpaper, colors: t.colors, links: t.links || {} }
+    return { id: id, name: name, description: t.description, wallpaper: t.wallpaper, look: t.look, colors: t.colors, links: t.links || {} }
 }
 
 const UNLINK_SCRIPT = 'k=$1; shift; r=0; while [ "$k" -gt 0 ]; do if [ -L "$2" ] && [ "$(readlink "$2")" = "$1" ] && rm -f -- "$2"; then r=$((r + 1)); if [ -e "$2.before-sylvaris" ] || [ -L "$2.before-sylvaris" ]; then mv -- "$2.before-sylvaris" "$2"; fi; fi; shift 2; k=$((k - 1)); done; echo "removed $r"; '

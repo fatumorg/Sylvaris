@@ -319,3 +319,10 @@ test("linkCommand removes a stale link that has no backup", () => {
     assert.equal(parseLinkOutput(execFileSync(argv[0], argv.slice(1), { encoding: "utf8" })).removed, 1)
     assert.throws(() => lstatSync(join(conf, "app", "a")))
 })
+
+test("a theme can name the look it goes with", () => {
+    assert.equal(validateTheme(Object.assign({}, warm, { look: "ink" })).theme.look, "ink")
+    assert.equal(validateTheme(Object.assign({}, warm, { look: 3 })).theme.look, "")
+    assert.equal(validateTheme(Object.assign({}, warm, { look: "../x" })).theme.look, "")
+    assert.equal(catalogEntry("warm", Object.assign({}, warm, { look: "neon" })).look, "neon")
+})

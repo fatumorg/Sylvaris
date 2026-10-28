@@ -19,3 +19,16 @@ syl set look.preset classic
 sleep 1
 shot look-classic
 check sylvaris state | grep -q '"material":"resin"'
+syl look save Night Owl
+sleep 1.5
+check sylvaris look list | grep -q night-owl
+syl look set ink
+sleep 0.5
+check sylvaris look state | grep -q '"preset":"ink"'
+check sylvaris state | grep -q '"glass":{"values"'
+syl look export /tmp/syl-look-export.json night-owl
+check grep -q '"name": "Night Owl"' /tmp/syl-look-export.json
+check sylvaris look import /tmp/syl-look-export.json 2>&1 | grep -q 'already have'
+syl look set night-owl
+sleep 0.5
+check sylvaris look state | grep -q '"preset":"night-owl"'

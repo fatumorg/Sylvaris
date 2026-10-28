@@ -49,6 +49,7 @@ To show the version in fastfetch, add `{ "type": "command", "key": "DE", "text":
 | `headphones` | `state` `noise <off\|transparency\|adaptive\|anc>` `awareness <on\|off>` |
 | `island` | `toggle` `open` `close` `show <text>` `run <shortcut>` `answer` `decline` `reply <text>` `state` |
 | `lock` | `now` `state` |
+| `look` | `state` `list` `set <id>` `save <name>` `export <path> [id]` `import <path>` |
 | `media` | `toggle` `next` `previous` `seek <seconds>` `open [tab]` `close` `panel` |
 | `nightlight` | `toggle` `on` `off` |
 | `privacy` | `toggle` `on` `off` `state`: mutes every microphone and switches USB cameras off; cameras need `programs.sylvaris.cameraSwitch.enable` on NixOS |

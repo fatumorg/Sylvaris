@@ -51,9 +51,13 @@ Singleton {
     }
 
     function set(key: string, value: var): void {
+        root.setRaw(S.setPath(root.raw, key, value));
+    }
+
+    function setRaw(next: var): void {
         if (root.frozen)
             return;
-        root.raw = S.setPath(root.raw, key, value);
+        root.raw = next;
         writeTimer.restart();
     }
 

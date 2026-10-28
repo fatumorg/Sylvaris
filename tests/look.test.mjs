@@ -150,3 +150,9 @@ test("blurRadius keeps the blur inside the shaped corner", () => {
     assert.ok(blurRadius(20, "squircle") > 20)
     assert.ok(blurRadius(20, "bevel") >= 20)
 })
+
+test("a user look named like a builtin gets no file name", () => {
+    assert.equal(slugLook("Classic"), "")
+    assert.equal(slugLook("Ink"), "")
+    assert.equal(slugLook("Ink 2"), "ink-2")
+})
