@@ -264,7 +264,7 @@ test("PARTS lists every service a part references", () => {
     const root = new URL("../shell/", import.meta.url)
     const core = ["Config", "Settings", "Look", "Ipc", "Demo", "Theme", "Resin", "Compositor", "Keybinds", "Privacy"]
     const services = readdirSync(new URL("services/", root)).map(f => f.replace(".qml", "")).filter(n => !core.includes(n)).concat("Diver")
-    const dirOf = name => name === "diver" || name === "fatest" || name === "rgb" ? "plugins/" + name : name
+    const dirOf = name => name === "diver" || name === "fatest" || name === "rgb" || name === "temp" ? "plugins/" + name : name
     const refs = dir => {
         const found = new Set()
         for (const f of readdirSync(new URL(dir + "/", root), { recursive: true }).filter(f => f.endsWith(".qml") && (dir !== "plugins" || !f.includes("/")))) {
@@ -323,7 +323,7 @@ test("center settings keep known tiles and section switches", () => {
 
 test("placement keeps each panel's spot and falls back per panel", () => {
     const d = validateSettings({}).placement
-    assert.deepEqual(d, { media: "auto", clip: "top-center", capture: "top-center", access: "top-center", diver: "center", fatest: "top-right", rgb: "top-right" })
+    assert.deepEqual(d, { media: "auto", clip: "top-center", capture: "top-center", access: "top-center", diver: "center", fatest: "top-right", rgb: "top-right", temp: "top-right" })
     const v = validateSettings({ placement: { media: "top-left", clip: "center", capture: "nope", access: "auto", diver: "top-right", extra: 1 } }).placement
     assert.equal(v.media, "top-left")
     assert.equal(v.clip, "center")

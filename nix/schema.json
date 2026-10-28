@@ -276,6 +276,22 @@
     "host": "127.0.0.1",
     "port": 6742
   },
+  "temp": {
+    "interval": 1,
+    "overlay": {
+      "show": "off",
+      "apps": [],
+      "corner": "top-left",
+      "x": 16,
+      "y": 16,
+      "scale": 1,
+      "opacity": 0.85,
+      "style": "compact"
+    },
+    "alerts": true,
+    "cooldown": 300,
+    "pinned": []
+  },
   "placement": {
     "media": "auto",
     "clip": "top-center",
@@ -283,7 +299,8 @@
     "access": "top-center",
     "diver": "center",
     "fatest": "top-right",
-    "rgb": "top-right"
+    "rgb": "top-right",
+    "temp": "top-right"
   },
   "screens": {},
   "capture": {

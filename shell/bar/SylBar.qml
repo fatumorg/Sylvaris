@@ -3,6 +3,7 @@ import SylStack
 import qs
 import qs.services
 import qs.plugins.diver
+import qs.plugins.temp
 import qs.components
 import "../lib/icons.mjs" as Icons
 import "../lib/bar.mjs" as B
@@ -36,7 +37,8 @@ Scope {
                 notifications: notificationsModule,
                 center: centerModule,
                 power: powerModule,
-                diver: diverModule
+                diver: diverModule,
+                temp: tempModule
             })[name] || (name.indexOf("plugin:") === 0 ? pluginModule : null);
     }
 
@@ -888,6 +890,28 @@ Scope {
             label: n === null ? "" : Diver.plain(n.task.text).slice(0, 26) + "  " + (mins <= 0 ? "now" : mins < 60 ? mins + "m" : Qt.formatTime(new Date(n.start), "HH:mm"))
             lit: root.isOpen("clock", screenRef)
             onClicked: root.request("clock", "", screenRef)
+        }
+    }
+
+    Component {
+        id: tempModule
+
+        BarButton {
+            id: tempChip
+            property var screenRef: null
+            property var win: null
+            readonly property var hot: Temps.top
+            readonly property string me: "bar" + tempChip
+            property bool wanted: Temps.enabled
+            compact: root.vertical || tempChip.hot === null
+            glyph: Icons.GLYPHS.thermometer
+            tint: Temps.tone(tempChip.hot)
+            label: tempChip.hot === null ? "" : Math.round(tempChip.hot.value) + (tempChip.hot.unit === "°C" ? "°" : "")
+            lit: root.isOpen("temp", screenRef)
+            onClicked: root.request("temp", "", screenRef)
+            onWantedChanged: Temps.want(tempChip.me, tempChip.wanted)
+            Component.onCompleted: Temps.want(tempChip.me, tempChip.wanted)
+            Component.onDestruction: Temps.want(tempChip.me, false)
         }
     }
 }

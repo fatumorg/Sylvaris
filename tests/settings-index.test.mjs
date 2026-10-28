@@ -8,7 +8,7 @@ import { SECTIONS } from "../shell/lib/sections.mjs"
 
 const shell = join(dirname(fileURLToPath(import.meta.url)), "..", "shell")
 const files = readdirSync(join(shell, "settings")).filter(f => f.endsWith(".qml")).map(f => join(shell, "settings", f))
-    .concat(["diver/DiverPage.qml", "fatest/FaTestPage.qml", "rgb/RGBPage.qml"].map(f => join(shell, "plugins", f)))
+    .concat(["diver/DiverPage.qml", "fatest/FaTestPage.qml", "rgb/RGBPage.qml", "temp/TempPage.qml"].map(f => join(shell, "plugins", f)))
 
 function rows() {
     const out = []

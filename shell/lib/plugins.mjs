@@ -111,7 +111,8 @@ export const BUILTIN = [
     { id: "airpods", name: "AirPods", kind: "builtin", part: "", services: [], description: "Battery, listening modes and conversation awareness for AirPods in SylMedia › Devices." },
     { id: "fatest", name: "FaTest", kind: "builtin", part: "fatest", services: [], description: "Internet speed tests with FaTest in the FaTest panel, sharing its history and default server. Needs the fatest command." },
     { id: "awake", name: "Keep Awake", kind: "builtin", part: "", services: [], description: "A SylCenter tile and the sylvaris awake command that keep the screen from dimming, locking or going to sleep while it is on, for films, slides and long downloads." },
-    { id: "rgb", name: "SylRGB", kind: "builtin", part: "rgb", services: [], description: "One place for the lights on your mouse, keyboard, memory, graphics card, motherboard and LED strips, through OpenRGB. Colours can follow your theme and come back when a device reconnects. Needs OpenRGB with its SDK server on." }
+    { id: "rgb", name: "SylRGB", kind: "builtin", part: "rgb", services: [], description: "One place for the lights on your mouse, keyboard, memory, graphics card, motherboard and LED strips, through OpenRGB. Colours can follow your theme and come back when a device reconnects. Needs OpenRGB with its SDK server on." },
+    { id: "temp", name: "SylTemp", kind: "builtin", part: "temp", services: ["Temps"], description: "Every temperature in your computer in one panel, a game overlay, a bar chip, a desktop widget and alerts when something runs hot. Needs TempInfoCLI." }
 ]
 
 export function builtinOn(plugins, id) {

@@ -12,6 +12,7 @@ export const MODULES = {
     paper: { label: "Wallpaper", section: "wallpaper", glyph: "image" },
     diver: { label: "Diver", section: "diver", glyph: "planner" },
     fatest: { label: "FaTest", section: "fatest", glyph: "speed" },
+    temp: { label: "SylTemp", section: "temp", glyph: "thermometer" },
     rgb: { label: "Lighting", section: "rgb", glyph: "rgb" },
     switcher: { label: "Window switcher", section: "switcher", glyph: "switcher" },
     lock: { label: "Lock screen", section: "lock", glyph: "lock" },
@@ -30,7 +31,7 @@ export const MODULES = {
 
 export const PRODUCT = {
     bar: "SylBar", deck: "SylDeck", center: "SylCenter", theme: "SylTheme", clock: "SylClock", notify: "SylNotify",
-    pad: "SylPad", media: "SylMedia", settings: "SylSettings", power: "SylPower", paper: "SylPaper", diver: "SylDiver", fatest: "FaTest", rgb: "SylRGB",
+    pad: "SylPad", media: "SylMedia", settings: "SylSettings", power: "SylPower", paper: "SylPaper", diver: "SylDiver", fatest: "FaTest", rgb: "SylRGB", temp: "SylTemp",
     switcher: "SylSwitch", lock: "SylLock", polkit: "SylPolkit", clip: "SylClip", island: "SylIsland", capture: "SylCapture", viewer: "SylViewer", files: "SylFiles", archive: "SylArchive", access: "SylAccessibility", plugins: "SylPlugins", sync: "SylSync", widgets: "SylWidget"
 }
 

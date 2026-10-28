@@ -967,6 +967,7 @@ Scope {
                                     diver: diverPage,
                                     fatest: fatestPage,
                                     rgb: rgbPage,
+                                    temp: tempPage,
                                     switcher: switcherPage,
                                     lock: lockPage,
                                     polkit: polkitPage,
@@ -1265,6 +1266,16 @@ Scope {
 
         Loader {
             Component.onCompleted: setSource("../plugins/rgb/RGBPage.qml", {
+                host: root
+            })
+        }
+    }
+
+    Component {
+        id: tempPage
+
+        Loader {
+            Component.onCompleted: setSource("../plugins/temp/TempPage.qml", {
                 host: root
             })
         }

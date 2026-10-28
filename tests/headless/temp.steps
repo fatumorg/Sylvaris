@@ -1,0 +1,37 @@
+sleep 1.5
+check ! sylvaris temp state
+syl plugins enable temp
+sleep 1.5
+syl temp open
+sleep 3
+shot temp
+check sylvaris temp state | grep -q '"available":true'
+check sylvaris temp state | grep -q '"running":true'
+check sylvaris temp state | grep -q '"id":"Ryzen 7 7800X3D/Tctl"'
+syl temp pin Radeon RX 7900 XT/junction
+sleep 0.5
+check sylvaris temp state | grep -q '"id":"Radeon RX 7900 XT/junction"'
+syl temp pin Radeon RX 7900 XT/junction
+syl temp close
+syl temp overlay on
+sleep 2
+shot temp-overlay
+syl set temp.overlay.style card
+sleep 1
+shot temp-overlay-card
+syl temp overlay off
+syl widgets add temp
+syl set bar.right ["temp","audio","power"]
+sleep 2.5
+shot temp-widget
+check sylvaris widgets remove $(sylvaris widgets list | awk '$2=="temp"{print $1}')
+syl set bar.right ["audio","power"]
+sleep 2
+check ! pgrep -f 'tempinfo --strea[m]'
+syl temp overlay on
+sleep 1.5
+check pgrep -f 'tempinfo --strea[m]'
+syl plugins disable temp
+sleep 1.5
+check ! sylvaris temp state
+check ! pgrep -f 'tempinfo --strea[m]'

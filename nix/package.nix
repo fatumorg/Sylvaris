@@ -109,6 +109,7 @@ let
     access = [ ];
     fatest = [ ];
     rgb = [ python ];
+    temp = [ ];
     plugins = [ git ];
     sync = [
       python

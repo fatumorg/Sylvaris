@@ -18,6 +18,7 @@ With Home Manager: `programs.sylvaris.plugins.enabled = { diver = true; airpods 
 - [FaTest](fatest.md) runs internet speed tests.
 - [Keep Awake](awake.md) keeps the screen on while you watch, present or wait.
 - [SylRGB](rgb.md) controls the lights on your mouse, keyboard, memory, graphics card and every other device OpenRGB supports.
+- [SylTemp](temp.md) shows every temperature in a panel, a game overlay, the bar and a desktop widget, and warns when something runs hot.
 
 They are listed first, turn on and off like any other plugin, and cannot be removed. A built-in plugin that is off runs nothing, and its commands, settings page, bar module and launcher tile are hidden.
 

@@ -8,6 +8,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 - SylWidget puts clocks, weather, a calendar, Diver, batteries, photos, a live terminal, an audio visualizer and stacks of them on the desktop; `sylvaris widgets edit` lets you drag, resize, add and remove them in place, and SylSettings › Desktop › Widgets tunes each one
 - Right-click the wallpaper for a desktop menu with widgets, wallpapers, your Look and SylSettings, or open it with `sylvaris paper menu`
+- SylTemp, a built-in plugin, shows every temperature from TempInfoCLI in a panel with history and peaks, a click-through overlay for games, a bar chip and a desktop widget, and warns when something runs hot (`sylvaris temp`)
 
 ## [1.3.0] - 2026-10-28
 

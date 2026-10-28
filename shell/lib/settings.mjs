@@ -18,13 +18,14 @@ import { DEFAULT_POWER, validatePower } from "./power.mjs"
 import { DEFAULT_PAPER, validatePaper } from "./paper.mjs"
 import { DEFAULT_WEATHER, validateWeather } from "./weather.mjs"
 import { DEFAULT_RGB, validateRgb } from "./rgb.mjs"
+import { DEFAULT_TEMP, validateTemp } from "./temp.mjs"
 import { DEFAULT_LOOK, validateLook, lookDefaults } from "./look.mjs"
 
 export const CORNERS = ["top-left", "top-center", "top-right"]
 export const REVEALS = ["edges", "center", "fade"]
 export const PERFORMANCE = ["off", "auto", "on"]
 export const PLACES = CORNERS.concat("center")
-export const DEFAULT_PLACEMENT = { media: "auto", clip: "top-center", capture: "top-center", access: "top-center", diver: "center", fatest: "top-right", rgb: "top-right" }
+export const DEFAULT_PLACEMENT = { media: "auto", clip: "top-center", capture: "top-center", access: "top-center", diver: "center", fatest: "top-right", rgb: "top-right", temp: "top-right" }
 export const CENTER_TILES = ["wifi", "bluetooth", "night", "dnd", "hotspot"]
 
 export const PARTS = {
@@ -35,6 +36,7 @@ export const PARTS = {
     diver: ["Diver"],
     fatest: [],
     rgb: [],
+    temp: ["Temps"],
     media: ["Headphones", "Equalizer", "Media"],
     notify: ["Apps", "Battery", "Dnd", "Notifications"],
     pad: ["Apps"],
@@ -126,6 +128,7 @@ export const DEFAULT_SETTINGS = {
     widgets: DEFAULT_WIDGETS,
     archive: DEFAULT_ARCHIVE,
     rgb: DEFAULT_RGB,
+    temp: DEFAULT_TEMP,
     placement: DEFAULT_PLACEMENT,
     screens: {},
     capture: DEFAULT_CAPTURE,
@@ -386,6 +389,7 @@ export function validateSettings(raw, userLooks) {
     v.files = validateFiles(v.files)
     v.archive = validateArchive(v.archive)
     v.rgb = validateRgb(v.rgb)
+    v.temp = validateTemp(v.temp)
     const place = isObject(v.placement) ? v.placement : {}
     v.placement = Object.assign({}, place)
     for (const key of Object.keys(DEFAULT_PLACEMENT))

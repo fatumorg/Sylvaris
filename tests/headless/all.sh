@@ -22,6 +22,9 @@ for steps in "$here"/*.steps; do
     if [ "$name" = fatest ]; then
         extra=(env PATH="$here/fake-fatest:$PATH")
     fi
+    if [ "$name" = temp ]; then
+        extra=(env PATH="$here/fake-tempinfo:$PATH")
+    fi
     if [ "$name" = files-drives ]; then
         extra=(env PATH="$here/fake-drives:$PATH")
     fi

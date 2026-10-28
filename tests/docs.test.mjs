@@ -17,7 +17,7 @@ test("docs/reference/settings.md matches the shell's defaults", () => {
 
 test("every part has a page", () => {
     for (const name of Object.keys(PARTS)) {
-        const page = name === "plugins" ? "plugins/README.md" : ["diver", "fatest", "rgb"].includes(name) ? "plugins/" + name + ".md" : "parts/" + name + ".md"
+        const page = name === "plugins" ? "plugins/README.md" : ["diver", "fatest", "rgb", "temp"].includes(name) ? "plugins/" + name + ".md" : "parts/" + name + ".md"
         assert.ok(existsSync(join(docs, page)), name + " needs docs/" + page)
     }
 })

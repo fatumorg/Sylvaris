@@ -1,0 +1,30 @@
+#!/bin/sh
+sensors() {
+    printf '[{"group": "k10temp", "label": "Tctl", "value": %s, "unit": "°C", "kind": "cpu", "device": "Ryzen 7 7800X3D", "warn": 75, "hot": 90}, ' "$((52 + $1))"
+    printf '{"group": "amdgpu", "label": "edge", "value": %s, "unit": "°C", "kind": "gpu", "device": "Radeon RX 7900 XT", "warn": 75, "hot": 90}, ' "$((60 + $1 / 2))"
+    printf '{"group": "amdgpu", "label": "junction", "value": %s, "unit": "°C", "kind": "gpu", "device": "Radeon RX 7900 XT", "warn": 75, "hot": 90}, ' "$((70 + $1))"
+    printf '{"group": "nvme", "label": "Composite", "value": 41, "unit": "°C", "kind": "storage", "device": "Samsung 990 PRO", "warn": 50, "hot": 65}, '
+    printf '{"group": "nvme", "label": "Composite", "value": 53, "unit": "°C", "kind": "storage", "device": "WD Black SN850X", "warn": 50, "hot": 65}, '
+    printf '{"group": "nct6799", "label": "SYSTIN", "value": 36, "unit": "°C", "kind": "mobo", "device": "ASUS ROG STRIX B650E-F", "warn": 60, "hot": 80}, '
+    printf '{"group": "nct6799", "label": "fan1", "value": %s, "unit": "RPM", "kind": "other", "device": "ASUS ROG STRIX B650E-F", "warn": null, "hot": null}]' "$((880 + $1 * 10))"
+}
+case "$1" in
+--version)
+    echo "tempinfo 0.3.0"
+    ;;
+--json)
+    sensors 0
+    echo
+    ;;
+--stream)
+    i=0
+    while :; do
+        printf '{"time": %s000, "sensors": %s}\n' "$(date +%s)" "$(sensors "$i")"
+        i=$(((i + 1) % 8))
+        sleep "${3:-1}"
+    done
+    ;;
+*)
+    exit 2
+    ;;
+esac

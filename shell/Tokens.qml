@@ -168,6 +168,8 @@ Singleton {
     readonly property int testHeight: 660
     readonly property int rgbWidth: 480
     readonly property int rgbHeight: 720
+    readonly property int tempWidth: 480
+    readonly property int tempHeight: 720
     readonly property int diverHeight: 720
     readonly property int settingsHeight: 760
     readonly property int settingsSidebar: 250

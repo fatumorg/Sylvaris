@@ -51,7 +51,7 @@ test("magnify peaks under the pointer and fades to 1", () => {
 })
 
 test("unused lists modules on no side, shift moves within bounds", () => {
-    assert.deepEqual(unused({ left: ["pad", "clock"], center: [], right: ["workspaces", "window", "media", "tray", "audio", "network", "bluetooth", "battery"] }), ["notifications", "center", "power", "diver"])
+    assert.deepEqual(unused({ left: ["pad", "clock"], center: [], right: ["workspaces", "window", "media", "tray", "audio", "network", "bluetooth", "battery"] }), ["notifications", "center", "power", "diver", "temp"])
     assert.deepEqual(shift(["a", "b", "c"], 0, 1), ["b", "a", "c"])
     assert.deepEqual(shift(["a", "b", "c"], 2, 1), ["a", "b", "c"])
     assert.deepEqual(shift(["a", "b", "c"], 2, -2), ["c", "a", "b"])

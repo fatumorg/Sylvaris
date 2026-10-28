@@ -5,6 +5,7 @@ ClockWidget 1.0 ClockWidget.qml
 DiverWidget 1.0 DiverWidget.qml
 PhotosWidget 1.0 PhotosWidget.qml
 StackWidget 1.0 StackWidget.qml
+TempWidget 1.0 TempWidget.qml
 TerminalWidget 1.0 TerminalWidget.qml
 VisualizerWidget 1.0 VisualizerWidget.qml
 WeatherWidget 1.0 WeatherWidget.qml

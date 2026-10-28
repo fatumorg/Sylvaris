@@ -55,7 +55,7 @@ To show the version in fastfetch, add `{ "type": "command", "key": "DE", "text":
 | `privacy` | `toggle` `on` `off` `state`: mutes every microphone and switches USB cameras off; cameras need `programs.sylvaris.cameraSwitch.enable` on NixOS |
 | `notify` | `toggle` `open` `close` `clear` `dismiss <id>` `invoke <id> [action]` |
 | `pad` | `toggle` `open` `close` `pick` |
-| `paper` | `toggle` `open` `close` `set <path>` `next` `prev` `reset` `current` |
+| `paper` | `toggle` `open` `close` `set <path>` `next` `prev` `reset` `current` `menu` |
 | `plugins` | `toggle` `open [id]` `close` `list` `enable <id>` `disable <id>` `new <id> [kind]` `install <url>` `pending` `confirm` `discard` `remove <id>` `refresh` `state` |
 | `polkit` | `state` `preview` `cancel` |
 | `power` | `toggle` `open` `close` `list` `run <action>` |
@@ -63,8 +63,10 @@ To show the version in fastfetch, add `{ "type": "command", "key": "DE", "text":
 | `shell` | `reload` `config` |
 | `switcher` | `next` `prev` `commit` `close` `state` |
 | `sync` | `now` `on` `off` `state` |
+| `temp` | see [SylTemp](plugins/temp.md) |
 | `theme` | `toggle` `open` `close` `next` `prev` `apply` `cycle` `search <text>` `set <id>` `list` `generate [path] [dark\|light]` |
 | `weather` | `state` `refresh` |
+| `widgets` | `list` `edit` `done` `add <type>` `remove <id>` `state` |
 | `wifi` | `toggle` `on` `off` `connect <name>` `disconnect [name]` |
 | `wm` | see [compositors](compositors.md#one-set-of-window-commands) |
 

@@ -38,6 +38,7 @@ export const SECTIONS = [
     { key: "clip", label: "Clipboard", glyph: GLYPHS.clipboard, group: "apps" },
     { key: "diver", label: "Diver", glyph: GLYPHS.planner, group: "apps", plugin: "diver" },
     { key: "fatest", label: "FaTest", glyph: GLYPHS.speed, group: "apps", plugin: "fatest" },
+    { key: "temp", label: "SylTemp", glyph: GLYPHS.thermometer, group: "apps", plugin: "temp" },
     { key: "lock", label: "Lock", glyph: GLYPHS.lock, group: "security" },
     { key: "polkit", label: "Authentication", glyph: GLYPHS.shield, group: "security" },
     { key: "keybinds", label: "Key bindings", glyph: GLYPHS.keyboard, group: "advanced" },

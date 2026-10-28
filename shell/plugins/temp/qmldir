@@ -1,0 +1,6 @@
+module qs.plugins.temp
+SylTemp 1.0 SylTemp.qml
+TempOverlay 1.0 TempOverlay.qml
+TempPage 1.0 TempPage.qml
+TempRows 1.0 TempRows.qml
+singleton Temps 1.0 Temps.qml

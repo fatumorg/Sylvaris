@@ -344,6 +344,23 @@ Explained in [plugins/rgb](../plugins/rgb.md).
 | `rgb.host` | `"127.0.0.1"` |  |
 | `rgb.port` | `6742` |  |
 
+## temp
+
+| Key | Default | Per screen |
+|---|---|:---:|
+| `temp.interval` | `1` |  |
+| `temp.overlay.show` | `"off"` |  |
+| `temp.overlay.apps` | `[]` |  |
+| `temp.overlay.corner` | `"top-left"` |  |
+| `temp.overlay.x` | `16` |  |
+| `temp.overlay.y` | `16` |  |
+| `temp.overlay.scale` | `1` |  |
+| `temp.overlay.opacity` | `0.85` |  |
+| `temp.overlay.style` | `"compact"` |  |
+| `temp.alerts` | `true` |  |
+| `temp.cooldown` | `300` |  |
+| `temp.pinned` | `[]` |  |
+
 ## placement
 
 Explained in [configuration](../configuration.md#where-panels-open).
@@ -357,6 +374,7 @@ Explained in [configuration](../configuration.md#where-panels-open).
 | `placement.diver` | `"center"` | yes |
 | `placement.fatest` | `"top-right"` | yes |
 | `placement.rgb` | `"top-right"` | yes |
+| `placement.temp` | `"top-right"` | yes |
 
 ## screens
 
@@ -477,6 +495,7 @@ Explained in [configuration](../configuration.md#turning-parts-off).
 | `parts.diver` | `true` |  |
 | `parts.fatest` | `true` |  |
 | `parts.rgb` | `true` |  |
+| `parts.temp` | `true` |  |
 | `parts.media` | `true` |  |
 | `parts.notify` | `true` |  |
 | `parts.pad` | `true` |  |
