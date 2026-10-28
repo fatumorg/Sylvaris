@@ -21,7 +21,8 @@
     "hidden": [],
     "extra": [],
     "volume": true,
-    "media": true
+    "media": true,
+    "layout": "grid"
   },
   "clock": {
     "corner": "top-center"

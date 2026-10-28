@@ -9,6 +9,7 @@ Item {
     property string title: ""
     property string subtitle: ""
     property bool active: false
+    property bool small: false
 
     signal iconClicked
     signal bodyClicked
@@ -62,8 +63,9 @@ Item {
 
         Rectangle {
             id: iconBox
-            x: 14
+            x: root.small ? (parent.width - width) / 2 : 14
             anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenterOffset: root.small ? -Tokens.smallSize * 0.6 : 0
             width: Tokens.tileIcon
             height: Tokens.tileIcon
             radius: Tokens.tileIconRadius
@@ -87,7 +89,6 @@ Item {
                 offColor: Theme.tintStrong
             }
 
-
             Glyph {
                 anchors.centerIn: parent
                 text: root.icon
@@ -110,25 +111,29 @@ Item {
         }
 
         Column {
-            anchors.left: iconBox.right
-            anchors.leftMargin: 14
+            anchors.left: root.small ? parent.left : iconBox.right
+            anchors.leftMargin: root.small ? 6 : 14
             anchors.right: parent.right
-            anchors.rightMargin: 10
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.rightMargin: root.small ? 6 : 10
+            anchors.verticalCenter: root.small ? undefined : parent.verticalCenter
+            anchors.top: root.small ? iconBox.bottom : undefined
+            anchors.topMargin: 4
 
             Text {
                 textFormat: Text.PlainText
                 width: parent.width
                 text: root.title
                 elide: Text.ElideRight
+                horizontalAlignment: root.small ? Text.AlignHCenter : Text.AlignLeft
                 color: Theme.text
                 font.family: Tokens.fontUi
-                font.pixelSize: Tokens.bodySize
+                font.pixelSize: root.small ? Tokens.smallSize : Tokens.bodySize
                 font.weight: Font.DemiBold
             }
 
             Text {
                 textFormat: Text.PlainText
+                visible: !root.small
                 width: parent.width
                 text: root.subtitle
                 elide: Text.ElideRight

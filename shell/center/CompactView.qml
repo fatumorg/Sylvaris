@@ -306,13 +306,81 @@ Item {
             font.pixelSize: Tokens.smallSize
         }
 
+        Item {
+            id: bento
+            readonly property real cell: (width - Tokens.gap * 3) / 4
+            readonly property var cells: C.layoutBento(root.tiles.map(t => t.key))
+            readonly property int rows: bento.cells.reduce((n, c) => Math.max(n, c.row + c.h), 0)
+            visible: root.cfg.layout === "bento"
+            width: parent.width
+            height: bento.visible ? Math.max(0, bento.rows * (Tokens.tileHeight + Tokens.gap) - Tokens.gap) : 0
+
+            Repeater {
+                model: bento.visible ? root.tiles.length : 0
+                delegate: Tile {
+                    required property int index
+                    readonly property var spec: root.tiles[index] || ({
+                            key: "",
+                            icon: "",
+                            title: "",
+                            subtitle: "",
+                            active: false,
+                            detail: ""
+                        })
+                    readonly property var cell: bento.cells[index] || ({
+                            col: 0,
+                            row: 0,
+                            w: 1
+                        })
+                    x: cell.col * (bento.cell + Tokens.gap)
+                    y: cell.row * (Tokens.tileHeight + Tokens.gap)
+                    width: cell.w * bento.cell + (cell.w - 1) * Tokens.gap
+                    small: cell.w === 1
+                    icon: spec.icon
+                    title: spec.title
+                    subtitle: spec.subtitle
+                    active: spec.active
+                    onIconClicked: root.iconAction(spec.key)
+                    onBodyClicked: small ? root.iconAction(spec.key) : root.bodyAction(spec)
+
+                    Behavior on x {
+                        enabled: !Tokens.lite
+                        NumberAnimation {
+                            duration: Tokens.moveDuration
+                            easing.type: Easing.BezierSpline
+                            easing.bezierCurve: Tokens.springCurve
+                        }
+                    }
+
+                    Behavior on y {
+                        enabled: !Tokens.lite
+                        NumberAnimation {
+                            duration: Tokens.moveDuration
+                            easing.type: Easing.BezierSpline
+                            easing.bezierCurve: Tokens.springCurve
+                        }
+                    }
+
+                    Behavior on width {
+                        enabled: !Tokens.lite
+                        NumberAnimation {
+                            duration: Tokens.moveDuration
+                            easing.type: Easing.BezierSpline
+                            easing.bezierCurve: Tokens.springCurve
+                        }
+                    }
+                }
+            }
+        }
+
         Grid {
+            visible: root.cfg.layout !== "bento"
             width: parent.width
             columns: 2
             spacing: Tokens.gap
 
             Repeater {
-                model: root.tiles
+                model: root.cfg.layout !== "bento" ? root.tiles : []
                 delegate: Tile {
                     required property var modelData
                     width: (column.width - Tokens.gap) / 2

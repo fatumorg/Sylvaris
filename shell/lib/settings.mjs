@@ -8,7 +8,7 @@ import { DEFAULT_ARCHIVE, validateArchive } from "./archive.mjs"
 import { DEFAULT_NOTES, validateNotes } from "./notes.mjs"
 import { DEFAULT_CAPTURE, validateCapture } from "./capture.mjs"
 import { DEFAULT_ACCESS, validateAccess } from "./access.mjs"
-import { EXTRAS } from "./center.mjs"
+import { EXTRAS, LAYOUTS } from "./center.mjs"
 import { validateKeybinds } from "./keys.mjs"
 import { DEFAULT_PLUGINS, validatePlugins, BUILTIN, builtinOn } from "./plugins.mjs"
 import { DEFAULT_SYNC, validateSync } from "./sync.mjs"
@@ -103,7 +103,7 @@ export const DEFAULT_CONFIG = {
 
 export const DEFAULT_SETTINGS = {
     version: SETTINGS_VERSION,
-    center: { corner: "top-right", hidden: [], extra: [], volume: true, media: true },
+    center: { corner: "top-right", hidden: [], extra: [], volume: true, media: true, layout: "grid" },
     clock: { corner: "top-center" },
     nightLight: { enabled: false, temperature: 4000 },
     displays: { layouts: {}, virtual: { enabled: false, width: 2388, height: 1668 } },
@@ -292,7 +292,8 @@ export function validateSettings(raw, userLooks) {
         hidden: hidden.filter((t, i) => hidden.indexOf(t) === i),
         extra: Array.isArray(center.extra) ? center.extra.filter((t, i) => EXTRAS.some(e => e.key === t) && center.extra.indexOf(t) === i) : [],
         volume: typeof center.volume === "boolean" ? center.volume : d.center.volume,
-        media: typeof center.media === "boolean" ? center.media : d.center.media
+        media: typeof center.media === "boolean" ? center.media : d.center.media,
+        layout: LAYOUTS.includes(center.layout) ? center.layout : d.center.layout
     })
 
     const clock = isObject(v.clock) ? v.clock : {}

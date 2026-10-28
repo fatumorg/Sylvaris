@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { EXTRAS, offeredExtras, airpodsLine, speedLine } from "../shell/lib/center.mjs"
+import { EXTRAS, offeredExtras, airpodsLine, speedLine, layoutBento } from "../shell/lib/center.mjs"
 import { validateSettings } from "../shell/lib/settings.mjs"
 
 test("extra tiles are opt-in and plugin tiles need their plugin", () => {
@@ -28,4 +28,23 @@ test("tile subtitles for AirPods and speed tests", () => {
     assert.equal(speedLine("idle", 0, { download: 318.7, upload: 43.8 }), "↓ 319 · ↑ 44 Mbps")
     assert.equal(speedLine("idle", 0, null), "Not run yet")
     assert.equal(speedLine("error", 0, null), "Failed")
+})
+
+test("bento puts two wide tiles first and never overlaps", () => {
+    const ids = ["wifi", "bluetooth", "night", "dnd", "hotspot", "toggle:a", "toggle:b"]
+    const cells = layoutBento(ids)
+    assert.deepEqual(cells.slice(0, 2).map(c => [c.col, c.row, c.w]), [[0, 0, 2], [2, 0, 2]])
+    assert.deepEqual(cells.slice(2).map(c => [c.col, c.row, c.w]), [[0, 1, 1], [1, 1, 1], [2, 1, 1], [3, 1, 1], [0, 2, 1]])
+    const seen = new Set()
+    for (const c of cells) {
+        assert.ok(c.col + c.w <= 4)
+        for (let x = c.col; x < c.col + c.w; x++) {
+            assert.ok(!seen.has(c.row + ":" + x))
+            seen.add(c.row + ":" + x)
+        }
+    }
+    assert.deepEqual(layoutBento([]), [])
+    assert.deepEqual(layoutBento(["a"]).map(c => c.w), [2])
+    assert.equal(validateSettings({ center: { layout: "bento" } }).center.layout, "bento")
+    assert.equal(validateSettings({ center: { layout: "x" } }).center.layout, "grid")
 })

@@ -229,6 +229,28 @@ Column {
         }
 
         SettingRow {
+            title: "Layout"
+            key: "center.layout"
+            subtitle: "Even tiles, or two wide tiles over small squares"
+
+            Segmented {
+                width: 220
+                current: page.cfg.layout
+                options: [
+                    {
+                        key: "grid",
+                        label: "Grid"
+                    },
+                    {
+                        key: "bento",
+                        label: "Bento"
+                    }
+                ]
+                onPicked: key => Settings.put("center.layout", key)
+            }
+        }
+
+        SettingRow {
             title: "Volume slider"
             key: "center.volume"
             subtitle: "Output volume with a shortcut to the outputs"

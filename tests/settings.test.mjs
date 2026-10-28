@@ -85,7 +85,7 @@ test("validateSettings fixes invalid values field by field", () => {
         hotspot: { ssid: "x".repeat(33), band: "z" },
         unknown: 7
     })
-    assert.deepEqual(v.center, { corner: "top-right", other: 1, hidden: [], extra: [], volume: true, media: true })
+    assert.deepEqual(v.center, { corner: "top-right", other: 1, hidden: [], extra: [], volume: true, media: true, layout: "grid" })
     assert.deepEqual(v.nightLight, { enabled: false, temperature: 4000 })
     assert.deepEqual(v.displays, { layouts: {}, virtual: { enabled: false, width: 2388, height: 1668 } })
     assert.deepEqual(v.toggleState, { a: true })

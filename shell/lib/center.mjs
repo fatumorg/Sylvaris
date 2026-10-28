@@ -1,3 +1,5 @@
+export const LAYOUTS = ["grid", "bento"]
+
 export const EXTRAS = [
     { key: "fatest", label: "Speed Test", glyph: "speed", plugin: "fatest" },
     { key: "airpods", label: "AirPods", glyph: "headphones", plugin: "airpods" },
@@ -36,4 +38,34 @@ export function speedLine(phase, live, last) {
     if (last === null || typeof last !== "object")
         return "Not run yet"
     return "↓ " + Math.round(last.download) + " · ↑ " + Math.round(last.upload) + " Mbps"
+}
+
+export function layoutBento(ids, columns) {
+    const cols = columns || 4
+    const taken = []
+    const out = []
+    const free = (row, col, w) => {
+        for (let c = col; c < col + w; c++) {
+            if (c >= cols || (taken[row] && taken[row][c]))
+                return false
+        }
+        return true
+    }
+    ids.forEach((id, i) => {
+        const w = Math.min(cols, i < 2 ? 2 : 1)
+        let row = 0
+        let col = 0
+        while (!free(row, col, w)) {
+            col++
+            if (col + w > cols) {
+                col = 0
+                row++
+            }
+        }
+        taken[row] = taken[row] || []
+        for (let c = col; c < col + w; c++)
+            taken[row][c] = true
+        out.push({ id: id, col: col, row: row, w: w, h: 1 })
+    })
+    return out
 }

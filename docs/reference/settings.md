@@ -15,6 +15,7 @@ Explained in [center](../parts/center.md).
 | `center.extra` | `[]` |  |
 | `center.volume` | `true` |  |
 | `center.media` | `true` |  |
+| `center.layout` | `"grid"` |  |
 
 ## clock
 

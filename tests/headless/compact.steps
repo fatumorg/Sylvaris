@@ -17,3 +17,9 @@ syl center open
 sleep 1
 shot compact-extra
 check sylvaris get center.extra | grep -q airpods
+syl set center.layout bento
+sleep 1
+syl center open
+sleep 1
+shot compact-bento
+check sylvaris get center.layout | grep -q bento

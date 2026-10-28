@@ -7,6 +7,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 ### Added
 
 - The bar has two more styles, `float` (one floating pill) and `minimal` (a thin line), and `bar.workspaceStyle` draws workspaces as dots, numbers, pills or app icons
+- SylCenter has a bento layout, `center.layout = "bento"`: two wide tiles over small squares that slide into place
 
 ## [1.4.0] - 2026-10-28
 
