@@ -5,9 +5,8 @@ import qs.settings
 import "../../lib/icons.mjs" as Icons
 
 Column {
-    required property var host
-
     id: diverColumn
+    required property var host
     property string message: ""
     spacing: 24
 
@@ -25,6 +24,7 @@ Column {
         SettingRow {
             visible: Diver.paired || Demo.enabled
             title: "Your plans"
+            key: "diver.plans"
             subtitle: "Today, calendar, lists and every task field, right here"
 
             Chip {
@@ -37,6 +37,7 @@ Column {
         SettingRow {
             visible: !Diver.paired
             title: "Pairing code"
+            key: "diver.pair"
             subtitle: diverColumn.message
 
             Row {
@@ -66,6 +67,7 @@ Column {
         SettingRow {
             visible: Diver.paired
             title: "Synced " + (Diver.lastSync > 0 ? Qt.formatTime(new Date(Diver.lastSync), "HH:mm:ss") : "not yet")
+            key: "diver.sync"
             subtitle: Diver.agendaToday.length + " planned today" + (Diver.next !== null ? " · next: " + Diver.plain(Diver.next.task.text) + " at " + Qt.formatTime(new Date(Diver.next.start), "HH:mm") : "")
 
             Row {
@@ -89,6 +91,8 @@ Column {
 
         SettingRow {
             title: "Check for changes every"
+            key: "diver.refresh"
+            advanced: true
             last: true
 
             Stepper {
@@ -132,6 +136,7 @@ Column {
                 required property var modelData
                 required property int index
                 title: modelData.title
+                key: "diver." + modelData.key
                 subtitle: modelData.sub
                 last: index === 3
 
@@ -148,6 +153,7 @@ Column {
 
         SettingRow {
             title: "Ring a test alarm"
+            key: "diver.alarmTest"
             subtitle: "Esc dismisses, Enter marks done, Space snoozes"
             last: true
 

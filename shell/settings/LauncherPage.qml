@@ -15,6 +15,7 @@ Column {
 
         SettingRow {
             title: "Layout"
+            key: "pad.mode"
             subtitle: "A full-screen grid, or a compact list in the middle of the screen"
 
             Segmented {
@@ -36,6 +37,7 @@ Column {
 
         SettingRow {
             title: "Columns"
+            key: "pad.columns"
 
             Stepper {
                 value: Settings.shown.pad.columns
@@ -47,6 +49,7 @@ Column {
 
         SettingRow {
             title: "Rows"
+            key: "pad.rows"
             last: true
 
             Stepper {

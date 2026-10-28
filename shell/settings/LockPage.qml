@@ -92,6 +92,8 @@ Column {
 
         SettingRow {
             title: "PAM service"
+            key: "lock.pam"
+            advanced: true
             subtitle: root.cfg.pam === "" ? "Automatic: the first of sylvaris, hyprlock, swaylock or login that is installed" : "Uses /etc/pam.d/" + root.cfg.pam
 
             Segmented {
@@ -117,6 +119,7 @@ Column {
 
         SettingRow {
             title: "Show seconds"
+            key: "lock.seconds"
             subtitle: "On the lock screen clock"
 
             Toggle {
@@ -127,6 +130,8 @@ Column {
 
         SettingRow {
             title: "Lock when the system asks"
+            key: "lock.logind"
+            advanced: true
             subtitle: "Also lock on “loginctl lock-session”, for example from an idle daemon. Turn off any other locker first."
 
             Toggle {
@@ -137,6 +142,7 @@ Column {
 
         SettingRow {
             title: "Lock now"
+            key: "lock.now"
             subtitle: "Try it out"
             last: true
 

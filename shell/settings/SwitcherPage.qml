@@ -101,6 +101,7 @@ Column {
 
         SettingRow {
             title: "Live previews"
+            key: "switcher.previews"
             subtitle: "Show what each window looks like instead of only its icon"
 
             Toggle {
@@ -111,6 +112,7 @@ Column {
 
         SettingRow {
             title: "Window titles"
+            key: "switcher.titles"
             subtitle: "Name every card with its window title"
             last: true
 

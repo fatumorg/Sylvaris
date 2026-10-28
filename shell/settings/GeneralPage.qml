@@ -17,6 +17,7 @@ Column {
 
         SettingRow {
             title: "Control Center"
+            key: "center.corner"
             subtitle: "Where SylCenter and SylMedia open"
 
             Segmented {
@@ -29,6 +30,7 @@ Column {
 
         SettingRow {
             title: "Clock"
+            key: "clock.corner"
             subtitle: "Where SylClock opens"
 
             Segmented {
@@ -41,6 +43,7 @@ Column {
 
         SettingRow {
             title: "Notifications"
+            key: "notifications.corner"
             subtitle: "Where toasts and the notification center appear"
             last: true
 
@@ -100,6 +103,7 @@ Column {
                 required property var modelData
                 required property int index
                 title: modelData.title
+                key: "placement." + modelData.key
                 subtitle: modelData.subtitle
                 last: index === 6
 
@@ -134,6 +138,8 @@ Column {
                 required property string modelData
                 required property int index
                 title: M.PRODUCT[modelData] || modelData
+                key: "parts." + modelData
+                advanced: true
                 subtitle: (M.MODULES[modelData] ? M.MODULES[modelData].label + " · " : "") + "parts." + modelData
                 last: index === Object.keys(S.PARTS).length - 1
 

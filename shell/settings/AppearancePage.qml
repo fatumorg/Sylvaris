@@ -13,6 +13,7 @@ Column {
 
         SettingRow {
             title: Theme.theme.name || "Built-in"
+            key: "theme"
             subtitle: Theme.theme.description || "The active theme"
 
             Chip {
@@ -24,6 +25,7 @@ Column {
 
         SettingRow {
             title: "Theme-coloured app icons"
+            key: "iconTint"
             subtitle: "App icons in the bar, deck, launcher, switcher and notifications take the theme's accent"
 
             Toggle {
@@ -34,6 +36,7 @@ Column {
 
         SettingRow {
             title: "Apply directly"
+            key: "theme.apply"
             last: true
 
             Flow {
@@ -63,6 +66,7 @@ Column {
 
         SettingRow {
             title: "Glass"
+            key: "glass.enabled"
             subtitle: "Off brings back solid panels"
 
             Toggle {
@@ -78,6 +82,7 @@ Column {
                 required property var modelData
                 required property int index
                 title: modelData.label
+                key: "glass." + modelData.key
                 last: index === host.glassKeys.length - 1
                 opacity: Resin.enabled ? 1 : 0.45
 

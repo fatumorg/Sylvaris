@@ -45,6 +45,7 @@ Column {
 
         SettingRow {
             title: page.found === null ? "Looking for OpenRGB…" : page.found.ok ? R.summary(page.cfg, page.found.devices.length, "") + " found" : "OpenRGB not running"
+            key: "rgb.status"
             subtitle: page.found === null ? "" : page.found.ok ? page.found.devices.map(d => d.name).join(", ") : page.found.error
 
             Row {
@@ -67,6 +68,7 @@ Column {
         SettingRow {
             last: true
             title: "Lights"
+            key: "rgb.on"
             subtitle: "Off turns every device dark until you switch it back"
 
             Toggle {
@@ -82,6 +84,7 @@ Column {
 
         SettingRow {
             title: "Follow the theme"
+            key: "rgb.follow"
             subtitle: "Every device takes your theme's accent colour, and changes with it"
 
             Toggle {
@@ -92,6 +95,7 @@ Column {
 
         SettingRow {
             title: "Vivid theme colours"
+            key: "rgb.vivid"
             subtitle: "Theme accents are soft on screen but look dull on LEDs, so SylRGB sends them at full strength. A theme can name its own LED colour with colors.rgb"
 
             Toggle {
@@ -102,6 +106,7 @@ Column {
 
         SettingRow {
             title: "Brightness"
+            key: "rgb.brightness"
             subtitle: "Scales every colour SylRGB sends"
 
             Slider {
@@ -115,6 +120,8 @@ Column {
         SettingRow {
             last: true
             title: "Put the colours back"
+            key: "rgb.restore"
+            advanced: true
             subtitle: "When Sylvaris starts and whenever a device reconnects, like a wireless mouse waking up"
 
             Toggle {
@@ -130,6 +137,8 @@ Column {
 
         SettingRow {
             title: "Address"
+            key: "rgb.host"
+            advanced: true
             subtitle: "127.0.0.1 is this computer"
 
             TextBox {
@@ -143,6 +152,8 @@ Column {
         SettingRow {
             last: true
             title: "Port"
+            key: "rgb.port"
+            advanced: true
             subtitle: "6742 unless you changed it in OpenRGB"
 
             TextBox {

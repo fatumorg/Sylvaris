@@ -70,6 +70,7 @@ Column {
 
         SettingRow {
             title: "Last result"
+            key: "fatest.last"
             subtitle: page.last === null ? "No runs yet" : page.last.timestamp.replace("T", " ").slice(0, 16) + " · " + String(page.last.server || "")
 
             Text {
@@ -86,6 +87,7 @@ Column {
         SettingRow {
             last: true
             title: "Speed Test"
+            key: "fatest.run"
             subtitle: "“sylvaris fatest run” starts one from anywhere"
 
             Chip {
@@ -104,6 +106,8 @@ Column {
 
         SettingRow {
             title: "Country"
+            key: "fatest.country"
+            advanced: true
             subtitle: "Two-letter code, e.g. PL"
 
             TextBox {
@@ -117,6 +121,8 @@ Column {
         SettingRow {
             last: true
             title: "Server ID"
+            key: "fatest.server"
+            advanced: true
             subtitle: page.message !== "" ? page.message : "From “fatest servers”"
 
             Row {

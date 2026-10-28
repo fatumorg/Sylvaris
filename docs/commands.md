@@ -59,7 +59,7 @@ To show the version in fastfetch, add `{ "type": "command", "key": "DE", "text":
 | `plugins` | `toggle` `open [id]` `close` `list` `enable <id>` `disable <id>` `new <id> [kind]` `install <url>` `pending` `confirm` `discard` `remove <id>` `refresh` `state` |
 | `polkit` | `state` `preview` `cancel` |
 | `power` | `toggle` `open` `close` `list` `run <action>` |
-| `settings` | `toggle` `open [section]` `close` `screen <all\|output>` `all` `get <key>` `set <key> <value>` |
+| `settings` | `toggle` `open [section or hub]` `close` `screen <all\|output>` `all` `get <key>` `set <key> <value>` `reset <key>` `undo` `search <words>` `state` |
 | `shell` | `reload` `config` |
 | `switcher` | `next` `prev` `commit` `close` `state` |
 | `sync` | `now` `on` `off` `state` |

@@ -4,7 +4,7 @@ import assert from "node:assert/strict"
 import {
     CORNERS, DEFAULT_CONFIG, DEFAULT_SETTINGS, parseJson, expandHome, deepMerge, migrate,
     validateConfig, validateSettings, merge, getPath, setPath, serialize, DEFAULT_GLASS, resolveGlass, settingsLayer, effectiveSettings,
-    PARTS, OPT_IN, SERVICE_DEPS, liveParts, screenSettings, screenKey, liveServices, CENTER_TILES
+    PARTS, OPT_IN, SERVICE_DEPS, liveParts, screenSettings, screenKey, liveServices, CENTER_TILES, unsetPath, isModified
 } from "../shell/lib/settings.mjs"
 
 test("parseJson treats empty text as an empty object", () => {
@@ -402,4 +402,26 @@ test("a look's settings sit under config and user values", () => {
 test("resolveGlass layers over a given base", () => {
     assert.deepEqual(resolveGlass(undefined, { sheen: 0.2 }, {}).values, { sheen: 0.2 })
     assert.equal(resolveGlass(undefined, undefined).values.sheen, DEFAULT_GLASS.sheen)
+})
+
+test("settings.detail is simple unless full", () => {
+    assert.equal(validateSettings({}).settings.detail, "simple")
+    assert.equal(validateSettings({ settings: { detail: "full" } }).settings.detail, "full")
+    assert.equal(validateSettings({ settings: { detail: 3 } }).settings.detail, "simple")
+})
+
+test("unsetPath drops a key and the empty parents it leaves", () => {
+    assert.deepEqual(unsetPath({ a: { b: 1 }, c: 2 }, "a.b"), { c: 2 })
+    assert.deepEqual(unsetPath({ a: { b: 1, d: 2 } }, "a.b"), { a: { d: 2 } })
+    assert.deepEqual(unsetPath({ a: 1 }, "x.y"), { a: 1 })
+    const src = { a: { b: 1 } }
+    unsetPath(src, "a.b")
+    assert.deepEqual(src, { a: { b: 1 } })
+})
+
+test("isModified is false for a value equal to the default", () => {
+    const base = effectiveSettings({}, {})
+    assert.equal(isModified(effectiveSettings({}, { motion: { scale: 1 } }), base, "motion.scale"), false)
+    assert.equal(isModified(effectiveSettings({}, { motion: { scale: 2 } }), base, "motion.scale"), true)
+    assert.equal(isModified(base, base, "access.reader"), false)
 })

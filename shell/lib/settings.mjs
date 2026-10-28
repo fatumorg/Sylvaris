@@ -114,6 +114,7 @@ export const DEFAULT_SETTINGS = {
     weather: DEFAULT_WEATHER,
     diver: { enabled: true, refresh: 2, notify: true, alarms: true, sound: true, calendar: true },
     constellation: { speed: 1, links: true, ring: true, labels: true, stars: true },
+    settings: { detail: "simple" },
     switcher: { previews: true, titles: true },
     lock: DEFAULT_LOCK,
     clip: DEFAULT_CLIP,
@@ -363,6 +364,9 @@ export function validateSettings(raw, userLooks) {
         sound: dv.sound !== false,
         calendar: dv.calendar !== false
     })
+    const panel = isObject(v.settings) ? v.settings : {}
+    v.settings = Object.assign({}, panel, { detail: panel.detail === "full" ? "full" : "simple" })
+
     const cons = isObject(v.constellation) ? v.constellation : {}
     v.constellation = Object.assign({}, cons, {
         speed: typeof cons.speed === "number" && cons.speed >= 0 && cons.speed <= 3 ? cons.speed : d.constellation.speed,
@@ -530,6 +534,26 @@ export function setPath(obj, path, value) {
     }
     cur[parts[parts.length - 1]] = clone(value)
     return out
+}
+
+export function unsetPath(obj, path) {
+    const parts = path.split(".")
+    const out = isObject(obj) ? clone(obj) : {}
+    const trail = [out]
+    for (let i = 0; i < parts.length - 1; i++) {
+        const next = trail[i][parts[i]]
+        if (!isObject(next) || !own(trail[i], parts[i]))
+            return out
+        trail.push(next)
+    }
+    delete trail[trail.length - 1][parts[parts.length - 1]]
+    for (let i = trail.length - 1; i > 0 && Object.keys(trail[i]).length === 0; i--)
+        delete trail[i - 1][parts[i - 1]]
+    return out
+}
+
+export function isModified(values, base, key) {
+    return JSON.stringify(getPath(values, key)) !== JSON.stringify(getPath(base, key))
 }
 
 export function serialize(obj) {

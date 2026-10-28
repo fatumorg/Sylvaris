@@ -93,6 +93,7 @@ Column {
         required property int index
 
         title: modelData.title
+        key: "capture." + choice.modelData.key
         subtitle: modelData.subtitle
         last: false
 
@@ -184,6 +185,7 @@ Column {
 
         SettingRow {
             title: "Copy to the clipboard"
+            key: "capture.copy"
             subtitle: "Screenshots as images, recordings as a file you can paste into chats and uploads"
 
             Toggle {
@@ -194,6 +196,7 @@ Column {
 
         SettingRow {
             title: "Save to a file"
+            key: "capture.save"
             subtitle: root.cfg.folder
 
             Toggle {
@@ -204,6 +207,7 @@ Column {
 
         SettingRow {
             title: "Screenshots folder"
+            key: "capture.folder"
             subtitle: "Where screenshots are saved; ~ is your home"
 
             TextBox {
@@ -216,6 +220,8 @@ Column {
 
         SettingRow {
             title: "JPEG quality"
+            key: "capture.quality"
+            advanced: true
             subtitle: "Only used for JPEG files"
             visible: root.cfg.format === "jpeg"
 
@@ -231,6 +237,7 @@ Column {
 
         SettingRow {
             title: "Include the pointer"
+            key: "capture.cursor"
 
             Toggle {
                 checked: root.cfg.cursor
@@ -246,6 +253,8 @@ Column {
 
         SettingRow {
             title: "File name"
+            key: "capture.pattern"
+            advanced: true
             subtitle: "{kind}, {date} and {time} are filled in: " + root.example()
             last: true
 
@@ -275,6 +284,7 @@ Column {
 
         SettingRow {
             title: "Videos folder"
+            key: "capture.videos"
             subtitle: "Where recordings are saved; ~ is your home"
 
             TextBox {
@@ -293,6 +303,8 @@ Column {
 
         SettingRow {
             title: "Steady frame rate"
+            key: "capture.constant"
+            advanced: true
             subtitle: "Records every frame even when nothing moves; smoother in editors, bigger files"
 
             Toggle {
@@ -303,6 +315,7 @@ Column {
 
         SettingRow {
             title: "Record sound"
+            key: "capture.audio"
             subtitle: "Needs PipeWire or PulseAudio"
 
             Toggle {
@@ -313,6 +326,8 @@ Column {
 
         SettingRow {
             title: "Sound from"
+            key: "capture.audioSource"
+            advanced: true
             last: true
             visible: root.cfg.audio
 

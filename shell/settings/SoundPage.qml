@@ -19,6 +19,7 @@ Column {
                 required property var modelData
                 required property int index
                 title: modelData.name
+                key: "sound.output"
                 last: index === Audio.sinks.length - 1
 
                 Chip {
@@ -35,6 +36,7 @@ Column {
 
         SettingRow {
             title: "Equalizer"
+            key: "media.eq"
             subtitle: "Preset: " + E.PRESET_NAMES[Equalizer.cfg.preset]
 
             Row {
@@ -58,6 +60,7 @@ Column {
 
         SettingRow {
             title: "Spatial audio"
+            key: "media.eq.spatial"
             subtitle: "Headphone crossfeed"
             last: true
 

@@ -184,6 +184,7 @@ Column {
 
         SettingRow {
             title: "Tiles"
+            key: "center.hidden"
             subtitle: "Click to show or hide"
 
             Flow {
@@ -206,6 +207,7 @@ Column {
 
         SettingRow {
             title: "Extra tiles"
+            key: "center.extra"
             subtitle: "Speed Test and AirPods show up here once their plugins are on"
 
             Flow {
@@ -228,6 +230,7 @@ Column {
 
         SettingRow {
             title: "Volume slider"
+            key: "center.volume"
             subtitle: "Output volume with a shortcut to the outputs"
 
             Toggle {
@@ -238,6 +241,7 @@ Column {
 
         SettingRow {
             title: "Now playing"
+            key: "center.media"
             subtitle: "The media card while something plays"
 
             Toggle {
@@ -248,6 +252,7 @@ Column {
 
         SettingRow {
             title: "Corner"
+            key: "center.corner"
             subtitle: "Where SylCenter and SylMedia open"
             last: true
 
@@ -266,6 +271,8 @@ Column {
 
         SettingRow {
             title: "Network name"
+            key: "hotspot.ssid"
+            advanced: true
             subtitle: ssid.text.length < 1 || ssid.text.length > 32 ? "1 to 32 characters" : "Press Enter to save"
 
             TextBox {
@@ -282,6 +289,8 @@ Column {
 
         SettingRow {
             title: "Band"
+            key: "hotspot.band"
+            advanced: true
             subtitle: "5 GHz is faster, 2.4 GHz reaches further"
             last: true
 

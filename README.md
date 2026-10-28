@@ -127,7 +127,7 @@ Every setting is a typed Home Manager option. For the lock screen's PAM service 
 | niri | `spawn-at-startup "sylvaris"` |
 | sway | `exec sylvaris` |
 
-Then open **SylSettings** from SylCenter's gear, or run `sylvaris settings`. Every switch is also a command:
+Then open **SylSettings** from SylCenter's gear, or run `sylvaris settings`, and type to search any setting. Every switch is also a command:
 
 ```sh
 sylvaris center           # control center

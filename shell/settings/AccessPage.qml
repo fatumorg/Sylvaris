@@ -49,6 +49,7 @@ Column {
 
         SettingRow {
             title: "Zoom"
+            key: "access.zoom"
             subtitle: root.can.zoom ? "Magnifies around the pointer · “sylvaris access zoom in/out”" : "Needs Hyprland"
             enabled: root.can.zoom
             opacity: enabled ? 1 : 0.5
@@ -63,6 +64,7 @@ Column {
 
         SettingRow {
             title: "Text size"
+            key: "access.text"
             subtitle: "Every Sylvaris panel"
 
             Slider {
@@ -75,6 +77,7 @@ Column {
 
         SettingRow {
             title: "Pointer size"
+            key: "access.cursor"
             subtitle: root.cfg.cursor === 0 ? "Left as your system sets it" : root.cfg.cursor + " px"
 
             Segmented {
@@ -90,6 +93,7 @@ Column {
 
         SettingRow {
             title: "Colour filter"
+            key: "access.filter"
             subtitle: root.can.filter ? "Shifts colours so they are easier to tell apart" : "Needs Hyprland"
             last: true
             enabled: root.can.filter
@@ -120,6 +124,7 @@ Column {
 
         SettingRow {
             title: "Reduce motion"
+            key: "motion.reduced"
             subtitle: "Panels appear without moving"
 
             Toggle {
@@ -130,6 +135,7 @@ Column {
 
         SettingRow {
             title: "Reduce transparency"
+            key: "glass.enabled"
             subtitle: "Solid panels instead of frosted glass"
             last: !root.tools.orca && !root.tools["wvkbd-mobintl"]
 
@@ -142,6 +148,7 @@ Column {
         SettingRow {
             visible: root.tools.orca === true
             title: "Screen reader"
+            key: "access.reader"
             subtitle: "Orca reads out what is on screen"
             last: !root.tools["wvkbd-mobintl"]
 
@@ -155,6 +162,7 @@ Column {
         SettingRow {
             visible: root.tools["wvkbd-mobintl"] === true
             title: "On-screen keyboard"
+            key: "access.keyboard"
             last: true
 
             RowButton {

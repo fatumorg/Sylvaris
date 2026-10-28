@@ -4,6 +4,13 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Added
+
+- SylSettings opens on seven hubs (Look, Desktop, Panels, Apps, System, Security and Plugins) with a tab per section, and a search pill finds any setting as you type, with switches you can flip right in the results
+- Simple and full detail (`settings.detail`): options most people never touch wait behind a more options row until you ask for them
+- Changed settings carry a dot that resets them, every change can be undone from a toast or with Ctrl+Z, and `sylvaris settings reset`, `undo`, `search` and `state` do the same from a script
+- Wallpaper fit, blur, dim, tint and parallax in SylSettings › Desktop › Wallpaper
+
 ## [1.2.0] - 2026-10-28
 
 ### Added

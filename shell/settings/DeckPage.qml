@@ -17,6 +17,7 @@ Column {
 
         SettingRow {
             title: "Show the deck"
+            key: "deck.enabled"
             subtitle: "A dock for pinned and running apps along the bottom"
 
             Toggle {
@@ -27,6 +28,7 @@ Column {
 
         SettingRow {
             title: "Hover effect"
+            key: "deck.effect"
             subtitle: "Bloom lifts one icon with a glow, magnify grows its neighbours too"
 
             Segmented {
@@ -52,6 +54,8 @@ Column {
 
         SettingRow {
             title: "Reserve space"
+            key: "deck.reserve"
+            advanced: true
             subtitle: "Off lets windows go underneath the deck"
 
             Toggle {
@@ -62,6 +66,7 @@ Column {
 
         SettingRow {
             title: "Hide"
+            key: "deck.hide"
             subtitle: Settings.shown.deck.hide === "windows" ? "Shows on an empty desktop and slides away when a window opens on this screen" : Settings.shown.deck.hide === "always" ? "Slides away until the pointer reaches the bottom edge" : "Always visible"
 
             Segmented {
@@ -87,6 +92,8 @@ Column {
 
         SettingRow {
             title: "Peek line"
+            key: "deck.peek"
+            advanced: true
             subtitle: "A small line in your theme colour that stays while the deck is hidden"
 
             Toggle {
@@ -97,6 +104,8 @@ Column {
 
         SettingRow {
             title: "Peek thickness"
+            key: "deck.peekSize"
+            advanced: true
             enabled: Settings.shown.deck.peek
 
             Stepper {
@@ -110,6 +119,7 @@ Column {
 
         SettingRow {
             title: "Icon size"
+            key: "deck.size"
 
             Stepper {
                 value: Settings.shown.deck.size
@@ -121,6 +131,7 @@ Column {
 
         SettingRow {
             title: "Power button"
+            key: "deck.power"
 
             Segmented {
                 width: 280
@@ -145,6 +156,7 @@ Column {
 
         SettingRow {
             title: "App launcher button"
+            key: "deck.pad"
             last: true
 
             Segmented {
@@ -181,6 +193,7 @@ Column {
                 required property int index
                 readonly property var entry: Demo.enabled ? Apps.byId(modelData) : DesktopEntries.byId(modelData)
                 title: entry ? entry.name : modelData
+                key: "deck.pinned"
                 subtitle: modelData
                 last: index === Settings.shown.deck.pinned.length - 1
 

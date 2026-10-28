@@ -19,6 +19,7 @@ Column {
 
         SettingRow {
             title: "View"
+            key: "files.view"
             subtitle: F.keyText((F.keymap(root.cfg.keys).byAction.grid || [""])[0] || "") + " and " + F.keyText((F.keymap(root.cfg.keys).byAction.list || [""])[0] || "") + " switch it in the window"
 
             Segmented {
@@ -40,6 +41,7 @@ Column {
 
         SettingRow {
             title: "Icon size"
+            key: "files.iconSize"
             subtitle: "Ctrl and the mouse wheel zoom too"
 
             Stepper {
@@ -54,6 +56,7 @@ Column {
 
         SettingRow {
             title: "Sort by"
+            key: "files.sort"
             subtitle: "Click a column heading in the list view to sort by it"
 
             Segmented {
@@ -83,6 +86,7 @@ Column {
 
         SettingRow {
             title: "Reversed order"
+            key: "files.descending"
 
             Toggle {
                 checked: root.cfg.descending
@@ -92,6 +96,7 @@ Column {
 
         SettingRow {
             title: "Folders first"
+            key: "files.foldersFirst"
 
             Toggle {
                 checked: root.cfg.foldersFirst
@@ -101,6 +106,7 @@ Column {
 
         SettingRow {
             title: "Show hidden files"
+            key: "files.hidden"
             subtitle: "Names that start with a dot"
 
             Toggle {
@@ -111,6 +117,7 @@ Column {
 
         SettingRow {
             title: "Sidebar"
+            key: "files.sidebar"
 
             Toggle {
                 checked: root.cfg.sidebar
@@ -120,6 +127,8 @@ Column {
 
         SettingRow {
             title: "Sidebar order"
+            key: "files.sections"
+            advanced: true
             subtitle: "Click one to put it first"
 
             Flow {
@@ -132,7 +141,11 @@ Column {
                     delegate: Chip {
                         required property string modelData
                         required property int index
-                        text: ({ places: "Places", bookmarks: "Bookmarks", devices: "Devices" })[modelData]
+                        text: ({
+                                places: "Places",
+                                bookmarks: "Bookmarks",
+                                devices: "Devices"
+                            })[modelData]
                         lit: index === 0
                         onClicked: Settings.put("files.sections", [modelData].concat(root.cfg.sections.filter(k => k !== modelData)))
                     }
@@ -142,6 +155,8 @@ Column {
 
         SettingRow {
             title: "Places and devices order"
+            key: "files.placeOrder"
+            advanced: true
             subtitle: "Drag them in the sidebar to reorder"
 
             RowButton {
@@ -156,6 +171,7 @@ Column {
 
         SettingRow {
             title: "Details pane"
+            key: "files.details"
             subtitle: "A big preview, size, date and permissions of what you select"
             last: true
 
@@ -171,6 +187,7 @@ Column {
 
         SettingRow {
             title: "Open with"
+            key: "files.click"
             subtitle: "How many clicks open a file or folder"
 
             Segmented {
@@ -192,6 +209,8 @@ Column {
 
         SettingRow {
             title: "Typing in a folder"
+            key: "files.typing"
+            advanced: true
             subtitle: "Filter what is shown, or jump to the first name that starts with what you type"
 
             Segmented {
@@ -213,6 +232,7 @@ Column {
 
         SettingRow {
             title: "Previews"
+            key: "files.thumbnails"
             subtitle: "Pictures show themselves; videos and documents use the thumbnails other apps already made"
 
             Toggle {
@@ -223,6 +243,8 @@ Column {
 
         SettingRow {
             title: "Icons"
+            key: "files.icons"
+            advanced: true
             subtitle: "Sylvaris glyphs, or the icon theme you use"
 
             Segmented {
@@ -244,6 +266,7 @@ Column {
 
         SettingRow {
             title: "Open archives in SylArchive"
+            key: "files.openArchives"
             subtitle: "Off opens them in your default archive app; Extract and Compress stay in the menu either way"
 
             Toggle {
@@ -254,6 +277,7 @@ Column {
 
         SettingRow {
             title: "Ask before moving to the trash"
+            key: "files.confirmTrash"
             subtitle: "Undo brings things back either way"
 
             Toggle {
@@ -264,6 +288,8 @@ Column {
 
         SettingRow {
             title: "Start in"
+            key: "files.start"
+            advanced: true
             subtitle: "The folder a new window opens, like ~ or ~/Downloads"
             last: true
 
@@ -287,6 +313,7 @@ Column {
                 required property string modelData
                 required property int index
                 title: modelData
+                key: "files.bookmarks"
                 last: index === root.cfg.bookmarks.length - 1
 
                 Glyph {

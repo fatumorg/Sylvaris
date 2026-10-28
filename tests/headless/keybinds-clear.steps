@@ -3,15 +3,15 @@ write sylvaris/settings.json {"version":1,"keybinds":{"clip toggle":"SUPER+V","c
 sleep 1
 syl settings open keybinds
 sleep 1.5
-pointer move 1567 909 click 1
+pointer move 1567 977 click 1
 sleep 0.6
 shot keybinds-capturing
-pointer move 1645 909 click 1
+pointer move 1645 977 click 1
 sleep 0.6
 shot keybinds-cancelled
 syl state keybinds
 check tail -n 3 "$OUT/ipc.log" | grep -q '"clip toggle":"SUPER+V"'
-pointer move 1645 909 click 1
+pointer move 1645 977 click 1
 sleep 0.8
 syl state keybinds
 shot keybinds-cleared

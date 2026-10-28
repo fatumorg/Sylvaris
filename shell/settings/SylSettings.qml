@@ -28,10 +28,24 @@ Scope {
     readonly property bool hasBattery: UPower.displayDevice !== null && UPower.displayDevice.isLaptopBattery
     readonly property var cons: Settings.shown.constellation
     readonly property var sections: Sec.SECTIONS
-    readonly property var groups: Sec.GROUPS
-    property string group: "system"
-    property real flip: 1
-    readonly property var shownSections: Sec.sectionsIn(root.group, Settings.shown.plugins.enabled)
+    readonly property var shownSections: Sec.HUBS.map(h => ({
+                key: h.key,
+                label: h.label,
+                glyph: h.icon,
+                tabs: Sec.tabsIn(h.key, Settings.shown.plugins.enabled)
+            })).filter(h => h.tabs.length > 0)
+    readonly property string hub: {
+        const w = Sec.resolveSection(root.section);
+        return w === null ? "" : w.hub;
+    }
+    readonly property var hubInfo: {
+        const w = Sec.resolveSection(root.shownSection);
+        return w === null ? null : root.shownSections.find(h => h.key === w.hub) || null;
+    }
+    property string group: ""
+    property var lastTab: ({})
+    property string query: ""
+    property string pending: ""
     readonly property var corners: [
         {
             key: "top-left",
@@ -142,6 +156,7 @@ Scope {
     ]
 
     signal opened
+    signal revealRequested
     signal partRequested(string name, string arg)
 
     function phase(a: real, b: real): real {
@@ -197,26 +212,54 @@ Scope {
             root.open();
     }
 
-    function pickGroup(key: string): void {
-        if (key === root.group)
-            return;
-        root.hovered = -1;
-        root.group = key;
-        flipAnim.restart();
-    }
-
-    function stepGroup(d: int): void {
-        const keys = root.groups.map(g => g.key);
-        root.pickGroup(keys[(keys.indexOf(root.group) + d + keys.length) % keys.length]);
+    function step(d: int): void {
+        const n = root.shownSections.length;
+        root.hovered = root.hovered < 0 ? (d > 0 ? 0 : n - 1) : (root.hovered + d + n) % n;
     }
 
     function go(name: string): void {
         if (name === root.section)
             return;
-        if (name !== "")
-            root.pickGroup(root.sectionInfo(name).group);
+        const w = Sec.resolveSection(name);
+        if (w !== null) {
+            root.group = w.hub;
+            const t = Object.assign({}, root.lastTab);
+            t[w.hub] = name;
+            root.lastTab = t;
+        }
+        Settings.more = false;
         root.section = name;
         swapAnim.restart();
+    }
+
+    function openHub(key: string): void {
+        const h = root.shownSections.find(x => x.key === key);
+        if (h === undefined)
+            return;
+        const last = root.lastTab[key];
+        root.go(h.tabs.some(t => t.key === last) ? last : h.tabs[0].key);
+    }
+
+    function pickSetting(entry: var): void {
+        root.query = "";
+        root.pending = entry.key;
+        const same = root.shownSection === entry.tab && root.section === entry.tab;
+        root.go(entry.tab);
+        if (entry.advanced && Settings.values.settings.detail === "simple")
+            Settings.more = true;
+        if (same)
+            root.revealRequested();
+    }
+
+    function state(): var {
+        return {
+            open: root.wanted,
+            hub: root.hub,
+            tab: root.section,
+            query: root.query,
+            detail: Settings.values.settings.detail,
+            undo: Settings.undoStack.length
+        };
     }
 
     function back(): void {
@@ -227,7 +270,10 @@ Scope {
     }
 
     function showSection(name: string): void {
-        root.go(name !== "" && root.sectionInfo(name) !== null ? name : name === "" ? root.section : "");
+        if (name !== "" && root.sectionInfo(name) === null && root.shownSections.some(h => h.key === name))
+            root.openHub(name);
+        else
+            root.go(name !== "" && root.sectionInfo(name) !== null ? name : name === "" ? root.section : "");
         root.open();
     }
 
@@ -307,17 +353,6 @@ Scope {
         duration: Tokens.moveDuration
         easing.type: Easing.BezierSpline
         easing.bezierCurve: Tokens.moveCurve
-    }
-
-    NumberAnimation {
-        id: flipAnim
-        target: root
-        property: "flip"
-        from: 0
-        to: 1
-        duration: Tokens.enterDuration + 80
-        easing.type: Easing.BezierSpline
-        easing.bezierCurve: Tokens.enterCurve
     }
 
     SequentialAnimation {
@@ -423,6 +458,8 @@ Scope {
                 target: root
                 function onShownSectionChanged() {
                     content.contentY = 0;
+                    if (root.pending !== "")
+                        revealTimer.restart();
                 }
             }
 
@@ -469,11 +506,25 @@ Scope {
                 Keys.onEscapePressed: root.back()
                 Keys.onLeftPressed: root.hovered = (root.hovered - 1 + root.shownSections.length) % root.shownSections.length
                 Keys.onRightPressed: root.hovered = (root.hovered + 1) % root.shownSections.length
-                Keys.onTabPressed: event => root.stepGroup(event.modifiers & Qt.ShiftModifier ? -1 : 1)
-                Keys.onBacktabPressed: root.stepGroup(-1)
+                Keys.onTabPressed: event => root.step(event.modifiers & Qt.ShiftModifier ? -1 : 1)
+                Keys.onBacktabPressed: root.step(-1)
                 Keys.onReturnPressed: {
-                    if (root.hovered >= 0)
-                        root.go(root.shownSections[root.hovered].key);
+                    if (root.hovered >= 0 && root.hovered < root.shownSections.length)
+                        root.openHub(root.shownSections[root.hovered].key);
+                }
+                Keys.onPressed: event => {
+                    if ((event.modifiers & Qt.ControlModifier) && event.key === Qt.Key_Z) {
+                        Settings.undo();
+                        event.accepted = true;
+                        return;
+                    }
+                    if (event.text.length !== 1 || event.text.charCodeAt(0) <= 32 || event.text.charCodeAt(0) === 127 || (event.modifiers & (Qt.ControlModifier | Qt.AltModifier | Qt.MetaModifier)))
+                        return;
+                    if (root.section !== "")
+                        root.go("");
+                    search.text = search.text + event.text;
+                    search.focusInput();
+                    event.accepted = true;
                 }
             }
 
@@ -485,8 +536,18 @@ Scope {
                 readonly property real ry: Math.min(win.height * 0.3, hub.rx * 0.52)
                 readonly property real mini: 0.38
                 readonly property real targetY: win.gutter + 20 + (hub.ry + 70) * hub.mini
+                property real hush: root.query.trim() !== "" ? 1 : 0
                 anchors.fill: parent
-                opacity: root.phase(0.1, 0.5) * (1 - 0.2 * root.dive)
+                opacity: root.phase(0.1, 0.5) * (1 - 0.2 * root.dive) * (1 - 0.88 * hub.hush)
+                enabled: hub.hush < 0.5
+
+                Behavior on hush {
+                    NumberAnimation {
+                        duration: Tokens.stateDuration
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Tokens.enterCurve
+                    }
+                }
 
                 transform: [
                     Scale {
@@ -532,9 +593,9 @@ Scope {
                         required property var modelData
                         required property int index
                         readonly property var p: root.node(link.index, root.shownSections.length, hub.rx, hub.ry)
-                        readonly property bool on: root.hovered === link.index || root.section === link.modelData.key
+                        readonly property bool on: root.hovered === link.index || root.hub === link.modelData.key
                         anchors.fill: parent
-                        opacity: root.phase(0.35, 0.8) * root.flip * (link.on ? 0.85 : 0.14)
+                        opacity: root.phase(0.35, 0.8) * (link.on ? 0.85 : 0.14)
                         preferredRendererType: Shape.CurveRenderer
 
                         ShapePath {
@@ -613,9 +674,9 @@ Scope {
                         required property var modelData
                         required property int index
                         readonly property var p: root.node(star.index, root.shownSections.length, hub.rx, hub.ry)
-                        readonly property bool on: root.section === star.modelData.key
+                        readonly property bool on: root.hub === star.modelData.key
                         readonly property bool hot: root.hovered === star.index
-                        readonly property real arrive: root.phase(0.25 + 0.4 * star.index / root.shownSections.length, 0.65 + 0.3 * star.index / root.shownSections.length) * Math.min(1, Math.max(0, root.flip * 1.6 - 0.6 * star.index / root.shownSections.length))
+                        readonly property real arrive: root.phase(0.25 + 0.4 * star.index / root.shownSections.length, 0.65 + 0.3 * star.index / root.shownSections.length)
                         x: hub.cx + star.p.x * (0.4 + 0.6 * star.arrive) - width / 2
                         y: hub.cy + star.p.y * (0.4 + 0.6 * star.arrive) - height / 2
                         width: 104
@@ -676,7 +737,7 @@ Scope {
                                 if (root.hovered === star.index)
                                     root.hovered = -1;
                             }
-                            onClicked: root.go(star.modelData.key)
+                            onClicked: root.openHub(star.modelData.key)
                         }
                     }
                 }
@@ -688,21 +749,52 @@ Scope {
                 y: win.height - 120
                 visible: root.dive < 0.99
                 opacity: root.phase(0.6, 1) * (1 - root.dive)
-                text: root.hovered >= 0 && root.hovered < root.shownSections.length ? "Open " + root.shownSections[root.hovered].label.toLowerCase() : "Pick a star · Tab switches groups"
+                text: root.hovered >= 0 && root.hovered < root.shownSections.length ? "Open " + root.shownSections[root.hovered].label.toLowerCase() : "Pick a star, or start typing to search"
                 color: Theme.textSoft
                 font.family: Tokens.fontUi
                 font.pixelSize: 20
             }
 
-            Segmented {
+            TextBox {
+                id: search
                 x: hub.cx - width / 2
                 y: win.height * 0.5 - hub.ry - 150
-                width: Math.min(win.midW - 40, 760)
+                width: Math.min(win.midW - 40, 560)
                 visible: root.dive < 0.99
                 opacity: root.phase(0.4, 0.9) * (1 - root.dive)
-                options: root.groups
-                current: root.group
-                onPicked: key => root.pickGroup(key)
+                placeholder: "Search settings"
+                onTextChanged: root.query = text
+                onAccepted: results.accept()
+                Keys.onUpPressed: results.step(-1)
+                Keys.onDownPressed: results.step(1)
+                Keys.onEscapePressed: {
+                    if (search.text !== "")
+                        search.text = "";
+                    else
+                        root.back();
+                    keys.forceActiveFocus();
+                }
+
+                Connections {
+                    target: root
+                    function onQueryChanged(): void {
+                        if (search.text !== root.query)
+                            search.text = root.query;
+                        if (root.query === "" && !keys.activeFocus)
+                            keys.forceActiveFocus();
+                    }
+                }
+            }
+
+            SearchResults {
+                id: results
+                x: search.x
+                y: search.y + search.height + 14
+                width: search.width
+                visible: root.query.trim() !== "" && root.dive < 0.99
+                opacity: hub.hush
+                query: root.query
+                onPicked: entry => root.pickSetting(entry)
             }
 
             SidePanel {
@@ -769,11 +861,11 @@ Scope {
                     x: 30
                     y: 24
                     spacing: 14
-                    opacity: root.swap
+                    opacity: root.hubInfo === null ? root.swap : 1
 
                     Glyph {
                         anchors.verticalCenter: parent.verticalCenter
-                        text: root.shownSection === "" ? "" : root.sectionInfo(root.shownSection).glyph
+                        text: root.hubInfo !== null ? root.hubInfo.glyph : root.shownSection === "" ? "" : root.sectionInfo(root.shownSection).glyph
                         size: 24
                         color: Theme.accent
                     }
@@ -781,7 +873,7 @@ Scope {
                     Text {
                         textFormat: Text.PlainText
                         anchors.verticalCenter: parent.verticalCenter
-                        text: root.shownSection === "" ? "" : root.sectionInfo(root.shownSection).label
+                        text: root.hubInfo !== null ? root.hubInfo.label : root.shownSection === "" ? "" : root.sectionInfo(root.shownSection).label
                         color: Theme.text
                         font.family: Tokens.fontUi
                         font.pixelSize: 26
@@ -814,57 +906,133 @@ Scope {
                     }
                 }
 
+                Segmented {
+                    id: tabs
+                    x: 30
+                    y: sheetHead.y + sheetHead.height + 18
+                    width: Math.min(parent.width - 60 - detail.width - 16, 128 * Math.max(1, tabs.options.length))
+                    options: root.hubInfo === null ? [] : root.hubInfo.tabs.map(t => ({
+                                key: t.key,
+                                label: t.label
+                            }))
+                    current: root.section
+                    onPicked: key => root.go(key)
+                }
+
+                Chip {
+                    id: detail
+                    anchors.right: parent.right
+                    anchors.rightMargin: 30
+                    y: tabs.y + (tabs.height - height) / 2
+                    text: "All options"
+                    lit: Settings.values.settings.detail === "full"
+                    onClicked: Settings.set("settings.detail", Settings.values.settings.detail === "full" ? "simple" : "full")
+                }
+
                 Flickable {
                     id: content
                     x: 30
-                    y: sheetHead.y + sheetHead.height + 22
+                    y: tabs.y + tabs.height + 22
                     width: parent.width - 60
                     height: parent.height - y - 20
                     clip: true
-                    contentHeight: page.item ? page.item.implicitHeight + 20 : 0
+                    contentHeight: pageColumn.implicitHeight + 20
                     boundsBehavior: Flickable.StopAtBounds
                     opacity: root.swap
 
-                    Loader {
-                        id: page
+                    Column {
+                        id: pageColumn
                         width: content.width
                         y: (1 - root.swap) * 18
-                        sourceComponent: ({
-                                general: generalPage,
-                                look: lookPage,
-                                appearance: appearancePage,
-                                motion: motionPage,
-                                wallpaper: wallpaperPage,
-                                bar: barPage,
-                                center: centerPage,
-                                deck: deckPage,
-                                launcher: launcherPage,
-                                notifications: notificationsPage,
-                                sound: soundPage,
-                                displays: displaysPage,
-                                clock: clockPage,
-                                weather: weatherPage,
-                                power: powerPage,
-                                diver: diverPage,
-                                fatest: fatestPage,
-                                rgb: rgbPage,
-                                switcher: switcherPage,
-                                lock: lockPage,
-                                polkit: polkitPage,
-                                clip: clipPage,
-                                viewer: viewerPage,
-                                files: filesPage,
-                                archive: archivePage,
-                                island: islandPage,
-                                capture: capturePage,
-                                access: accessPage,
-                                plugins: pluginsPage,
-                                sync: syncPage,
-                                keybinds: keybindsPage,
-                                commands: commandsPage
-                            })[root.shownSection] || null
+
+                        Loader {
+                            id: page
+                            width: content.width
+                            sourceComponent: ({
+                                    general: generalPage,
+                                    look: lookPage,
+                                    appearance: appearancePage,
+                                    motion: motionPage,
+                                    wallpaper: wallpaperPage,
+                                    bar: barPage,
+                                    center: centerPage,
+                                    deck: deckPage,
+                                    launcher: launcherPage,
+                                    notifications: notificationsPage,
+                                    sound: soundPage,
+                                    displays: displaysPage,
+                                    clock: clockPage,
+                                    weather: weatherPage,
+                                    power: powerPage,
+                                    diver: diverPage,
+                                    fatest: fatestPage,
+                                    rgb: rgbPage,
+                                    switcher: switcherPage,
+                                    lock: lockPage,
+                                    polkit: polkitPage,
+                                    clip: clipPage,
+                                    viewer: viewerPage,
+                                    files: filesPage,
+                                    archive: archivePage,
+                                    island: islandPage,
+                                    capture: capturePage,
+                                    access: accessPage,
+                                    plugins: pluginsPage,
+                                    sync: syncPage,
+                                    keybinds: keybindsPage,
+                                    commands: commandsPage
+                                })[root.shownSection] || null
+                        }
+
+                        MoreOptions {
+                            tab: root.shownSection
+                        }
                     }
                 }
+            }
+
+            UndoToast {
+                x: (win.width - width) / 2
+                y: win.height - height - win.gutter - 8
+            }
+
+            Timer {
+                id: revealTimer
+                interval: Tokens.enterDuration + 60
+                onTriggered: win.revealPending()
+            }
+
+            Connections {
+                target: root
+                function onRevealRequested(): void {
+                    revealTimer.restart();
+                }
+            }
+
+            function findRow(item: var, key: string): var {
+                if (!item)
+                    return null;
+                if (item.key === key && item.modified !== undefined && item.visible)
+                    return item;
+                for (let i = 0; i < item.children.length; i++) {
+                    const r = win.findRow(item.children[i], key);
+                    if (r !== null)
+                        return r;
+                }
+                return null;
+            }
+
+            function revealPending(): void {
+                if (root.pending === "")
+                    return;
+                const row = win.findRow(page.item, root.pending);
+                if (row !== null) {
+                    const p = row.mapToItem(pageColumn, 0, 0);
+                    content.contentY = Math.max(0, Math.min(Math.max(0, content.contentHeight - content.height), p.y - content.height / 3));
+                }
+                Settings.focusKey = "";
+                Settings.focusKey = root.pending;
+                root.pending = "";
             }
         }
     }

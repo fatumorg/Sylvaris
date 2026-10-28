@@ -32,6 +32,7 @@ import "lib/ipc.mjs" as I
 import "lib/eq.mjs" as E
 import "lib/settings.mjs" as S
 import "lib/modules.mjs" as M
+import "lib/settingsIndex.mjs" as X
 
 ShellRoot {
     id: root
@@ -253,7 +254,8 @@ ShellRoot {
             settingsPanel: settings !== null ? {
                 open: settings.wanted,
                 section: settings.section,
-                group: settings.group
+                group: settings.group,
+                query: settings.query
             } : undefined,
             sky: root.on("Sky") ? Sky.state() : undefined,
             weather: root.on("Weather") ? Weather.state() : undefined,
@@ -792,7 +794,21 @@ ShellRoot {
                 },
                 all: () => Settings.values,
                 get: key => Settings.get(key) === undefined ? null : Settings.get(key),
-                set: (key, ...rest) => root.setting(key || "", rest.join(" "))
+                set: (key, ...rest) => root.setting(key || "", rest.join(" ")),
+                state: () => root.need("settings").state(),
+                undo: () => {
+                    const key = Settings.undo();
+                    if (key === "")
+                        throw new Error("nothing to undo");
+                    return key;
+                },
+                reset: key => {
+                    if (!key)
+                        throw new Error("usage: settings reset <key>");
+                    Settings.reset(key);
+                    return Settings.get(key) === undefined ? null : Settings.get(key);
+                },
+                search: (...words) => X.searchSettings(words.join(" "), Settings.values.plugins.enabled).map(e => e.key + "\t" + e.tab)
             },
             diver: I.gated({
                 default: "state",

@@ -85,6 +85,7 @@ Column {
 
         SettingRow {
             title: "Items to keep"
+            key: "clip.limit"
             subtitle: "Pinned items are kept on top of this"
 
             Stepper {
@@ -98,6 +99,7 @@ Column {
 
         SettingRow {
             title: "Keep images"
+            key: "clip.images"
             subtitle: "Screenshots and copied pictures, stored in ~/.cache/sylvaris/clip"
 
             Toggle {
@@ -108,6 +110,7 @@ Column {
 
         SettingRow {
             title: "Remember after restart"
+            key: "clip.persist"
             subtitle: "Saves the history to ~/.local/state/sylvaris/clip.json"
             last: true
 

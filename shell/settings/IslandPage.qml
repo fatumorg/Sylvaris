@@ -64,8 +64,8 @@ Column {
                 y: I.placeOf(root.cfg.position).top ? 16 : parent.height - height - 16
                 items: root.sample
                 shortcuts: I.shortcutsFor(root.cfg.shortcuts, Object.keys(I.SHORTCUTS).map(k => I.SHORTCUTS[k].needs)).map(s => Object.assign({}, s, {
-                            lit: s.id === "dnd"
-                        }))
+                        lit: s.id === "dnd"
+                    }))
                 expanded: previewHover.hovered
                 atTop: I.placeOf(root.cfg.position).top
                 idle: root.cfg.idle
@@ -83,6 +83,7 @@ Column {
 
         SettingRow {
             title: "Show the island"
+            key: "parts.island"
             subtitle: "Off by default. The same switch: sylvaris set parts.island true"
 
             Toggle {
@@ -93,6 +94,7 @@ Column {
 
         SettingRow {
             title: "Show on"
+            key: "island.screens"
             subtitle: "Every screen gets its own island that expands on its own"
 
             Segmented {
@@ -114,6 +116,7 @@ Column {
 
         SettingRow {
             title: "Edge"
+            key: "island.position"
             subtitle: "Top or bottom of the focused screen"
 
             Segmented {
@@ -135,6 +138,7 @@ Column {
 
         SettingRow {
             title: "Side"
+            key: "island.position"
 
             Segmented {
                 width: 300
@@ -159,6 +163,7 @@ Column {
 
         SettingRow {
             title: "Visibility"
+            key: "island.reveal"
             subtitle: "Reveal on hover tucks it into the edge like the deck; calls and alerts still slide out"
 
             Segmented {
@@ -180,6 +185,7 @@ Column {
 
         SettingRow {
             title: "When nothing is going on"
+            key: "island.idle"
             subtitle: "A pill keeps your shortcuts one hover away"
 
             Segmented {
@@ -205,6 +211,7 @@ Column {
 
         SettingRow {
             title: "Expand on hover"
+            key: "island.hover"
             subtitle: "Otherwise click the island to expand it"
 
             Toggle {
@@ -216,6 +223,8 @@ Column {
 
         SettingRow {
             title: "Seconds for short alerts"
+            key: "island.seconds"
+            advanced: true
             subtitle: "How long volume, device and notification alerts stay"
             last: true
 
@@ -235,6 +244,7 @@ Column {
 
         SettingRow {
             title: "Buttons"
+            key: "island.shortcuts"
             subtitle: "Click to add or remove, in the order you pick them"
             last: true
 
@@ -263,6 +273,8 @@ Column {
 
         SettingRow {
             title: "Sites"
+            key: "island.hideSites"
+            advanced: true
             subtitle: "music.youtube.com is not youtube.com, so YouTube Music still shows"
             last: true
 
@@ -348,6 +360,7 @@ Column {
                 required property var modelData
                 required property int index
                 title: modelData.title
+                key: "island." + modelData.key
                 subtitle: modelData.subtitle
                 last: index === 8
 

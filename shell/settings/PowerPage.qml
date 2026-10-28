@@ -17,6 +17,7 @@ Column {
 
         SettingRow {
             title: "Actions"
+            key: "power.actions"
             subtitle: "Shown in this order"
 
             Flow {
@@ -46,6 +47,7 @@ Column {
 
         SettingRow {
             title: "Ask before closing everything"
+            key: "power.confirm"
             subtitle: "Log out, restart, shut down and hibernate wait for a countdown"
 
             Toggle {
@@ -56,6 +58,8 @@ Column {
 
         SettingRow {
             title: "Countdown"
+            key: "power.countdown"
+            advanced: true
             last: true
 
             Stepper {

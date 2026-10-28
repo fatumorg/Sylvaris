@@ -1,0 +1,35 @@
+sleep 1.5
+syl settings open
+sleep 1.5
+shot settings-home
+bg wtype -k Shift_L -s 300 blur
+sleep 1
+check sylvaris state settingsPanel | grep -q '"query":"blur"'
+shot settings-search
+bg wtype -k Shift_L -s 400 -k Return
+sleep 1.5
+check sylvaris settings state | grep -q '"hub":"desktop","tab":"wallpaper"'
+shot settings-search-hit
+check sylvaris settings search blur | head -1 | grep -q '^\["paper.blur'
+syl set motion.scale 2
+sleep 0.5
+check test "$(sylvaris settings get motion.scale)" = 2
+syl settings open motion
+sleep 1
+shot settings-modified
+syl settings reset motion.scale
+sleep 0.5
+check test "$(sylvaris settings get motion.scale)" = 1
+syl settings undo
+sleep 0.5
+check test "$(sylvaris settings get motion.scale)" = 2
+check sylvaris settings state | grep -q '"detail":"simple"'
+syl settings open capture
+sleep 1
+shot settings-simple
+syl set settings.detail full
+sleep 1
+shot settings-full
+syl settings open desktop
+sleep 1
+check sylvaris settings state | grep -q '"hub":"desktop","tab":"wallpaper"'

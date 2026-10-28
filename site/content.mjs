@@ -44,7 +44,7 @@ export const PARTS = [
     { id: "media", name: "SylMedia", group: "tools", page: "parts/media.md", text: "The player for any MPRIS app, a 10-band equalizer for everything you hear, and the battery of every device." },
     { id: "power", name: "SylPower", group: "tools", page: "parts/power.md", text: "Lock, suspend, restart or shut down from a small constellation, with a countdown before anything ends your session." },
     { id: "paper", name: "SylPaper", group: "tools", page: "parts/paper.md", text: "Wallpapers that change with your theme, per screen if you like, with blur, dim and tint." },
-    { id: "settings", name: "SylSettings", group: "system", page: "parts/settings.md", text: "Every setting in one place, laid out as stars around a core, with a live preview and a picker for one screen at a time." },
+    { id: "settings", name: "SylSettings", group: "system", page: "parts/settings.md", text: "Every setting in one place: seven hubs around a core, search that finds any option as you type, undo, and a picker for one screen at a time." },
     { id: "theme", name: "SylTheme", group: "system", page: "parts/theme.md", text: "Themes on a turning ring. The whole desktop previews a theme before you keep it." },
     { id: "sync", name: "SylSync", group: "system", page: "parts/sync.md", text: "Your theme's colours in GTK, Qt, kitty, foot, VS Code, Zed, Neovim and Firefox, every time you switch." },
     { id: "access", name: "SylAccessibility", group: "system", page: "parts/access.md", text: "Zoom, colour filters for colour-weak vision, bigger text and pointer, less motion and less transparency." },

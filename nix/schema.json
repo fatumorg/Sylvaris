@@ -162,6 +162,9 @@
     "labels": true,
     "stars": true
   },
+  "settings": {
+    "detail": "simple"
+  },
   "switcher": {
     "previews": true,
     "titles": true

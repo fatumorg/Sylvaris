@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import SylStack
 import "../lib/settings.mjs" as S
+import "../lib/undo.mjs" as U
 
 Singleton {
     id: root
@@ -19,6 +20,15 @@ Singleton {
     property bool loadedOnce: false
     property bool frozen: false
     property bool ready: false
+    property bool more: false
+    property string focusKey: ""
+    property var undoStack: []
+    property var lastChange: null
+    readonly property var base: S.effectiveSettings(Config.values, root.raw.look && root.raw.look.preset ? {
+        look: {
+            preset: root.raw.look.preset
+        }
+    } : {}, Look.userLooks)
 
     onNoticeChanged: {
         if (root.notice !== "")
@@ -51,7 +61,53 @@ Singleton {
     }
 
     function set(key: string, value: var): void {
+        root.remember(key, false);
         root.setRaw(S.setPath(root.raw, key, value));
+    }
+
+    function isModified(key: string): bool {
+        if (root.editing !== "" && S.screenKey(key))
+            return S.isModified(root.shown, root.values, key);
+        return S.isModified(root.values, root.base, key);
+    }
+
+    function remember(key: string, reset: bool): void {
+        if (root.frozen)
+            return;
+        const now = Date.now();
+        const top = root.undoStack.length > 0 ? root.undoStack[root.undoStack.length - 1] : null;
+        const same = top !== null && top.key === key && !reset && !top.reset && now - top.at < 2000;
+        const before = same ? top.before : S.getPath(root.raw, key);
+        const rest = same ? U.popUndo(root.undoStack).stack : root.undoStack;
+        root.undoStack = U.pushUndo(rest, {
+            key: key,
+            before: before === undefined ? undefined : JSON.parse(JSON.stringify(before)),
+            at: now,
+            reset: reset
+        });
+        root.lastChange = {
+            key: key,
+            at: now,
+            reset: reset
+        };
+    }
+
+    function reset(key: string): void {
+        const path = root.editing !== "" && S.screenKey(key) ? "screens." + root.editing + "." + key : key;
+        if (S.getPath(root.raw, path) === undefined)
+            return;
+        root.remember(path, true);
+        root.setRaw(S.unsetPath(root.raw, path));
+    }
+
+    function undo(): string {
+        const r = U.popUndo(root.undoStack);
+        if (r.entry === null || root.frozen)
+            return "";
+        root.undoStack = r.stack;
+        root.lastChange = null;
+        root.setRaw(r.entry.before === undefined ? S.unsetPath(root.raw, r.entry.key) : S.setPath(root.raw, r.entry.key, r.entry.before));
+        return r.entry.key;
     }
 
     function setRaw(next: var): void {

@@ -14,6 +14,7 @@ Column {
 
         SettingRow {
             title: "Do not disturb"
+            key: "notifications.dnd"
             subtitle: "Only urgent notifications pop up; everything still lands in the notification center"
 
             Toggle {
@@ -24,6 +25,7 @@ Column {
 
         SettingRow {
             title: "Toast duration"
+            key: "notifications.timeout"
             subtitle: "Unless the app asks for something else"
             last: true
 

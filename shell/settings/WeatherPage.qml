@@ -13,6 +13,7 @@ Column {
 
         SettingRow {
             title: "Show the weather"
+            key: "weather.enabled"
             subtitle: "In SylClock, refreshed in the background"
 
             Toggle {
@@ -23,6 +24,7 @@ Column {
 
         SettingRow {
             title: "Units"
+            key: "weather.units"
 
             Segmented {
                 width: 240
@@ -43,6 +45,8 @@ Column {
 
         SettingRow {
             title: "Refresh every"
+            key: "weather.refresh"
+            advanced: true
             last: true
 
             Stepper {

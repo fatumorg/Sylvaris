@@ -112,6 +112,7 @@ Column {
 
         SettingRow {
             title: "Follow the theme"
+            key: "look.followTheme"
             subtitle: "Switch to the Look a theme was made for when you apply it"
 
             Toggle {
@@ -122,6 +123,7 @@ Column {
 
         SettingRow {
             title: "Aurora"
+            key: "look.aurora"
             subtitle: "Slow accent lights behind full-screen parts, the lock and login screens"
 
             Toggle {
@@ -132,6 +134,7 @@ Column {
 
         SettingRow {
             title: "Save as your own"
+            key: "look.save"
             subtitle: page.saved !== "" ? "Saved as " + page.saved + "; share it with sylvaris look export" : "Keeps this Look with every change below"
             last: true
 
@@ -164,6 +167,7 @@ Column {
 
         SettingRow {
             title: "Material"
+            key: "look.material"
             subtitle: "The recipe for every glass surface"
 
             Segmented {
@@ -176,6 +180,7 @@ Column {
 
         SettingRow {
             title: "Corners"
+            key: "look.corners"
             subtitle: "Round, smooth squircles, cut bevels or sharp"
 
             Segmented {
@@ -188,6 +193,7 @@ Column {
 
         SettingRow {
             title: "Roundness"
+            key: "look.radius"
 
             Slider {
                 width: 300
@@ -199,6 +205,7 @@ Column {
 
         SettingRow {
             title: "Spacing"
+            key: "look.density"
 
             Segmented {
                 width: 300
@@ -236,6 +243,7 @@ Column {
                 required property var modelData
                 required property int index
                 title: modelData.title
+                key: "look." + modelData.key
                 subtitle: modelData.note
                 last: index === 3
 
@@ -254,6 +262,7 @@ Column {
 
         SettingRow {
             title: "Title weight"
+            key: "look.weight"
 
             Segmented {
                 width: 300
@@ -265,6 +274,7 @@ Column {
 
         SettingRow {
             title: "Fonts"
+            key: "look.fonts"
             subtitle: "Interface " + Look.fonts.ui + ", titles " + Look.fonts.display + ", code " + Look.fonts.mono
 
             Segmented {
@@ -290,6 +300,7 @@ Column {
 
         SettingRow {
             title: "Find a font"
+            key: "look.fontSearch"
             subtitle: page.fontMatches.length === 0 && page.fontQuery !== "" ? "No installed font matches" : "Pick one to use it for " + ({
                     ui: "the interface",
                     display: "titles",

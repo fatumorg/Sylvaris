@@ -14,6 +14,7 @@ Column {
 
         SettingRow {
             title: "Night light"
+            key: "nightLight.enabled"
             subtitle: NightLight.available ? "Warmer colours through wlsunset" : "Install wlsunset to use night light"
 
             Toggle {
@@ -24,6 +25,7 @@ Column {
 
         SettingRow {
             title: "Colour temperature"
+            key: "nightLight.temperature"
             last: true
 
             Slider {
@@ -40,6 +42,7 @@ Column {
 
         SettingRow {
             title: "Arrange displays"
+            key: "displays.arrange"
             subtitle: "Resolution, refresh rate, scale and position, with automatic revert"
 
             Chip {
@@ -51,6 +54,7 @@ Column {
 
         SettingRow {
             title: "Virtual display"
+            key: "displays.virtual"
             subtitle: !VirtualDisplay.supported ? "Needs Hyprland" : !VirtualDisplay.available ? "Install wayvnc and wlr-randr to use a virtual display" : VirtualDisplay.error !== "" ? VirtualDisplay.error : "An extra screen for a tablet, shared over VNC on port " + VirtualDisplay.vnc.port
 
             Toggle {
@@ -62,6 +66,8 @@ Column {
 
         SettingRow {
             title: "Virtual display size"
+            key: "displays.virtualSize"
+            advanced: true
             last: true
 
             Segmented {

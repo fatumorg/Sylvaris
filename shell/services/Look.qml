@@ -56,6 +56,7 @@ Singleton {
             throw new Error("unknown look: " + id);
         if (!Settings.ready || Settings.frozen)
             throw new Error(Settings.notice || "settings are still loading");
+        Settings.remember("look", false);
         Settings.setRaw(L.applyLook(Settings.raw, id, root.userLooks));
     }
 

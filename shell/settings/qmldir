@@ -27,6 +27,7 @@ LauncherPage 1.0 LauncherPage.qml
 LockPage 1.0 LockPage.qml
 LookPage 1.0 LookPage.qml
 MiniScreen 1.0 MiniScreen.qml
+MoreOptions 1.0 MoreOptions.qml
 MotionPage 1.0 MotionPage.qml
 MotionPreview 1.0 MotionPreview.qml
 NotificationsPage 1.0 NotificationsPage.qml
@@ -39,6 +40,7 @@ PolkitPage 1.0 PolkitPage.qml
 PowerPage 1.0 PowerPage.qml
 PowerPreview 1.0 PowerPreview.qml
 ScreenPicker 1.0 ScreenPicker.qml
+SearchResults 1.0 SearchResults.qml
 SettingRow 1.0 SettingRow.qml
 SidePanel 1.0 SidePanel.qml
 SoundPage 1.0 SoundPage.qml
@@ -47,6 +49,7 @@ Stepper 1.0 Stepper.qml
 SwitcherPage 1.0 SwitcherPage.qml
 SylSettings 1.0 SylSettings.qml
 SyncPage 1.0 SyncPage.qml
+UndoToast 1.0 UndoToast.qml
 ViewerPage 1.0 ViewerPage.qml
 WallpaperPage 1.0 WallpaperPage.qml
 WeatherPage 1.0 WeatherPage.qml

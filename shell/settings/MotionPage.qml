@@ -15,6 +15,7 @@ Column {
 
         SettingRow {
             title: "Animation speed"
+            key: "motion.scale"
             subtitle: Settings.shown.motion.scale === 1 ? "Default" : Settings.shown.motion.scale < 1 ? "Faster" : "Slower"
 
             Slider {
@@ -27,6 +28,7 @@ Column {
 
         SettingRow {
             title: "Style"
+            key: "motion.preset"
             subtitle: "How every panel moves: calm and slow, smooth, quick and tight, or springy with a little overshoot"
 
             Segmented {
@@ -56,6 +58,7 @@ Column {
 
         SettingRow {
             title: "Opening"
+            key: "motion.open"
             subtitle: "How panels appear: grow from their corner, morph out of the button you clicked, drop in, unfold, come into focus or swing down"
 
             Segmented {
@@ -93,6 +96,8 @@ Column {
 
         SettingRow {
             title: "Stagger"
+            key: "motion.stagger"
+            advanced: true
             subtitle: "How far apart the pieces of a panel arrive, from all at once to one after another"
 
             Slider {
@@ -105,6 +110,8 @@ Column {
 
         SettingRow {
             title: "Springiness"
+            key: "motion.springiness"
+            advanced: true
             subtitle: Settings.shown.motion.springiness < 0 ? "Follows the style above; drag to set your own bounce" : "How much buttons and badges overshoot before they settle"
 
             Slider {
@@ -117,6 +124,8 @@ Column {
 
         SettingRow {
             title: "Background reveal"
+            key: "motion.reveal"
+            advanced: true
             subtitle: "How the blurred background of SylSettings, SylPad and SylPower spreads when they open and close"
 
             Segmented {
@@ -142,6 +151,7 @@ Column {
 
         SettingRow {
             title: "Reduce motion"
+            key: "motion.reduced"
             subtitle: "Panels appear and disappear without moving"
             last: true
 
@@ -158,6 +168,7 @@ Column {
 
         SettingRow {
             title: "Performance mode"
+            key: "performance"
             subtitle: "Auto pauses ambient movement while a full-screen window has focus, such as a game, and keeps the look. On also drops blur and sheen, shortens animations and turns off compositor animations, blur, shadows and gaps"
             last: true
 

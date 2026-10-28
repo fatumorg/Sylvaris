@@ -206,6 +206,12 @@ Explained in [settings](../parts/settings.md).
 | `constellation.labels` | `true` |  |
 | `constellation.stars` | `true` |  |
 
+## settings
+
+| Key | Default | Per screen |
+|---|---|:---:|
+| `settings.detail` | `"simple"` |  |
+
 ## switcher
 
 Explained in [switcher](../parts/switcher.md).

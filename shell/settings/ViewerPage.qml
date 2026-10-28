@@ -147,6 +147,7 @@ Column {
 
         SettingRow {
             title: "Use the viewer"
+            key: "parts.viewer"
             subtitle: "The same switch: sylvaris set parts.viewer false"
 
             Toggle {
@@ -157,6 +158,7 @@ Column {
 
         SettingRow {
             title: "Play videos right away"
+            key: "viewer.autoplay"
 
             Toggle {
                 checked: root.cfg.autoplay
@@ -167,6 +169,7 @@ Column {
 
         SettingRow {
             title: "Loop videos"
+            key: "viewer.loop"
 
             Toggle {
                 checked: root.cfg.loop
@@ -177,6 +180,7 @@ Column {
 
         SettingRow {
             title: "Start videos muted"
+            key: "viewer.muted"
             subtitle: "Press M in the viewer to switch"
             last: true
 

@@ -17,6 +17,7 @@ Column {
 
         SettingRow {
             title: "Show the bar"
+            key: "bar.enabled"
 
             Toggle {
                 checked: Settings.shown.bar.enabled
@@ -26,6 +27,7 @@ Column {
 
         SettingRow {
             title: "Edge"
+            key: "bar.position"
             subtitle: "Where the bar sits; left and right make it vertical"
 
             Segmented {
@@ -41,6 +43,7 @@ Column {
 
         SettingRow {
             title: "Style"
+            key: "bar.style"
             subtitle: "Separate glass islands for each side, or one continuous slab"
 
             Segmented {
@@ -62,6 +65,7 @@ Column {
 
         SettingRow {
             title: "Workspace icons"
+            key: "bar.workspaceIcons"
             subtitle: Settings.shown.bar.workspaceIcons === "auto" ? "Follows the theme" + (Theme.theme.workspaceIcon ? " (" + Theme.theme.workspaceIcon + ")" : ", which picks numbers") : "The same everywhere"
         }
 
@@ -85,6 +89,7 @@ Column {
 
         SettingRow {
             title: "Floating"
+            key: "bar.floating"
             subtitle: "A gap around the bar, or one that touches the edge"
             last: true
 

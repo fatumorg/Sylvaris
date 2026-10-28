@@ -13,6 +13,7 @@ Column {
 
         SettingRow {
             title: "Source"
+            key: "sky.source"
 
             Text {
                 textFormat: Text.PlainText
@@ -25,6 +26,7 @@ Column {
 
         SettingRow {
             title: "Coordinates"
+            key: "sky.place"
             last: true
 
             Text {

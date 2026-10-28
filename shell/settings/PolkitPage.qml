@@ -20,6 +20,7 @@ Column {
 
         SettingRow {
             title: root.info.registered ? "SylPolkit is handling requests" : "Another agent is handling requests"
+            key: "polkit.agent"
             subtitle: root.info.registered ? "Password prompts appear in the Sylvaris style" : "SylPolkit takes over after the other agent stops and Sylvaris restarts"
 
             Glyph {
@@ -31,6 +32,7 @@ Column {
 
         SettingRow {
             title: "Preview"
+            key: "polkit.preview"
             subtitle: "Shows the prompt with a sample request; the password “right” completes it"
             last: true
 

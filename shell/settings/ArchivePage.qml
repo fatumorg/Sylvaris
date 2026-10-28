@@ -20,6 +20,7 @@ Column {
 
         SettingRow {
             title: "View"
+            key: "archive.view"
             subtitle: F.keyText((root.keys.byAction.grid || [""])[0] || "") + " and " + F.keyText((root.keys.byAction.list || [""])[0] || "") + " switch it in the window; sorting and icon size follow SylFiles"
 
             Segmented {
@@ -41,6 +42,7 @@ Column {
 
         SettingRow {
             title: "Show what you extract"
+            key: "archive.reveal"
             subtitle: "Open SylFiles at the result after extracting from SylArchive"
             last: true
 
@@ -56,6 +58,7 @@ Column {
 
         SettingRow {
             title: "Extract here"
+            key: "archive.extract"
             subtitle: root.cfg.extract === "smart" ? "An archive with one folder inside gives that folder; loose files get a folder named after the archive" : "Everything goes into a new folder named after the archive"
             last: true
 
@@ -83,6 +86,7 @@ Column {
 
         SettingRow {
             title: "Format"
+            key: "archive.format"
             subtitle: root.cfg.format === "zip" ? "Opens everywhere, Windows and phones too" : root.cfg.format === "7z" ? "Small files, needs 7-Zip on Windows" : root.cfg.format === "tar" ? "No compression, keeps Unix permissions" : "Small and keeps Unix permissions; best for Linux"
 
             Segmented {
@@ -95,6 +99,8 @@ Column {
 
         SettingRow {
             title: "Compression"
+            key: "archive.level"
+            advanced: true
             subtitle: "Fast packs quickly, best makes the smallest files"
             last: true
 

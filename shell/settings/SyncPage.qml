@@ -74,6 +74,7 @@ Column {
 
         SettingRow {
             title: "Match apps to the theme"
+            key: "sync.enabled"
             subtitle: root.cfg.enabled ? (Sync.last > 0 ? "Last synced " + Qt.formatTime(new Date(Sync.last), "HH:mm") : "Syncing…") : "Off"
             last: true
 
@@ -96,6 +97,7 @@ Column {
                 required property int index
                 readonly property string status: root.statusFor(modelData.id)
                 title: modelData.label
+                key: "sync.targets." + modelData.id
                 subtitle: modelData.about + (status === "" ? "" : " · " + status.toLowerCase())
                 last: index === S.TARGETS.length - 1
 
