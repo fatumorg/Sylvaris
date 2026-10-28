@@ -381,10 +381,11 @@ function overlaps(a, b) {
     return a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h
 }
 
-export function nudge(items, screen, cell, gap) {
+export function nudge(items, screen, cell, gap, home = "") {
     const placed = []
+    const on = name => name === "" ? home : name
     return items.map(item => {
-        if (item.screen !== screen.name)
+        if (on(item.screen) !== on(screen.name))
             return item
         let next = item
         let rect = place(next, [screen], cell, gap)
@@ -492,7 +493,7 @@ export function undo(session) {
 export function commit(session, screens, cell, gap) {
     let items = session.items
     for (const s of screens || [])
-        items = nudge(items, s, cell, gap)
+        items = nudge(items, s, cell, gap, screens[0].name)
     return items
 }
 

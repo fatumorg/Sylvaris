@@ -67,6 +67,16 @@ test("nudge moves the second of two stacked items down by whole cells", () => {
     assert.equal(out[2], items[2])
 })
 
+test("nudge counts items without a screen as on the first screen", () => {
+    const s = { name: "a", width: 1920, height: 1080 }
+    const items = [
+        { id: "aaaa", screen: "", anchor: "top-left", col: 0, row: 0, w: 2, h: 2 },
+        { id: "bbbb", screen: "a", anchor: "top-left", col: 0, row: 0, w: 2, h: 2 }
+    ]
+    assert.equal(nudge(items, s, 80, 12, "a")[1].row, 2)
+    assert.equal(nudge(items, s, 80, 12, "b")[1].row, 0)
+})
+
 test("plugin widgets validate but sleep while their plugin is off", () => {
     const raw = { items: [{ type: "diver" }, { type: "temp" }, { type: "clock" }] }
     assert.deepEqual(validateWidgets(raw, {}).values.items.map(i => i.inactive), [true, true, false])

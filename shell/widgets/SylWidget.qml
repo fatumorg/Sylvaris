@@ -122,7 +122,7 @@ Scope {
             name: item.screen,
             width: 1920,
             height: 1080
-        }, root.cfg.cell, root.cfg.gap);
+        }, root.cfg.cell, root.cfg.gap, root.screens.length > 0 ? root.screens[0].name : "");
         if (root.editing)
             root.session = Wd.apply(root.session, {
                 kind: "add",

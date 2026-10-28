@@ -14,6 +14,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 ### Fixed
 
 - The AUR git package depends on Qt Multimedia and Image Formats, and lists brightnessctl, ddcutil, wayvnc, udisks2, libarchive, wtype, kitty, cava and syntax-highlighting as optional
+- A widget added from the gallery or with `sylvaris widgets add` no longer lands on top of widgets saved without a screen, and Done moves those apart too
 
 ## [1.5.0] - 2026-10-28
 
