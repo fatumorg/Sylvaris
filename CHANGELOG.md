@@ -13,6 +13,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - SylDeck can glow in your accent under apps that have a window (`deck.glow`), and SylTheme draws each theme's card in the Look the theme was made for
 - Nine more widgets: now playing (it can spin like a record), system graphs, the sky's sun path and moon, sticky notes you type into, countdowns, a shelf of apps, text in any font, stickers and FaTest
 - Look shuffle picks a new Look and theme each day (`look.shuffle = "daily"`) or right now with `sylvaris look shuffle`
+- Hot corners run a `sylvaris` command or start a program when the pointer rests in a screen corner, per screen or on all of them (`corners`, SylSettings › General)
 
 ### Changed
 

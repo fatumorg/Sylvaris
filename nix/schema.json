@@ -364,6 +364,11 @@
       "firefox": false
     }
   },
+  "corners": {
+    "enabled": false,
+    "dwell": 250,
+    "actions": {}
+  },
   "performance": "auto",
   "iconTint": true,
   "look": {

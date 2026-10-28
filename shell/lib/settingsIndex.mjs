@@ -94,6 +94,8 @@ const ROWS = [
     {key: "center.corner", title: "Control Center", tab: "general", subtitle: "Where SylCenter and SylMedia open"},
     {key: "clock.corner", title: "Clock", tab: "general", subtitle: "Where SylClock opens"},
     {key: "notifications.corner", title: "Notifications", tab: "general", subtitle: "Where toasts and the notification center appear"},
+    {key: "corners.enabled", title: "Hot corners", tab: "general", subtitle: "Run an action when the pointer rests in a screen corner", words: ["corner", "edge", "pointer", "mouse", "trigger"]},
+    {key: "corners.dwell", title: "Wait before acting", tab: "general", subtitle: "How long the pointer rests in the corner first", words: ["corner", "delay", "dwell"]},
     {key: "parts.island", title: "Show the island", tab: "island", subtitle: "Off by default. The same switch: sylvaris set parts.island true"},
     {key: "island.screens", title: "Show on", tab: "island", subtitle: "Every screen gets its own island that expands on its own"},
     {key: "island.position", title: "Edge", tab: "island", subtitle: "Top or bottom of the focused screen", words: ["top", "bottom", "notch"]},

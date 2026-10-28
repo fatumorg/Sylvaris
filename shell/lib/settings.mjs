@@ -4,6 +4,7 @@ import { DEFAULT_ISLAND, validateIsland } from "./island.mjs"
 import { DEFAULT_VIEWER, validateViewer } from "./viewer.mjs"
 import { DEFAULT_FILES, validateFiles } from "./files.mjs"
 import { DEFAULT_WIDGETS, validateWidgets, servicesFor } from "./widgets.mjs"
+import { DEFAULT_CORNERS, validateCorners } from "./corners.mjs"
 import { DEFAULT_ARCHIVE, validateArchive } from "./archive.mjs"
 import { DEFAULT_NOTES, validateNotes } from "./notes.mjs"
 import { DEFAULT_CAPTURE, validateCapture } from "./capture.mjs"
@@ -139,6 +140,7 @@ export const DEFAULT_SETTINGS = {
     keybinds: {},
     plugins: DEFAULT_PLUGINS,
     sync: DEFAULT_SYNC,
+    corners: DEFAULT_CORNERS,
     performance: "auto",
     iconTint: true,
     look: DEFAULT_LOOK,
@@ -406,6 +408,7 @@ export function validateSettings(raw, userLooks) {
     v.plugins = validatePlugins(v.plugins)
     v.widgets = validateWidgets(v.widgets, v.plugins).values
     v.sync = validateSync(v.sync)
+    v.corners = validateCorners(v.corners)
 
     const sw = isObject(v.switcher) ? v.switcher : {}
     v.switcher = Object.assign({}, sw, {

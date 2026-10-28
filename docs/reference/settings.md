@@ -473,6 +473,16 @@ Explained in [sync](../parts/sync.md).
 | `sync.targets.neovim` | `true` |  |
 | `sync.targets.firefox` | `false` |  |
 
+## corners
+
+Explained in [configuration](../configuration.md#hot-corners).
+
+| Key | Default | Per screen |
+|---|---|:---:|
+| `corners.enabled` | `false` |  |
+| `corners.dwell` | `250` |  |
+| `corners.actions` | `{}` |  |
+
 ## performance
 
 Explained in [look](../look.md#motion-and-performance).

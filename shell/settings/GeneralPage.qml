@@ -152,6 +152,36 @@ Column {
     }
 
     Card {
+        title: "Hot corners"
+        note: "Point a screen corner at a sylvaris command with corners.actions in settings.json, such as \"top-left\": \"center toggle\"."
+
+        SettingRow {
+            title: "Hot corners"
+            key: "corners.enabled"
+            subtitle: "Run an action when the pointer rests in a screen corner"
+
+            Toggle {
+                checked: Settings.shown.corners.enabled
+                onToggled: v => Settings.put("corners.enabled", v)
+            }
+        }
+
+        SettingRow {
+            title: "Wait before acting"
+            key: "corners.dwell"
+            subtitle: "How long the pointer rests in the corner first"
+            last: true
+
+            Slider {
+                width: 300
+                value: Settings.shown.corners.dwell / 2000
+                label: Settings.shown.corners.dwell + " ms"
+                onMoved: v => Settings.put("corners.dwell", Math.round(v * 40) * 50)
+            }
+        }
+    }
+
+    Card {
         title: "From config.json"
         note: "These live in " + Config.path + ", which Sylvaris never writes. Edit that file or your Nix config; changes apply as soon as it is saved."
 

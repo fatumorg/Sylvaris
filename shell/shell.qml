@@ -31,6 +31,7 @@ import qs.access
 import qs.plugins
 import qs.sync
 import qs.widgets
+import qs.corners
 import "lib/ipc.mjs" as I
 import "lib/eq.mjs" as E
 import "lib/settings.mjs" as S
@@ -557,6 +558,12 @@ ShellRoot {
         active: root.on("widgets")
 
         SylWidget {}
+    }
+
+    LazyLoader {
+        active: Settings.values.corners.enabled
+
+        HotCorners {}
     }
 
     LazyLoader {

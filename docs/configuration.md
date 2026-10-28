@@ -82,6 +82,23 @@ In SylSettings, pick the screen next to the section title; changes to per-screen
 
 `id` is lowercase letters, digits, `_` and `-`. `status` is a command whose exit code 0 means "on"; without it Sylvaris remembers the last state in `toggleState`. `icon` takes a Nerd Font glyph. A toggle with the id `performance` replaces the built-in Performance tile.
 
+## Hot corners
+
+Turn on SylSettings › General › Hot corners, then give each corner an action in `settings.json`:
+
+```json
+"corners": {
+  "enabled": true,
+  "dwell": 250,
+  "actions": {
+    "*:top-left": "center toggle",
+    "DP-1:bottom-right": { "command": ["kitty"] }
+  }
+}
+```
+
+A key is `<screen>:<corner>`, where the corner is `top-left`, `top-right`, `bottom-left` or `bottom-right`; `*` matches every screen and a named screen wins over it. A text action is a `sylvaris` command without the `sylvaris`; `{"command": [...]}` starts a program. The action runs once the pointer has rested in the corner for `dwell` milliseconds (0 to 2000), and again only after it leaves.
+
 ## config.json only
 
 | Key | Default | Meaning |
