@@ -9,16 +9,16 @@ sleep 2.5
 syl state lock
 check grep -q '"locked":true,"secure":true' "$XDG_RUNTIME_DIR/sylvaris/lock.json"
 shot lock
-bg wtype -k Shift_L wrong -k Return
+bg wtype -k Shift_L -s 400 wrong -k Return
 sleep 1.5
 syl state lock
 check grep -q '"message":"Wrong password"' "$XDG_RUNTIME_DIR/sylvaris/lock.json"
 shot lock-wrong
-bg wtype -k Shift_L zq8Unlock
+bg wtype -k Shift_L -s 400 zq8Unlock
 sleep 0.8
 syl state
 check ! grep -q zq8 "$OUT/ipc.log" "$HOME/watch.log" "$XDG_RUNTIME_DIR/sylvaris/lock.json"
-bg wtype -k Shift_L -k Return
+bg wtype -k Shift_L -s 400 -k Return
 sleep 1.5
 syl state lock
 check grep -q '"locked":false' "$XDG_RUNTIME_DIR/sylvaris/lock.json"
@@ -41,7 +41,7 @@ killshell
 sleep 1.5
 check grep -q '"locked":true' "$XDG_RUNTIME_DIR/sylvaris/lock.json"
 shot lock-orphan
-bg wtype -k Shift_L zq8Unlock -k Return
+bg wtype -k Shift_L -s 400 zq8Unlock -k Return
 sleep 1.5
 check grep -q '"locked":false' "$XDG_RUNTIME_DIR/sylvaris/lock.json"
 wait ! test -e "$XDG_RUNTIME_DIR/sylvaris/lock.sock"
