@@ -1,5 +1,5 @@
 pkgname=sylvaris
-version=1.5.0
+version=1.5.1
 revision=1
 build_style=gnu-makefile
 make_build_target=sylstack

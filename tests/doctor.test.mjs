@@ -47,7 +47,7 @@ test("problems reports values the validator replaced or dropped", () => {
 })
 
 const facts = {
-    version: "1.5.0",
+    version: "1.5.1",
     commit: "abc1234",
     sylstack: "SylStack 1.0.0 (Qt 6.11.2)",
     compositor: "hyprland 0.51.0",
@@ -59,7 +59,7 @@ const facts = {
 
 test("report covers versions, parts, tools and both files", () => {
     const r = report(facts)
-    assert.match(r, /^Sylvaris 1\.5\.0 \(commit abc1234\)$/m)
+    assert.match(r, /^Sylvaris 1\.5\.1 \(commit abc1234\)$/m)
     assert.match(r, /^SylStack: SylStack 1\.0\.0 \(Qt 6\.11\.2\)$/m)
     assert.match(r, /^Compositor: hyprland 0\.51\.0$/m)
     assert.match(r, /^GPU: NVIDIA \(nvidia\)$/m)
