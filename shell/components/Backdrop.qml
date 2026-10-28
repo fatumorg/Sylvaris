@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Effects
+import QtQuick.Shapes
 import qs
 import qs.services
 
@@ -89,6 +90,75 @@ Item {
                 GradientStop {
                     position: 1
                     color: Qt.alpha(Qt.darker(root.tint, 2.4), 0.55)
+                }
+            }
+        }
+
+        Item {
+            id: aurora
+            property real t: 0
+            anchors.fill: parent
+            visible: Look.values.aurora && !Tokens.lite && root.reveal > 0
+            opacity: Math.min(1, root.reveal * 2)
+
+            NumberAnimation on t {
+                from: 0
+                to: 1
+                loops: Animation.Infinite
+                duration: Tokens.loopMs(48000)
+                running: aurora.visible && !Tokens.paused && !Settings.values.motion.reduced
+            }
+
+            Repeater {
+                model: [
+                    {
+                        k: 0,
+                        hue: 0
+                    },
+                    {
+                        k: 2.1,
+                        hue: 1
+                    },
+                    {
+                        k: 4.2,
+                        hue: 2
+                    }
+                ]
+
+                delegate: Shape {
+                    required property var modelData
+                    readonly property real a: aurora.t * Math.PI * 2 + modelData.k
+                    readonly property real r: Math.max(aurora.width, aurora.height) * 0.42
+                    readonly property real cx: aurora.width * (0.5 + 0.34 * Math.sin(a))
+                    readonly property real cy: aurora.height * (0.5 + 0.28 * Math.cos(a * 2 + modelData.k))
+                    anchors.fill: parent
+                    preferredRendererType: Shape.CurveRenderer
+
+                    ShapePath {
+                        strokeWidth: -1
+                        fillGradient: RadialGradient {
+                            centerX: cx
+                            centerY: cy
+                            focalX: cx
+                            focalY: cy
+                            centerRadius: r
+                            GradientStop {
+                                position: 0
+                                color: Qt.alpha([Theme.accent, Theme.accentHi, Theme.accentDeep][modelData.hue], 0.13)
+                            }
+                            GradientStop {
+                                position: 1
+                                color: "transparent"
+                            }
+                        }
+
+                        PathRectangle {
+                            x: 0
+                            y: 0
+                            width: aurora.width
+                            height: aurora.height
+                        }
+                    }
                 }
             }
         }

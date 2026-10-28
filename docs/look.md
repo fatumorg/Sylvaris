@@ -27,6 +27,7 @@ Change any part of a Look without leaving it. Each key under `look` overrides th
 | `accent` | `theme` `wallpaper` or `#rrggbb` | where the accent colour comes from: the theme, the most colourful part of your wallpaper, or a colour you pick |
 | `parts.<part>` | `material`, `radius` and any glass key | a different material for one part, such as `"parts": {"bar": {"material": "ink"}}` |
 | `followTheme` | `true` `false` | switch to the Look a theme names when you apply that theme |
+| `aurora` | `true` `false` | slow accent lights drifting behind SylSettings, SylPad, SylPower, the lock and login screens; on for every material except `resin` |
 
 Your own `glass` keys still beat the material. Picking a Look clears the overrides above and your glass levels, so it shows as designed.
 

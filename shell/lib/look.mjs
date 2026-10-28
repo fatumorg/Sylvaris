@@ -107,6 +107,8 @@ export function validateLook(raw, userLooks) {
             ok = unit(v)
         } else if (key === "accent") {
             ok = ACCENTS.includes(v) || typeof v === "string" && /^#[0-9a-f]{6}$/i.test(v)
+        } else if (key === "aurora") {
+            ok = typeof v === "boolean"
         } else if (key === "shuffle") {
             ok = v === "off" || v === "daily"
         } else if (key === "fonts") {
@@ -182,6 +184,7 @@ export function resolveLook(lk, glass, userLooks) {
         fonts: Object.assign({}, base.fonts, isObject(l.fonts) ? l.fonts : {}),
         weight: l.weight !== undefined ? l.weight : base.weight,
         accent: l.accent !== undefined ? l.accent : "theme",
+        aurora: typeof l.aurora === "boolean" ? l.aurora : material !== "resin",
         parts: isObject(l.parts) ? l.parts : {}
     }
 }

@@ -168,6 +168,8 @@ Explained in [paper](../parts/paper.md).
 | `paper.transition` | `"zoom"` | yes |
 | `paper.duration` | `900` | yes |
 | `paper.drift` | `false` | yes |
+| `paper.parallax` | `0.4` |  |
+| `paper.menu` | `true` |  |
 
 ## weather
 

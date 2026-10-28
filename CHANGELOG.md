@@ -13,6 +13,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - `sylvaris theme generate` makes a readable theme from the wallpaper's colours, and `look.accent` can follow the wallpaper or take any colour
 - Six ways for panels to open (`motion.open`: grow, morph out of the clicked button, drop, unfold, focus and swing), plus `motion.stagger` and `motion.springiness`, all in SylSettings › Motion
 - Clock digits roll when they change, tiles and row buttons squash on press and lift on hover, switches ripple from the click and sliders show a grip while dragged
+- An aurora of slow accent lights behind full-screen parts (`look.aurora`), and the wallpaper sways a little when you switch workspace (`paper.parallax`)
 - Brightness sliders in SylCenter's displays view for laptop backlights (brightnessctl) and external monitors over DDC/CI (ddcutil), plus `sylvaris brightness up`, `down`, `set` and `state`
 
 ## [1.1.0] - 2026-10-27

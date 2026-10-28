@@ -15,6 +15,20 @@ PanelWindow {
     property bool flip: false
     property real mix: 1
     readonly property bool gpu: root.contentItem.GraphicsInfo.api !== GraphicsInfo.Software && root.contentItem.GraphicsInfo.api !== GraphicsInfo.Unknown
+    readonly property int desk: {
+        const w = Compositor.workspaces.find(w => w.output === root.modelData.name && w.active);
+        return w === undefined ? -1 : w.index;
+    }
+    property int lastDesk: -1
+    property real shift: 0
+
+    onDeskChanged: {
+        if (root.lastDesk >= 0 && root.desk >= 0 && root.cfg.parallax > 0 && !Tokens.lite && Tokens.motion >= 0.05) {
+            away.to = (root.desk > root.lastDesk ? -1 : 1) * root.cfg.parallax * 0.02 * root.width;
+            sway.restart();
+        }
+        root.lastDesk = root.desk;
+    }
 
     screen: root.modelData
     anchors {
@@ -63,9 +77,35 @@ PanelWindow {
         easing.bezierCurve: Tokens.moveCurve
     }
 
+    SequentialAnimation {
+        id: sway
+
+        NumberAnimation {
+            id: away
+            target: root
+            property: "shift"
+            duration: Tokens.ms(200)
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Tokens.moveCurve
+        }
+
+        NumberAnimation {
+            target: root
+            property: "shift"
+            to: 0
+            duration: Tokens.ms(620)
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Tokens.springCurve
+        }
+    }
+
     Item {
         id: scene
         anchors.fill: parent
+        scale: 1 + Math.abs(root.shift) * 2 / Math.max(1, root.width)
+        transform: Translate {
+            x: root.shift
+        }
         layer.enabled: root.gpu && root.cfg.blur > 0 && !Tokens.lite
         layer.effect: MultiEffect {
             blurEnabled: true

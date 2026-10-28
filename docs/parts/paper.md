@@ -19,5 +19,6 @@ sylvaris paper current
 | `blur`, `dim`, `tint` | `0` | blur, darken, or tint with the accent |
 | `transition` | `zoom` | `zoom`, `fade` or `slide` when it changes |
 | `duration` | `900` | transition length in ms |
+| `parallax` | `0.4` | 0 to 1: how far the wallpaper sways when you switch workspace; `0` keeps it still |
 
 The look (fit, blur, dim, tint and the transition) can differ per screen. The images themselves are stored per theme and per screen in `paper.themes` and `paper.outputs`, which the picker fills in for you.

@@ -1,6 +1,6 @@
 export const FITS = ["cover", "contain", "center", "tile"]
 export const TRANSITIONS = ["fade", "zoom", "slide", "none"]
-export const DEFAULT_PAPER = { enabled: true, folder: "~/Pictures/wallpapers", themes: {}, outputs: {}, fit: "cover", blur: 0, dim: 0, tint: 0, transition: "zoom", duration: 900, drift: false }
+export const DEFAULT_PAPER = { enabled: true, folder: "~/Pictures/wallpapers", themes: {}, outputs: {}, fit: "cover", blur: 0, dim: 0, tint: 0, transition: "zoom", duration: 900, drift: false, parallax: 0.4, menu: true }
 
 const IMAGE = /\.(png|jpe?g|webp|bmp|gif|avif|jxl)$/i
 
@@ -37,7 +37,9 @@ export function validatePaper(raw) {
         tint: num(p.tint, 0, 1, d.tint),
         transition: TRANSITIONS.indexOf(p.transition) >= 0 ? p.transition : d.transition,
         duration: Number.isInteger(p.duration) && p.duration >= 0 && p.duration <= 5000 ? p.duration : d.duration,
-        drift: p.drift === true
+        drift: p.drift === true,
+        parallax: typeof p.parallax === "number" && Number.isFinite(p.parallax) ? Math.max(0, Math.min(1, p.parallax)) : d.parallax,
+        menu: p.menu !== false
     })
 }
 

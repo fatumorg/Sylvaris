@@ -156,3 +156,10 @@ test("a user look named like a builtin gets no file name", () => {
     assert.equal(slugLook("Ink"), "")
     assert.equal(slugLook("Ink 2"), "ink-2")
 })
+
+test("aurora follows the material unless set", () => {
+    assert.equal(resolveLook({ preset: "classic" }, {}, {}).aurora, false)
+    assert.equal(resolveLook({ preset: "lumen" }, {}, {}).aurora, true)
+    assert.equal(resolveLook({ preset: "lumen", aurora: false }, {}, {}).aurora, false)
+    assert.equal(validateLook({ aurora: "yes" }, {}).errors.length, 1)
+})

@@ -27,3 +27,13 @@ test("image names and fill modes", () => {
     assert.equal(fillMode("cover"), 2)
     assert.equal(fillMode("tile"), 3)
 })
+
+test("parallax defaults to 0.4 and clamps into 0 to 1", () => {
+    assert.equal(validatePaper({}).parallax, 0.4)
+    assert.equal(validatePaper({ parallax: 3 }).parallax, 1)
+    assert.equal(validatePaper({ parallax: -2 }).parallax, 0)
+    assert.equal(validatePaper({ parallax: "x" }).parallax, 0.4)
+    assert.equal(validatePaper({ parallax: 0.2 }).parallax, 0.2)
+    assert.equal(validatePaper({}).menu, true)
+    assert.equal(validatePaper({ menu: false }).menu, false)
+})
