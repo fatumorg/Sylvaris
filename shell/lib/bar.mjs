@@ -2,7 +2,8 @@ import { isPluginModule } from "./plugins.mjs"
 
 export const MODULES = ["pad", "workspaces", "window", "clock", "media", "tray", "audio", "network", "bluetooth", "battery", "notifications", "center", "power", "diver", "temp"]
 export const POSITIONS = ["top", "bottom", "left", "right"]
-export const STYLES = ["islands", "slab"]
+export const STYLES = ["islands", "slab", "float", "minimal"]
+export const WORKSPACE_STYLES = ["dots", "numbers", "pills", "icons"]
 
 const g = cp => String.fromCodePoint(cp)
 
@@ -36,6 +37,7 @@ export function workspaceTicks(windows) {
 
 export const DEFAULT_BAR = {
     workspaceIcons: "auto",
+    workspaceStyle: "pills",
     enabled: true,
     floating: true,
     position: "top",
@@ -75,6 +77,7 @@ export function validateBar(raw) {
         position: POSITIONS.indexOf(b.position) >= 0 ? b.position : DEFAULT_BAR.position,
         style: STYLES.indexOf(b.style) >= 0 ? b.style : DEFAULT_BAR.style,
         workspaceIcons: WORKSPACE_LOOKS.indexOf(b.workspaceIcons) >= 0 ? b.workspaceIcons : DEFAULT_BAR.workspaceIcons,
+        workspaceStyle: WORKSPACE_STYLES.indexOf(b.workspaceStyle) >= 0 ? b.workspaceStyle : DEFAULT_BAR.workspaceStyle,
         left: modules(b.left, DEFAULT_BAR.left, taken),
         center: modules(b.center, DEFAULT_BAR.center, taken),
         right: modules(b.right, DEFAULT_BAR.right, taken)

@@ -7,3 +7,17 @@ syl center
 sleep 0.8
 shot bar-center
 syl state clock
+syl center close
+syl set bar.style float
+syl set bar.workspaceStyle dots
+sleep 1
+shot bar-float
+check sylvaris get bar.style | grep -q float
+syl set bar.style minimal
+syl set bar.workspaceStyle numbers
+sleep 1
+shot bar-minimal
+syl set bar.style slab
+syl set bar.workspaceStyle icons
+sleep 1
+shot bar-icons

@@ -44,22 +44,32 @@ Column {
         SettingRow {
             title: "Style"
             key: "bar.style"
-            subtitle: "Separate glass islands for each side, or one continuous slab"
+            subtitle: "Glass islands for each side, one slab, one floating pill, or a thin line"
 
             Segmented {
-                width: 240
+                width: 360
                 current: Settings.shown.bar.style
-                options: [
-                    {
-                        key: "islands",
-                        label: "Islands"
-                    },
-                    {
-                        key: "slab",
-                        label: "Slab"
-                    }
-                ]
+                options: B.STYLES.map(s => ({
+                            key: s,
+                            label: s.charAt(0).toUpperCase() + s.slice(1)
+                        }))
                 onPicked: key => Settings.put("bar.style", key)
+            }
+        }
+
+        SettingRow {
+            title: "Workspaces"
+            key: "bar.workspaceStyle"
+            subtitle: "How each workspace is drawn"
+
+            Segmented {
+                width: 320
+                current: Settings.shown.bar.workspaceStyle
+                options: B.WORKSPACE_STYLES.map(s => ({
+                            key: s,
+                            label: s.charAt(0).toUpperCase() + s.slice(1)
+                        }))
+                onPicked: key => Settings.put("bar.workspaceStyle", key)
             }
         }
 

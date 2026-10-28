@@ -4,6 +4,10 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Added
+
+- The bar has two more styles, `float` (one floating pill) and `minimal` (a thin line), and `bar.workspaceStyle` draws workspaces as dots, numbers, pills or app icons
+
 ## [1.4.0] - 2026-10-28
 
 ### Added

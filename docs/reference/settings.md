@@ -88,6 +88,7 @@ Explained in [bar](../parts/bar.md).
 | Key | Default | Per screen |
 |---|---|:---:|
 | `bar.workspaceIcons` | `"auto"` | yes |
+| `bar.workspaceStyle` | `"pills"` | yes |
 | `bar.enabled` | `true` | yes |
 | `bar.floating` | `true` | yes |
 | `bar.position` | `"top"` | yes |

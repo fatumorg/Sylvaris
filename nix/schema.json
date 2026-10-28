@@ -49,6 +49,7 @@
   },
   "bar": {
     "workspaceIcons": "auto",
+    "workspaceStyle": "pills",
     "enabled": true,
     "floating": true,
     "position": "top",

@@ -1,10 +1,10 @@
 # SylBar
 
-The bar runs on every screen and keeps its space free of windows. It can sit on any edge, and the side positions turn it vertical. You get either separate glass islands for each side or one continuous slab.
+The bar runs on every screen and keeps its space free of windows. It can sit on any edge, and the side positions turn it vertical. You get separate glass islands for each side, one continuous slab, one floating pill, or a thin line with no glass at all.
 
 ```sh
 sylvaris set bar.position left     # top, bottom, left or right
-sylvaris set bar.style slab        # islands or slab
+sylvaris set bar.style float       # islands, slab, float or minimal
 sylvaris set bar.floating false    # span the whole edge
 ```
 
@@ -51,6 +51,8 @@ Choose the modules and their order. Each module appears once.
 ## Workspaces
 
 The workspace you are on is a capsule with its number and the icons of the apps on it. Other workspaces show their number, bright when something is open there, with a tick under it for each window (up to three), and a red ring when one of them asks for attention. App icons and ticks need Hyprland or niri.
+
+`bar.workspaceStyle` sets how each workspace is drawn: `pills` (the default: a capsule per workspace, the current one filled with its apps), `dots` (small dots, the current one stretched), `numbers` (plain numbers, the current one in your accent) or `icons` (the apps open on each workspace).
 
 `bar.workspaceIcons` adds a glyph to the current capsule or turns the others into dots: `numbers`, `dots`, `paw`, `bone`, `heart`, `star`, `leaf`, `flower`, `fire`, `diamond`, `tree`, `ghost`, `moon`, `cat`, `fish` or `music`. The default, `auto`, uses the theme's `workspaceIcon`, and numbers when it has none.
 

@@ -15,7 +15,8 @@ Scope {
     readonly property var cfg: Settings.at(root.screens.length === 1 ? root.screens[0].name : "").bar
     readonly property string position: root.cfg.position
     readonly property bool vertical: B.vertical(root.position)
-    readonly property bool islands: root.cfg.style === "islands"
+    readonly property string style: root.cfg.style
+    readonly property bool islands: root.style === "islands"
     readonly property bool hasBattery: UPower.displayDevice !== null && UPower.displayDevice.isLaptopBattery
     property var open: ({})
     property date now: new Date()
@@ -61,7 +62,8 @@ Scope {
             id: bar
 
             required property var modelData
-            readonly property bool floating: root.cfg.floating
+            readonly property bool floating: root.cfg.floating || root.style === "float"
+            readonly property real inset: root.style === "float" ? Tokens.barHeight / 4 : 0
             readonly property int gap: bar.floating ? Tokens.barMargin : 0
             readonly property var groups: [startGroup, middleGroup, endGroup]
 
@@ -88,7 +90,7 @@ Scope {
 
             Region {
                 id: blur
-                regions: root.islands ? bar.groups.filter(g => g.visible).map(g => g.blur) : [slabBlur]
+                regions: root.islands ? bar.groups.filter(g => g.visible).map(g => g.blur) : root.style === "minimal" ? [] : [slabBlur]
             }
 
             Region {
@@ -97,18 +99,27 @@ Scope {
                 y: bar.floating ? 1 : 0
                 width: slab.width - (bar.floating ? 2 : 0)
                 height: slab.height - (bar.floating ? 2 : 0)
-                radius: bar.floating ? Tokens.blur(Tokens.barRadius) - 1 : 0
+                radius: bar.floating ? Tokens.blur(slab.radius) - 1 : 0
             }
 
             Glass {
                 role: "bar"
                 id: slab
                 anchors.fill: parent
-                visible: !root.islands
+                visible: root.style === "slab" || root.style === "float"
                 flowing: false
-                radius: bar.floating ? Tokens.barRadius : 0
+                radius: root.style === "float" ? Math.min(width, height) / 2 : bar.floating ? Tokens.barRadius : 0
                 offColor: Theme.surface
                 offBorder: Theme.line
+            }
+
+            Rectangle {
+                visible: root.style === "minimal"
+                x: root.position === "left" ? parent.width - 1 : 0
+                y: root.position === "top" ? parent.height - 1 : 0
+                width: root.vertical ? 1 : parent.width
+                height: root.vertical ? parent.height : 1
+                color: Theme.line
             }
 
             BarGroup {
@@ -118,8 +129,8 @@ Scope {
                 islands: root.islands
                 vertical: root.vertical
                 barWindow: bar
-                x: root.vertical ? (parent.width - width) / 2 : root.islands ? 0 : Tokens.barPadding
-                y: root.vertical ? (root.islands ? 0 : Tokens.barPadding) : (parent.height - height) / 2
+                x: root.vertical ? (parent.width - width) / 2 : root.islands ? 0 : Tokens.barPadding + bar.inset
+                y: root.vertical ? (root.islands ? 0 : Tokens.barPadding + bar.inset) : (parent.height - height) / 2
                 moduleFor: root.moduleFor
             }
 
@@ -146,8 +157,8 @@ Scope {
                 islands: root.islands
                 vertical: root.vertical
                 barWindow: bar
-                x: root.vertical ? (parent.width - width) / 2 : parent.width - width - (root.islands ? 0 : Tokens.barPadding)
-                y: root.vertical ? parent.height - height - (root.islands ? 0 : Tokens.barPadding) : (parent.height - height) / 2
+                x: root.vertical ? (parent.width - width) / 2 : parent.width - width - (root.islands ? 0 : Tokens.barPadding + bar.inset)
+                y: root.vertical ? parent.height - height - (root.islands ? 0 : Tokens.barPadding + bar.inset) : (parent.height - height) / 2
                 moduleFor: root.moduleFor
             }
         }
@@ -200,6 +211,7 @@ Scope {
             property var win: null
             readonly property var list: Compositor.workspaces.filter(w => ws.screenRef !== null && w.output === ws.screenRef.name)
             readonly property var look: B.workspaceLook(root.cfg.workspaceIcons, Theme.theme.workspaceIcon || "")
+            readonly property string shape: root.cfg.workspaceStyle
             implicitWidth: root.vertical ? Tokens.barItemHeight : pills.implicitWidth + 12
             implicitHeight: root.vertical ? pills.implicitHeight + 12 : Tokens.barItemHeight
             property bool wanted: ws.list.length > 0
@@ -238,14 +250,14 @@ Scope {
                                 apps: []
                             })
                         readonly property bool on: modelData.focused
-                        readonly property var apps: pill.on ? B.workspaceApps(modelData.apps, 3) : ({
+                        readonly property var apps: pill.on && ws.shape === "pills" || ws.shape === "icons" ? B.workspaceApps(modelData.apps, 3) : ({
                                 shown: [],
                                 more: 0
                             })
-                        readonly property int ticks: pill.on ? 0 : B.workspaceTicks(modelData.windows)
+                        readonly property int ticks: pill.on || ws.shape === "dots" || ws.shape === "icons" ? 0 : B.workspaceTicks(modelData.windows)
                         readonly property bool busy: modelData.windows !== 0 || modelData.active
-                        width: Math.max(26, inner.implicitWidth + (pill.on ? 18 : 10))
-                        height: root.vertical ? Math.max(26, inner.implicitHeight + (pill.on ? 18 : 10)) : 26
+                        width: ws.shape === "dots" ? (pill.on && !root.vertical ? 22 : 8) : Math.max(26, inner.implicitWidth + (pill.on ? 18 : 10))
+                        height: ws.shape === "dots" ? (pill.on && root.vertical ? 22 : 8) : root.vertical ? Math.max(26, inner.implicitHeight + (pill.on ? 18 : 10)) : 26
 
                         Behavior on width {
                             NumberAnimation {
@@ -267,7 +279,7 @@ Scope {
                             anchors.fill: parent
                             radius: Math.min(width, height) / 2
                             antialiasing: true
-                            color: pill.on ? Theme.accent : pillArea.containsMouse ? Qt.alpha(Theme.text, 0.12) : "transparent"
+                            color: ws.shape === "dots" ? (pill.on ? Theme.accent : Qt.alpha(Theme.text, pillArea.containsMouse ? 0.7 : pill.busy ? 0.5 : 0.22)) : pill.on && ws.shape !== "numbers" ? Theme.accent : pillArea.containsMouse ? Qt.alpha(Theme.text, 0.12) : "transparent"
                             border.width: modelData.urgent ? 2 : 0
                             border.color: Theme.danger
 
@@ -280,6 +292,7 @@ Scope {
 
                         Grid {
                             id: inner
+                            visible: ws.shape !== "dots"
                             anchors.centerIn: parent
                             anchors.verticalCenterOffset: pill.ticks > 0 && !root.vertical ? -2 : 0
                             rows: root.vertical ? -1 : 1
@@ -289,14 +302,14 @@ Scope {
                             verticalItemAlignment: Grid.AlignVCenter
 
                             Glyph {
-                                visible: ws.look.mode === "glyph" && pill.on
+                                visible: ws.look.mode === "glyph" && pill.on && ws.shape === "pills"
                                 text: ws.look.glyph
                                 size: 15
                                 color: Theme.onAccent
                             }
 
                             Rectangle {
-                                visible: ws.look.mode === "dots" && !pill.on
+                                visible: ws.look.mode === "dots" && !pill.on && ws.shape === "pills"
                                 width: 8
                                 height: 8
                                 radius: Tokens.r(4)
@@ -307,9 +320,9 @@ Scope {
                             Text {
                                 textFormat: Text.PlainText
                                 id: num
-                                visible: ws.look.mode !== "dots" || pill.on
+                                visible: ws.shape === "numbers" || (ws.shape === "icons" ? pill.apps.shown.length === 0 : ws.look.mode !== "dots" || pill.on)
                                 text: modelData.name.length <= 3 && modelData.name !== "" ? modelData.name : modelData.index
-                                color: pill.on ? Theme.onAccent : modelData.active ? Theme.accentHi : Theme.text
+                                color: pill.on ? (ws.shape === "numbers" ? Theme.accent : Theme.onAccent) : modelData.active ? Theme.accentHi : Theme.text
                                 opacity: pill.on || pill.busy ? 1 : 0.4
                                 font.family: Tokens.fontUi
                                 font.pixelSize: Tokens.smallSize
@@ -359,7 +372,7 @@ Scope {
                                 textFormat: Text.PlainText
                                 visible: pill.apps.more > 0
                                 text: "+" + pill.apps.more
-                                color: Theme.onAccent
+                                color: pill.on ? Theme.onAccent : Theme.text
                                 font.family: Tokens.fontUi
                                 font.pixelSize: Tokens.tinySize
                                 font.weight: Font.Bold
