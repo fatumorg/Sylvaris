@@ -10,6 +10,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - SylCenter has a bento layout, `center.layout = "bento"`: two wide tiles over small squares that slide into place
 - Notifications can stack as a fanned deck of cards that spreads when you point at it (`notifications.stack = "cards"`)
 - The lock screen can show the clock widget's faces: flip, analog, word, giant or digital (`lock.face`)
+- SylDeck can glow in your accent under apps that have a window (`deck.glow`), and SylTheme draws each theme's card in the Look the theme was made for
 
 ## [1.4.0] - 2026-10-28
 

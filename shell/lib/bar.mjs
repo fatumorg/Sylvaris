@@ -47,7 +47,7 @@ export const DEFAULT_BAR = {
     right: ["media", "tray", "audio", "network", "bluetooth", "battery", "notifications", "center", "power"]
 }
 
-export const DEFAULT_DECK = { enabled: false, pinned: [], pad: "start", power: "none", effect: "bloom", hide: "never", peek: true, peekSize: 4, reserve: true, size: 56 }
+export const DEFAULT_DECK = { enabled: false, pinned: [], pad: "start", power: "none", effect: "bloom", glow: false, hide: "never", peek: true, peekSize: 4, reserve: true, size: 56 }
 export const DECK_HIDE = ["never", "always", "windows"]
 export const DECK_EFFECTS = ["bloom", "magnify", "none"]
 
@@ -93,6 +93,7 @@ export function validateDeck(raw) {
         pad: ["start", "end", "none"].indexOf(d.pad) >= 0 ? d.pad : DEFAULT_DECK.pad,
         power: ["start", "end", "none"].indexOf(d.power) >= 0 ? d.power : DEFAULT_DECK.power,
         effect: DECK_EFFECTS.indexOf(d.effect) >= 0 ? d.effect : d.magnify === true ? "magnify" : DEFAULT_DECK.effect,
+        glow: d.glow === true,
         hide: DECK_HIDE.indexOf(d.hide) >= 0 ? d.hide : d.autohide === true ? "always" : DEFAULT_DECK.hide,
         peek: d.peek !== false,
         peekSize: Number.isInteger(d.peekSize) && d.peekSize >= 2 && d.peekSize <= 12 ? d.peekSize : DEFAULT_DECK.peekSize,

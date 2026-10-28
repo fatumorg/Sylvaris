@@ -58,6 +58,7 @@ const ROWS = [
     {key: "sky.source", title: "Source", tab: "clock"},
     {key: "sky.place", title: "Coordinates", tab: "clock"},
     {key: "deck.enabled", title: "Show the deck", tab: "deck", subtitle: "A dock for pinned and running apps along the bottom", words: ["dock", "taskbar"]},
+    {key: "deck.glow", title: "Glow under open apps", tab: "deck", subtitle: "A soft light in your accent under apps that have a window", words: ["running", "indicator"]},
     {key: "deck.effect", title: "Hover effect", tab: "deck", subtitle: "Bloom lifts one icon with a glow, magnify grows its neighbours too"},
     {key: "deck.reserve", title: "Reserve space", tab: "deck", subtitle: "Off lets windows go underneath the deck", advanced: true},
     {key: "deck.hide", title: "Hide", tab: "deck", words: ["autohide", "dock"]},

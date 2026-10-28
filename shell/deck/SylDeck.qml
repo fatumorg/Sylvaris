@@ -298,8 +298,9 @@ Scope {
 
                             Shape {
                                 id: glow
+                                readonly property bool open: root.cfg.glow && slot.appItem !== null && slot.appItem.windows.length > 0
                                 visible: opacity > 0
-                                opacity: slot.bloom
+                                opacity: Math.max(slot.bloom, glow.open ? 0.45 : 0)
                                 anchors.centerIn: parent
                                 width: root.size * 1.5
                                 height: width
@@ -531,7 +532,7 @@ Scope {
                                     anchors.centerIn: parent
                                     text: slot.modelData.kind === "pad" ? "Apps" : slot.modelData.kind === "power" ? "Power" : slot.appItem === null ? "" : root.nameOf(slot.appItem.id)
                                     color: Theme.text
-                                    font.family: Tokens.fontUi
+                                    font.family: Tokens.fontDisplay
                                     font.pixelSize: Tokens.smallSize
                                     font.weight: Font.Medium
                                 }

@@ -74,6 +74,7 @@ Item {
     Glass {
         anchors.fill: parent
         radius: Tokens.themeRadius
+        preview: root.entry !== null && root.entry.look !== "" ? Look.previewFor(root.entry.look) : null
         raised: true
         offColor: Theme.node
         offBorder: Theme.lineStrong

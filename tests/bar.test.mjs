@@ -89,6 +89,8 @@ test("placeCorner opens popups next to the bar wherever it sits", () => {
 
 test("deck effect replaces the old magnify flag", () => {
     assert.equal(validateDeck({}).effect, "bloom")
+    assert.equal(validateDeck({}).glow, false)
+    assert.equal(validateDeck({ glow: true }).glow, true)
     assert.equal(validateDeck({ magnify: true }).effect, "magnify")
     assert.equal(validateDeck({ effect: "none", magnify: true }).effect, "none")
     assert.equal(validateDeck({}).reserve, true)

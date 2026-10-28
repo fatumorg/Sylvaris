@@ -47,6 +47,14 @@ Singleton {
         return L.glassFor(root.values, role);
     }
 
+    function previewFor(id: string): var {
+        if (L.LOOKS[id] === undefined && root.userLooks[id] === undefined)
+            return null;
+        return L.glassFor(L.resolveLook({
+            preset: id
+        }, {}, root.userLooks), "");
+    }
+
     function list(): var {
         return Object.keys(L.LOOKS).concat(Object.keys(root.userLooks).sort());
     }

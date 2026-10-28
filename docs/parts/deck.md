@@ -14,6 +14,7 @@ Pinned apps come first, then running apps after a divider, with a dot for each o
 | `pinned` | `[]` | desktop file ids, such as `["firefox", "kitty"]` |
 | `pad` | `start` | where the SylPad button goes: `start`, `end` or `none` |
 | `power` | `none` | where the SylPower button goes: `start`, `end` or `none` |
+| `glow` | `false` | a soft light in your accent under apps that have a window; the Lumen look turns it on |
 | `effect` | `bloom` | `bloom` lifts the icon under the pointer with a glow, `magnify` grows it and its neighbours, `none` does neither |
 | `hide` | `never` | `always` slides away until the pointer touches the bottom edge; `windows` shows the deck on an empty desktop and hides it while windows are open on that screen |
 | `peek` | `true` | a thin accent line stays while the deck is hidden |

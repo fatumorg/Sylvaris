@@ -110,6 +110,7 @@ Explained in [deck](../parts/deck.md).
 | `deck.pad` | `"start"` | yes |
 | `deck.power` | `"none"` | yes |
 | `deck.effect` | `"bloom"` | yes |
+| `deck.glow` | `false` |  |
 | `deck.hide` | `"never"` | yes |
 | `deck.peek` | `true` | yes |
 | `deck.peekSize` | `4` | yes |

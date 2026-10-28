@@ -82,6 +82,7 @@
     "pad": "start",
     "power": "none",
     "effect": "bloom",
+    "glow": false,
     "hide": "never",
     "peek": true,
     "peekSize": 4,

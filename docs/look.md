@@ -43,7 +43,7 @@ Share one with `sylvaris look export ~/night-owl.json night-owl` (leave out the 
 
 `sylvaris theme generate` reads the wallpaper you have now, finds its main colours and writes a full theme to your themes folder as `wall-<id>.json`, then prints that id. Apply it with `sylvaris theme set <id>`. Give a path to use another picture, and add `dark` or `light` to choose the base; otherwise a bright picture gets a light theme. Text always keeps a contrast of at least 7:1 on the base, dimmed text 4.5:1, and text on the accent 4.5:1.
 
-A theme can name the Look it was made for with a `"look"` key. Turn on `look.followTheme` and applying that theme switches to its Look as well.
+A theme can name the Look it was made for with a `"look"` key. SylTheme draws that theme's card in its Look, and with `look.followTheme` on, applying the theme switches to its Look as well.
 
 ## Resin Glass
 

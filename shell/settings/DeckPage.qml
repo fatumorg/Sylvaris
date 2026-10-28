@@ -53,6 +53,17 @@ Column {
         }
 
         SettingRow {
+            title: "Glow under open apps"
+            key: "deck.glow"
+            subtitle: "A soft light in your accent under apps that have a window"
+
+            Toggle {
+                checked: Settings.shown.deck.glow
+                onToggled: v => Settings.put("deck.glow", v)
+            }
+        }
+
+        SettingRow {
             title: "Reserve space"
             key: "deck.reserve"
             advanced: true
