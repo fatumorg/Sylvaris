@@ -23,7 +23,7 @@ export const NAV = [
     },
     {
         title: "Reference",
-        items: [["reference/settings.md", "Every setting"], ["development.md", "Working on Sylvaris"]]
+        items: [["reference/settings.md", "Every setting"], ["packaging.md", "Packaging"], ["development.md", "Working on Sylvaris"]]
     }
 ]
 

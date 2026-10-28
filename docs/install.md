@@ -1,6 +1,6 @@
 # Installing Sylvaris
 
-Sylvaris runs on almost any Linux distribution. On NixOS or with Home Manager, use the flake as [Nix and Home Manager](nix.md) shows. Everywhere else, find your distribution below, run its commands, then [install Sylvaris](#install-sylvaris) and [check it](#check-it).
+Sylvaris runs on almost any Linux distribution. On NixOS or with Home Manager, use the flake as [Nix and Home Manager](nix.md) shows. Everywhere else, find your distribution below, run its commands, then [install Sylvaris](#install-sylvaris) and [check it](#check-it). Packaging it for a distribution? [Packaging Sylvaris](packaging.md) is for you.
 
 You need four things:
 

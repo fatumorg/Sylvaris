@@ -7,6 +7,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 ### Added
 
 - Packaging templates for a stable AUR package, Void Linux and nixpkgs in `dist/`, and a CI job that builds the AUR package in an Arch container on every release tag
+- A packaging guide for distribution maintainers, `docs/packaging.md`
 
 ### Fixed
 
