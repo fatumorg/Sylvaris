@@ -30,21 +30,28 @@ test("tile subtitles for AirPods and speed tests", () => {
     assert.equal(speedLine("error", 0, null), "Failed")
 })
 
-test("bento puts two wide tiles first and never overlaps", () => {
+test("bento puts two wide tiles first, small tiles three to a row, and fills the last row", () => {
     const ids = ["wifi", "bluetooth", "night", "dnd", "hotspot", "toggle:a", "toggle:b"]
     const cells = layoutBento(ids)
-    assert.deepEqual(cells.slice(0, 2).map(c => [c.col, c.row, c.w]), [[0, 0, 2], [2, 0, 2]])
-    assert.deepEqual(cells.slice(2).map(c => [c.col, c.row, c.w]), [[0, 1, 1], [1, 1, 1], [2, 1, 1], [3, 1, 1], [0, 2, 1]])
-    const seen = new Set()
-    for (const c of cells) {
-        assert.ok(c.col + c.w <= 4)
-        for (let x = c.col; x < c.col + c.w; x++) {
-            assert.ok(!seen.has(c.row + ":" + x))
-            seen.add(c.row + ":" + x)
+    assert.deepEqual(cells.slice(0, 2).map(c => [c.col, c.row, c.w, c.small]), [[0, 0, 3, false], [3, 0, 3, false]])
+    assert.deepEqual(cells.slice(2).map(c => [c.col, c.row, c.w, c.small]), [[0, 1, 2, true], [2, 1, 2, true], [4, 1, 2, true], [0, 2, 3, true], [3, 2, 3, true]])
+    assert.deepEqual(layoutBento(["a", "b", "c"]).slice(2).map(c => [c.col, c.w]), [[0, 6]])
+    for (let n = 0; n < 12; n++) {
+        const seen = new Set()
+        const all = layoutBento(Array.from({ length: n }, (_, i) => "t" + i))
+        assert.equal(all.length, n)
+        for (const c of all) {
+            assert.ok(c.col + c.w <= 6)
+            for (let x = c.col; x < c.col + c.w; x++) {
+                assert.ok(!seen.has(c.row + ":" + x))
+                seen.add(c.row + ":" + x)
+            }
         }
+        const rows = new Set(all.filter(c => c.small).map(c => c.row))
+        for (const r of rows)
+            assert.equal(all.filter(c => c.row === r).reduce((s, c) => s + c.w, 0), 6)
     }
-    assert.deepEqual(layoutBento([]), [])
-    assert.deepEqual(layoutBento(["a"]).map(c => c.w), [2])
+    assert.deepEqual(layoutBento(["a"]).map(c => c.w), [3])
     assert.equal(validateSettings({ center: { layout: "bento" } }).center.layout, "bento")
     assert.equal(validateSettings({ center: { layout: "x" } }).center.layout, "grid")
 })

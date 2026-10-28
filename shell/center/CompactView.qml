@@ -308,7 +308,7 @@ Item {
 
         Item {
             id: bento
-            readonly property real cell: (width - Tokens.gap * 3) / 4
+            readonly property real cell: (width - Tokens.gap * 5) / 6
             readonly property var cells: C.layoutBento(root.tiles.map(t => t.key))
             readonly property int rows: bento.cells.reduce((n, c) => Math.max(n, c.row + c.h), 0)
             visible: root.cfg.layout === "bento"
@@ -335,13 +335,13 @@ Item {
                     x: cell.col * (bento.cell + Tokens.gap)
                     y: cell.row * (Tokens.tileHeight + Tokens.gap)
                     width: cell.w * bento.cell + (cell.w - 1) * Tokens.gap
-                    small: cell.w === 1
+                    small: cell.w < 3
                     icon: spec.icon
                     title: spec.title
                     subtitle: spec.subtitle
                     active: spec.active
                     onIconClicked: root.iconAction(spec.key)
-                    onBodyClicked: small ? root.iconAction(spec.key) : root.bodyAction(spec)
+                    onBodyClicked: cell.small ? root.iconAction(spec.key) : root.bodyAction(spec)
 
                     Behavior on x {
                         enabled: !Tokens.lite

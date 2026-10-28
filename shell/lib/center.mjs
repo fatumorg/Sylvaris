@@ -40,32 +40,13 @@ export function speedLine(phase, live, last) {
     return "↓ " + Math.round(last.download) + " · ↑ " + Math.round(last.upload) + " Mbps"
 }
 
-export function layoutBento(ids, columns) {
-    const cols = columns || 4
-    const taken = []
-    const out = []
-    const free = (row, col, w) => {
-        for (let c = col; c < col + w; c++) {
-            if (c >= cols || (taken[row] && taken[row][c]))
-                return false
-        }
-        return true
-    }
-    ids.forEach((id, i) => {
-        const w = Math.min(cols, i < 2 ? 2 : 1)
-        let row = 0
-        let col = 0
-        while (!free(row, col, w)) {
-            col++
-            if (col + w > cols) {
-                col = 0
-                row++
-            }
-        }
-        taken[row] = taken[row] || []
-        for (let c = col; c < col + w; c++)
-            taken[row][c] = true
-        out.push({ id: id, col: col, row: row, w: w, h: 1 })
+export function layoutBento(ids) {
+    const out = ids.slice(0, 2).map((id, i) => ({ id: id, col: i * 3, row: 0, w: 3, h: 1, small: false }))
+    const rest = ids.slice(2)
+    rest.forEach((id, i) => {
+        const row = Math.floor(i / 3)
+        const w = 6 / Math.min(3, rest.length - row * 3)
+        out.push({ id: id, col: (i % 3) * w, row: row + 1, w: w, h: 1, small: true })
     })
     return out
 }
