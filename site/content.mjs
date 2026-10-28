@@ -39,7 +39,7 @@ export const PARTS = [
     { id: "viewer", name: "SylViewer", group: "tools", page: "parts/viewer.md", text: "Images and videos over the desktop. Step through the folder, play, copy, trash or make one the wallpaper." },
     { id: "files", name: "SylFiles", group: "tools", page: "parts/files.md", text: "A file manager in a real window: tabs, previews, drives that mount on click, drag and drop, rename in place, undo, and every key yours to change." },
     { id: "archive", name: "SylArchive", group: "tools", page: "parts/archive.md", text: "Zip, rar, 7z, tar and the rest, browsed like folders: open, drag out, extract, add and remove, passwords included." },
-    { id: "notes", name: "SylNotes", group: "tools", page: "parts/notes.md", text: "A small editor with tabs for notes, configs and code that keeps line endings as they were and brings back what you had not saved." },
+    { id: "notes", name: "SylNotes", group: "tools", page: "parts/notes.md", text: "A small editor with tabs for notes, configs and code: find and replace, colours for more than 300 languages, line endings kept as they were, and what you had not saved brought back after a crash." },
     { id: "clip", name: "SylClip", group: "tools", page: "parts/clip.md", text: "Clipboard history with search and pins. Anything a password manager marks as secret is never kept." },
     { id: "capture", name: "SylCapture", group: "tools", page: "parts/capture.md", text: "Screenshots, screen recordings that upload anywhere, and an editor with arrows, text, pixelate and crop." },
     { id: "media", name: "SylMedia", group: "tools", page: "parts/media.md", text: "The player for any MPRIS app, a 10-band equalizer for everything you hear, and the battery of every device." },

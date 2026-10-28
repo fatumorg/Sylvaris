@@ -6,7 +6,7 @@
 
 <p align="center">
   <b>A glass desktop shell for Hyprland, niri and sway.</b><br>
-  One process, twenty parts, and every one of them optional.
+  One process, twenty-five parts, and every one of them optional.
 </p>
 
 <p align="center">
@@ -33,7 +33,7 @@ nix run github:fatumorg/Sylvaris
 
 ## 🌿 Why Sylvaris
 
-- **One process.** Twenty parts run together on SylStack, Sylvaris's own Qt runtime.
+- **One process.** Twenty-five parts run together on SylStack, Sylvaris's own Qt runtime.
 - **Only what you enable.** A part you turn off is never loaded, and its tools stay off your `PATH`.
 - **Three compositors.** The same shell runs on Hyprland, niri and sway.
 - **Scriptable and declarative.** Every switch is a `sylvaris` command, and every setting is a typed Home Manager option.
@@ -62,6 +62,9 @@ nix run github:fatumorg/Sylvaris
       <b>SylCapture</b> screenshots and recording<br>
       <b>SylMedia</b> player, equalizer, AirPods<br>
       <b>SylDiver</b> <a href="https://diver.fatum.cc">Diver</a> planner and alarms<br>
+      <b>SylFiles</b> file manager, as many windows as you like<br>
+      <b>SylNotes</b> small editor for notes and code<br>
+      <b>SylTemp</b> temperatures, with an overlay for games<br>
       <b>SylPower</b> power menu constellation
     </td>
     <td width="33%" valign="top">
