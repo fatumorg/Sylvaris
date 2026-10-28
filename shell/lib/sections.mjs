@@ -53,3 +53,29 @@ export function groupOf(key) {
     const s = SECTIONS.find(x => x.key === key)
     return s ? s.group : ""
 }
+
+export const HUBS = [
+    { key: "look", label: "Look", icon: GLYPHS.palette, tabs: ["look", "appearance", "motion", "sync"] },
+    { key: "desktop", label: "Desktop", icon: GLYPHS.image, tabs: ["wallpaper", "widgets", "clock", "weather"] },
+    { key: "panels", label: "Panels", icon: GLYPHS.grid, tabs: ["bar", "deck", "center", "island", "notifications", "launcher", "switcher"] },
+    { key: "apps", label: "Apps", icon: GLYPHS.apps, tabs: ["files", "archive", "viewer", "capture", "clip", "notes"] },
+    { key: "system", label: "System", icon: GLYPHS.settings, tabs: ["general", "displays", "sound", "power", "access", "keybinds", "commands"] },
+    { key: "security", label: "Security", icon: GLYPHS.shield, tabs: ["lock", "polkit"] },
+    { key: "plugins", label: "Plugins", icon: GLYPHS.puzzle, tabs: ["plugins", "diver", "fatest", "rgb", "temp"] }
+]
+
+export function resolveSection(key) {
+    for (const hub of HUBS) {
+        if (hub.tabs.includes(key) && SECTIONS.some(s => s.key === key))
+            return { hub: hub.key, tab: key }
+    }
+    return null
+}
+
+export function tabsIn(hub, plugins) {
+    const h = HUBS.find(x => x.key === hub)
+    if (h === undefined)
+        return []
+    const on = plugins || {}
+    return h.tabs.map(k => SECTIONS.find(s => s.key === k)).filter(s => s !== undefined && (s.plugin === undefined || on[s.plugin] === true))
+}
