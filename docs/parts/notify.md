@@ -19,6 +19,7 @@ The notification center groups everything by app, with a Do Not Disturb switch a
 | `notifications.dnd` | `false` | Do Not Disturb |
 | `notifications.timeout` | `5000` | how long a toast stays, in ms (1000 to 60000), unless the app asks otherwise |
 | `notifications.corner` | `top-right` | `top-left`, `top-center` or `top-right`, per screen if you like |
+| `notifications.stack` | `list` | `list` shows toasts one under another; `cards` stacks them as a fanned deck that spreads into the list when you point at it |
 
 In `config.json`, `notifications.server = false` hands notifications back to another daemon (Do Not Disturb then drives swaync or mako), and `notifications.history` caps the center at 100.
 

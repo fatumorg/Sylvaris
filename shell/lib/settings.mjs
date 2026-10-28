@@ -109,7 +109,7 @@ export const DEFAULT_SETTINGS = {
     displays: { layouts: {}, virtual: { enabled: false, width: 2388, height: 1668 } },
     toggleState: {},
     hotspot: { ssid: "Sylvaris", band: "bg" },
-    notifications: { dnd: false, timeout: 5000, corner: "top-right" },
+    notifications: { dnd: false, timeout: 5000, corner: "top-right", stack: "list" },
     pad: { columns: 7, rows: 5, mode: "launchpad" },
     bar: DEFAULT_BAR,
     deck: DEFAULT_DECK,
@@ -337,7 +337,8 @@ export function validateSettings(raw, userLooks) {
     v.notifications = Object.assign({}, ns, {
         dnd: ns.dnd === true,
         timeout: intIn(ns.timeout, 1000, 60000, d.notifications.timeout),
-        corner: CORNERS.includes(ns.corner) ? ns.corner : d.notifications.corner
+        corner: CORNERS.includes(ns.corner) ? ns.corner : d.notifications.corner,
+        stack: ns.stack === "cards" ? "cards" : "list"
     })
 
     const pad = isObject(v.pad) ? v.pad : {}

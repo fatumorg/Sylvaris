@@ -24,6 +24,28 @@ Column {
         }
 
         SettingRow {
+            title: "Stack"
+            key: "notifications.stack"
+            subtitle: "One under another, or a fanned deck that spreads when you point at it"
+
+            Segmented {
+                width: 220
+                current: Settings.shown.notifications.stack
+                options: [
+                    {
+                        key: "list",
+                        label: "List"
+                    },
+                    {
+                        key: "cards",
+                        label: "Cards"
+                    }
+                ]
+                onPicked: key => Settings.put("notifications.stack", key)
+            }
+        }
+
+        SettingRow {
             title: "Toast duration"
             key: "notifications.timeout"
             subtitle: "Unless the app asks for something else"

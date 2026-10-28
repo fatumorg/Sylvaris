@@ -71,6 +71,7 @@ Explained in [notify](../parts/notify.md).
 | `notifications.dnd` | `false` |  |
 | `notifications.timeout` | `5000` |  |
 | `notifications.corner` | `"top-right"` | yes |
+| `notifications.stack` | `"list"` |  |
 
 ## pad
 

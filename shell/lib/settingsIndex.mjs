@@ -129,6 +129,7 @@ const ROWS = [
     {key: "motion.reduced", title: "Reduce motion", tab: "motion", subtitle: "Panels appear and disappear without moving", words: ["animation", "accessibility"]},
     {key: "performance", title: "Performance mode", tab: "motion", subtitle: "Auto pauses ambient movement while a full-screen window has focus, such as a game, and keeps the look. On also drops blur and sheen, shortens animations and turns off compositor animations, blur, shadows and gaps", words: ["battery", "lite", "gpu", "game"]},
     {key: "notifications.dnd", title: "Do not disturb", tab: "notifications", subtitle: "Only urgent notifications pop up; everything still lands in the notification center", words: ["dnd", "silence", "quiet", "focus"]},
+    {key: "notifications.stack", title: "Stack", tab: "notifications", subtitle: "One under another, or a fanned deck that spreads when you point at it", words: ["cards", "list", "toast"]},
     {key: "notifications.timeout", title: "Toast duration", tab: "notifications", subtitle: "Unless the app asks for something else", words: ["toast", "popup", "seconds"]},
     {key: "polkit.agent", title: "Authentication agent", tab: "polkit"},
     {key: "polkit.preview", title: "Preview", tab: "polkit", subtitle: "Shows the prompt with a sample request; the password “right” completes it"},

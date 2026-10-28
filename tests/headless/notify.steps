@@ -18,3 +18,15 @@ syl state notifications
 shot dnd
 syl notify clear
 syl state notifications
+syl dnd off
+syl set notifications.stack cards
+bg notify-send -a Mail "First" "The oldest of three"
+sleep 0.3
+bg notify-send -a Builds "Second" "In the middle of the deck, with a longer body that wraps onto a second line"
+sleep 0.3
+bg notify-send -a Chat "Third" "On top"
+sleep 1
+shot toasts-cards
+pointer move 2300 120
+sleep 0.8
+shot toasts-cards-spread

@@ -14,16 +14,30 @@ Scope {
     property var avoid: null
     readonly property var shift: N.toastShift(root.corner, root.screenInfo ? root.screenInfo.name : "", root.avoid, Tokens.toastGap)
     property var regions: []
+    property var heights: []
     readonly property bool active: Notifications.toasts.length > 0
+    readonly property bool spread: root.local.notifications.stack !== "cards" || hover.hovered
+    readonly property real fullHeight: root.heights.reduce((n, h) => n + h, 0) + Math.max(0, root.heights.length - 1) * Tokens.toastGap
 
     function refreshRegions(): void {
         const out = [];
+        const hs = [];
         for (let i = 0; i < cards.count; i++) {
             const item = cards.itemAt(i);
-            if (item !== null)
+            if (item !== null) {
                 out.push(item.blur);
+                hs.push(item.implicitHeight);
+            }
         }
         root.regions = out;
+        root.heights = hs;
+    }
+
+    function listY(index: int): real {
+        let y = 0;
+        for (let i = 0; i < index && i < root.heights.length; i++)
+            y += root.heights[i] + Tokens.toastGap;
+        return y;
     }
 
     function sync(): void {
@@ -78,7 +92,7 @@ Scope {
             right: Tokens.edgeMargin + root.shift.x
         }
         implicitWidth: Tokens.toastWidth
-        implicitHeight: Math.max(1, stack.implicitHeight)
+        implicitHeight: Math.max(1, root.spread ? root.fullHeight : (root.heights.length > 0 ? root.heights[0] : 0) + Math.min(2, root.heights.length - 1) * 6)
         color: "transparent"
         exclusionMode: ExclusionMode.Normal
         exclusiveZone: 0
@@ -95,18 +109,13 @@ Scope {
             regions: root.regions
         }
 
-        Column {
+        Item {
             id: stack
             width: parent.width
-            spacing: Tokens.toastGap
+            height: root.fullHeight
 
-            move: Transition {
-                NumberAnimation {
-                    properties: "y"
-                    duration: Tokens.stateDuration + 80
-                    easing.type: Easing.BezierSpline
-                    easing.bezierCurve: Tokens.enterCurve
-                }
+            HoverHandler {
+                id: hover
             }
 
             Repeater {
@@ -118,6 +127,8 @@ Scope {
                 delegate: NotificationCard {
                     id: card
                     required property int nid
+                    required property int index
+                    readonly property var frame: N.cardFrame(card.index, root.spread, root.listY(card.index))
                     readonly property Region blur: Region {
                         item: card
                         radius: Tokens.blur(Tokens.radiusPanel)
@@ -126,6 +137,17 @@ Scope {
 
                     width: stack.width
                     height: implicitHeight
+                    y: root.spread || root.heights.length <= card.index ? card.frame.y : card.frame.y + root.heights[0] - root.heights[card.index]
+                    z: -card.index
+                    onImplicitHeightChanged: Qt.callLater(root.refreshRegions)
+
+                    Behavior on y {
+                        NumberAnimation {
+                            duration: Tokens.stateDuration + 80
+                            easing.type: Easing.BezierSpline
+                            easing.bezierCurve: Tokens.enterCurve
+                        }
+                    }
                     entry: Notifications.entry(card.nid) || {
                         id: card.nid,
                         time: 0,
@@ -141,8 +163,9 @@ Scope {
                     }
                     toast: true
                     duration: N.timeoutFor(card.n.urgency, card.n.expireTimeout, Notifications.timeout)
-                    scale: 0.96 + 0.04 * card.enter
-                    opacity: card.enter * (1 - card.leave)
+                    scale: (0.96 + 0.04 * card.enter) * card.frame.scale
+                    opacity: card.enter * (1 - card.leave) * card.frame.opacity
+                    transformOrigin: Item.Bottom
 
                     Component.onCompleted: enterAnim.start()
 

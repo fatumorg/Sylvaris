@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { isPicture, timeoutFor, insert, remove, pushToast, groups, ago, cleanBody, plainText, iconSource, CRITICAL, toastShift, evicted } from "../shell/lib/notify.mjs"
+import { isPicture, timeoutFor, insert, remove, pushToast, groups, ago, cleanBody, plainText, iconSource, CRITICAL, toastShift, evicted, cardFrame } from "../shell/lib/notify.mjs"
 
 test("timeoutFor keeps critical and zero-timeout notifications up, honours the app, else the default", () => {
     assert.equal(timeoutFor(CRITICAL, 3000, 5000), 0)
@@ -85,4 +85,13 @@ test("evicted lists entries pushed out past the cap but not a replaced id", () =
     assert.deepEqual(evicted(before, insert(before, c, 2)), [a])
     assert.deepEqual(evicted(before, insert(before, { id: 1 }, 2)), [])
     assert.deepEqual(evicted([], insert([], c, 2)), [])
+})
+
+test("cards fan the first three and spread into a list", () => {
+    assert.deepEqual(cardFrame(0, false, 0), { y: 0, scale: 1, opacity: 1 })
+    assert.deepEqual(cardFrame(1, false, 90), { y: 6, scale: 0.96, opacity: 1 })
+    assert.equal(cardFrame(2, false, 180).y, 12)
+    assert.equal(cardFrame(3, false, 270).opacity, 0)
+    assert.equal(cardFrame(5, false, 450).y, 12)
+    assert.deepEqual(cardFrame(3, true, 270), { y: 270, scale: 1, opacity: 1 })
 })

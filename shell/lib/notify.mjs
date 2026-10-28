@@ -90,3 +90,12 @@ export function toastShift(corner, screen, panel, gap) {
         return { x: panel.width + gap, y: 0 }
     return { x: 0, y: panel.height + gap }
 }
+
+export const STACKS = ["list", "cards"]
+
+export function cardFrame(index, spread, listY) {
+    if (spread)
+        return { y: listY, scale: 1, opacity: 1 }
+    const depth = Math.min(index, 2)
+    return { y: depth * 6, scale: Math.pow(0.96, depth), opacity: index < 3 ? 1 : 0 }
+}

@@ -14,7 +14,8 @@
     "history": 100,
     "dnd": false,
     "timeout": 5000,
-    "corner": "top-right"
+    "corner": "top-right",
+    "stack": "list"
   },
   "center": {
     "corner": "top-right",
