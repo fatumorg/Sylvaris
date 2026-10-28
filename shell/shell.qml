@@ -758,6 +758,7 @@ ShellRoot {
                 save: (...name) => Look.save(name.join(" ")),
                 export: (path, id) => Look.exportTo(path, id || ""),
                 import: path => Look.importFrom(path),
+                shuffle: () => Look.shuffle(Date.now()),
                 state: () => ({
                         preset: Look.values.preset,
                         name: Look.values.name,

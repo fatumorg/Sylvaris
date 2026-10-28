@@ -1,7 +1,7 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
 import {
-    MATERIALS, CORNERS, DENSITY, WEIGHTS, LOOKS, DEFAULT_LOOK, validateLook, resolveLook, glassFor, lookDefaults, applyLook, pickFont, scaled, slugLook, validateUserLook, lookFile, cornerPath, blurRadius
+    MATERIALS, CORNERS, DENSITY, WEIGHTS, LOOKS, DEFAULT_LOOK, validateLook, resolveLook, glassFor, lookDefaults, applyLook, pickFont, scaled, slugLook, validateUserLook, lookFile, cornerPath, blurRadius, shufflePick, daySeed
 } from "../shell/lib/look.mjs"
 import { DEFAULT_GLASS } from "../shell/lib/settings.mjs"
 
@@ -162,4 +162,27 @@ test("aurora follows the material unless set", () => {
     assert.equal(resolveLook({ preset: "lumen" }, {}, {}).aurora, true)
     assert.equal(resolveLook({ preset: "lumen", aurora: false }, {}, {}).aurora, false)
     assert.equal(validateLook({ aurora: "yes" }, {}).errors.length, 1)
+})
+
+test("shufflePick is the same for the same seed and skips what you have now", () => {
+    const looks = ["lumen", "classic", "frost", "ink"]
+    const themes = ["warm", "tp", "nord"]
+    assert.deepEqual(shufflePick(looks, themes, 42), shufflePick(looks, themes, 42))
+    assert.ok(looks.includes(shufflePick(looks, themes, 7).look))
+    for (let seed = 0; seed < 50; seed++) {
+        const p = shufflePick(looks, themes, seed, { look: "lumen", theme: "warm" })
+        assert.notEqual(p.look, "lumen")
+        assert.notEqual(p.theme, "warm")
+    }
+    assert.deepEqual(shufflePick(["ink"], [], 3, { look: "ink" }), { look: "ink", theme: "" })
+    const seen = new Set()
+    for (let seed = 0; seed < 40; seed++)
+        seen.add(shufflePick(looks, themes, seed).look)
+    assert.equal(seen.size, looks.length)
+})
+
+test("daySeed differs from day to day", () => {
+    assert.notEqual(daySeed("2026-10-28"), daySeed("2026-10-29"))
+    assert.notEqual(daySeed("2026-10-31"), daySeed("2026-11-01"))
+    assert.equal(daySeed("nope"), 0)
 })

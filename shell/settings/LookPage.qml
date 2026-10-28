@@ -289,6 +289,28 @@ Column {
         }
 
         SettingRow {
+            title: "Shuffle"
+            key: "look.shuffle"
+            subtitle: "Pick a new Look and theme for you every day, or right now"
+
+            Row {
+                spacing: 8
+
+                Segmented {
+                    width: 200
+                    options: page.options(["off", "daily"])
+                    current: page.cfg.shuffle === "daily" ? "daily" : "off"
+                    onPicked: key => Settings.put("look.shuffle", key)
+                }
+
+                Chip {
+                    text: "Shuffle now"
+                    onClicked: Look.shuffle(Date.now())
+                }
+            }
+        }
+
+        SettingRow {
             title: "Aurora"
             key: "look.aurora"
             subtitle: "Slow accent lights behind full-screen parts, the lock and login screens"

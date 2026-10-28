@@ -30,6 +30,8 @@ Singleton {
         })
     readonly property int weight: root.values.weight === "light" ? Font.Normal : root.values.weight === "medium" ? Font.Bold : Font.DemiBold
     property string followed: ""
+    property string shuffledDay: ""
+    readonly property string dayPath: (Stack.env("XDG_STATE_HOME") || Settings.home + "/.local/state") + "/sylvaris/shuffle-day"
     readonly property string wallPath: S.expandHome(W.resolve(Settings.values.paper, Theme.currentId, Theme.wallpaper, ""), Settings.home)
     readonly property string wallAccent: root.values.accent === "wallpaper" && root.wallPath !== "" ? P.accentFrom(Stack.pixels(root.wallPath, 64)) : ""
     readonly property string accentHex: root.values.accent === "wallpaper" ? root.wallAccent : root.values.accent === "theme" ? "" : root.values.accent
@@ -132,6 +134,30 @@ Singleton {
             root.set(want);
     }
 
+    function shuffle(seed: real): var {
+        const p = L.shufflePick(root.list(), Theme.ids, seed, {
+            look: Settings.values.look.preset,
+            theme: Theme.currentId
+        });
+        if (p.theme !== "") {
+            root.followed = p.theme;
+            Theme.apply(p.theme);
+        }
+        if (p.look !== "")
+            root.set(p.look);
+        return p;
+    }
+
+    function daily(): void {
+        const day = Qt.formatDate(new Date(), "yyyy-MM-dd");
+        if (day === root.shuffledDay || day === dayFile.text().trim())
+            return;
+        root.shuffledDay = day;
+        root.shuffle(L.daySeed(day));
+        dayWriter.command = ["sh", "-c", "mkdir -p \"${1%/*}\" && printf %s \"$2\" > \"$1.tmp\" && mv -f \"$1.tmp\" \"$1\"", "sh", root.dayPath, day];
+        dayWriter.running = true;
+    }
+
     function remember(id: string, text: string): void {
         const p = S.parseJson(text);
         const look = p.ok ? L.validateUserLook(p.value) : null;
@@ -177,6 +203,25 @@ Singleton {
         function onReadyChanged(): void {
             root.follow();
         }
+    }
+
+    Timer {
+        interval: 60000
+        repeat: true
+        triggeredOnStart: true
+        running: Settings.ready && !Settings.frozen && Settings.values.look.shuffle === "daily" && Theme.ids.length > 0
+        onTriggered: root.daily()
+    }
+
+    FileView {
+        id: dayFile
+        path: root.dayPath
+        blockLoading: true
+        printErrors: false
+    }
+
+    Process {
+        id: dayWriter
     }
 
     FileView {

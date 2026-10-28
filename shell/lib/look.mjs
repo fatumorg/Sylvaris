@@ -30,7 +30,7 @@ export const LOOKS = {
     paper: look("Paper", "paper", "round", 0.7, "roomy", { ui: "Inter", mono: MONO, display: "DejaVu Serif" }, "regular", {})
 }
 
-export const DEFAULT_LOOK = { preset: "lumen", followTheme: false, parts: {} }
+export const DEFAULT_LOOK = { preset: "lumen", followTheme: false, shuffle: "off", parts: {} }
 
 function isObject(v) {
     return v !== null && typeof v === "object" && !Array.isArray(v)
@@ -331,4 +331,21 @@ export function cornerPath(w, h, r, style) {
 
 export function blurRadius(r, style) {
     return style === "squircle" ? r * 1.1 : style === "bevel" ? r * 1.05 : r
+}
+
+export function shufflePick(looks, themes, seed, avoid) {
+    const skip = avoid || {}
+    const pick = (list, salt, not) => {
+        const from = list.length > 1 ? list.filter(x => x !== not) : list
+        if (from.length === 0)
+            return ""
+        const x = Math.sin((seed + salt) * 12.9898) * 43758.5453
+        return from[Math.floor((x - Math.floor(x)) * from.length)]
+    }
+    return { look: pick(looks, 1, skip.look), theme: pick(themes, 7, skip.theme) }
+}
+
+export function daySeed(day) {
+    const m = String(day).match(/^(\d{4})-(\d{2})-(\d{2})$/)
+    return m === null ? 0 : Number(m[1]) * 372 + Number(m[2]) * 31 + Number(m[3])
 }

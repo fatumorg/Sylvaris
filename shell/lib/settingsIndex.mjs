@@ -113,6 +113,7 @@ const ROWS = [
     {key: "lock.logind", title: "Lock when the system asks", tab: "lock", subtitle: "Also lock on “loginctl lock-session”, for example from an idle daemon. Turn off any other locker first.", advanced: true},
     {key: "lock.now", title: "Lock now", tab: "lock", subtitle: "Try it out"},
     {key: "look.followTheme", title: "Follow the theme", tab: "look", subtitle: "Switch to the Look a theme was made for when you apply it"},
+    {key: "look.shuffle", title: "Shuffle", tab: "look", subtitle: "Pick a new Look and theme for you every day, or right now", words: ["random", "surprise", "daily"]},
     {key: "look.aurora", title: "Aurora", tab: "look", subtitle: "Slow accent lights behind full-screen parts, the lock and login screens", words: ["background", "lights", "glow", "animated"]},
     {key: "look.save", title: "Save as your own", tab: "look"},
     {key: "look.material", title: "Material", tab: "look", subtitle: "The recipe for every glass surface", words: ["glass", "frosted", "resin", "acrylic"]},

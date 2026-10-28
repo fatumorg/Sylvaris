@@ -497,6 +497,7 @@ Explained in [look](../look.md#looks).
 |---|---|:---:|
 | `look.preset` | `"lumen"` |  |
 | `look.followTheme` | `false` |  |
+| `look.shuffle` | `"off"` |  |
 | `look.parts` | `{}` |  |
 
 ## parts

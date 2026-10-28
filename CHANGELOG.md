@@ -12,6 +12,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - The lock screen can show the clock widget's faces: flip, analog, word, giant or digital (`lock.face`)
 - SylDeck can glow in your accent under apps that have a window (`deck.glow`), and SylTheme draws each theme's card in the Look the theme was made for
 - Nine more widgets: now playing (it can spin like a record), system graphs, the sky's sun path and moon, sticky notes you type into, countdowns, a shelf of apps, text in any font, stickers and FaTest
+- Look shuffle picks a new Look and theme each day (`look.shuffle = "daily"`) or right now with `sylvaris look shuffle`
 
 ### Changed
 

@@ -369,6 +369,7 @@
   "look": {
     "preset": "lumen",
     "followTheme": false,
+    "shuffle": "off",
     "parts": {}
   },
   "glass": {
