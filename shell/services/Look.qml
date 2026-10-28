@@ -5,6 +5,8 @@ import Qt.labs.folderlistmodel
 import SylStack
 import "../lib/look.mjs" as L
 import "../lib/settings.mjs" as S
+import "../lib/paper.mjs" as W
+import "../lib/palette.mjs" as P
 
 Singleton {
     id: root
@@ -28,6 +30,9 @@ Singleton {
         })
     readonly property int weight: root.values.weight === "light" ? Font.Normal : root.values.weight === "medium" ? Font.Bold : Font.DemiBold
     property string followed: ""
+    readonly property string wallPath: S.expandHome(W.resolve(Settings.values.paper, Theme.currentId, Theme.wallpaper, ""), Settings.home)
+    readonly property string wallAccent: root.values.accent === "wallpaper" && root.wallPath !== "" ? P.accentFrom(Stack.pixels(root.wallPath, 64)) : ""
+    readonly property string accentHex: root.values.accent === "wallpaper" ? root.wallAccent : root.values.accent === "theme" ? "" : root.values.accent
     readonly property string notice: {
         const errors = root.glassResult.errors.concat(root.lookErrors);
         return errors.length === 0 ? "" : "Look: " + errors.join("; ");

@@ -24,7 +24,7 @@ Change any part of a Look without leaving it. Each key under `look` overrides th
 | `fonts.ui`, `fonts.mono`, `fonts.display` | a font family | an installed font; a missing one falls back to the Look's |
 | `weight` | `light` `regular` `medium` | weight of titles |
 | `shadow`, `grain`, `highlight`, `glow` | 0 to 1 | extra layers on the glass |
-| `accent` | `theme` `wallpaper` or `#rrggbb` | where the accent colour comes from |
+| `accent` | `theme` `wallpaper` or `#rrggbb` | where the accent colour comes from: the theme, the most colourful part of your wallpaper, or a colour you pick |
 | `parts.<part>` | `material`, `radius` and any glass key | a different material for one part, such as `"parts": {"bar": {"material": "ink"}}` |
 | `followTheme` | `true` `false` | switch to the Look a theme names when you apply that theme |
 
@@ -35,6 +35,10 @@ Your own `glass` keys still beat the material. Picking a Look clears the overrid
 `sylvaris look save Night Owl` keeps the Look you have now, overrides and all, as `~/.config/sylvaris/looks/night-owl.json`; it then shows in `sylvaris look list` and `look.preset` takes `night-owl`. A Look file can also carry a `settings` block, such as `{"motion": {"preset": "calm"}}`, and picking that Look applies it.
 
 Share one with `sylvaris look export ~/night-owl.json night-owl` (leave out the name to export the Look you have now) and add a friend's with `sylvaris look import ~/their-look.json`. Importing never replaces a Look you already have, and a Look cannot take the name of a built-in one.
+
+### A theme from your wallpaper
+
+`sylvaris theme generate` reads the wallpaper you have now, finds its main colours and writes a full theme to your themes folder as `wall-<id>.json`, then prints that id. Apply it with `sylvaris theme set <id>`. Give a path to use another picture, and add `dark` or `light` to choose the base; otherwise a bright picture gets a light theme. Text always keeps a contrast of at least 7:1 on the base, dimmed text 4.5:1, and text on the accent 4.5:1.
 
 A theme can name the Look it was made for with a `"look"` key. Turn on `look.followTheme` and applying that theme switches to its Look as well.
 

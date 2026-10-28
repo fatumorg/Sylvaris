@@ -7,6 +7,8 @@
 #include <QFileInfo>
 #include <QGuiApplication>
 #include <QIcon>
+#include <QImage>
+#include <QImageReader>
 #include <QJSValueIterator>
 #include <QProcess>
 #include <QSettings>
@@ -261,6 +263,29 @@ QString Stack::iconPath(const QString &name, bool check) const
             return {};
     }
     return QStringLiteral("image://icon/") + name;
+}
+
+QVariantList Stack::pixels(const QString &path, int side) const
+{
+    const int edge = qBound(1, side, 256);
+    QImageReader reader(path.startsWith(QStringLiteral("file://")) ? QUrl(path).toLocalFile() : path);
+    reader.setAutoTransform(true);
+    if (reader.size().isValid())
+        reader.setScaledSize(reader.size().scaled(edge, edge, Qt::KeepAspectRatio).expandedTo(QSize(1, 1)));
+    QImage image = reader.read();
+    if (image.isNull())
+        return {};
+    if (image.width() > edge || image.height() > edge)
+        image = image.scaled(edge, edge, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    image = image.convertToFormat(QImage::Format_RGBA8888);
+    QVariantList out;
+    out.reserve(image.width() * image.height() * 4);
+    for (int y = 0; y < image.height(); ++y) {
+        const uchar *line = image.constScanLine(y);
+        for (int i = 0; i < image.width() * 4; ++i)
+            out.append(int(line[i]));
+    }
+    return out;
 }
 
 void Stack::reload(bool)

@@ -740,7 +740,16 @@ ShellRoot {
                         throw new Error("unknown theme: " + id);
                     Theme.apply(id);
                 },
-                list: () => Theme.ids
+                list: () => Theme.ids,
+                generate: (path, mode) => {
+                    const m = mode || (path === "dark" || path === "light" ? path : "");
+                    const p = path === undefined || path === "dark" || path === "light" ? Look.wallPath : S.expandHome(path, Settings.home);
+                    if (m !== "" && m !== "dark" && m !== "light")
+                        throw new Error("usage: theme generate [path] [dark|light]");
+                    if (p !== "" && !p.startsWith("/"))
+                        throw new Error("give a full path, like ~/Pictures/wall.png");
+                    return Theme.generate(p, m);
+                }
             },
             clock: {
                 toggle: () => root.need("clock").toggle(),

@@ -63,7 +63,7 @@ To show the version in fastfetch, add `{ "type": "command", "key": "DE", "text":
 | `shell` | `reload` `config` |
 | `switcher` | `next` `prev` `commit` `close` `state` |
 | `sync` | `now` `on` `off` `state` |
-| `theme` | `toggle` `open` `close` `next` `prev` `apply` `cycle` `search <text>` `set <id>` `list` |
+| `theme` | `toggle` `open` `close` `next` `prev` `apply` `cycle` `search <text>` `set <id>` `list` `generate [path] [dark\|light]` |
 | `weather` | `state` `refresh` |
 | `wifi` | `toggle` `on` `off` `connect <name>` `disconnect [name]` |
 | `wm` | see [compositors](compositors.md#one-set-of-window-commands) |

@@ -80,6 +80,7 @@ public:
     Q_INVOKABLE QVariant env(const QString &name) const;
     Q_INVOKABLE void execDetached(const QJSValue &command) const;
     Q_INVOKABLE QString iconPath(const QString &name, bool check = false) const;
+    Q_INVOKABLE QVariantList pixels(const QString &path, int side) const;
     Q_INVOKABLE void reload(bool hard = false);
 
 signals:

@@ -6,6 +6,7 @@ import SylStack
 import qs
 import "../lib/theme.mjs" as T
 import "../lib/settings.mjs" as S
+import "../lib/palette.mjs" as P
 
 Singleton {
     id: root
@@ -27,7 +28,7 @@ Singleton {
             console.warn("sylvaris: " + e);
     }
     property var ids: []
-    readonly property var target: T.tokens(root.theme)
+    readonly property var target: T.tokens(P.withAccent(root.theme, Look.accentHex))
     property var fromTokens: T.tokens(T.DEFAULT_THEME)
     property var toTokens: root.fromTokens
     property real progress: 1
@@ -182,6 +183,16 @@ Singleton {
 
     onThemeChanged: shareTimer.restart()
 
+    function generate(path: string, mode: string): string {
+        const px = path === "" ? [] : Stack.pixels(path, 64);
+        if (px.length === 0)
+            throw new Error(path === "" ? "no wallpaper set; give a path: theme generate <path> [dark|light]" : "could not read " + path);
+        const t = P.wallTheme(path, px, mode);
+        writer.path = root.themesDir + "/" + t.id + ".json";
+        writer.setText(JSON.stringify(t, null, 2) + "\n");
+        return t.id;
+    }
+
     function cycle(): void {
         root.apply(T.nextThemeId(root.ids, root.currentId));
     }
@@ -209,6 +220,13 @@ Singleton {
         onFileChanged: reload()
         onLoaded: root.ingest(text())
         onLoadFailed: root.fallback("theme file not found: " + root.currentId + ".json")
+    }
+
+    FileView {
+        id: writer
+        preload: false
+        atomicWrites: true
+        printErrors: false
     }
 
     FolderListModel {

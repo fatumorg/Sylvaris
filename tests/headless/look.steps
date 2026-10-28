@@ -32,3 +32,12 @@ check sylvaris look import /tmp/syl-look-export.json 2>&1 | grep -q 'already hav
 syl look set night-owl
 sleep 0.5
 check sylvaris look state | grep -q '"preset":"night-owl"'
+shot wall-src
+check id=$(sylvaris theme generate "$OUT/wall-src.png") && test -f "$HOME/.config/sylvaris/themes/$id.json" && sylvaris theme set "$id"
+sleep 1.5
+check sylvaris state | grep -q '"id":"wall-'
+shot look-wall
+check sylvaris set look.accent "#ff0088"
+sleep 1
+check ! sylvaris state | grep -q '"accent":"#c9702f"'
+shot look-accent
