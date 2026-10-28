@@ -1,0 +1,54 @@
+pkgname=sylvaris
+pkgver=1.5.0
+pkgrel=1
+pkgdesc="Modular desktop shell for Hyprland, niri and sway, built on SylStack"
+arch=('x86_64' 'aarch64')
+url="https://github.com/fatumorg/Sylvaris"
+license=('MIT')
+depends=('qt6-base' 'qt6-declarative' 'qt6-wayland' 'qt6-svg' 'qt6-multimedia' 'qt6-imageformats' 'layer-shell-qt' 'polkit-qt6' 'libpipewire' 'pam' 'wayland' 'inter-font' 'ttf-jetbrains-mono-nerd' 'bash' 'coreutils' 'procps-ng')
+makedepends=('cmake')
+optdepends=(
+  'pipewire: audio, media, equalizer, UI sounds and Diver alarm sounds'
+  'pipewire-pulse: volume and output switching'
+  'libpulse: pactl for audio and screen recording with sound'
+  'python-cryptography: AirPods and Diver helpers'
+  'python-gobject: "Show in folder" from other apps'
+  'libnotify: notifications from capture, Diver and settings'
+  'networkmanager: Wi-Fi and hotspot in SylCenter'
+  'wlr-randr: display layouts'
+  'wayvnc: virtual displays for a tablet, with openssl and iproute2'
+  'brightnessctl: brightness of built-in screens'
+  'ddcutil: brightness of external monitors'
+  'wlsunset: night light'
+  'curl: weather'
+  'wl-clipboard: clipboard history and copying screenshots'
+  'grim: screenshots'
+  'slurp: choosing an area or window to capture'
+  'wf-recorder: screen recording'
+  'ffmpeg: recordings that upload everywhere'
+  'udisks2: mounting drives in SylFiles'
+  'libarchive: SylArchive'
+  'wtype: replying from SylIsland'
+  'glib2: locking when logind asks (gdbus)'
+  'git: installing plugins from git'
+  'kitty: terminal widget'
+  'cava: visualizer widget'
+  'syntax-highlighting: SylNotes syntax highlighting'
+)
+provides=('sylvaris')
+conflicts=('sylvaris-git')
+backup=('etc/pam.d/sylvaris')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/fatumorg/Sylvaris/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+  cd "Sylvaris-$pkgver"
+  make PREFIX=/usr sylstack
+}
+
+package() {
+  cd "Sylvaris-$pkgver"
+  make DESTDIR="$pkgdir" PREFIX=/usr install
+  install -Dm644 dist/pam/sylvaris "$pkgdir/etc/pam.d/sylvaris"
+  install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

@@ -1,0 +1,21 @@
+pkgname=sylvaris
+version=1.5.0
+revision=1
+build_style=gnu-makefile
+make_build_target=sylstack
+make_build_args="PREFIX=/usr"
+hostmakedepends="cmake pkg-config qt6-base qt6-declarative-host-tools wayland-devel"
+makedepends="qt6-base-private-devel qt6-declarative-devel qt6-wayland-private-devel qt6-svg-devel layer-shell-qt-devel polkit-qt6-devel pipewire-devel pam-devel wayland-devel"
+depends="qt6-declarative qt6-wayland qt6-svg qt6-multimedia qt6-imageformats layer-shell-qt polkit-qt6 font-inter nerd-fonts-ttf bash procps-ng"
+short_desc="Modular desktop shell for Hyprland, niri and sway"
+maintainer="Submitter Name <submitter@example.com>"
+license="MIT"
+homepage="https://sylvaris.fatum.cc"
+distfiles="https://github.com/fatumorg/Sylvaris/archive/refs/tags/v${version}.tar.gz"
+checksum=0000000000000000000000000000000000000000000000000000000000000000
+conf_files="/etc/pam.d/sylvaris"
+
+post_install() {
+	vinstall dist/pam/sylvaris 644 etc/pam.d
+	vlicense LICENSE
+}

@@ -4,6 +4,10 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Added
+
+- Packaging templates for a stable AUR package, Void Linux and nixpkgs in `dist/`, and a CI job that builds the AUR package in an Arch container on every release tag
+
 ### Fixed
 
 - The AUR git package depends on Qt Multimedia and Image Formats, and lists brightnessctl, ddcutil, wayvnc, udisks2, libarchive, wtype, kitty, cava and syntax-highlighting as optional
