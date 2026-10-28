@@ -48,7 +48,8 @@ Item {
             from: 0
             to: 1
             duration: Tokens.ms(420)
-            easing.type: Easing.OutCubic
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Tokens.enterCurve
         }
     }
 
