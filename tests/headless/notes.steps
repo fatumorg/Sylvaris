@@ -18,7 +18,7 @@ restart
 sleep 2
 syl notes open ~/crlf.txt
 wait sylvaris notes state | grep -q '"recovered":1'
-check sylvaris notes state | grep -q '"dirty":true,"readOnly":false,"why":"","eol":"crlf","language":"","recovered":true'
+check sylvaris notes state | grep -q '"dirty":true,"readOnly":false,"why":"","eol":"crlf"[^}]*"recovered":true'
 check printf 'Xone\r\ntwo\r\nthree' | cmp - "$HOME/crlf.txt"
 shot notes-recovered
 syl notes open ~/blob.bin
@@ -28,6 +28,21 @@ syl notes open ~/plain.txt
 wait sylvaris notes state | grep -q '"title":"plain.txt","dirty":false,"readOnly":false[^}]*"length":4'
 check printf 'changed on disk' > "$HOME/plain.txt"
 wait sylvaris notes state | grep -q '"title":"plain.txt","dirty":false,"readOnly":false[^}]*"length":15'
+check printf 'def f(x):\n    return x + 1\n\nprint(f(41))\n' > "$HOME/demo.py"
+syl notes open ~/demo.py
+wait sylvaris notes state | grep -q '"title":"demo.py"[^}]*"language":"Python","highlighted":true'
+check test -s "$HOME/.local/share/org.kde.syntax-highlighting/themes/sylvaris.theme"
+shot notes-python
+bg wtype -k Shift_L -s 400 -M ctrl -k f -m ctrl -s 400 x -s 300 -k Return
+wait sylvaris notes state | grep -q '"find":{"shown":true,"replacing":false,"query":"x","matches":2,"at":0}'
+shot notes-find
+bg wtype -k Shift_L -s 400 -k Escape -s 300 -M ctrl -k g -m ctrl -s 400 3 -s 300 -k Return
+wait sylvaris notes state | grep -q '"find":{"shown":false[^}]*}[^}]*"line":3'
+check sylvaris notes state | grep -q '"title":"demo.py","dirty":false'
+bg wtype -k Shift_L -s 400 -M ctrl -k equal -m ctrl
+wait sylvaris notes state | grep -q '"zoom":1'
+bg wtype -k Shift_L -s 400 -M ctrl -k 0 -m ctrl
+wait sylvaris notes state | grep -q '"zoom":0'
 syl notes new
 wait sylvaris notes state | grep -q '"title":"Untitled 1"'
 bg wtype -k Shift_L -s 400 -M ctrl -k w -m ctrl

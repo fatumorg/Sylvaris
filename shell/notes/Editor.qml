@@ -23,11 +23,16 @@ FocusScope {
     property bool swapped: false
     property bool ready: false
     property int readError: 0
+    property string chosen: ""
+    property bool big: false
     readonly property alias edit: edit
     readonly property var cfg: Settings.values.notes
     readonly property bool dirty: ed.ready && !ed.readOnly && edit.text !== ed.savedText
     readonly property string title: N.titleOf(ed.path, ed.number)
-    readonly property string language: N.languageFor(ed.path)
+    readonly property string language: ed.chosen !== "" ? ed.chosen : ed.found !== null ? ed.found.detected : N.languageFor(ed.path)
+    readonly property var found: hl.status === Loader.Ready ? hl.item : null
+    readonly property bool highlighted: ed.found !== null && ed.language !== "" && ed.language !== "Plain text"
+    readonly property var languages: ed.found !== null ? ed.found.names : []
     readonly property var starts: N.lineStarts(edit.text)
     readonly property int line: N.lineOf(ed.starts, edit.cursorPosition)
     readonly property int column: edit.cursorPosition - ed.starts[ed.line - 1] + 1
@@ -83,6 +88,7 @@ FocusScope {
         ed.why = binary ? "This looks like a binary file" : lossy !== "" ? lossy : N.readOnlyFor(raw.length) ? "This file is over 10 MB" : "";
         ed.readOnly = ed.why !== "";
         ed.eol = N.detectEol(raw);
+        ed.big = raw.length > 1048576;
         const text = binary ? raw.replace(/\u0000/g, "␀") : N.stripEol(raw);
         ed.ready = false;
         if (text !== edit.text)
@@ -176,6 +182,11 @@ FocusScope {
         Stack.execDetached(["rm", "-f", "--", ed.swapPath]);
     }
 
+    function goTo(n: int): void {
+        edit.cursorPosition = ed.starts[Math.max(1, Math.min(n, ed.starts.length)) - 1];
+        edit.forceActiveFocus();
+    }
+
     function indentUnit(): string {
         return ed.cfg.spaces ? " ".repeat(ed.cfg.tabWidth) : "\t";
     }
@@ -258,6 +269,18 @@ FocusScope {
         }
     }
 
+    Component.onCompleted: {
+        ed.notes.bake();
+        hl.setSource("Highlighter.qml", {
+            ed: ed
+        });
+    }
+
+    Loader {
+        id: hl
+        active: ed.cfg.highlight && ed.notes.themeSettled && !ed.big
+    }
+
     FontMetrics {
         id: metrics
         font: edit.font
@@ -315,6 +338,14 @@ FocusScope {
         contentHeight: Math.max(height, edit.contentHeight + 32)
         boundsBehavior: Flickable.StopAtBounds
         clip: true
+
+        Rectangle {
+            y: edit.y + edit.cursorRectangle.y
+            width: flick.contentWidth
+            height: edit.cursorRectangle.height
+            color: Theme.tintSoft
+            visible: edit.activeFocus && edit.selectionStart === edit.selectionEnd
+        }
 
         TextEdit {
             id: edit

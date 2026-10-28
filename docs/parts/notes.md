@@ -9,11 +9,17 @@ sylvaris notes open ~/notes.txt ~/.config/foot/foot.ini
 ## Editing
 
 - **Tabs**: Ctrl+N opens a new tab, Ctrl+W closes one, Ctrl+Tab and Ctrl+Shift+Tab move between them. Ctrl+Shift+N opens another window. Middle-click a tab to close it.
-- **Open and save**: Ctrl+O and Ctrl+Shift+S use the SylFiles dialog, Ctrl+S saves. A tab with changes you have not saved shows a dot, and closing it asks first.
+- **Open and save**: Ctrl+O and Ctrl+Shift+S use the SylFiles dialog, Ctrl+S saves. You can also drop files on the window. A tab with changes you have not saved shows a dot, and closing it asks first.
+- **Find and replace**: Ctrl+F finds, Ctrl+H finds and replaces. Enter or F3 goes to the next match, Shift+Enter or Shift+F3 to the one before. Aa matches case, Word matches whole words, `.*` reads the search as a regular expression, and `$1` in the replacement puts back what a group matched.
+- **Go to line**: Ctrl+G.
 - **Indent**: Enter keeps the indentation of the line above and adds a level after `:`, `{`, `[` or `(`. Tab indents with spaces or a tab character, Shift+Tab takes a level away.
-- **Wrap**: Alt+Z wraps long lines on and off.
+- **Wrap and zoom**: Alt+Z wraps long lines on and off. Ctrl+= and Ctrl+- make the text bigger and smaller in every window, Ctrl+0 puts it back.
 
-The bar at the bottom shows the language, the line endings (LF or CRLF), the indentation and where the cursor is.
+The bar at the bottom shows the language, the line endings (LF or CRLF), the indentation, how much is selected, the zoom and where the cursor is.
+
+## Colours by language
+
+SylNotes colours code in more than 300 languages through KDE's syntax-highlighting, with the colours of your Sylvaris theme. The language comes from the file name; click it in the bar at the bottom to pick another, or Plain text for none. Files over 1 MB stay plain so they open fast. If you change theme after SylNotes has coloured something, it uses a plain light or dark scheme until the shell restarts.
 
 ## Your files stay as they were
 

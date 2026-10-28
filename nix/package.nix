@@ -31,6 +31,7 @@
   cava,
   git,
   qt6,
+  kdePackages,
   sylvarisParts ? { },
   commit ? "unknown",
 }:
@@ -172,7 +173,7 @@ stdenvNoCC.mkDerivation {
     wrapProgram $out/bin/sylvaris \
       --set-default SYLVARIS_DIR $out/share/sylvaris \
       --prefix PATH : ${lib.makeBinPath tools} \
-      --prefix QML_IMPORT_PATH : ${qt6.qtmultimedia}/lib/qt-6/qml \
+      --prefix QML_IMPORT_PATH : ${qt6.qtmultimedia}/lib/qt-6/qml:${kdePackages.syntax-highlighting}/lib/qt-6/qml \
       --prefix QT_PLUGIN_PATH : ${qt6.qtmultimedia}/lib/qt-6/plugins:${qt6.qtimageformats}/lib/qt-6/plugins
     runHook postInstall
   '';

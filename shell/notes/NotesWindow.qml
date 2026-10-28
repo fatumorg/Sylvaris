@@ -164,6 +164,26 @@ FloatingWindow {
             win.tab = (i + win.editors.length) % win.editors.length;
     }
 
+    function findState(): var {
+        return {
+            shown: finder.shown,
+            replacing: finder.replacing,
+            query: finder.query,
+            matches: finder.matches.length,
+            at: finder.at
+        };
+    }
+
+    function dropped(urls: var): void {
+        for (const u of urls) {
+            const s = String(u);
+            if (s.indexOf("file://") === 0) {
+                const p = decodeURIComponent(s.slice(7));
+                win.openFile(p, win.notes.claim(p));
+            }
+        }
+    }
+
     function raise(): void {
         const t = ToplevelManager.toplevels.values.find(w => w.title === win.title);
         if (t)
@@ -230,6 +250,46 @@ FloatingWindow {
     Shortcut {
         sequences: ["Ctrl+Shift+Tab", "Ctrl+PgUp"]
         onActivated: win.selectTab(win.tab - 1)
+    }
+
+    Shortcut {
+        sequence: "Ctrl+F"
+        onActivated: finder.open(false)
+    }
+
+    Shortcut {
+        sequence: "Ctrl+H"
+        onActivated: finder.open(true)
+    }
+
+    Shortcut {
+        sequence: "F3"
+        onActivated: finder.step(true)
+    }
+
+    Shortcut {
+        sequence: "Shift+F3"
+        onActivated: finder.step(false)
+    }
+
+    Shortcut {
+        sequence: "Ctrl+G"
+        onActivated: jump.open()
+    }
+
+    Shortcut {
+        sequences: ["Ctrl+=", "Ctrl++"]
+        onActivated: win.notes.zoomBy(1)
+    }
+
+    Shortcut {
+        sequence: "Ctrl+-"
+        onActivated: win.notes.zoomBy(-1)
+    }
+
+    Shortcut {
+        sequence: "Ctrl+0"
+        onActivated: win.notes.zoomBy(0)
     }
 
     Glass {
@@ -410,9 +470,18 @@ FloatingWindow {
             }
         }
 
+        FindBar {
+            id: finder
+            anchors.top: banner.bottom
+            anchors.topMargin: finder.shown ? 4 : 0
+            width: parent.width
+            height: finder.implicitHeight
+            editor: win.editor
+        }
+
         Item {
             id: page
-            anchors.top: banner.bottom
+            anchors.top: finder.bottom
             anchors.topMargin: 8
             anchors.bottom: status.top
             x: 6
@@ -482,6 +551,15 @@ FloatingWindow {
             }
         }
 
+        GotoLine {
+            id: jump
+            anchors.top: page.top
+            anchors.topMargin: 12
+            anchors.horizontalCenter: page.horizontalCenter
+            z: 5
+            editor: win.editor
+        }
+
         NotesBar {
             id: status
             anchors.left: parent.left
@@ -489,6 +567,16 @@ FloatingWindow {
             anchors.bottom: parent.bottom
             height: 30
             editor: win.editor
+            zoom: win.notes.zoom
+        }
+
+        DropArea {
+            anchors.fill: parent
+            keys: ["text/uri-list"]
+            onDropped: drop => {
+                win.dropped(drop.urls);
+                drop.acceptProposedAction();
+            }
         }
 
         Item {

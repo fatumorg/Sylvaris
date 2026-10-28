@@ -24,6 +24,7 @@ const ROWS = [
     {key: "archive.level", title: "Compression", tab: "archive", subtitle: "Fast packs quickly, best makes the smallest files", advanced: true},
     {key: "notes.wrap", title: "Wrap long lines", tab: "notes", subtitle: "Alt+Z switches it in the editor", words: ["editor", "text"]},
     {key: "notes.lineNumbers", title: "Line numbers", tab: "notes", words: ["editor", "gutter"]},
+    {key: "notes.highlight", title: "Colour code", tab: "notes", subtitle: "Colours by language, picked from the file name; files over 1 MB stay plain", words: ["editor", "syntax", "highlighting", "color"]},
     {key: "notes.size", title: "Text size", tab: "notes", words: ["editor", "font", "zoom"]},
     {key: "notes.spaces", title: "Indent with spaces", tab: "notes", subtitle: "Off puts a tab character where you press Tab", words: ["editor", "tabs"]},
     {key: "notes.tabWidth", title: "Tab width", tab: "notes", words: ["editor", "indent"]},

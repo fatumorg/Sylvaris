@@ -36,6 +36,17 @@ Column {
         }
 
         SettingRow {
+            title: "Colour code"
+            key: "notes.highlight"
+            subtitle: "Colours by language, picked from the file name; files over 1 MB stay plain"
+
+            Toggle {
+                checked: root.cfg.highlight
+                onToggled: v => Settings.put("notes.highlight", v)
+            }
+        }
+
+        SettingRow {
             title: "Text size"
             key: "notes.size"
 

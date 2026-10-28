@@ -51,7 +51,7 @@
               python3 -m unittest discover -s tests -p '*_test.py'
               mkdir -p $TMPDIR/imports
               ln -s $PWD/shell $TMPDIR/imports/qs
-              find shell -name '*.qml' -print0 | xargs -0 qmllint -I ${pkgs.qt6.qtdeclarative}/lib/qt-6/qml -I ${self.packages.${pkgs.stdenv.hostPlatform.system}.sylstack}/lib/qt-6/qml -I ${pkgs.qt6.qtmultimedia}/lib/qt-6/qml -I $TMPDIR/imports
+              find shell -name '*.qml' -print0 | xargs -0 qmllint -I ${pkgs.qt6.qtdeclarative}/lib/qt-6/qml -I ${self.packages.${pkgs.stdenv.hostPlatform.system}.sylstack}/lib/qt-6/qml -I ${pkgs.qt6.qtmultimedia}/lib/qt-6/qml -I ${pkgs.kdePackages.syntax-highlighting}/lib/qt-6/qml -I $TMPDIR/imports
               touch $out
             '';
 
@@ -224,7 +224,7 @@
             ]))
             pkgs.dbus
           ];
-          QML_IMPORT_PATH = "${pkgs.qt6.qtmultimedia}/lib/qt-6/qml";
+          QML_IMPORT_PATH = "${pkgs.qt6.qtmultimedia}/lib/qt-6/qml:${pkgs.kdePackages.syntax-highlighting}/lib/qt-6/qml";
           QT_PLUGIN_PATH = "${pkgs.qt6.qtmultimedia}/lib/qt-6/plugins:${pkgs.qt6.qtimageformats}/lib/qt-6/plugins";
         };
       });

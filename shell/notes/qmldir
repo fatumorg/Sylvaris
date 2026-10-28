@@ -1,5 +1,8 @@
 module qs.notes
 Editor 1.0 Editor.qml
+FindBar 1.0 FindBar.qml
+GotoLine 1.0 GotoLine.qml
+Highlighter 1.0 Highlighter.qml
 NotesBar 1.0 NotesBar.qml
 NotesWindow 1.0 NotesWindow.qml
 SylNotes 1.0 SylNotes.qml

@@ -17,6 +17,12 @@ Scope {
     property int made: 0
     property int untitled: 0
     property int zoom: 0
+    readonly property string themeJson: JSON.stringify(N.highlightTheme(Theme.target), null, 2) + "\n"
+    readonly property string themePath: (Stack.env("XDG_DATA_HOME") || root.home + "/.local/share") + "/org.kde.syntax-highlighting/themes/sylvaris.theme"
+    readonly property bool dark: Theme.base.hslLightness < 0.5
+    property string themeWriting: ""
+    property string themeBaked: ""
+    property bool themeSettled: false
     property var windows: []
     property var last: null
     property var pending: []
@@ -92,6 +98,23 @@ Scope {
             root.open([]);
     }
 
+    function bake(): void {
+        if (themeWriter.running || root.themeWriting === root.themeJson)
+            return;
+        root.themeWriting = root.themeJson;
+        themeWriter.running = true;
+    }
+
+    function zoomBy(d: int): void {
+        const size = Settings.values.notes.size;
+        root.zoom = d === 0 ? 0 : Math.max(6 - size, Math.min(64 - size, root.zoom + d));
+    }
+
+    onThemeJsonChanged: {
+        if (root.themeSettled)
+            root.bake();
+    }
+
     function nextUntitled(): int {
         root.untitled += 1;
         return root.untitled;
@@ -147,6 +170,7 @@ Scope {
                     why: e.why,
                     eol: e.eol,
                     language: e.language,
+                    highlighted: e.highlighted,
                     recovered: e.recovered,
                     problem: e.problem,
                     length: e.edit.length
@@ -159,6 +183,8 @@ Scope {
             asking: w !== null && w.asking !== null,
             tabs: tabs,
             recovered: root.windows.reduce((n, x) => n + x.editors.filter(e => e.recovered).length, 0),
+            zoom: root.zoom,
+            find: w === null ? null : w.findState(),
             line: w !== null && w.editor !== null ? w.editor.line : 0,
             column: w !== null && w.editor !== null ? w.editor.column : 0
         };
@@ -180,6 +206,18 @@ Scope {
             root.windows = root.windows.filter(x => x !== w);
             if (root.last === w)
                 root.last = null;
+        }
+    }
+
+    Process {
+        id: themeWriter
+        command: ["sh", "-c", "mkdir -p \"${1%/*}\" && printf %s \"$2\" > \"$1.tmp\" && mv -f \"$1.tmp\" \"$1\"", "sh", root.themePath, root.themeWriting]
+        onExited: code => {
+            if (!root.themeSettled && code === 0)
+                root.themeBaked = root.themeWriting;
+            root.themeSettled = true;
+            if (root.themeWriting !== root.themeJson)
+                root.bake();
         }
     }
 
