@@ -95,10 +95,11 @@ Scope {
                 y: bar.floating ? 1 : 0
                 width: slab.width - (bar.floating ? 2 : 0)
                 height: slab.height - (bar.floating ? 2 : 0)
-                radius: bar.floating ? Tokens.barRadius - 1 : 0
+                radius: bar.floating ? Tokens.blur(Tokens.barRadius) - 1 : 0
             }
 
             Glass {
+                role: "bar"
                 id: slab
                 anchors.fill: parent
                 visible: !root.islands

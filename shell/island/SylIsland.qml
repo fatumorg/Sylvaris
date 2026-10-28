@@ -725,7 +725,7 @@ Scope {
 
                 Region {
                     item: body.pill
-                    radius: Math.min(body.pill.height / 2, Tokens.radiusPanel)
+                    radius: Tokens.blur(Math.min(body.pill.height / 2, Tokens.radiusPanel))
                 }
 
                 Region {

@@ -19,7 +19,7 @@ Item {
         y: root.y + 1
         width: Math.max(0, root.width - 2)
         height: Math.max(0, root.height - 2)
-        radius: Tokens.barRadius - 1
+        radius: Tokens.blur(Tokens.barRadius) - 1
     }
 
     property bool room: true
@@ -46,6 +46,7 @@ Item {
     }
 
     Glass {
+        role: "bar"
         anchors.fill: parent
         visible: root.islands
         flowing: false

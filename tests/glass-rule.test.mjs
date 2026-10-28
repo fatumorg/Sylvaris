@@ -29,3 +29,14 @@ test("no surface paints its own fill outside Glass", () => {
     }
     assert.deepEqual(offenders, [])
 })
+
+test("every part's own panel glass names its role so looks can restyle it", () => {
+    const roots = ["bar/SylBar.qml", "bar/BarGroup.qml", "deck/SylDeck.qml", "center/SylCenter.qml", "island/IslandBody.qml", "notify/NotificationCard.qml", "pad/SylPad.qml", "settings/SylSettings.qml", "switcher/SylSwitch.qml", "polkit/SylPolkit.qml", "greet/GreetView.qml", "components/Popup.qml"]
+    const missing = roots.filter(f => !/Glass \{\n\s+role: /.test(readFileSync(join(ROOT, f), "utf8")))
+    assert.deepEqual(missing, [])
+})
+
+test("Glass takes its levels from its role, not straight from Resin", () => {
+    const text = readFileSync(join(ROOT, "components/Glass.qml"), "utf8")
+    assert.deepEqual(text.match(/Resin\.\w+/g), ["Resin.values", "Resin.litAlpha"])
+})

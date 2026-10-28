@@ -72,6 +72,7 @@ Item {
     }
 
     Glass {
+        role: root.toast ? "notify" : ""
         anchors.fill: parent
         radius: root.toast ? Tokens.radiusPanel : Tokens.radiusCard
         inner: !root.toast

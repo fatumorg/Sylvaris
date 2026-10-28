@@ -11,6 +11,12 @@ Scope {
 
     Binding {
         target: Tokens
+        property: "corners"
+        value: Look.corners
+    }
+
+    Binding {
+        target: Tokens
         property: "densityScale"
         value: Look.density
     }

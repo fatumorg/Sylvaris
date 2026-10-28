@@ -638,6 +638,7 @@ Scope {
                 }
 
                 Glass {
+                    role: "pad"
                     anchors.fill: parent
                     radius: Tokens.radiusPanel
                     raised: true

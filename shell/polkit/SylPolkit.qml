@@ -184,6 +184,7 @@ Scope {
                 Keys.onEscapePressed: root.cancel()
 
                 Glass {
+                    role: "polkit"
                     anchors.fill: parent
                     radius: Tokens.radiusPanel
                     offColor: Theme.surface

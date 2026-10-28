@@ -1,10 +1,10 @@
 export const MATERIALS = {
     lumen: { opacity: 0.5, layerOpacity: 0.32, tint: 0.12, sheen: 0.45, flow: 1.2, rim: 0.65, grain: 0.035, highlight: 0.55, glow: 0.22, shadow: 0.45 },
     resin: { opacity: 0.55, layerOpacity: 0.35, tint: 0.14, sheen: 0.35, flow: 1, rim: 0.5, grain: 0, highlight: 0, glow: 0, shadow: 0 },
-    frost: { opacity: 0.7, layerOpacity: 0.5, tint: 0.22, sheen: 0.2, flow: 0.6, rim: 0.4, grain: 0.07, highlight: 0.35, glow: 0, shadow: 0.35 },
+    frost: { opacity: 0.72, layerOpacity: 0.55, tint: 0.1, sheen: 0.25, flow: 0.6, rim: 0.45, grain: 0.07, highlight: 0.5, glow: 0, shadow: 0.35 },
     ink: { opacity: 0.9, layerOpacity: 0.75, tint: 0.05, sheen: 0.08, flow: 0.3, rim: 0.25, grain: 0, highlight: 0.15, glow: 0, shadow: 0.6 },
     neon: { opacity: 0.6, layerOpacity: 0.4, tint: 0.2, sheen: 0.3, flow: 2, rim: 0.9, grain: 0, highlight: 0.2, glow: 0.8, shadow: 0.2 },
-    paper: { opacity: 0.95, layerOpacity: 0.85, tint: 0.3, sheen: 0, flow: 0, rim: 0.15, grain: 0.14, highlight: 0.1, glow: 0, shadow: 0.3 }
+    paper: { opacity: 0.96, layerOpacity: 0.6, tint: 0.05, sheen: 0, flow: 0, rim: 0.2, grain: 0.14, highlight: 0.2, glow: 0, shadow: 0.3 }
 }
 
 export const CORNERS = ["round", "squircle", "bevel", "sharp"]
@@ -302,4 +302,30 @@ export function lookFile(name, resolved, settings) {
     for (const key of LAYER_KEYS)
         out[key] = resolved.glass[key]
     return out
+}
+
+function n(v) {
+    return String(Math.round(v * 100) / 100)
+}
+
+function toward(a, b, t) {
+    return a + (b - a) * t
+}
+
+export function cornerPath(w, h, r, style) {
+    if (!(w > 0 && h > 0))
+        return ""
+    const smooth = style === "squircle"
+    const e = Math.max(0, Math.min(r * (smooth ? 1.4 : 0.6), w / 2, h / 2))
+    const corner = (x1, y1, cx, cy, x2, y2) => {
+        const start = " L " + n(x1) + " " + n(y1)
+        if (!smooth)
+            return start + " L " + n(x2) + " " + n(y2)
+        return start + " C " + n(toward(x1, cx, 0.88)) + " " + n(toward(y1, cy, 0.88)) + " " + n(toward(x2, cx, 0.88)) + " " + n(toward(y2, cy, 0.88)) + " " + n(x2) + " " + n(y2)
+    }
+    return "M " + n(e) + " 0" + corner(w - e, 0, w, 0, w, e) + corner(w, h - e, w, h, w - e, h) + corner(e, h, 0, h, 0, h - e) + corner(0, e, 0, 0, e, 0) + " Z"
+}
+
+export function blurRadius(r, style) {
+    return style === "squircle" ? r * 1.1 : style === "bevel" ? r * 1.05 : r
 }

@@ -120,7 +120,7 @@ Scope {
                     required property int nid
                     readonly property Region blur: Region {
                         item: card
-                        radius: Tokens.radiusPanel
+                        radius: Tokens.blur(Tokens.radiusPanel)
                     }
                     property real enter: 0
 

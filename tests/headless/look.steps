@@ -1,0 +1,21 @@
+sleep 1.5
+syl set motion.reduced true
+syl center open
+sleep 1.5
+shot look-lumen
+syl set look.preset ink
+sleep 1
+shot look-ink
+syl set look.preset neon
+sleep 1
+shot look-neon
+syl set look.preset frost
+sleep 1
+shot look-frost
+syl set look.preset paper
+sleep 1
+shot look-paper
+syl set look.preset classic
+sleep 1
+shot look-classic
+check sylvaris state | grep -q '"material":"resin"'

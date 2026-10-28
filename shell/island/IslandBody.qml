@@ -609,6 +609,7 @@ Item {
         }
 
         Glass {
+            role: "island"
             anchors.fill: parent
             radius: Math.min(height / 2, Tokens.radiusPanel)
             raised: true

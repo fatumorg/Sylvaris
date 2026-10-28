@@ -154,7 +154,7 @@ Scope {
                 y: Math.round(dock.y) + 1
                 width: dock.width - 2
                 height: Math.max(0, Math.min(dock.height, deck.height - Math.round(dock.y)) - 2)
-                radius: Tokens.deckRadius - 1
+                radius: Tokens.blur(Tokens.deckRadius) - 1
             }
 
             Item {
@@ -212,6 +212,7 @@ Scope {
                 }
 
                 Glass {
+                    role: "deck"
                     anchors.fill: parent
                     radius: Tokens.deckRadius
                     flowing: false

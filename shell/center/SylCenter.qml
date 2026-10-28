@@ -351,6 +351,7 @@ Scope {
                 }
 
                 Glass {
+                    role: "center"
                     anchors.fill: parent
                     radius: Tokens.radiusPanel
                     offColor: Theme.surface

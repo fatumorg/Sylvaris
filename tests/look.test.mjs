@@ -1,7 +1,7 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
 import {
-    MATERIALS, CORNERS, DENSITY, WEIGHTS, LOOKS, DEFAULT_LOOK, validateLook, resolveLook, glassFor, lookDefaults, applyLook, pickFont, scaled, slugLook, validateUserLook, lookFile
+    MATERIALS, CORNERS, DENSITY, WEIGHTS, LOOKS, DEFAULT_LOOK, validateLook, resolveLook, glassFor, lookDefaults, applyLook, pickFont, scaled, slugLook, validateUserLook, lookFile, cornerPath, blurRadius
 } from "../shell/lib/look.mjs"
 import { DEFAULT_GLASS } from "../shell/lib/settings.mjs"
 
@@ -125,4 +125,28 @@ test("lookFile saves the resolved look with its name", () => {
     assert.equal(f.glow, 0.4)
     assert.deepEqual(f.settings, { motion: { preset: "calm" } })
     assert.deepEqual(validateUserLook(f).fonts, f.fonts)
+})
+
+test("cornerPath draws closed squircle and bevel outlines inside the box", () => {
+    for (const style of ["squircle", "bevel"]) {
+        const d = cornerPath(200, 100, 20, style)
+        assert.match(d, /^M /)
+        assert.match(d, / Z$/)
+        const nums = d.match(/-?\d+(\.\d+)?/g).map(Number)
+        assert.ok(nums.every(n => n >= 0 && n <= 200), style)
+    }
+    assert.match(cornerPath(200, 100, 20, "squircle"), / C /)
+    assert.doesNotMatch(cornerPath(200, 100, 20, "bevel"), / C /)
+    assert.equal(cornerPath(0, 10, 5, "bevel"), "")
+})
+
+test("cornerPath never lets corners overlap on a pill", () => {
+    const nums = cornerPath(100, 30, 40, "squircle").match(/-?\d+(\.\d+)?/g).map(Number)
+    assert.ok(nums.every(n => n >= 0 && n <= 100))
+})
+
+test("blurRadius keeps the blur inside the shaped corner", () => {
+    assert.equal(blurRadius(20, "round"), 20)
+    assert.ok(blurRadius(20, "squircle") > 20)
+    assert.ok(blurRadius(20, "bevel") >= 20)
 })

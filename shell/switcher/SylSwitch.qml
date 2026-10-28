@@ -219,6 +219,7 @@ Scope {
                 scale: 0.96 + 0.04 * root.phase
 
                 Glass {
+                    role: "switcher"
                     anchors.fill: parent
                     radius: Tokens.radiusPanel
                     offColor: Theme.surface

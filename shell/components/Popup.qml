@@ -10,6 +10,7 @@ Scope {
     id: root
 
     property string namespace: "sylpopup"
+    property string role: root.namespace.replace(/^syl/, "").replace(/-.*$/, "")
     property string corner: "top-center"
     property string from: ""
     property real fromInset: 0
@@ -200,7 +201,7 @@ Scope {
                 y: Math.round(win.visual.y) + 1
                 width: Math.round(win.visual.w) - 2
                 height: Math.round(win.visual.h) - 2
-                radius: root.radius * root.grow - 1
+                radius: Tokens.blur(root.radius) * root.grow - 1
             }
 
             function focusIn(): void {
@@ -233,6 +234,7 @@ Scope {
                 }
 
                 Glass {
+                    role: root.role
                     anchors.fill: parent
                     radius: root.radius
                     offColor: Theme.surface

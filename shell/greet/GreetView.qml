@@ -172,6 +172,7 @@ Item {
             opacity: root.picking ? 1 : 0
 
             Glass {
+                role: "greet"
                 anchors.fill: parent
                 radius: Tokens.radiusCard
                 raised: true

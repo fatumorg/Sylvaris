@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import SylStack
 import "lib/motion.mjs" as M
+import "lib/look.mjs" as L
 
 Singleton {
     id: root
@@ -15,6 +16,7 @@ Singleton {
     property bool iconTint: true
     property real textScale: 1
     property real radiusScale: 1
+    property string corners: "round"
     property real densityScale: 1
     property string fontUiName: "Inter"
     property string fontMonoName: "JetBrainsMono Nerd Font"
@@ -69,6 +71,10 @@ Singleton {
     readonly property int colorDuration: Math.round(400 * root.pace)
     readonly property int stateDuration: Math.round(160 * root.pace)
     readonly property int previewDelay: 500
+
+    function blur(base: real): real {
+        return root.lite ? base : L.blurRadius(base, root.corners);
+    }
 
     function r(base: real): int {
         return Math.round(base * root.radiusScale);
