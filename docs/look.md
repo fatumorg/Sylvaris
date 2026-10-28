@@ -13,6 +13,8 @@ A Look is a whole style in one word: a glass material, a corner shape, how round
 | `neon` | neon | thin glass with a glowing rim and bevelled corners |
 | `paper` | paper | matte and grainy, serif titles |
 
+Lumen also sets a few parts: a floating bar with dot workspaces, the bento control center, notifications stacked as cards, the giant lock clock, a glow under open apps on SylDeck and windows that morph open. Anything you set yourself wins, and every other Look keeps the 1.1 layout.
+
 SylSettings › Style shows every Look as a card and has a control for each key below, plus a font finder and a button to save what you made.
 
 Change any part of a Look without leaving it. Each key under `look` overrides the preset:

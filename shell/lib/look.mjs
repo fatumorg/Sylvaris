@@ -22,7 +22,7 @@ function look(name, material, corners, radius, density, fonts, weight, settings)
 }
 
 export const LOOKS = {
-    lumen: look("Lumen", "lumen", "squircle", 1.15, "cozy", { ui: "Inter", mono: MONO, display: "Inter Display" }, "medium", {}),
+    lumen: look("Lumen", "lumen", "squircle", 1.15, "cozy", { ui: "Inter", mono: MONO, display: "Inter Display" }, "medium", { motion: { open: "morph" }, bar: { style: "float", workspaceStyle: "dots" }, center: { layout: "bento" }, notifications: { stack: "cards" }, lock: { face: "giant" }, deck: { glow: true } }),
     classic: look("Classic", "resin", "round", 1, "cozy", { ui: "Inter", mono: MONO, display: "Inter" }, "regular", {}),
     frost: look("Frost", "frost", "round", 1.3, "roomy", { ui: "Inter", mono: MONO, display: "Inter Display" }, "light", {}),
     ink: look("Ink", "ink", "round", 0.6, "compact", { ui: "Inter", mono: MONO, display: "Inter Display" }, "medium", {}),
