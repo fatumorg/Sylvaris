@@ -23,6 +23,7 @@ Sylvaris is made of parts. Each one can be turned off, and a part that is off is
 - [SylMedia](media.md), the player, an equalizer and device batteries
 - [SylPower](power.md), the power menu
 - [SylPaper](paper.md), wallpapers
+- [SylWidget](widgets.md), widgets on the desktop
 
 ## System
 

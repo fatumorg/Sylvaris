@@ -973,6 +973,7 @@ Scope {
                                     clip: clipPage,
                                     viewer: viewerPage,
                                     files: filesPage,
+                                    widgets: widgetsPage,
                                     archive: archivePage,
                                     island: islandPage,
                                     capture: capturePage,
@@ -1083,6 +1084,12 @@ Scope {
         id: filesPage
 
         FilesPage {}
+    }
+
+    Component {
+        id: widgetsPage
+
+        WidgetsPage {}
     }
 
     Component {

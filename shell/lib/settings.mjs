@@ -3,6 +3,7 @@ import { DEFAULT_CLIP, validateClip } from "./clip.mjs"
 import { DEFAULT_ISLAND, validateIsland } from "./island.mjs"
 import { DEFAULT_VIEWER, validateViewer } from "./viewer.mjs"
 import { DEFAULT_FILES, validateFiles } from "./files.mjs"
+import { DEFAULT_WIDGETS, validateWidgets, servicesFor } from "./widgets.mjs"
 import { DEFAULT_ARCHIVE, validateArchive } from "./archive.mjs"
 import { DEFAULT_CAPTURE, validateCapture } from "./capture.mjs"
 import { DEFAULT_ACCESS, validateAccess } from "./access.mjs"
@@ -46,6 +47,7 @@ export const PARTS = {
     capture: [],
     viewer: [],
     files: [],
+    widgets: [],
     archive: [],
     access: ["NightLight"],
     plugins: ["Plugins"],
@@ -121,6 +123,7 @@ export const DEFAULT_SETTINGS = {
     island: DEFAULT_ISLAND,
     viewer: DEFAULT_VIEWER,
     files: DEFAULT_FILES,
+    widgets: DEFAULT_WIDGETS,
     archive: DEFAULT_ARCHIVE,
     rgb: DEFAULT_RGB,
     placement: DEFAULT_PLACEMENT,
@@ -391,6 +394,7 @@ export function validateSettings(raw, userLooks) {
     v.access = validateAccess(v.access)
     v.keybinds = validateKeybinds(v.keybinds)
     v.plugins = validatePlugins(v.plugins)
+    v.widgets = validateWidgets(v.widgets, v.plugins).values
     v.sync = validateSync(v.sync)
 
     const sw = isObject(v.switcher) ? v.switcher : {}
@@ -473,7 +477,7 @@ export function liveParts(parts, plugins) {
     return Object.keys(PARTS).filter(name => partOn(isObject(parts) ? parts : {}, name) && !pluggedOff(plugins, "part", name))
 }
 
-export function liveServices(parts, plugins) {
+export function liveServices(parts, plugins, widgets) {
     const out = []
     const add = name => {
         if (out.includes(name) || pluggedOff(plugins, "service", name))
@@ -482,8 +486,11 @@ export function liveServices(parts, plugins) {
         for (const dep of SERVICE_DEPS[name] || [])
             add(dep)
     }
-    for (const name of liveParts(parts, plugins))
+    const live = liveParts(parts, plugins)
+    for (const name of live)
         PARTS[name].forEach(add)
+    if (live.includes("widgets"))
+        servicesFor(widgets, plugins).forEach(add)
     return out
 }
 

@@ -28,6 +28,7 @@
   wf-recorder,
   ffmpeg,
   wtype,
+  cava,
   git,
   qt6,
   sylvarisParts ? { },
@@ -104,6 +105,7 @@ let
       libarchive
       python
     ];
+    widgets = [ cava ];
     access = [ ];
     fatest = [ ];
     rgb = [ python ];

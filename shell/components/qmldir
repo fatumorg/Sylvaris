@@ -1,6 +1,7 @@
 module qs.components
 AuthCard 1.0 AuthCard.qml
 Backdrop 1.0 Backdrop.qml
+ClockFace 1.0 ClockFace.qml
 DayAgenda 1.0 DayAgenda.qml
 Digits 1.0 Digits.qml
 Glass 1.0 Glass.qml

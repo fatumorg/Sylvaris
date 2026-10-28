@@ -1,0 +1,27 @@
+sleep 1.5
+write sylvaris/settings.json {"version":1,"widgets":{"items":[{"id":"w000","type":"clock","anchor":"top-right","col":0,"row":1,"w":4,"h":2,"options":{"face":"digital","seconds":true}},{"id":"w001","type":"calendar","anchor":"top-left","col":0,"row":1},{"id":"w002","type":"weather","anchor":"bottom-left","col":0,"row":0,"w":5,"h":2},{"id":"w003","type":"batteries","anchor":"bottom-right","col":0,"row":0},{"id":"w004","type":"clock","anchor":"center","col":0,"row":-2,"w":4,"h":3,"options":{"face":"word"}},{"id":"w005","type":"clock","anchor":"center","col":0,"row":2,"w":3,"h":3,"options":{"face":"analog","seconds":true}}]}}
+sleep 2.5
+shot widgets
+syl widgets list
+check sylvaris widgets list | grep -q "^w001	calendar"
+syl widgets add photos
+check sylvaris widgets list | grep -q "	photos	"
+syl widgets remove w001
+check ! sylvaris widgets list | grep -q calendar
+syl widgets edit
+sleep 1
+shot widgets-edit
+bg wtype -k Shift_L -s 400 -k Tab -k Left
+sleep 0.8
+syl widgets state
+check sylvaris widgets state | grep -q '"editing":true'
+bg wtype -k Shift_L -s 400 -k Escape
+sleep 1
+check sylvaris widgets state | grep -q '"editing":false'
+check sylvaris widgets list | grep -q "^w000	clock	-	top-right 1,1"
+syl set parts.widgets false
+sleep 1
+check ! sylvaris widgets list
+syl set parts.widgets true
+sleep 1.5
+check sylvaris widgets list | grep -q "^w000"

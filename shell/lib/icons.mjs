@@ -163,7 +163,11 @@ export const GLYPHS = {
     redo: g(0xF044E),
     save: g(0xF0193),
     imageEdit: g(0xF021B),
-    shuffleVariant: g(0xF049D)
+    shuffleVariant: g(0xF049D),
+    clock: g(0xF0150),
+    battery: g(0xF0079),
+    terminal: g(0xF018D),
+    layers: g(0xF0328)
 }
 
 const BLUETOOTH = {

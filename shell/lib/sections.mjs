@@ -19,6 +19,7 @@ export const SECTIONS = [
     { key: "look", label: "Style", glyph: GLYPHS.palette, group: "look" },
     { key: "appearance", label: "Appearance", glyph: GLYPHS.theme, group: "look" },
     { key: "wallpaper", label: "Wallpaper", glyph: GLYPHS.image, group: "look" },
+    { key: "widgets", label: "Widgets", glyph: GLYPHS.layers, group: "look" },
     { key: "motion", label: "Motion", glyph: GLYPHS.bolt, group: "look" },
     { key: "sync", label: "App colours", glyph: GLYPHS.sync, group: "look" },
     { key: "bar", label: "Bar", glyph: GLYPHS.grid, group: "panels" },

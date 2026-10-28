@@ -21,6 +21,7 @@ export const PART_PACKAGES = {
     viewer: ["wl-clipboard", "glib"],
     files: ["wl-clipboard", "glib", "python", "udisks"],
     archive: ["libarchive", "python"],
+    widgets: ["cava"],
     access: [],
     plugins: ["git"],
     sync: ["python", "procps"],
@@ -32,6 +33,7 @@ export const PART_PACKAGES = {
 
 export const PACKAGE_BINS = {
     wtype: ["wtype"],
+    cava: ["cava"],
     pulseaudio: ["pactl"],
     pipewire: ["pw-cli", "pw-metadata"],
     python: ["python3"],

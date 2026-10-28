@@ -52,7 +52,8 @@ nix run github:fatumorg/Sylvaris
       <b>SylNotify</b> notifications that stay out of the way<br>
       <b>SylIsland</b> live activities you can control<br>
       <b>SylDeck</b> dock that hides when windows open<br>
-      <b>SylPad</b> launcher, grid or list
+      <b>SylPad</b> launcher, grid or list<br>
+      <b>SylWidget</b> clocks, weather and more on the desktop
     </td>
     <td width="33%" valign="top">
       <h3>🛠️ Tools</h3>

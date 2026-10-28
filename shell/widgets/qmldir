@@ -1,0 +1,5 @@
+module qs.widgets
+EditCanvas 1.0 EditCanvas.qml
+SylWidget 1.0 SylWidget.qml
+WidgetFrame 1.0 WidgetFrame.qml
+WidgetWindow 1.0 WidgetWindow.qml

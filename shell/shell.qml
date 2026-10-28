@@ -28,6 +28,7 @@ import qs.capture
 import qs.access
 import qs.plugins
 import qs.sync
+import qs.widgets
 import "lib/ipc.mjs" as I
 import "lib/eq.mjs" as E
 import "lib/settings.mjs" as S
@@ -38,7 +39,7 @@ ShellRoot {
     id: root
 
     readonly property bool ready: Config.ready && Settings.ready
-    readonly property var live: root.ready ? S.liveParts(Settings.values.parts, Settings.values.plugins).concat(S.liveServices(Settings.values.parts, Settings.values.plugins)) : []
+    readonly property var live: root.ready ? S.liveParts(Settings.values.parts, Settings.values.plugins).concat(S.liveServices(Settings.values.parts, Settings.values.plugins, Settings.values.widgets)) : []
     readonly property var loaders: ({
             center: centerLoader,
             theme: themeLoader,
@@ -60,6 +61,7 @@ ShellRoot {
             capture: captureLoader,
             viewer: viewerLoader,
             files: filesLoader,
+            widgets: widgetsLoader,
             archive: archiveLoader,
             access: accessLoader,
             plugins: pluginsLoader,
@@ -524,6 +526,13 @@ ShellRoot {
             id: filesPart
             onOpened: root.solo(filesPart)
         }
+    }
+
+    LazyLoader {
+        id: widgetsLoader
+        active: root.on("widgets")
+
+        SylWidget {}
     }
 
     LazyLoader {
@@ -994,6 +1003,23 @@ ShellRoot {
                 decline: () => root.need("island").act("call", "decline"),
                 reply: (...words) => root.need("island").act("message", words.length === 0 ? "reply" : "send:" + words.join(" ")),
                 state: () => root.need("island").state()
+            },
+            widgets: {
+                default: "list",
+                edit: () => root.need("widgets").edit(),
+                done: () => root.need("widgets").done(),
+                add: type => {
+                    if (type === undefined)
+                        throw new Error("usage: widgets add <type>");
+                    return root.need("widgets").add(String(type));
+                },
+                remove: id => {
+                    if (id === undefined)
+                        throw new Error("usage: widgets remove <id>");
+                    root.need("widgets").remove(String(id));
+                },
+                list: () => root.need("widgets").list(),
+                state: () => root.need("widgets").state()
             },
             files: {
                 default: "state",

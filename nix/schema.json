@@ -242,6 +242,21 @@
     "bookmarks": [],
     "keys": {}
   },
+  "widgets": {
+    "enabled": true,
+    "cell": 80,
+    "gap": 12,
+    "snap": true,
+    "style": {
+      "material": "inherit",
+      "opacity": 1,
+      "radius": 1,
+      "shadow": true,
+      "clear": false,
+      "accent": ""
+    },
+    "items": []
+  },
   "archive": {
     "view": "list",
     "format": "zip",

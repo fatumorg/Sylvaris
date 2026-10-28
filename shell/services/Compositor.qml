@@ -22,6 +22,7 @@ Singleton {
                 title: t.title,
                 activated: t.activated,
                 minimized: t.minimized,
+                maximized: t.maximized,
                 fullscreen: t.fullscreen,
                 handle: t
             }))

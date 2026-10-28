@@ -4,6 +4,10 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Added
+
+- SylWidget puts clocks, weather, a calendar, Diver, batteries, photos, a live terminal, an audio visualizer and stacks of them on the desktop; `sylvaris widgets edit` lets you drag, resize, add and remove them in place, and SylSettings › Desktop › Widgets tunes each one
+
 ## [1.3.0] - 2026-10-28
 
 ### Added

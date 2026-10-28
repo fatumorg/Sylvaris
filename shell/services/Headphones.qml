@@ -117,7 +117,8 @@ Singleton {
                         name: root.name + " · " + part.charAt(0).toUpperCase() + part.slice(1),
                         level: b.level,
                         charging: b.charging,
-                        kind: part === "case" ? "case" : "earbud"
+                        kind: part === "case" ? "case" : "earbud",
+                        part: part
                     });
             }
         }

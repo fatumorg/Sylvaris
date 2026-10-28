@@ -6,6 +6,7 @@ import {
     validateConfig, validateSettings, merge, getPath, setPath, serialize, DEFAULT_GLASS, resolveGlass, settingsLayer, effectiveSettings,
     PARTS, OPT_IN, SERVICE_DEPS, liveParts, screenSettings, screenKey, liveServices, CENTER_TILES, unsetPath, isModified
 } from "../shell/lib/settings.mjs"
+import { TYPES } from "../shell/lib/widgets.mjs"
 
 test("parseJson treats empty text as an empty object", () => {
     assert.deepEqual(parseJson(""), { ok: true, value: {} })
@@ -241,6 +242,15 @@ test("an excluded part contributes nothing to the parts and services shell.qml b
     assert.equal(liveServices({ ...DEFAULT_SETTINGS.parts, center: false }).includes("Hotspot"), false)
 })
 
+test("widgets start the services their items need, and only while the part is on", () => {
+    assert.ok(liveServices(NONE, {}, { items: [] }).length === 0)
+    assert.deepEqual(liveServices({ ...NONE, widgets: true }, {}, { items: [] }), [])
+    const weather = liveServices({ ...NONE, widgets: true }, {}, { items: [{ type: "weather" }] })
+    assert.ok(weather.includes("Weather") && weather.includes("Sky"))
+    assert.equal(liveServices({ ...NONE, widgets: false }, {}, { items: [{ type: "weather" }] }).includes("Weather"), false)
+    assert.equal(liveServices({ ...NONE, widgets: true }, {}, { items: [{ type: "temp" }] }).includes("Temps"), false)
+})
+
 test("shell.qml loads every part only through its parts flag", () => {
     const qml = readFileSync(new URL("../shell/shell.qml", import.meta.url), "utf8")
     for (const name of Object.keys(PARTS))
@@ -271,7 +281,7 @@ test("PARTS lists every service a part references", () => {
         if (used.has("DayAgenda") && agenda)
             used.add("Diver")
         used.delete("DayAgenda")
-        const listed = alone(name)
+        const listed = name === "widgets" ? liveServices({ ...NONE, widgets: true }, { enabled: { diver: true, temp: true } }, { items: Object.keys(TYPES).map(type => ({ type })) }) : alone(name)
         for (const svc of used)
             assert.ok(listed.includes(svc), name + " uses " + svc)
     }

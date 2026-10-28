@@ -301,6 +301,22 @@ Explained in [island](../parts/island.md).
 | `files.bookmarks` | `[]` |  |
 | `files.keys` | `{}` |  |
 
+## widgets
+
+| Key | Default | Per screen |
+|---|---|:---:|
+| `widgets.enabled` | `true` |  |
+| `widgets.cell` | `80` |  |
+| `widgets.gap` | `12` |  |
+| `widgets.snap` | `true` |  |
+| `widgets.style.material` | `"inherit"` |  |
+| `widgets.style.opacity` | `1` |  |
+| `widgets.style.radius` | `1` |  |
+| `widgets.style.shadow` | `true` |  |
+| `widgets.style.clear` | `false` |  |
+| `widgets.style.accent` | `""` |  |
+| `widgets.items` | `[]` |  |
+
 ## archive
 
 | Key | Default | Per screen |
@@ -473,6 +489,7 @@ Explained in [configuration](../configuration.md#turning-parts-off).
 | `parts.capture` | `true` |  |
 | `parts.viewer` | `true` |  |
 | `parts.files` | `true` |  |
+| `parts.widgets` | `true` |  |
 | `parts.archive` | `true` |  |
 | `parts.access` | `true` |  |
 | `parts.plugins` | `true` |  |

@@ -25,7 +25,7 @@ test("every group holds at least two sections with no plugin on and none holds m
 
 test("the groups split the desktop by what people look for", () => {
     assert.deepEqual(GROUPS.map(g => g.key), ["system", "look", "panels", "apps", "security", "advanced"])
-    assert.deepEqual(sectionsIn("look", {}).map(s => s.key), ["look", "appearance", "wallpaper", "motion", "sync"])
+    assert.deepEqual(sectionsIn("look", {}).map(s => s.key), ["look", "appearance", "wallpaper", "widgets", "motion", "sync"])
     assert.deepEqual(sectionsIn("security", {}).map(s => s.key), ["lock", "polkit"])
     assert.deepEqual(sectionsIn("advanced", {}).map(s => s.key), ["keybinds", "commands", "plugins"])
     assert.equal(groupOf("files"), "apps")
