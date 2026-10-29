@@ -1,6 +1,6 @@
 export const FITS = ["cover", "contain", "center", "tile"]
 export const TRANSITIONS = ["fade", "zoom", "slide", "none"]
-export const DEFAULT_PAPER = { enabled: true, folder: "~/Pictures/wallpapers", themes: {}, outputs: {}, fit: "cover", blur: 0, dim: 0, tint: 0, transition: "zoom", duration: 900, drift: false, parallax: 0.4, menu: true }
+export const DEFAULT_PAPER = { enabled: true, folder: "~/Pictures/wallpapers", wallpaper: "", themes: {}, outputs: {}, fit: "cover", blur: 0, dim: 0, tint: 0, transition: "zoom", duration: 900, drift: false, parallax: 0.4, menu: true }
 
 const IMAGE = /\.(png|jpe?g|webp|bmp|gif|avif|jxl)$/i
 
@@ -29,6 +29,7 @@ export function validatePaper(raw) {
     return Object.assign({}, p, {
         enabled: p.enabled !== false,
         folder: typeof p.folder === "string" && p.folder !== "" ? p.folder : d.folder,
+        wallpaper: typeof p.wallpaper === "string" ? p.wallpaper : d.wallpaper,
         themes: paths(p.themes),
         outputs: paths(p.outputs),
         fit: FITS.indexOf(p.fit) >= 0 ? p.fit : d.fit,
@@ -48,7 +49,23 @@ export function resolve(paper, themeId, themeWallpaper, output) {
         return paper.outputs[output]
     if (paper.themes[themeId] !== undefined)
         return paper.themes[themeId]
-    return themeWallpaper || ""
+    return paper.wallpaper || themeWallpaper || ""
+}
+
+export function choose(paper, scope, themeId, output, path) {
+    const set = (map, key) => {
+        const out = Object.assign({}, map)
+        if (path === "")
+            delete out[key]
+        else
+            out[key] = path
+        return out
+    }
+    if (scope === "output" && output !== "")
+        return { outputs: set(paper.outputs, output) }
+    if (scope === "theme")
+        return { themes: set(paper.themes, themeId) }
+    return { wallpaper: path, themes: {}, outputs: {} }
 }
 
 export function isImage(name) {

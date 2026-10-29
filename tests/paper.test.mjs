@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { validatePaper, resolve, isImage, fillMode, DEFAULT_PAPER } from "../shell/lib/paper.mjs"
+import { validatePaper, resolve, choose, isImage, fillMode, DEFAULT_PAPER } from "../shell/lib/paper.mjs"
 
 test("validatePaper keeps sane values and drops bad ones", () => {
     const p = validatePaper({ fit: "stretch", blur: 4, dim: 0.4, themes: { noir: "/a.png", bad: 3 }, duration: 99999, transition: "slide" })
@@ -19,6 +19,19 @@ test("an output override beats a theme pick, which beats the theme's own wallpap
     assert.equal(resolve(p, "noir", "/w.png", "DP-2"), "/t.png")
     assert.equal(resolve(p, "amber", "/w.png", "DP-2"), "/w.png")
     assert.equal(resolve(p, "amber", "", "DP-2"), "")
+})
+
+test("a pick for everywhere sits under theme and screen picks and clears them", () => {
+    const p = validatePaper({ wallpaper: "/all.png", themes: { noir: "/t.png" }, outputs: { "DP-1": "/o.png" } })
+    assert.equal(resolve(p, "amber", "/w.png", "DP-2"), "/all.png")
+    assert.equal(resolve(p, "noir", "/w.png", "DP-2"), "/t.png")
+    assert.deepEqual(choose(p, "all", "noir", "DP-1", "/new.png"), { wallpaper: "/new.png", themes: {}, outputs: {} })
+    assert.deepEqual(choose(p, "all", "noir", "DP-1", ""), { wallpaper: "", themes: {}, outputs: {} })
+    assert.deepEqual(choose(p, "theme", "amber", "DP-1", "/a.png"), { themes: { noir: "/t.png", amber: "/a.png" } })
+    assert.deepEqual(choose(p, "theme", "noir", "DP-1", ""), { themes: {} })
+    assert.deepEqual(choose(p, "output", "noir", "DP-1", ""), { outputs: {} })
+    assert.deepEqual(choose(p, "output", "noir", "", "/x.png"), { wallpaper: "/x.png", themes: {}, outputs: {} })
+    assert.equal(validatePaper({}).wallpaper, "")
 })
 
 test("image names and fill modes", () => {

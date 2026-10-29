@@ -940,7 +940,8 @@ ShellRoot {
                 menu: () => root.need("paper").menu(),
                 prev: () => root.need("paper").step(-1),
                 reset: () => root.need("paper").reset(),
-                current: () => root.need("paper").current
+                current: () => root.need("paper").current,
+                shown: () => root.need("paper").shown()
             },
             power: {
                 toggle: () => root.need("power").toggle(),

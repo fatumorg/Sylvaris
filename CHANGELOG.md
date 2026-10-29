@@ -4,9 +4,14 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Added
+
+- sylvaris paper shown prints the wallpaper each screen is drawing
+
 ### Changed
 
 - Control Center tiles other than Wi-Fi and Bluetooth drop the button inside the tile, switch as a whole and light up while on; right-click opens details
+- The wallpaper picker sets a wallpaper for every theme and screen by default; This theme and This screen still pick one just for them
 
 ### Fixed
 
@@ -24,6 +29,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - SylSettings' previews and the blurred backdrop behind SylPad, SylPower, the lock screen and SylViewer show the wallpaper you actually have, including one picked in SylPaper for a theme, and open paths with # or spaces
 - Segmented choices size each option to its label, so long ones like Control Center no longer spill into their neighbours, and elide when there is no room
 - Wallpapers, avatars, clipboard images and notification pictures whose paths contain #, ? or % now load
+- The login screen and the theme picker show the wallpaper you picked instead of the theme's own
 
 ## [1.5.1] - 2026-10-28
 

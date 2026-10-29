@@ -2,13 +2,14 @@
 
 Sylvaris draws the wallpaper itself on every screen and changes it with the theme. Stop hyprpaper, swaybg or swww first, or set `paper.enabled = false` to keep yours.
 
-`sylvaris paper` opens a picker for the images in `paper.folder` (`~/Pictures/wallpapers`). Pick one for the current theme or only for the screen you are on, and add blur, dim or an accent tint.
+`sylvaris paper` opens a picker for the images in `paper.folder` (`~/Pictures/wallpapers`). Pick one for everywhere (the default), only for the current theme or only for the screen you are on, and add blur, dim or an accent tint.
 
 ```sh
 sylvaris paper next          # also: prev
 sylvaris paper set ~/Pictures/wallpapers/lake.jpg
-sylvaris paper reset         # back to the theme's own wallpaper
-sylvaris paper current
+sylvaris paper reset         # back to each theme's own wallpaper
+sylvaris paper current       # the wallpaper you picked
+sylvaris paper shown         # what each screen is drawing right now
 sylvaris paper menu          # the desktop menu, in the middle of the focused screen
 ```
 
@@ -24,4 +25,4 @@ Right-click the wallpaper for the desktop menu: edit widgets, the next wallpaper
 | `duration` | `900` | transition length in ms |
 | `parallax` | `0.4` | 0 to 1: how far the wallpaper sways when you switch workspace; `0` keeps it still |
 
-The look (fit, blur, dim, tint and the transition) can differ per screen. The images themselves are stored per theme and per screen in `paper.themes` and `paper.outputs`, which the picker fills in for you.
+The look (fit, blur, dim, tint and the transition) can differ per screen. The picker stores an everywhere pick in `paper.wallpaper` and clears the per-theme and per-screen picks in `paper.themes` and `paper.outputs`; a screen pick beats a theme pick, which beats `paper.wallpaper`, which beats the theme's own wallpaper. The login screen, the blurred panels and the theme picker show the same wallpaper as the desktop.

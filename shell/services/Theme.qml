@@ -173,7 +173,7 @@ Singleton {
             wallpaper: dir + "/" + user + "/wallpaper",
             links: {}
         });
-        const argv = T.shareCommand(dir, user, root.currentId, root.wallpaper, S.expandHome(Config.values.avatar, root.home), JSON.stringify(copy));
+        const argv = T.shareCommand(dir, user, root.currentId, Look.wallPath, S.expandHome(Config.values.avatar, root.home), JSON.stringify(copy));
         if (argv === null)
             return;
         shareProc.command = argv;
@@ -182,6 +182,14 @@ Singleton {
     }
 
     onThemeChanged: shareTimer.restart()
+
+    Connections {
+        target: Look
+
+        function onWallPathChanged(): void {
+            shareTimer.restart();
+        }
+    }
 
     function generate(path: string, mode: string): string {
         const px = path === "" ? [] : Stack.pixels(path, 64);

@@ -163,6 +163,7 @@ Explained in [paper](../parts/paper.md).
 |---|---|:---:|
 | `paper.enabled` | `true` |  |
 | `paper.folder` | `"~/Pictures/wallpapers"` |  |
+| `paper.wallpaper` | `""` |  |
 | `paper.themes` | `{}` |  |
 | `paper.outputs` | `{}` |  |
 | `paper.fit` | `"cover"` | yes |

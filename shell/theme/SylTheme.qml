@@ -275,7 +275,7 @@ Scope {
                         fillMode: Image.PreserveAspectCrop
                         asynchronous: true
                         sourceSize.width: 2560
-                        source: !backdrop.gpu || Theme.wallpaper === "" ? "" : Cap.fileUri(Theme.wallpaper)
+                        source: !backdrop.gpu || Look.wallPath === "" ? "" : Cap.fileUri(Look.wallPath)
                     }
                 }
 
@@ -295,6 +295,7 @@ Scope {
                             id: layerItem
                             required property string modelData
                             readonly property var e: Theme.catalog[modelData] === undefined ? null : Theme.catalog[modelData]
+                            readonly property string wall: layerItem.e === null ? "" : Look.wallFor(modelData, layerItem.e.wallpaper)
                             anchors.fill: parent
                             opacity: modelData === root.front ? 1 : 0
                             visible: opacity > 0
@@ -339,7 +340,7 @@ Scope {
                                     fillMode: Image.PreserveAspectCrop
                                     asynchronous: true
                                     sourceSize.width: 1280
-                                    source: !backdrop.gpu || !layerItem.heavy || Tokens.lite || layerItem.e === null || layerItem.e.wallpaper === "" ? "" : Cap.fileUri(layerItem.e.wallpaper)
+                                    source: !backdrop.gpu || !layerItem.heavy || Tokens.lite || layerItem.wall === "" ? "" : Cap.fileUri(layerItem.wall)
                                 }
 
                                 MultiEffect {

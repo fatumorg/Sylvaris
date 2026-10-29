@@ -134,6 +134,7 @@
   "paper": {
     "enabled": true,
     "folder": "~/Pictures/wallpapers",
+    "wallpaper": "",
     "themes": {},
     "outputs": {},
     "fit": "cover",

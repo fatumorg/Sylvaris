@@ -54,6 +54,11 @@ PanelWindow {
         next.source = root.url;
     }
 
+    function shown(): string {
+        const front = root.flip ? b : a;
+        return front.status === Image.Ready ? decodeURIComponent(front.source.toString().replace(/^file:\/\//, "")) : "";
+    }
+
     function swap(): void {
         root.flip = !root.flip;
         root.mix = 0;
@@ -63,7 +68,7 @@ PanelWindow {
             mixAnim.restart();
     }
 
-    onPathChanged: root.load()
+    onUrlChanged: root.load()
     Component.onCompleted: {
         a.source = root.url;
         root.flip = false;

@@ -16,7 +16,7 @@ Popup {
     readonly property var cfg: Settings.values.paper
     readonly property string folderPath: S.expandHome(root.cfg.folder, Stack.env("HOME"))
     readonly property string current: S.expandHome(W.resolve(root.cfg, Theme.currentId, Theme.wallpaper, root.screenInfo ? root.screenInfo.name : ""), Stack.env("HOME"))
-    property string scope: "theme"
+    property string scope: "all"
     property var menuAt: null
     property var menuScreen: null
 
@@ -27,27 +27,13 @@ Popup {
     dim: 0.25
 
     function pick(path: string): void {
-        if (root.scope === "output" && root.screenInfo) {
-            const o = Object.assign({}, root.cfg.outputs);
-            o[root.screenInfo.name] = path;
-            Settings.set("paper.outputs", o);
-        } else {
-            const t = Object.assign({}, root.cfg.themes);
-            t[Theme.currentId] = path;
-            Settings.set("paper.themes", t);
-        }
+        const next = W.choose(root.cfg, root.scope, Theme.currentId, root.screenInfo ? root.screenInfo.name : "", path);
+        for (const key of Object.keys(next))
+            Settings.set("paper." + key, next[key]);
     }
 
     function reset(): void {
-        if (root.scope === "output" && root.screenInfo) {
-            const o = Object.assign({}, root.cfg.outputs);
-            delete o[root.screenInfo.name];
-            Settings.set("paper.outputs", o);
-        } else {
-            const t = Object.assign({}, root.cfg.themes);
-            delete t[Theme.currentId];
-            Settings.set("paper.themes", t);
-        }
+        root.pick("");
     }
 
     function set(path: string): void {
@@ -83,7 +69,12 @@ Popup {
         root.showMenu(screen, screen.width / 2 - 130, screen.height / 2 - 100);
     }
 
+    function shown(): string {
+        return layers.instances.map(l => l.modelData.name + " " + l.shown()).join("\n");
+    }
+
     Variants {
+        id: layers
         model: root.cfg.enabled ? Stack.screens : []
 
         delegate: PaperLayer {
@@ -210,7 +201,7 @@ Popup {
                 Text {
                     textFormat: Text.PlainText
                     width: parent.width
-                    text: root.scope === "output" && root.screenInfo ? "Only " + root.screenInfo.name + " · " + folder.count + " images in " + root.cfg.folder : "For the " + (Theme.theme.name || Theme.currentId) + " theme · " + folder.count + " images in " + root.cfg.folder
+                    text: (root.scope === "output" && root.screenInfo ? "Only " + root.screenInfo.name : root.scope === "theme" ? "For the " + (Theme.theme.name || Theme.currentId) + " theme" : "Every theme and screen") + " · " + folder.count + " images in " + root.cfg.folder
                     elide: Text.ElideMiddle
                     color: Theme.textDim
                     font.family: Tokens.fontUi
@@ -221,8 +212,12 @@ Popup {
             Segmented {
                 id: scopeSwitch
                 anchors.verticalCenter: parent.verticalCenter
-                width: 250
+                width: 360
                 options: [
+                    {
+                        key: "all",
+                        label: "Everywhere"
+                    },
                     {
                         key: "theme",
                         label: "This theme"

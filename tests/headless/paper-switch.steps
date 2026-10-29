@@ -1,0 +1,9 @@
+check mkdir -p "$HOME/Pictures/w" && cp "$SYLVARIS_DIR/../tests/fixtures/viewer/shot 1.png" "$HOME/Pictures/w/a#1.png" && cp "$SYLVARIS_DIR/../tests/fixtures/viewer/shot10.jpg" "$HOME/Pictures/w/b 2.jpg"
+sleep 1
+syl paper set ~/Pictures/w/a#1.png
+wait sylvaris paper shown | grep -q 'w/a#1.png$'
+syl paper set ~/Pictures/w/b 2.jpg
+wait sylvaris paper shown | grep -q 'w/b 2.jpg$'
+syl paper set ~/Pictures/w/a#1.png
+wait sylvaris paper shown | grep -q 'w/a#1.png$'
+shot paper-switch

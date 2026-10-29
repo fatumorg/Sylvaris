@@ -32,7 +32,7 @@ Singleton {
     property string followed: ""
     property string shuffledDay: ""
     readonly property string dayPath: (Stack.env("XDG_STATE_HOME") || Settings.home + "/.local/state") + "/sylvaris/shuffle-day"
-    readonly property string wallPath: S.expandHome(W.resolve(Settings.values.paper, Theme.currentId, Theme.wallpaper, ""), Settings.home)
+    readonly property string wallPath: root.wallFor(Theme.currentId, Theme.wallpaper)
     readonly property string wallAccent: root.values.accent === "wallpaper" && root.wallPath !== "" ? P.accentFrom(Stack.pixels(root.wallPath, 64)) : ""
     readonly property string accentHex: root.values.accent === "wallpaper" ? root.wallAccent : root.values.accent === "theme" ? "" : root.values.accent
     readonly property string notice: {
@@ -43,6 +43,10 @@ Singleton {
     onNoticeChanged: {
         if (root.notice !== "")
             console.warn("sylvaris: " + root.notice);
+    }
+
+    function wallFor(id: string, wallpaper: string): string {
+        return S.expandHome(W.resolve(Settings.values.paper, id, wallpaper, ""), Settings.home);
     }
 
     function glassFor(role: string): var {
