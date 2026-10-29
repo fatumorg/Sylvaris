@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import qs
 import qs.services
 
@@ -31,7 +32,6 @@ Item {
             radius: parent.radius
             inner: true
             hot: hover.hovered
-            lit: root.active && !root.split
             offColor: hover.hovered ? Theme.tintMid : Theme.tint
             offBorder: Theme.cardLine
         }
@@ -95,22 +95,57 @@ Item {
             }
             color: "transparent"
 
-            Glass {
-                visible: root.split
+            RectangularShadow {
+                visible: root.active && !Tokens.lite
+                anchors.fill: plate
+                radius: plate.radius
+                offset.y: 3
+                blur: 14
+                color: Qt.alpha(Theme.accent, 0.2 + 0.3 * Tokens.accentStrength)
+            }
+
+            Rectangle {
+                id: plate
                 anchors.fill: parent
-                z: -1
                 radius: parent.radius
-                inner: true
-                lit: root.active
-                offColor: Theme.tintStrong
+                antialiasing: true
+                color: root.active ? (plateHover.hovered && root.split ? Theme.accentHi : Theme.accent) : Qt.alpha(Theme.text, plateHover.hovered && root.split ? 0.13 : 0.07)
+                border.width: root.active ? 0 : 1
+                border.color: Qt.alpha(Theme.text, 0.09)
+
+                Behavior on color {
+                    ColorAnimation {
+                        duration: Tokens.stateDuration
+                    }
+                }
+
+                Rectangle {
+                    visible: root.active && !Tokens.lite
+                    anchors.fill: parent
+                    radius: parent.radius
+                    gradient: Gradient {
+                        GradientStop {
+                            position: 0
+                            color: Qt.alpha("#ffffff", 0.22)
+                        }
+                        GradientStop {
+                            position: 0.55
+                            color: "transparent"
+                        }
+                    }
+                }
+            }
+
+            HoverHandler {
+                id: plateHover
+                enabled: root.split
             }
 
             Glyph {
                 anchors.centerIn: parent
                 text: root.icon
                 size: Tokens.tileIconFont
-                marked: !root.split
-                color: root.active && root.split || body.inverted ? Theme.onAccent : Theme.text
+                color: root.active ? Theme.onAccent : body.inverted ? Theme.onAccent : Theme.text
 
                 Behavior on color {
                     ColorAnimation {
