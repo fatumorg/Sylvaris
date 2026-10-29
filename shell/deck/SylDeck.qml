@@ -609,12 +609,10 @@ Scope {
                             width: menuColumn.width
                             height: modelData.kind === "line" ? 9 : modelData.kind === "title" ? 30 : 34
 
-                            Rectangle {
+                            Divider {
                                 visible: modelData.kind === "line"
                                 anchors.centerIn: parent
                                 width: parent.width - 16
-                                height: 1
-                                color: Qt.alpha(Theme.text, 0.12)
                             }
 
                             Glass {

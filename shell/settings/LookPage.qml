@@ -147,16 +147,10 @@ Column {
                     width: 160
                     spacing: 4
 
-                    Text {
-                        textFormat: Text.PlainText
+                    Caption {
                         width: parent.width
                         horizontalAlignment: Text.AlignRight
                         text: page.peek !== "" ? "Trying" : "Your Look"
-                        color: Theme.textDim
-                        font.family: Tokens.fontUi
-                        font.pixelSize: Tokens.tinySize
-                        font.capitalization: Font.AllUppercase
-                        font.letterSpacing: 0.6
                     }
 
                     Text {

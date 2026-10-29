@@ -928,13 +928,11 @@ Popup {
             }
         }
 
-        Rectangle {
+        Divider {
             visible: weatherCard.d !== null
             x: 20
             y: 126
             width: parent.width - 40
-            height: 1
-            color: Qt.alpha(Theme.text, 0.08)
         }
 
         Row {

@@ -203,12 +203,10 @@ PopupWindow {
                 width: body.width
                 height: entry.modelData.isSeparator ? 9 : 34
 
-                Rectangle {
+                Divider {
                     visible: entry.modelData.isSeparator
                     anchors.centerIn: parent
                     width: parent.width - 16
-                    height: 1
-                    color: Qt.alpha(Theme.text, 0.12)
                 }
 
                 MenuRow {
@@ -231,12 +229,10 @@ PopupWindow {
             }
         }
 
-        Rectangle {
+        Divider {
             visible: opener.children.values.length > 0 && menu.stack.length === 0
             x: 8
             width: parent.width - 16
-            height: 1
-            color: Qt.alpha(Theme.text, 0.12)
         }
 
         MenuRow {

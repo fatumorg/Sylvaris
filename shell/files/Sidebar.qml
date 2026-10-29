@@ -52,18 +52,11 @@ Item {
                     width: col.width
                     spacing: 2
 
-                    Text {
+                    Caption {
                         x: 10
                         topPadding: section.index === 0 ? 4 : 14
                         bottomPadding: 4
-                        textFormat: Text.PlainText
                         text: ({ places: "Places", bookmarks: "Bookmarks", devices: "Devices" })[section.key]
-                        color: Theme.textDim
-                        font.family: Tokens.fontUi
-                        font.pixelSize: Tokens.tinySize
-                        font.weight: Font.DemiBold
-                        font.capitalization: Font.AllUppercase
-                        font.letterSpacing: 0.7
                     }
 
                     Text {

@@ -10,7 +10,6 @@ Item {
 
     width: parent ? parent.width : 0
     implicitHeight: root.kind === "none" ? 0 : 1
-    visible: root.kind !== "none"
 
     Rectangle {
         visible: root.kind === "hairline"

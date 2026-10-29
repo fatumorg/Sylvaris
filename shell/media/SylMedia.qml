@@ -214,15 +214,10 @@ Popup {
                             font.pixelSize: Tokens.smallSize
                         }
 
-                        Text {
-                            textFormat: Text.PlainText
+                        Caption {
                             topPadding: 6
                             text: Media.identity
                             color: Theme.accent
-                            font.family: Tokens.fontUi
-                            font.pixelSize: Tokens.tinySize
-                            font.weight: Font.DemiBold
-                            font.capitalization: Font.AllUppercase
                         }
                     }
                 }

@@ -206,12 +206,10 @@ Column {
                     }
                 }
 
-                Rectangle {
+                Divider {
                     anchors.bottom: parent.bottom
                     visible: side.modelData !== "right"
                     width: parent.width
-                    height: 1
-                    color: Qt.alpha(Theme.text, 0.08)
                 }
             }
         }

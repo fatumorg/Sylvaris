@@ -784,12 +784,10 @@ Item {
                 ActivityRow {}
             }
 
-            Rectangle {
+            Divider {
                 visible: root.shortcutIds.length > 0 && root.kinds.length > 0
                 x: 6
                 width: parent.width - 12
-                height: 1
-                color: Qt.alpha(Theme.text, 0.08)
             }
 
             Row {

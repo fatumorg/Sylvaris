@@ -19,16 +19,10 @@ Item {
         spacing: 4
         bottomPadding: root.title === "" ? 0 : 10
 
-        Text {
-            textFormat: Text.PlainText
+        Caption {
             visible: root.title !== ""
             text: root.title
-            color: Theme.textDim
-            font.family: Tokens.fontUi
-            font.pixelSize: Tokens.smallSize
-            font.weight: Font.DemiBold
-            font.capitalization: Font.AllUppercase
-            font.letterSpacing: 0.6
+            size: Tokens.smallSize
         }
 
         Text {

@@ -125,15 +125,8 @@ Item {
                         width: parent.width
                         spacing: 2
 
-                        Text {
-                            textFormat: Text.PlainText
+                        Caption {
                             text: modelData.k
-                            color: Theme.textDim
-                            font.family: Tokens.fontUi
-                            font.pixelSize: Tokens.tinySize
-                            font.weight: Font.DemiBold
-                            font.capitalization: Font.AllUppercase
-                            font.letterSpacing: 0.6
                         }
 
                         Text {

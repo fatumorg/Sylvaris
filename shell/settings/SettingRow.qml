@@ -1,6 +1,7 @@
 import QtQuick
 import qs
 import qs.services
+import qs.components
 
 Item {
     id: root
@@ -132,11 +133,9 @@ Item {
         height: childrenRect.height
     }
 
-    Rectangle {
+    Divider {
         visible: !root.last
         anchors.bottom: parent.bottom
         width: parent.width
-        height: 1
-        color: Qt.alpha(Theme.text, 0.08)
     }
 }

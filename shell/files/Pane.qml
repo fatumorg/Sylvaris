@@ -267,15 +267,9 @@ FocusScope {
                     anchors.verticalCenter: parent.verticalCenter
                     spacing: 4
 
-                    Text {
-                        textFormat: Text.PlainText
+                    Caption {
                         text: col.modelData.label
                         color: col.on ? Theme.text : Theme.textDim
-                        font.family: Tokens.fontUi
-                        font.pixelSize: Tokens.tinySize
-                        font.weight: Font.DemiBold
-                        font.capitalization: Font.AllUppercase
-                        font.letterSpacing: 0.6
                     }
 
                     Glyph {
@@ -296,12 +290,10 @@ FocusScope {
             }
         }
 
-        Rectangle {
+        Divider {
             anchors.bottom: parent.bottom
             x: 8
             width: parent.width - 16
-            height: 1
-            color: Qt.alpha(Theme.text, 0.08)
         }
     }
 

@@ -251,12 +251,10 @@ FocusScope {
                     width: rows.width
                     height: row.modelData.sep ? 9 : 32
 
-                    Rectangle {
+                    Divider {
                         visible: row.modelData.sep === true
                         anchors.centerIn: parent
                         width: parent.width - 16
-                        height: 1
-                        color: Qt.alpha(Theme.text, 0.1)
                     }
 
                     Glass {
