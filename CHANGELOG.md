@@ -13,6 +13,8 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - The media widget's record look draws grooves instead of a music note under the centre hole when there is no cover
 - Widgets inside a stack get their own options, so a stacked clock keeps its face and date, and a stacked note takes typing and saves it
 - SylSettings › Desktop › Widgets can fill a stack: pick it to add widgets to it, change their options or remove them; before, a stack could only be filled by editing settings.json
+- The photos widget shows its mosaic and polaroid-stack modes and its fade, slide and Ken Burns transitions, which were offered but drew nothing different, and the unbuilt duotone recolour is gone from the choices (a stored duotone falls back to off)
+- The photos widget opens pictures whose names contain #, % or spaces, and no longer shows "No pictures" when a folder scan from before it was set up finished last
 
 ## [1.5.1] - 2026-10-28
 

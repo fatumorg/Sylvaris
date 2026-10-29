@@ -91,7 +91,7 @@ export const TYPES = {
             { key: "shuffle", label: "Shuffle", kind: "toggle" },
             { key: "transition", label: "Transition", kind: "choice", choices: ["fade", "slide", "kenburns"] },
             { key: "frame", label: "Frame", kind: "choice", choices: ["round", "circle", "polaroid"] },
-            { key: "recolour", label: "Recolour", kind: "choice", choices: ["off", "tint", "mono", "duotone"] },
+            { key: "recolour", label: "Recolour", kind: "choice", choices: ["off", "tint", "mono"] },
             { key: "strength", label: "Strength", kind: "number", min: 0, max: 1 }
         ]
     },

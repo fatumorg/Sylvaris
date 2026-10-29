@@ -26,7 +26,7 @@ Changes are saved when you are done; two widgets that ended up on top of each ot
 | `weather` | now and the coming days, from [SylClock](clock.md)'s forecast | feels like, wind, humidity |
 | `calendar` | this month, with dots on days that have Diver plans | weeks start on Monday, dots |
 | `batteries` | a ring per device: the laptop, AirPods (left, right and case), mice and keyboards | devices, ring width |
-| `photos` | one picture or a slideshow from a folder; click to open it in [SylViewer](viewer.md) | folder or picture, folders inside, interval, shuffle, frame, recolour (tint or mono) |
+| `photos` | one picture, a slideshow that fades, slides or slowly zooms (Ken Burns), a mosaic of four or a stack of polaroids from a folder; click to open it in [SylViewer](viewer.md) | folder or picture, folders inside, mode, transition, interval, shuffle, frame, recolour (tint or mono) |
 | `terminal` | a kitty panel running any command, like `cava` or `btop` | command, font size, background, padding, typing, start again |
 | `visualizer` | bars, mirrored bars, dots, a wave or a ring from `cava` | style, bars, frame rate, smoothing, colour, glow |
 | `diver` | today's plans (with the Diver plugin) | how many, done ones |
