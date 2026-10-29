@@ -47,6 +47,9 @@ SidePanel 1.0 SidePanel.qml
 SoundPage 1.0 SoundPage.qml
 StatsAbout 1.0 StatsAbout.qml
 Stepper 1.0 Stepper.qml
+StyleEditor 1.0 StyleEditor.qml
+StyleGallery 1.0 StyleGallery.qml
+StyleSection 1.0 StyleSection.qml
 SwitcherPage 1.0 SwitcherPage.qml
 SylSettings 1.0 SylSettings.qml
 SyncPage 1.0 SyncPage.qml

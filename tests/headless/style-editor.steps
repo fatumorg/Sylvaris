@@ -1,0 +1,22 @@
+sleep 1.5
+syl settings open look
+sleep 2
+shot style-gallery
+syl look take controls paper
+syl settings open look
+sleep 2
+shot style-editor-paper-controls
+check sylvaris look styles | grep -q edited
+syl look reset lumen
+wait sylvaris look styles | grep -q '^lumen built-in Lumen$'
+pointer move 930 1138 pause 0.15 click 1
+wait sylvaris look state | grep -Eq '"preset": *"ink"'
+sleep 1.5
+shot editor-ink
+pointer move 1468 697 pause 0.15 click 1
+wait sylvaris look styles | grep -q '^ink edited Ink$'
+wait sylvaris look state | grep -Eq '"material": *"neon"'
+sleep 1
+shot editor-ink-neon-glass
+syl look reset ink
+wait sylvaris look styles | grep -q '^ink built-in Ink$'

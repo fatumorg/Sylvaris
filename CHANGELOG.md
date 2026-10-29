@@ -9,6 +9,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - sylvaris paper shown prints the wallpaper each screen is drawing
 - sylvaris look styles, look take, look reset and look remove list, mix and restore styles from the command line
 - The Nix modules install the fonts the styles use; programs.sylvaris.fonts.enable = false keeps them out
+- SylSettings › Look edits any style, makes your own and takes any section from another style
 
 ### Changed
 

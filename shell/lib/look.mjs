@@ -230,6 +230,44 @@ export function originOf(id, userLooks) {
     return mine ? "yours" : ""
 }
 
+export function configOwned(config) {
+    return Object.keys(OWNED).filter(path => {
+        const [part, leaf] = path.split(".")
+        return isObject(config) && isObject(config[part]) && config[part][leaf] !== undefined
+    })
+}
+
+function choice(key, title, options) {
+    return { key: key, title: title, kind: "choice", options: options }
+}
+
+function number(key, title, min, max, step) {
+    return { key: key, title: title, kind: "number", min: min, max: max, step: step }
+}
+
+function flag(key, title) {
+    return { key: key, title: title, kind: "bool" }
+}
+
+const ROWS = {
+    glass: [choice("material", "Material", Object.keys(MATERIALS))].concat(GLASS_KEYS.map(k => number(k, k.charAt(0).toUpperCase() + k.slice(1).replace("Opacity", " opacity"), 0, k === "flow" ? 3 : 1, 0.05))),
+    shape: [choice("corners", "Corners", CORNERS), number("radius", "Roundness", 0, 2, 0.05), choice("density", "Spacing", Object.keys(DENSITY)), number("border", "Outline", 0, 2, 0.5)],
+    type: [choice("weight", "Title weight", WEIGHTS), choice("labelCase", "Label case", CASES), number("tracking", "Letter spacing", -0.02, 0.12, 0.01), number("scale", "Text size", 0.9, 1.15, 0.05)],
+    controls: [choice("toggle", "Switches", CONTROL_CHOICES.toggle), choice("slider", "Sliders", CONTROL_CHOICES.slider), choice("segmented", "Tabs", CONTROL_CHOICES.segmented), choice("button", "Buttons", CONTROL_CHOICES.button),
+        choice("card", "Cards", CONTROL_CHOICES.card), choice("hover", "Hover", CONTROL_CHOICES.hover), choice("icon", "Icons", CONTROL_CHOICES.icon), choice("divider", "Dividers", CONTROL_CHOICES.divider)],
+    motion: [choice("preset", "Feel", PRESETS), choice("open", "Opening", OPEN_STYLES), choice("reveal", "Reveal", REVEALS), number("stagger", "Stagger", 0, 0.9, 0.05), number("springiness", "Springiness", 0, 1, 0.05)],
+    layout: [choice("barStyle", "Bar", STYLES), choice("workspaceStyle", "Workspaces", WORKSPACE_STYLES), choice("center", "Control Center", LAYOUTS), choice("notifications", "Notifications", STACKS),
+        choice("lockFace", "Lock clock", LOCK_FACES), choice("islandIdle", "Island at rest", IDLE), choice("deckEffect", "Dock effect", DECK_EFFECTS), flag("deckGlow", "Dock glow"), choice("padMode", "Launcher", ["launchpad", "list"])],
+    atmosphere: [flag("aurora", "Aurora"), choice("accent", "Accent from", ACCENTS), number("accentStrength", "Accent strength", 0, 1, 0.05), number("wallBlur", "Wallpaper blur", 0, 1, 0.05), number("wallDim", "Wallpaper dim", 0, 0.9, 0.05), number("wallTint", "Wallpaper tint", 0, 1, 0.05)]
+}
+
+export function styleRows(section) {
+    return (ROWS[section] || []).map(r => {
+        const path = Object.keys(OWNED).find(p => OWNED[p][0] === section && OWNED[p][1] === r.key)
+        return Object.assign({}, r, { path: path || "" })
+    })
+}
+
 export function styleFile(style) {
     const out = { version: 2, name: String(style.name).slice(0, 40) }
     for (const section of SECTIONS)

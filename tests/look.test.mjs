@@ -1,7 +1,7 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
 import {
-    MATERIALS, CORNERS, DENSITY, WEIGHTS, CASES, SECTIONS, CONTROL_CHOICES, LOOKS, DEFAULT_LOOK, validateLook, resolveLook, glassFor, lookDefaults, applyLook, pickFont, scaled, slugLook, validateUserLook, validateStyle, takeSection, styleSettings, originOf, styleFile, lookFile, cornerPath, blurRadius, shufflePick, daySeed
+    MATERIALS, CORNERS, DENSITY, WEIGHTS, CASES, SECTIONS, CONTROL_CHOICES, LOOKS, DEFAULT_LOOK, validateLook, resolveLook, glassFor, lookDefaults, applyLook, pickFont, scaled, slugLook, validateUserLook, validateStyle, takeSection, styleSettings, originOf, styleFile, configOwned, styleRows, lookFile, cornerPath, blurRadius, shufflePick, daySeed
 } from "../shell/lib/look.mjs"
 import { DEFAULT_GLASS, effectiveSettings } from "../shell/lib/settings.mjs"
 
@@ -237,4 +237,24 @@ test("a style supplies layout as settings defaults, but config and your settings
 
 test("missing style fonts fall back", () => {
     assert.equal(pickFont("Orbitron", ["Inter"], "Inter"), "Inter")
+})
+
+test("config-owned style keys are reported so the editor can say so", () => {
+    assert.deepEqual(configOwned({ bar: { style: "slab" } }), ["bar.style"])
+    assert.deepEqual(configOwned({ notifications: { server: true } }), [])
+})
+
+test("the editor has a valid row for every value a section holds", () => {
+    for (const s of SECTIONS) {
+        const rows = styleRows(s)
+        for (const k of Object.keys(LOOKS.classic[s]).filter(k => k !== "fonts" && k !== "material" || s === "glass"))
+            assert.ok(rows.some(r => r.key === k), s + "." + k)
+        for (const r of rows) {
+            if (r.kind === "choice")
+                assert.ok(r.options.length > 1 && r.options.every(o => validateStyle({ version: 2, name: "x", [s]: { [r.key]: o } })[s][r.key] === o), s + "." + r.key)
+            if (r.kind === "number")
+                for (const v of [r.min, r.max])
+                    assert.equal(validateStyle({ version: 2, name: "x", [s]: { [r.key]: v } })[s][r.key], v, s + "." + r.key + " " + v)
+        }
+    }
 })

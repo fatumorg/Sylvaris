@@ -36,9 +36,17 @@ Change any part of a Look without leaving it. Each key under `look` overrides th
 
 Your own `glass` keys still beat the material. Picking a Look clears the overrides above and your glass levels, so it shows as designed.
 
+### Editing styles
+
+SylSettings › Look shows every style as a card. Click one to use it. **Edit** opens the style editor on it: a name and the seven sections of a style, each with its own values and two buttons at the top. **Take from** copies that whole section from any other style, which is how you mix them (Neon's layout with Paper's type, say). **Reset section** brings back the original section for a built-in style, or Classic's for your own. Every change applies at once. A value that your `config.json` sets (from Nix, for example) says "Set in your config; your config wins", because config beats a style.
+
+Editing a built-in style saves your version as `looks/<id>.json`, and its card says Edited; **Reset to original** deletes that file. **New style** starts from the style you have now under a new name, and your own styles also have **Duplicate** and **Delete**.
+
 ### Your own Looks
 
-`sylvaris look save Night Owl` keeps the Look you have now, overrides and all, as `~/.config/sylvaris/looks/night-owl.json`; it then shows in `sylvaris look list` and `look.preset` takes `night-owl`. A Look file can also carry a `settings` block, such as `{"motion": {"preset": "calm"}}`, and picking that Look applies it.
+`sylvaris look save Night Owl` keeps the Look you have now, overrides and all, as `~/.config/sylvaris/looks/night-owl.json`; it then shows in `sylvaris look list` and `look.preset` takes `night-owl`.
+
+A style file has `"version": 2`, a `name` and the sections `glass`, `shape`, `type`, `controls`, `motion`, `layout` and `atmosphere`; anything it leaves out comes from Classic, and values that are not valid are ignored. Files from before version 2 (flat keys such as `material` and `corners`, plus a `settings` block such as `{"motion": {"preset": "calm"}}`) still load and apply as before; they are written in the new format only when you save them.
 
 Share one with `sylvaris look export ~/night-owl.json night-owl` (leave out the name to export the Look you have now) and add a friend's with `sylvaris look import ~/their-look.json`. Importing never replaces a Look you already have, and a Look cannot take the name of a built-in one.
 

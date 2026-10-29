@@ -16,6 +16,7 @@ Singleton {
     property var ids: []
     readonly property var families: Qt.fontFamilies()
     readonly property var sections: L.SECTIONS
+    readonly property var configOwned: L.configOwned(Config.values)
     readonly property var glassResult: S.resolveGlass(Config.values.glass, Settings.values.glass, {})
     readonly property var lookErrors: L.validateLook(Config.values.look, root.userLooks).errors.concat(L.validateLook(Settings.raw.look, root.userLooks).errors)
     readonly property var values: L.resolveLook(Settings.values.look, root.glassResult.values, root.userLooks)
@@ -71,6 +72,10 @@ Singleton {
         return L.originOf(id, root.userLooks);
     }
 
+    function styleOr(id: string): var {
+        return root.userLooks[id] !== undefined ? root.userLooks[id] : L.LOOKS[id] !== undefined ? L.LOOKS[id] : L.LOOKS.classic;
+    }
+
     function styleOf(id: string): var {
         const s = root.userLooks[id] !== undefined ? root.userLooks[id] : L.LOOKS[id];
         if (s === undefined)
@@ -102,7 +107,11 @@ Singleton {
     function takeFrom(id: string, section: string, fromId: string): void {
         if (L.SECTIONS.indexOf(section) < 0)
             throw new Error("unknown section: " + section);
-        root.keep(id, L.takeSection(root.styleOf(id), section, root.styleOf(fromId)));
+        root.keep(id, L.takeSection(root.styleOf(id), section, fromId === "" ? L.LOOKS[id] : root.styleOf(fromId)));
+    }
+
+    function resetSection(id: string, section: string): void {
+        root.takeFrom(id, section, L.LOOKS[id] !== undefined ? "" : "classic");
     }
 
     function create(name: string, fromId: string): string {
