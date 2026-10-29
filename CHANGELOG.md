@@ -15,6 +15,8 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - SylSettings › Desktop › Widgets can fill a stack: pick it to add widgets to it, change their options or remove them; before, a stack could only be filled by editing settings.json
 - The photos widget shows its mosaic and polaroid-stack modes and its fade, slide and Ken Burns transitions, which were offered but drew nothing different, and the unbuilt duotone recolour is gone from the choices (a stored duotone falls back to off)
 - The photos widget opens pictures whose names contain #, % or spaces, and no longer shows "No pictures" when a folder scan from before it was set up finished last
+- The calendar widget shows ISO week numbers when Weeks is on; the option did nothing before
+- A clock widget aligned left stays inside its frame instead of starting off its left edge
 
 ## [1.5.1] - 2026-10-28
 

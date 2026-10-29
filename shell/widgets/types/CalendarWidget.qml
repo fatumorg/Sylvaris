@@ -14,7 +14,8 @@ Item {
     readonly property var cells: C.monthGrid(root.now.getFullYear(), root.now.getMonth(), root.firstDay)
     readonly property var labels: C.weekdayLabels(root.firstDay, [0, 1, 2, 3, 4, 5, 6].map(d => Qt.locale().dayName(d, Locale.NarrowFormat)))
     readonly property var busy: root.o.dots !== false && Settings.values.plugins.enabled.diver === true ? Diver.busy(root.now.getFullYear(), root.now.getMonth()) : ({})
-    readonly property real cw: root.width / 7
+    readonly property bool weeks: root.o.weeks === true
+    readonly property real cw: root.width / (root.weeks ? 8 : 7)
     readonly property real ch: (root.height - title.height - 24) / 7
 
     function keyOf(cell: var): string {
@@ -38,7 +39,33 @@ Item {
         font.weight: Font.DemiBold
     }
 
+    Column {
+        visible: root.weeks
+        y: title.height + 8 + root.ch
+
+        Repeater {
+            model: root.weeks ? C.rowWeeks(root.cells, root.firstDay) : []
+
+            delegate: Text {
+                required property int modelData
+                textFormat: Text.PlainText
+                width: root.cw
+                height: root.ch
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                text: modelData
+                color: Theme.textDim
+                font.family: Tokens.fontUi
+                font.pixelSize: Tokens.tinySize
+                font.features: {
+                    "tnum": 1
+                }
+            }
+        }
+    }
+
     Grid {
+        x: root.weeks ? root.cw : 0
         y: title.height + 8
         columns: 7
 

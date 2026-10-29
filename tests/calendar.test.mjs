@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { monthGrid, shiftMonth, weekdayLabels, isSameDay } from "../shell/lib/calendar.mjs"
+import { monthGrid, shiftMonth, weekdayLabels, isSameDay, isoWeek, rowWeeks } from "../shell/lib/calendar.mjs"
 
 test("monthGrid has 42 cells starting on the requested weekday", () => {
     const monday = monthGrid(2026, 8, 1)
@@ -33,4 +33,19 @@ test("weekdayLabels rotates Sunday-first names", () => {
 test("isSameDay compares a cell with a date", () => {
     assert.equal(isSameDay({ year: 2026, month: 8, day: 23 }, new Date(2026, 8, 23, 18, 37)), true)
     assert.equal(isSameDay({ year: 2026, month: 8, day: 22 }, new Date(2026, 8, 23)), false)
+})
+
+test("ISO week numbers, including the ones that belong to the next or last year", () => {
+    assert.equal(isoWeek(2026, 0, 1), 1)
+    assert.equal(isoWeek(2021, 0, 1), 53)
+    assert.equal(isoWeek(2026, 9, 29), 44)
+    assert.equal(isoWeek(2024, 11, 30), 1)
+    assert.equal(isoWeek(2027, 0, 3), 53)
+})
+
+test("each calendar row gets the week of its Monday, whichever day starts the row", () => {
+    const monday = monthGrid(2026, 9, 1)
+    assert.deepEqual(rowWeeks(monday, 1), [40, 41, 42, 43, 44, 45])
+    const sunday = monthGrid(2026, 9, 0)
+    assert.deepEqual(rowWeeks(sunday, 0).slice(0, 2), [40, 41])
 })

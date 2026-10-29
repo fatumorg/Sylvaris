@@ -24,3 +24,19 @@ export function weekdayLabels(firstDay, names) {
 export function isSameDay(cell, date) {
     return cell.year === date.getFullYear() && cell.month === date.getMonth() && cell.day === date.getDate()
 }
+
+export function isoWeek(year, month, day) {
+    const t = new Date(Date.UTC(year, month, day))
+    t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7))
+    const start = Date.UTC(t.getUTCFullYear(), 0, 1)
+    return Math.ceil(((t.getTime() - start) / 86400000 + 1) / 7)
+}
+
+export function rowWeeks(cells, firstDay) {
+    const out = []
+    for (let r = 0; r * 7 < cells.length; r++) {
+        const c = cells[r * 7 + (firstDay === 0 ? 1 : 0)]
+        out.push(isoWeek(c.year, c.month, c.day))
+    }
+    return out
+}

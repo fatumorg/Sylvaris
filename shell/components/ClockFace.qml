@@ -56,6 +56,7 @@ Item {
             visible: root.face === "digital"
             anchors.horizontalCenter: root.align === "center" ? parent.horizontalCenter : undefined
             anchors.right: root.align === "right" ? parent.right : undefined
+            anchors.left: root.align === "left" ? parent.left : undefined
             text: root.time
             color: root.color
             font.family: root.fontName
@@ -67,6 +68,7 @@ Item {
             visible: root.face === "flip"
             anchors.horizontalCenter: root.align === "center" ? parent.horizontalCenter : undefined
             anchors.right: root.align === "right" ? parent.right : undefined
+            anchors.left: root.align === "left" ? parent.left : undefined
             spacing: 8
 
             Repeater {
