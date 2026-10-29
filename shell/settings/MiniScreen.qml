@@ -3,6 +3,7 @@ import qs
 import qs.services
 import "../lib/bar.mjs" as B
 import "../lib/motion.mjs" as M
+import "../lib/capture.mjs" as C
 
 Item {
     id: root
@@ -52,7 +53,7 @@ Item {
         Image {
             anchors.fill: parent
             anchors.margins: 1
-            source: Theme.wallpaper === "" ? "" : "file://" + Theme.wallpaper
+            source: Look.wallPath === "" ? "" : C.fileUri(Look.wallPath)
             sourceSize.width: 480
             fillMode: Image.PreserveAspectCrop
             asynchronous: true

@@ -3,11 +3,12 @@ import QtQuick.Effects
 import QtQuick.Shapes
 import qs
 import qs.services
+import "../lib/capture.mjs" as C
 
 Item {
     id: root
 
-    property string source: Theme.wallpaper
+    property string source: Look.wallPath
     property real blur: 1
     property real dim: 0.3
     property color tint: Theme.accentDeep
@@ -64,7 +65,7 @@ Item {
                         asynchronous: true
                         cache: true
                         sourceSize.width: 1280
-                        source: !root.gpu || Tokens.lite || root.source === "" ? "" : "file://" + root.source
+                        source: !root.gpu || Tokens.lite || root.source === "" ? "" : C.fileUri(root.source)
                     }
 
                     MultiEffect {

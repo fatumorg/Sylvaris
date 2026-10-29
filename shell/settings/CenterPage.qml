@@ -231,7 +231,7 @@ Column {
         SettingRow {
             title: "Layout"
             key: "center.layout"
-            subtitle: "Even tiles, or two wide tiles over small squares"
+            subtitle: "Even tiles, or two wide tiles over small ones"
 
             Segmented {
                 width: 220

@@ -17,6 +17,8 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - The photos widget opens pictures whose names contain #, % or spaces, and no longer shows "No pictures" when a folder scan from before it was set up finished last
 - The calendar widget shows ISO week numbers when Weeks is on; the option did nothing before
 - A clock widget aligned left stays inside its frame instead of starting off its left edge
+- SylSettings' previews and the blurred backdrop behind SylPad, SylPower, the lock screen and SylViewer show the wallpaper you actually have, including one picked in SylPaper for a theme, and open paths with # or spaces
+- Segmented choices size each option to its label, so long ones like Control Center no longer spill into their neighbours, and elide when there is no room
 
 ## [1.5.1] - 2026-10-28
 

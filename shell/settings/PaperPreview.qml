@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Effects
 import qs.services
+import "../lib/capture.mjs" as C
 
 MiniScreen {
     id: root
@@ -19,7 +20,7 @@ MiniScreen {
         id: img
         anchors.fill: parent
         visible: false
-        source: Theme.wallpaper === "" ? "" : "file://" + Theme.wallpaper
+        source: Look.wallPath === "" ? "" : C.fileUri(Look.wallPath)
         sourceSize.width: 480
         fillMode: root.paper.fit === "contain" ? Image.PreserveAspectFit : root.paper.fit === "center" ? Image.Pad : root.paper.fit === "tile" ? Image.Tile : Image.PreserveAspectCrop
         asynchronous: true
