@@ -104,6 +104,12 @@ in
       description = "Make SylNotes the default app for plain text, Markdown, config files and source code, through xdg.mimeApps.";
     };
 
+    fonts.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Install the fonts the built-in styles use: IBM Plex, Geist, Orbitron, Departure Mono, Fraunces, Lora, Inter and JetBrains Mono Nerd Font.";
+    };
+
     themes = lib.mkOption {
       type = lib.types.attrsOf json.type;
       default = { };
@@ -119,7 +125,9 @@ in
       }
     ];
 
-    home.packages = [ (cfg.package.override { sylvarisParts = parts; }) ];
+    home.packages = [ (cfg.package.override { sylvarisParts = parts; }) ] ++ lib.optionals cfg.fonts.enable (import ./fonts.nix pkgs);
+
+    fonts.fontconfig.enable = lib.mkIf cfg.fonts.enable true;
 
     xdg.dataFile."dbus-1/services/org.freedesktop.FileManager1.service" = lib.mkIf (cfg.defaultFileManager && (parts.files or true)) {
       text = ''

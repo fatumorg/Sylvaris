@@ -200,6 +200,10 @@ fc-cache -f
 
 Skip the Inter lines if your distribution installed `fonts-inter`, `rsms-inter-fonts` or similar. Restart Sylvaris afterwards so it sees the new fonts.
 
+### Fonts for the styles
+
+Each built-in style uses its own fonts: Classic IBM Plex Sans and Mono, Frost and Ink Geist and Geist Mono, Neon Geist Mono, Orbitron and Departure Mono, and Paper Lora, Fraunces and IBM Plex Mono. They are optional: a missing font falls back to Inter and JetBrainsMono Nerd Font. With Nix, `programs.sylvaris.fonts.enable` (on by default in both the NixOS and the Home Manager module) installs all of them; set it to `false` to keep them out. On Arch, `ttf-ibm-plex` is in the official repositories. Elsewhere, get the ones you want from their releases ([IBM Plex](https://github.com/IBM/plex/releases), [Geist](https://github.com/vercel/geist-font/releases), [Orbitron](https://github.com/theleagueof/orbitron), [Departure Mono](https://departuremono.com), [Fraunces](https://github.com/undercasetype/Fraunces/releases), [Lora](https://github.com/cyrealtype/Lora-Cyrillic/releases)) into `~/.local/share/fonts` and run `fc-cache -f`.
+
 ## Build SylStack
 
 `make` in a clone builds SylStack with CMake. It needs:

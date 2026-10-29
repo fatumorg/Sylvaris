@@ -33,6 +33,7 @@ optdepends=(
   'git: installing plugins from git'
   'kitty: terminal widget'
   'cava: visualizer widget'
+  'ttf-ibm-plex: the Classic and Paper styles'
   'syntax-highlighting: SylNotes syntax highlighting'
 )
 provides=('sylvaris')

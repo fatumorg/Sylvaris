@@ -31,6 +31,12 @@ let
 in
 {
   options.programs.sylvaris = {
+    fonts.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Install the fonts the built-in styles use: IBM Plex, Geist, Orbitron, Departure Mono, Fraunces, Lora, Inter and JetBrains Mono Nerd Font.";
+    };
+
     lock.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
@@ -95,6 +101,9 @@ in
   };
 
   config = lib.mkMerge [
+    (lib.mkIf cfg.fonts.enable {
+      fonts.packages = import ./fonts.nix pkgs;
+    })
     (lib.mkIf cfg.lock.enable {
       security.pam.services.sylvaris = { };
     })
