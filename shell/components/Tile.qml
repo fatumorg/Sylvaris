@@ -25,6 +25,7 @@ Item {
         color: "transparent"
 
         Glass {
+            id: body
             anchors.fill: parent
             z: -1
             radius: parent.radius
@@ -108,7 +109,8 @@ Item {
                 anchors.centerIn: parent
                 text: root.icon
                 size: Tokens.tileIconFont
-                color: root.active && root.split ? Theme.onAccent : Theme.text
+                marked: !root.split
+                color: root.active && root.split || body.inverted ? Theme.onAccent : Theme.text
 
                 Behavior on color {
                     ColorAnimation {
@@ -144,7 +146,7 @@ Item {
                 text: root.title
                 elide: Text.ElideRight
                 horizontalAlignment: root.small ? Text.AlignHCenter : Text.AlignLeft
-                color: Theme.text
+                color: body.inverted ? Theme.onAccent : Theme.text
                 font.family: Tokens.fontUi
                 font.pixelSize: root.small ? Tokens.smallSize : Tokens.bodySize
                 font.weight: Font.DemiBold
@@ -156,7 +158,7 @@ Item {
                 width: parent.width
                 text: root.subtitle
                 elide: Text.ElideRight
-                color: Theme.textDim
+                color: body.inverted ? Theme.onAccent : Theme.textDim
                 font.family: Tokens.fontUi
                 font.pixelSize: Tokens.smallSize
             }

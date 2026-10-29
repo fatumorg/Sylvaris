@@ -7,6 +7,10 @@ Rectangle {
 
     property string icon: ""
     property string label: ""
+    readonly property string kind: Tokens.buttonStyle
+    readonly property bool flipped: root.kind === "solid" || body.inverted
+    readonly property color ink: root.flipped ? Theme.onAccent : Theme.text
+    readonly property color iconInk: root.flipped ? Theme.onAccent : Theme.accent
 
     signal clicked
 
@@ -31,14 +35,24 @@ Rectangle {
             easing.bezierCurve: area.pressed ? Tokens.enterCurve : Tokens.springCurve
         }
     }
-    color: "transparent"
+    color: root.kind === "solid" ? (hover.hovered ? Theme.accentHi : Theme.accent) : "transparent"
+    border.width: root.kind === "outline" ? Math.max(1, Tokens.borderWidth) : 0
+    border.color: hover.hovered ? Theme.accent : Qt.alpha(Theme.text, 0.3)
+
+    Behavior on color {
+        ColorAnimation {
+            duration: Tokens.stateDuration
+        }
+    }
 
     Glass {
+        id: body
+        visible: root.kind === "glass"
         anchors.fill: parent
         z: -1
         radius: root.radius
         inner: true
-        hot: hover.hovered
+        hot: hover.hovered && root.kind === "glass"
         offColor: hover.hovered ? Theme.tintMid : Theme.tintSoft
     }
 
@@ -58,7 +72,8 @@ Rectangle {
         visible: root.label === ""
         text: root.icon
         size: 20
-        color: Theme.accent
+        marked: true
+        color: root.iconInk
     }
 
     Row {
@@ -71,7 +86,8 @@ Rectangle {
         Glyph {
             text: root.icon
             size: 20
-            color: Theme.accent
+            marked: true
+            color: root.iconInk
         }
 
         Text {
@@ -79,9 +95,10 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             visible: root.label !== ""
             text: root.label
-            color: Theme.text
+            color: root.ink
             font.family: Tokens.fontUi
             font.pixelSize: Tokens.bodySize
+            font.underline: root.kind === "text" && hover.hovered
         }
     }
 }

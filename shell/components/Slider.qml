@@ -1,6 +1,7 @@
 import QtQuick
 import qs
 import qs.services
+import "../lib/controls.mjs" as C
 
 Rectangle {
     id: root
@@ -9,6 +10,12 @@ Rectangle {
     property string icon: ""
     property string label: ""
     property string trailing: ""
+
+    readonly property string kind: Tokens.sliderStyle
+    readonly property bool filled: root.kind === "fill"
+    readonly property real level: Math.max(0, Math.min(1, root.value))
+    readonly property real trackX: root.filled ? 0 : lead.x + lead.width + 14
+    readonly property real trackW: root.filled ? root.width : Math.max(24, trailingText.x - 14 - root.trackX)
 
     signal moved(real v)
     signal iconClicked
@@ -28,7 +35,8 @@ Rectangle {
 
 
     Item {
-        width: parent.width * Math.max(0, Math.min(1, root.value))
+        visible: root.filled
+        width: parent.width * root.level
         height: parent.height
         clip: true
 
@@ -50,13 +58,13 @@ Rectangle {
     }
 
     Rectangle {
-        x: Math.max(4, Math.min(root.width - 8, root.width * Math.max(0, Math.min(1, root.value)) - 6))
+        x: Math.max(4, Math.min(root.width - 8, root.width * root.level - 6))
         anchors.verticalCenter: parent.verticalCenter
         width: 4
         height: root.height * (drag.pressed ? 0.62 : 0.3)
         radius: width / 2
         color: Theme.accentHi
-        opacity: drag.pressed && !Tokens.lite ? 0.9 : 0
+        opacity: root.filled && drag.pressed && !Tokens.lite ? 0.9 : 0
         visible: opacity > 0
 
         Behavior on height {
@@ -74,15 +82,89 @@ Rectangle {
         }
     }
 
+    Item {
+        visible: root.kind === "line"
+        x: root.trackX
+        width: root.trackW
+        height: root.height
+
+        Rectangle {
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width
+            height: 4
+            radius: height / 2
+            color: Qt.alpha(Theme.text, 0.16)
+        }
+
+        Rectangle {
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width * root.level
+            height: 4
+            radius: height / 2
+            color: Theme.accent
+        }
+
+        Rectangle {
+            x: parent.width * root.level - width / 2
+            anchors.verticalCenter: parent.verticalCenter
+            width: 18
+            height: 18
+            radius: height / 2
+            antialiasing: true
+            color: Theme.text
+            border.width: 2
+            border.color: Theme.accent
+            scale: drag.pressed ? 1.15 : 1
+
+            Behavior on scale {
+                NumberAnimation {
+                    duration: Tokens.stateDuration
+                }
+            }
+        }
+    }
+
+    Row {
+        id: ticks
+        visible: root.kind === "ticks"
+        x: root.trackX
+        anchors.verticalCenter: parent.verticalCenter
+        spacing: 3
+
+        Repeater {
+            model: C.TICKS
+            delegate: Rectangle {
+                required property int index
+                width: Math.max(2, (root.trackW - ticks.spacing * (C.TICKS - 1)) / C.TICKS)
+                height: Math.round(root.height * 0.36)
+                radius: Math.min(2, Tokens.r(2))
+                color: index < C.ticksLit(root.level, C.TICKS) ? Theme.accent : Qt.alpha(Theme.text, 0.14)
+
+                Behavior on color {
+                    ColorAnimation {
+                        duration: Tokens.stateDuration
+                    }
+                }
+            }
+        }
+    }
+
     MouseArea {
         id: drag
         anchors.fill: parent
         preventStealing: true
         cursorShape: Qt.PointingHandCursor
         function pick(mx: real): void {
-            root.moved(Math.max(0, Math.min(1, mx / width)));
+            root.moved(Math.max(0, Math.min(1, (mx - root.trackX) / root.trackW)));
         }
-        onPressed: mouse => pick(mouse.x)
+        onPressed: mouse => {
+            if (!root.filled && mouse.x < root.trackX - 9)
+                mouse.accepted = false;
+            else if (root.kind === "ticks")
+                root.moved(C.tickValue(Math.max(0, Math.min(C.TICKS - 1, Math.floor((mouse.x - root.trackX) / root.trackW * C.TICKS))), C.TICKS));
+            else
+                pick(mouse.x);
+        }
         onPositionChanged: mouse => {
             if (pressed)
                 pick(mouse.x);
@@ -113,7 +195,7 @@ Rectangle {
         Text {
             textFormat: Text.PlainText
             anchors.verticalCenter: parent.verticalCenter
-            width: Math.max(0, Math.min(implicitWidth, trailingText.x - 12 - lead.x - leadIcon.width - lead.spacing))
+            width: Math.max(0, Math.min(implicitWidth, root.filled ? trailingText.x - 12 - lead.x - leadIcon.width - lead.spacing : root.width * 0.3))
             text: root.label
             elide: Text.ElideRight
             color: Theme.text

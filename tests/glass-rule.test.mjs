@@ -8,7 +8,8 @@ const FILL = /^\s*color:\s.*Theme\.(surface|node|glass|tint|tintSoft|tintStrong)
 const PLAIN_MID = /^\s*color:\s*Theme\.tintMid\s*$/
 const ALLOW = {
     "center/MediaCard.qml": ["color: Theme.surface"],
-    "components/HaloCore.qml": ["color: Qt.lighter(Theme.surface, 1.5)"]
+    "components/HaloCore.qml": ["color: Qt.lighter(Theme.surface, 1.5)"],
+    "components/Glyph.qml": ["color: root.mark === \"plate\" ? Theme.tint : \"transparent\""]
 }
 
 function qmlFiles(dir) {

@@ -25,6 +25,7 @@ Singleton {
     property string fontUiName: "Inter"
     property string fontMonoName: "JetBrainsMono Nerd Font"
     property string fontDisplayName: "Inter"
+    readonly property string fontGlyph: "JetBrainsMono Nerd Font"
     property int titleWeight: Font.DemiBold
     property string toggleStyle: "pill"
     property string sliderStyle: "line"
