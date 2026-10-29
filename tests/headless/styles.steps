@@ -1,0 +1,38 @@
+sleep 1.5
+syl look set lumen
+wait sylvaris look state | grep -Eq '"preset": *"lumen"'
+syl center open
+sleep 1
+shot styles-lumen
+syl center close
+syl look set classic
+wait sylvaris look state | grep -Eq '"preset": *"classic"'
+syl center open
+sleep 1
+shot styles-classic
+syl center close
+syl look set frost
+wait sylvaris look state | grep -Eq '"preset": *"frost"'
+syl center open
+sleep 1
+shot styles-frost
+syl center close
+syl look set ink
+wait sylvaris look state | grep -Eq '"preset": *"ink"'
+syl center open
+sleep 1
+shot styles-ink
+syl center close
+syl look set neon
+wait sylvaris look state | grep -Eq '"preset": *"neon"'
+syl center open
+sleep 1
+shot styles-neon
+syl center close
+syl look set paper
+wait sylvaris look state | grep -Eq '"preset": *"paper"'
+syl center open
+sleep 1
+shot styles-paper
+syl center close
+check ! grep -E 'TypeError|ReferenceError' "$OUT/shell.log"

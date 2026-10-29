@@ -2,20 +2,27 @@
 
 ## Looks
 
-A Look is a whole style in one word: a glass material, a corner shape, how round and how roomy things are, fonts and a type weight. Pick one with `look.preset`:
+A Look (a style) reshapes everything the shell draws: the glass, the corners and spacing, the fonts, how switches, sliders, tabs, buttons, cards, hover and icons are built, the motion, the layout of the bar, Control Center, notifications, the lock clock, the island, the dock and the launcher, and how the accent and wallpaper are treated. Themes still own the colours. Pick one with `look.preset`:
 
-| Look | Material | Feel |
-|---|---|---|
-| `lumen` (default) | lumen | bright glass with a soft highlight, glow and shadow, squircle corners, Inter Display titles |
-| `classic` | resin | Sylvaris 1.1 exactly, for anyone who liked it as it was |
-| `frost` | frost | thick frosted glass, roomy, light type |
-| `ink` | ink | nearly solid dark panels, tight and compact |
-| `neon` | neon | thin glass with a glowing rim and bevelled corners |
-| `paper` | paper | matte and grainy, serif titles |
+| | `lumen` (default) | `classic` | `frost` | `ink` | `neon` | `paper` |
+|---|---|---|---|---|---|---|
+| Feel | soft light through frosted glass | the dependable desktop | cold air, quiet, lots of room | printed, dense, decisive | night city, synthwave | stationery and ink on paper |
+| Glass | lumen | resin | frost | ink | neon | paper, extra grain |
+| Shape | squircle, cozy | round, cozy | round, roomy, outlines | sharp, compact, thick outlines | bevel, cozy, outlines | soft round, roomy, outlines |
+| Fonts | Inter, Inter Display | IBM Plex Sans and Mono | Geist, Geist Mono, light | Geist, heavy, upper case | Geist Mono, Orbitron, Departure Mono, upper case | Lora, Fraunces, small caps |
+| Switches, sliders | pill, fill | pill, line | pill, line | block, ticks | lamp, ticks | check box, line |
+| Tabs, buttons, cards | pill, glass, glass | boxed, solid, solid | underline, text, outline | boxed, outline, outline | boxed, outline, outline | underline, text, lifted |
+| Hover, icons, dividers | lift, plain, none | glow, plain, hairline | glow, ring, hairline | invert, plain, hairline | glow, glow, dashed | underline, plain, dashed |
+| Motion | smooth, morph, springy | calm, grow | calm, blur | snappy, drop | playful, swing, very springy | calm, unfold |
+| Bar, workspaces | float, dots | slab, numbers | minimal, dots | slab, numbers | islands, pills | minimal, numbers |
+| Center, notifications | bento, cards | grid, list | grid, list | grid, list | bento, cards | grid, list |
+| Lock clock, island at rest | giant, pill | default, clock | analog, hidden | digital, clock | flip, pill | word, hidden |
+| Dock, launcher | magnify with glow, launchpad | bloom, launchpad | magnify, launchpad | no effect, list | bloom with glow, launchpad | no effect, list |
+| Atmosphere | aurora, accent 60% | accent 50% | aurora, accent 30%, wallpaper blur | accent 100%, wallpaper dimmed | aurora, accent 100%, wallpaper tinted | accent 40% |
 
-Lumen also sets a few parts: a floating bar with dot workspaces, the bento control center, notifications stacked as cards, the giant lock clock, a glow under open apps on SylDeck and windows that morph open. Anything you set yourself wins, and every other Look keeps the 1.1 layout.
+The motion, layout and wallpaper choices are ordinary settings that a Look supplies as defaults: anything you set yourself, in SylSettings or `config.json`, wins until you pick a Look again. The fonts come with the Nix modules (`programs.sylvaris.fonts.enable`); elsewhere a missing font falls back to Inter and JetBrainsMono Nerd Font, see [fonts for the styles](install.md#fonts-for-the-styles). Lite mode turns off every glow, blur, grain, sheen and hard shadow in every Look.
 
-SylSettings › Style shows every Look as a card and has a control for each key below, plus a font finder and a button to save what you made.
+SylSettings › Look shows every Look as a card; [edit one](#editing-styles) to change any of this.
 
 Change any part of a Look without leaving it. Each key under `look` overrides the preset:
 
