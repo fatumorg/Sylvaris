@@ -172,8 +172,9 @@ Item {
             property: "opacity"
             from: root.transition === "slide" || root.behind === "" ? 1 : 0
             to: 1
-            duration: Tokens.lite ? 0 : 700
-            easing.type: Easing.InOutQuad
+            duration: Tokens.lite ? 0 : Tokens.morphDuration
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Tokens.moveCurve
         }
 
         NumberAnimation {
@@ -181,8 +182,9 @@ Item {
             property: "x"
             from: root.transition === "slide" && root.behind !== "" ? view.width : 0
             to: 0
-            duration: Tokens.lite ? 0 : 600
-            easing.type: Easing.OutCubic
+            duration: Tokens.lite ? 0 : Tokens.moveDuration
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Tokens.moveCurve
         }
 
         NumberAnimation {
@@ -190,8 +192,9 @@ Item {
             property: "x"
             from: 0
             to: root.transition === "slide" && root.behind !== "" ? -view.width : 0
-            duration: Tokens.lite ? 0 : 600
-            easing.type: Easing.OutCubic
+            duration: Tokens.lite ? 0 : Tokens.moveDuration
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Tokens.moveCurve
         }
 
         NumberAnimation {
