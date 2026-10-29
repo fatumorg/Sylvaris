@@ -15,6 +15,7 @@ Singleton {
     property var userLooks: ({})
     property var ids: []
     readonly property var families: Qt.fontFamilies()
+    readonly property var sections: L.SECTIONS
     readonly property var glassResult: S.resolveGlass(Config.values.glass, Settings.values.glass, {})
     readonly property var lookErrors: L.validateLook(Config.values.look, root.userLooks).errors.concat(L.validateLook(Settings.raw.look, root.userLooks).errors)
     readonly property var values: L.resolveLook(Settings.values.look, root.glassResult.values, root.userLooks)
@@ -28,7 +29,8 @@ Singleton {
             mono: L.pickFont(root.values.fonts.mono, root.families, "JetBrainsMono Nerd Font"),
             display: L.pickFont(root.values.fonts.display, root.families, L.pickFont(root.values.fonts.ui, root.families, "Inter"))
         })
-    readonly property int weight: root.values.weight === "light" ? Font.Normal : root.values.weight === "medium" ? Font.Bold : Font.DemiBold
+    readonly property int weight: root.values.weight === "light" ? Font.Normal : root.values.weight === "medium" ? Font.Bold : root.values.weight === "heavy" ? Font.Black : Font.DemiBold
+    readonly property int labelCase: root.values.labelCase === "upper" ? Font.AllUppercase : root.values.labelCase === "smallcaps" ? Font.SmallCaps : Font.MixedCase
     property string followed: ""
     property string shuffledDay: ""
     readonly property string dayPath: (Stack.env("XDG_STATE_HOME") || Settings.home + "/.local/state") + "/sylvaris/shuffle-day"
@@ -62,7 +64,90 @@ Singleton {
     }
 
     function list(): var {
-        return Object.keys(L.LOOKS).concat(Object.keys(root.userLooks).sort());
+        return Object.keys(L.LOOKS).concat(Object.keys(root.userLooks).filter(id => L.LOOKS[id] === undefined).sort());
+    }
+
+    function origin(id: string): string {
+        return L.originOf(id, root.userLooks);
+    }
+
+    function styleOf(id: string): var {
+        const s = root.userLooks[id] !== undefined ? root.userLooks[id] : L.LOOKS[id];
+        if (s === undefined)
+            throw new Error("unknown style: " + id);
+        return s;
+    }
+
+    function keep(id: string, style: var): void {
+        const v = L.validateStyle(L.styleFile(style));
+        if (v === null)
+            throw new Error("a style needs a name");
+        root.store(id, L.styleFile(v));
+    }
+
+    function update(id: string, section: string, key: string, value: var): void {
+        const s = JSON.parse(JSON.stringify(root.styleOf(id)));
+        if (section === "name") {
+            s.name = String(value).slice(0, 40);
+        } else {
+            if (L.SECTIONS.indexOf(section) < 0)
+                throw new Error("unknown section: " + section);
+            s[section][key] = value;
+            if (JSON.stringify(L.validateStyle(L.styleFile(s))[section][key]) !== JSON.stringify(value))
+                throw new Error("not a valid " + section + "." + key + ": " + JSON.stringify(value));
+        }
+        root.keep(id, s);
+    }
+
+    function takeFrom(id: string, section: string, fromId: string): void {
+        if (L.SECTIONS.indexOf(section) < 0)
+            throw new Error("unknown section: " + section);
+        root.keep(id, L.takeSection(root.styleOf(id), section, root.styleOf(fromId)));
+    }
+
+    function create(name: string, fromId: string): string {
+        const id = L.slugLook(name);
+        if (id === "")
+            throw new Error(String(name).trim() === "" ? "give the style a name" : "pick a name that is not a built-in style");
+        if (root.userLooks[id] !== undefined)
+            throw new Error("you already have a style called " + id);
+        const s = JSON.parse(JSON.stringify(root.styleOf(fromId)));
+        s.name = String(name).trim().slice(0, 40);
+        root.keep(id, s);
+        return id;
+    }
+
+    function duplicate(id: string): string {
+        const base = root.styleOf(id).name + " copy";
+        let name = base;
+        for (let n = 2; root.userLooks[L.slugLook(name)] !== undefined || L.slugLook(name) === ""; n++)
+            name = base + " " + n;
+        return root.create(name, id);
+    }
+
+    function forget(id: string): void {
+        if (!/^[a-z0-9][a-z0-9-]{0,39}$/.test(id) || root.userLooks[id] === undefined)
+            throw new Error("no style file for " + id);
+        remover.command = ["rm", "-f", "--", root.dir + "/" + id + ".json"];
+        remover.running = true;
+        const next = Object.assign({}, root.userLooks);
+        delete next[id];
+        root.userLooks = next;
+    }
+
+    function remove(id: string): void {
+        if (L.LOOKS[id] !== undefined)
+            throw new Error("built-in styles cannot be removed; use look reset " + id);
+        const active = Settings.values.look.preset === id;
+        root.forget(id);
+        if (active)
+            root.set(L.DEFAULT_LOOK.preset);
+    }
+
+    function reset(id: string): void {
+        if (L.LOOKS[id] === undefined)
+            throw new Error("only built-in styles can be reset: " + id);
+        root.forget(id);
     }
 
     function set(id: string): void {
@@ -166,7 +251,7 @@ Singleton {
         const p = S.parseJson(text);
         const look = p.ok ? L.validateUserLook(p.value) : null;
         const next = Object.assign({}, root.userLooks);
-        if (look === null || L.LOOKS[id] !== undefined)
+        if (look === null)
             delete next[id];
         else
             next[id] = look;
@@ -226,6 +311,10 @@ Singleton {
 
     Process {
         id: dayWriter
+    }
+
+    Process {
+        id: remover
     }
 
     FileView {

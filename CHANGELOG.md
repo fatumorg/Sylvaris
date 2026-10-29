@@ -7,6 +7,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 ### Added
 
 - sylvaris paper shown prints the wallpaper each screen is drawing
+- sylvaris look styles, look take, look reset and look remove list, mix and restore styles from the command line
 
 ### Changed
 

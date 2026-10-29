@@ -1,0 +1,14 @@
+sleep 1.5
+syl look set ink
+check sylvaris look styles | grep -q '^ink built-in Ink$'
+syl look take layout neon
+wait sylvaris look styles | grep -q '^ink edited Ink$'
+check test -f "$HOME/.config/sylvaris/looks/ink.json"
+wait sylvaris settings get lock.face | grep -q flip
+syl look reset ink
+wait sylvaris look styles | grep -q '^ink built-in Ink$'
+check test ! -e "$HOME/.config/sylvaris/looks/ink.json"
+check printf '{' > "$HOME/.config/sylvaris/looks/neon.json"
+wait sylvaris look styles | grep -q '^neon built-in Neon$'
+syl look set neon
+wait sylvaris look state | grep -Eq '"preset": *"neon"'

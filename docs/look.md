@@ -42,6 +42,8 @@ Your own `glass` keys still beat the material. Picking a Look clears the overrid
 
 Share one with `sylvaris look export ~/night-owl.json night-owl` (leave out the name to export the Look you have now) and add a friend's with `sylvaris look import ~/their-look.json`. Importing never replaces a Look you already have, and a Look cannot take the name of a built-in one.
 
+`sylvaris look styles` lists every style as `id origin name`, where the origin is `built-in`, `edited` (a built-in you changed) or `yours`. `sylvaris look take <section> <style> [id]` copies one whole section (`glass`, `shape`, `type`, `controls`, `motion`, `layout` or `atmosphere`) from another style into the one you have now, or into `id`. Taking into a built-in saves your edit as `looks/<id>.json`, which then replaces it; `sylvaris look reset <id>` deletes that file and brings the original back. `sylvaris look remove <id>` deletes one of your own styles. A style file that is not valid JSON is ignored, and the built-in is used.
+
 ### A theme from your wallpaper
 
 `sylvaris theme generate` reads the wallpaper you have now, finds its main colours and writes a full theme to your themes folder as `wall-<id>.json`, then prints that id. Apply it with `sylvaris theme set <id>`. Give a path to use another picture, and add `dark` or `light` to choose the base; otherwise a bright picture gets a light theme. Text always keeps a contrast of at least 7:1 on the base, dimmed text 4.5:1, and text on the accent 4.5:1.

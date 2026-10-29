@@ -757,6 +757,14 @@ ShellRoot {
             look: {
                 default: "state",
                 list: () => Look.list(),
+                styles: () => Look.list().map(id => id + " " + Look.origin(id) + " " + Look.styleOf(id).name).join("\n"),
+                take: (section, from, id) => {
+                    if (section === undefined || from === undefined)
+                        throw new Error("usage: look take <" + Look.sections.join("|") + "> <style> [id]");
+                    Look.takeFrom(id || Settings.values.look.preset, section, from);
+                },
+                reset: id => Look.reset(id || ""),
+                remove: id => Look.remove(id || ""),
                 set: id => {
                     if (id === undefined)
                         throw new Error("usage: look set <" + Look.list().join("|") + ">");
@@ -1364,7 +1372,7 @@ ShellRoot {
     Binding {
         target: Tokens
         property: "textScale"
-        value: Settings.values.access.text
+        value: Settings.values.access.text * Look.values.textScale
     }
 
     Binding {

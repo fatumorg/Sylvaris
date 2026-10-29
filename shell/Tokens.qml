@@ -26,6 +26,18 @@ Singleton {
     property string fontMonoName: "JetBrainsMono Nerd Font"
     property string fontDisplayName: "Inter"
     property int titleWeight: Font.DemiBold
+    property string toggleStyle: "pill"
+    property string sliderStyle: "line"
+    property string segmentedStyle: "boxed"
+    property string buttonStyle: "solid"
+    property string cardStyle: "solid"
+    property string hoverStyle: "glow"
+    property string iconStyle: "plain"
+    property string dividerStyle: "hairline"
+    property int labelCase: Font.MixedCase
+    property real tracking: 0
+    property real borderWidth: 0
+    property real accentStrength: 0.5
     readonly property real pace: root.lite ? 0.55 : root.motion * root.curves.pace
     readonly property int enterDuration: Math.round(340 * root.pace)
     readonly property int exitDuration: Math.round(190 * root.pace)
