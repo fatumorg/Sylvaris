@@ -540,13 +540,13 @@ function panelRect(rect, padding) {
 export function kittyArgs(item, rect, screenName, socket) {
     const o = item.options
     const r = panelRect(rect, o.padding)
+    const command = String(o.command || "").trim()
     const args = ["+kitten", "panel", "--edge=none", "--layer", item.layer === "desktop" ? "bottom" : item.layer === "overlay" ? "overlay" : "top",
         "--output-name", screenName, "--margin-left", String(r.x), "--margin-top", String(r.y),
         "--columns", r.w + "px", "--lines", r.h + "px", "--class", "sylwidget-" + item.id,
-        "--focus-policy", o.typing ? "on-demand" : "not-allowed", "--listen-on", "unix:" + socket,
+        "--focus-policy", o.typing || command === "" ? "on-demand" : "not-allowed", "--listen-on", "unix:" + socket,
         "-o", "allow_remote_control=socket-only", "-o", "background_opacity=" + o.opacity, "-o", "font_size=" + o.fontSize,
         "-o", "window_padding_width=0", "-o", "window_margin_width=0", "-o", "single_window_margin_width=0", "-o", "window_border_width=0"]
-    const command = String(o.command || "").trim()
     return command === "" ? args : args.concat(splitCommand(command))
 }
 

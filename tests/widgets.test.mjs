@@ -193,6 +193,7 @@ test("kitty gets the command as argv, never through a shell", () => {
     assert.equal(a[a.indexOf("--focus-policy") + 1], "not-allowed")
     const shell = kittyArgs(Object.assign({}, item, { options: TYPES.terminal.defaults }), rect, "DP-1", "/run/s.sock")
     assert.equal(shell[shell.length - 1], "window_border_width=0")
+    assert.equal(shell[shell.indexOf("--focus-policy") + 1], "on-demand")
     assert.deepEqual(splitCommand("btop --utf-force 'a b' \"\""), ["btop", "--utf-force", "a b", ""])
     assert.ok(moveArgs(rect, "/run/s.sock", 10).includes("--action=os-panel"))
 })

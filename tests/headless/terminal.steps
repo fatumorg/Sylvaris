@@ -1,0 +1,16 @@
+sleep 1.5
+write sylvaris/settings.json {"version":1,"widgets":{"items":[{"id":"w002","type":"terminal","anchor":"top-left","col":0,"row":1,"w":6,"h":4,"options":{"command":"sh -c 'cat >> \"$HOME/typed.txt\"'","opacity":1,"padding":10,"typing":false}}]}}
+wait test -S "$XDG_RUNTIME_DIR/sylvaris/kitty-w002.sock"
+sleep 2
+pointer move 280 280 click 1
+sleep 1
+bg wtype before -k Return
+sleep 1.5
+write sylvaris/settings.json {"version":1,"widgets":{"items":[{"id":"w002","type":"terminal","anchor":"top-left","col":0,"row":1,"w":6,"h":4,"options":{"command":"sh -c 'cat >> \"$HOME/typed.txt\"'","opacity":1,"padding":10,"typing":true}}]}}
+sleep 4
+pointer move 280 280 click 1
+sleep 1
+bg wtype after -k Return
+wait grep -q after "$HOME/typed.txt"
+check ! grep -q before "$HOME/typed.txt"
+shot terminal

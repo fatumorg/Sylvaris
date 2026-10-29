@@ -41,7 +41,7 @@ Changes are saved when you are done; two widgets that ended up on top of each ot
 | `sticker` | a picture or GIF without a frame of its own | picture or GIF, recolour (tint or mono), strength |
 | `fatest` | the last speed test and a button that runs one (with the FaTest plugin) | upload, ping |
 
-The terminal widget needs kitty 0.42 or newer; Sylvaris starts `kitty +kitten panel` at the widget's place and moves it with the widget. The command runs as given, never through a shell. The visualizer needs `cava`, which the Nix package brings along.
+The terminal widget needs kitty 0.42 or newer; Sylvaris starts `kitty +kitten panel` at the widget's place and moves it with the widget. The command runs as given, never through a shell. With no command it opens your shell, and you can click it and type; a command only takes keys when **Type into it** is on. Changing an option restarts the panel. The visualizer needs `cava`, which the Nix package brings along.
 
 ## Settings
 

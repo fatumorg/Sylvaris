@@ -15,6 +15,9 @@ Item {
     property string error: ""
     property var exits: []
     property string launched: ""
+    readonly property string setup: root.item === null || root.frame === null ? "" : JSON.stringify([root.item.options, root.item.layer, root.frame.screenName])
+    property string started: ""
+    property bool reopening: false
 
     function args(): var {
         return Wd.kittyArgs(root.item, root.rect, root.frame.screenName, root.socket);
@@ -25,7 +28,15 @@ Item {
             return;
         kitty.command = ["sh", "-c", "mkdir -p \"$(dirname \"$1\")\" && rm -f \"$1\" && shift && exec kitty \"$@\"", "sh", root.socket].concat(root.args());
         root.launched = JSON.stringify(root.rect);
+        root.started = root.setup;
         kitty.running = true;
+    }
+
+    onSetupChanged: {
+        if (!kitty.running || root.started === "" || root.setup === root.started)
+            return;
+        root.reopening = true;
+        kitty.running = false;
     }
 
     onRectChanged: {
@@ -58,6 +69,11 @@ Item {
     Process {
         id: kitty
         onExited: () => {
+            if (root.reopening) {
+                root.reopening = false;
+                root.launch();
+                return;
+            }
             const now = Date.now();
             root.exits = root.exits.concat([now]).slice(-5);
             if (root.item !== null && root.item.options.restart && Wd.shouldRestart(root.exits, now))

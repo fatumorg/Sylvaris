@@ -41,9 +41,10 @@ PanelWindow {
     WlrLayershell.layer: win.item !== null && win.item.layer === "overlay" ? WlrLayer.Overlay : win.item !== null && win.item.layer === "above" ? WlrLayer.Top : WlrLayer.Bottom
     WlrLayershell.namespace: "sylwidget-" + win.modelData
     WlrLayershell.keyboardFocus: win.item !== null && win.item.type === "note" ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+    readonly property bool passThrough: win.item !== null && (win.item.clickThrough || win.item.type === "terminal")
     mask: Region {
-        width: win.item !== null && win.item.clickThrough ? 0 : win.width
-        height: win.item !== null && win.item.clickThrough ? 0 : win.height
+        width: win.passThrough ? 0 : win.width
+        height: win.passThrough ? 0 : win.height
     }
     BackgroundEffect.blurRegion: Resin.enabled && !frame.clear ? blur : null
 
