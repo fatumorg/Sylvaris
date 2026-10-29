@@ -106,12 +106,15 @@ Singleton {
         target: Compositor.name === "hyprland" ? Hyprland : null
         ignoreUnknownSignals: true
         function onRawEvent(event) {
-            if (event.name !== "configreloaded" || Date.now() < root.quietUntil)
+            if (event.name !== "configreloaded")
+                return;
+            const quiet = Date.now() < root.quietUntil;
+            if (root.lite)
+                root.trim(true);
+            if (quiet)
                 return;
             root.apply(true);
             root.refresh();
-            if (root.lite)
-                root.trim(true);
         }
     }
 }

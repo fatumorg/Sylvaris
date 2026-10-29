@@ -31,6 +31,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - Segmented choices size each option to its label, so long ones like Control Center no longer spill into their neighbours, and elide when there is no room
 - Wallpapers, avatars, clipboard images and notification pictures whose paths contain #, ? or % now load
 - The login screen and the theme picker show the wallpaper you picked instead of the theme's own
+- Performance mode keeps compositor blur, animations, shadows and gaps off after Hyprland reloads its config, and night light and accessibility follow config reloads and monitor changes again
 
 ## [1.5.1] - 2026-10-28
 

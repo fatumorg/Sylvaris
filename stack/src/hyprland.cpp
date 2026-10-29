@@ -132,6 +132,7 @@ void Hyprland::event(const QByteArray &line)
         return;
     const QByteArray name = line.left(sep);
     const QByteArray data = line.mid(sep + 2);
+    emit rawEvent({{QStringLiteral("name"), QString::fromUtf8(name)}, {QStringLiteral("data"), QString::fromUtf8(data)}});
     if (name == "urgent") {
         m_urgent.insert(QStringLiteral("0x") + QString::fromUtf8(data));
     } else if (name == "activewindowv2") {

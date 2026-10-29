@@ -9,6 +9,7 @@
 #include <QQmlEngine>
 #include <QSet>
 #include <QTimer>
+#include <QVariantMap>
 
 #include <functional>
 
@@ -112,6 +113,7 @@ public:
 signals:
     void usingLuaChanged();
     void focusedMonitorChanged();
+    void rawEvent(const QVariantMap &event);
 
 private:
     Hyprland();
