@@ -3,6 +3,7 @@ import QtQuick.Shapes
 import qs
 import qs.services
 import qs.components
+import "../lib/capture.mjs" as Cap
 
 Item {
     id: root
@@ -110,7 +111,7 @@ Item {
         smooth: true
         mipmap: true
         sourceSize.width: Tokens.themeCardWidth * 2
-        source: root.entry === null || root.entry.wallpaper === "" ? "" : "file://" + root.entry.wallpaper
+        source: root.entry === null || root.entry.wallpaper === "" ? "" : Cap.fileUri(root.entry.wallpaper)
     }
 
     ShaderEffectSource {

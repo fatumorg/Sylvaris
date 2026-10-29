@@ -7,6 +7,7 @@ import "../lib/icons.mjs" as Icons
 import "../lib/settings.mjs" as S
 import "../lib/center.mjs" as C
 import "../lib/rgb.mjs" as R
+import "../lib/capture.mjs" as Cap
 
 Item {
     id: root
@@ -285,7 +286,7 @@ Item {
                 RoundImage {
                     id: avatar
                     anchors.fill: parent
-                    source: "file://" + S.expandHome(Config.values.avatar, Stack.env("HOME"))
+                    source: Cap.fileUri(S.expandHome(Config.values.avatar, Stack.env("HOME")))
                 }
             }
         }

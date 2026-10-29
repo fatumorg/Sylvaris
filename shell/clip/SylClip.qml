@@ -5,6 +5,7 @@ import qs.services
 import qs.components
 import "../lib/clip.mjs" as C
 import "../lib/icons.mjs" as Icons
+import "../lib/capture.mjs" as Cap
 
 Popup {
     id: root
@@ -343,7 +344,7 @@ Popup {
                     width: parent.height * 1.6
                     height: parent.height - 16
                     visible: row.modelData.kind === "image"
-                    source: row.modelData.kind === "image" ? "file://" + row.modelData.path : ""
+                    source: row.modelData.kind === "image" ? Cap.fileUri(row.modelData.path) : ""
                     sourceSize.width: width * 2
                     sourceSize.height: height * 2
                     fillMode: Image.PreserveAspectCrop

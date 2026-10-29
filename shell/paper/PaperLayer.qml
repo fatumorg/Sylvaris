@@ -5,6 +5,7 @@ import qs
 import qs.services
 import "../lib/paper.mjs" as W
 import "../lib/settings.mjs" as S
+import "../lib/capture.mjs" as C
 
 PanelWindow {
     id: root
@@ -13,6 +14,7 @@ PanelWindow {
     property var host: null
     readonly property var cfg: Settings.at(root.modelData.name).paper
     readonly property string path: S.expandHome(W.resolve(root.cfg, Theme.currentId, Theme.wallpaper, root.modelData.name), Stack.env("HOME"))
+    readonly property url url: root.path === "" ? "" : C.fileUri(root.path)
     property bool flip: false
     property real mix: 1
     readonly property bool gpu: root.contentItem.GraphicsInfo.api !== GraphicsInfo.Software && root.contentItem.GraphicsInfo.api !== GraphicsInfo.Unknown
@@ -45,11 +47,11 @@ PanelWindow {
 
     function load(): void {
         const next = root.flip ? a : b;
-        if (next.source.toString() === "file://" + root.path && next.status === Image.Ready) {
+        if (next.source.toString() === root.url.toString() && next.status === Image.Ready) {
             root.swap();
             return;
         }
-        next.source = root.path === "" ? "" : "file://" + root.path;
+        next.source = root.url;
     }
 
     function swap(): void {
@@ -63,7 +65,7 @@ PanelWindow {
 
     onPathChanged: root.load()
     Component.onCompleted: {
-        a.source = root.path === "" ? "" : "file://" + root.path;
+        a.source = root.url;
         root.flip = false;
     }
 
@@ -129,7 +131,7 @@ PanelWindow {
             scale: a.front && root.cfg.transition === "zoom" ? 1.08 - 0.08 * root.mix : 1
             x: a.front && root.cfg.transition === "slide" ? root.width * (1 - root.mix) : 0
             onStatusChanged: {
-                if (status === Image.Ready && !a.front && root.path !== "" && source.toString() === "file://" + root.path)
+                if (status === Image.Ready && !a.front && root.path !== "" && source.toString() === root.url.toString())
                     root.swap();
             }
         }
@@ -149,7 +151,7 @@ PanelWindow {
             scale: b.front && root.cfg.transition === "zoom" ? 1.08 - 0.08 * root.mix : 1
             x: b.front && root.cfg.transition === "slide" ? root.width * (1 - root.mix) : 0
             onStatusChanged: {
-                if (status === Image.Ready && !b.front && root.path !== "" && source.toString() === "file://" + root.path)
+                if (status === Image.Ready && !b.front && root.path !== "" && source.toString() === root.url.toString())
                     root.swap();
             }
         }

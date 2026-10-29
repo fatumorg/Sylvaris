@@ -6,6 +6,7 @@ import qs.services
 import qs.components
 import "../lib/preview.mjs" as P
 import "../lib/icons.mjs" as Icons
+import "../lib/capture.mjs" as Cap
 
 Scope {
     id: root
@@ -274,7 +275,7 @@ Scope {
                         fillMode: Image.PreserveAspectCrop
                         asynchronous: true
                         sourceSize.width: 2560
-                        source: !backdrop.gpu || Theme.wallpaper === "" ? "" : "file://" + Theme.wallpaper
+                        source: !backdrop.gpu || Theme.wallpaper === "" ? "" : Cap.fileUri(Theme.wallpaper)
                     }
                 }
 
@@ -338,7 +339,7 @@ Scope {
                                     fillMode: Image.PreserveAspectCrop
                                     asynchronous: true
                                     sourceSize.width: 1280
-                                    source: !backdrop.gpu || !layerItem.heavy || Tokens.lite || layerItem.e === null || layerItem.e.wallpaper === "" ? "" : "file://" + layerItem.e.wallpaper
+                                    source: !backdrop.gpu || !layerItem.heavy || Tokens.lite || layerItem.e === null || layerItem.e.wallpaper === "" ? "" : Cap.fileUri(layerItem.e.wallpaper)
                                 }
 
                                 MultiEffect {

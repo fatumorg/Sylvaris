@@ -1,3 +1,5 @@
+import { fileUri } from "./capture.mjs"
+
 export const CRITICAL = 2
 
 export function timeoutFor(urgency, expireTimeout, fallback) {
@@ -78,7 +80,7 @@ export function iconSource(icon, lookup) {
     if (s.indexOf("://") > 0)
         return /^(file|image):\/\//.test(s) ? s : ""
     if (s[0] === "/")
-        return "file://" + s
+        return fileUri(s)
     const found = lookup(s)
     return found ? String(found) : ""
 }

@@ -5,6 +5,7 @@ import qs.services
 import qs.components
 import "../lib/annotate.mjs" as A
 import "../lib/icons.mjs" as Icons
+import "../lib/capture.mjs" as Cap
 
 Scope {
     id: root
@@ -153,10 +154,6 @@ Scope {
         }
         if (winLoader.item)
             winLoader.item.refocus();
-    }
-
-    function url(path: string): string {
-        return "file://" + path.split("/").map(encodeURIComponent).join("/");
     }
 
     function exportTo(path: string, then: var): void {
@@ -445,7 +442,7 @@ Scope {
 
                         Image {
                             id: photo
-                            source: root.file === "" ? "" : root.url(root.file)
+                            source: root.file === "" ? "" : Cap.fileUri(root.file)
                             cache: false
                             smooth: true
                             onStatusChanged: {

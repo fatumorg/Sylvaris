@@ -2,6 +2,7 @@ import QtQuick
 import qs
 import qs.services
 import "../lib/icons.mjs" as Icons
+import "../lib/capture.mjs" as Cap
 
 Item {
     id: root
@@ -92,7 +93,7 @@ Item {
                 id: face
                 anchors.fill: parent
                 anchors.margins: 6
-                source: root.avatar === "" ? "" : "file://" + root.avatar
+                source: root.avatar === "" ? "" : Cap.fileUri(root.avatar)
                 fallbackColor: Theme.tintStrong
             }
 

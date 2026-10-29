@@ -8,6 +8,7 @@ import qs.files
 import "../lib/paper.mjs" as W
 import "../lib/settings.mjs" as S
 import "../lib/icons.mjs" as Icons
+import "../lib/capture.mjs" as Cap
 
 Popup {
     id: root
@@ -170,7 +171,7 @@ Popup {
 
     FolderListModel {
         id: folder
-        folder: "file://" + root.folderPath
+        folder: Cap.fileUri(root.folderPath)
         showDirs: false
         nameFilters: ["*.png", "*.jpg", "*.jpeg", "*.webp", "*.bmp", "*.gif", "*.avif", "*.jxl", "*.PNG", "*.JPG", "*.JPEG"]
         sortField: FolderListModel.Name
@@ -295,7 +296,7 @@ Popup {
                         anchors.fill: parent
                         anchors.margins: cell.on ? 5 : 3
                         radius: Tokens.radiusCard - 4
-                        source: "file://" + cell.filePath
+                        source: Cap.fileUri(cell.filePath)
                     }
 
                     Rectangle {

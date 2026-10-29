@@ -55,6 +55,7 @@ test("iconSource resolves names, paths and URLs", () => {
     assert.equal(iconSource("firefox", lookup), "image://icon/firefox")
     assert.equal(iconSource("nope", lookup), "")
     assert.equal(iconSource("/tmp/a.png", lookup), "file:///tmp/a.png")
+    assert.equal(iconSource("/tmp/my #1.png", lookup), "file:///tmp/my%20%231.png")
     assert.equal(iconSource("file:///tmp/a.png", lookup), "file:///tmp/a.png")
     assert.equal(iconSource("", lookup), "")
     assert.equal(isPicture("/tmp/a.png"), true)
