@@ -26,6 +26,10 @@ Item {
     readonly property real r: root.role === "" || Look.radius <= 0 ? root.radius : root.radius * root.g.radius / Look.radius
     readonly property bool on: root.g.enabled
     readonly property bool panel: !root.inner
+    readonly property string card: root.inner && root.on ? Tokens.cardStyle : "glass"
+    readonly property bool flat: root.card === "solid" || root.card === "lifted"
+    readonly property bool inverted: root.on && root.hot && Tokens.hoverStyle === "invert"
+    readonly property color lineColor: Qt.alpha(Theme.text, 0.22)
     readonly property bool gpu: root.GraphicsInfo.api !== GraphicsInfo.Software && root.GraphicsInfo.api !== GraphicsInfo.Unknown
     readonly property bool extras: root.on && !Tokens.lite
     readonly property bool shaped: root.extras && root.role !== "" && root.panel && (Look.corners === "squircle" || Look.corners === "bevel")
@@ -33,7 +37,7 @@ Item {
     readonly property bool shiny: root.on && root.panel && root.g.sheen > 0 && !Tokens.lite
     readonly property real bodyAlpha: root.inner ? root.g.layerOpacity : root.raised ? Math.max(root.g.opacity, 0.88) : root.g.opacity
     readonly property real rimAlpha: root.g.rim * (root.inner ? 0.22 : 0.3)
-    readonly property color bodyColor: root.on ? Qt.alpha(root.inner ? Qt.lighter(Theme.pane, 1.35) : Theme.pane, root.bodyAlpha) : root.offColor
+    readonly property color bodyColor: !root.on ? root.offColor : root.flat ? Qt.lighter(Theme.pane, 1.35) : root.card === "outline" ? "transparent" : Qt.alpha(root.inner ? Qt.lighter(Theme.pane, 1.35) : Theme.pane, root.bodyAlpha)
     readonly property color rimColor: root.g.glow > 0 && root.panel ? Qt.tint(Qt.alpha(Theme.text, root.rimAlpha), Qt.alpha(Theme.accent, root.g.glow * 0.6)) : Qt.alpha(Theme.text, root.rimAlpha)
     readonly property point rest: Qt.point(root.width * (0.5 + 0.32 * Math.sin(root.drift * 0.35)), root.height * (0.14 + 0.05 * Math.sin(root.drift * 0.23 + 1.3)))
 
@@ -61,7 +65,17 @@ Item {
     }
 
     RectangularShadow {
-        visible: root.extras && root.gpu && root.inner && root.g.shadow > 0 && root.width > 8 && root.height > 8
+        visible: root.extras && root.gpu && root.inner && root.card === "lifted" && root.width > 8 && root.height > 8
+        anchors.fill: parent
+        radius: root.r
+        offset.x: 4
+        offset.y: 4
+        blur: 0
+        color: Qt.alpha("#000000", 0.35)
+    }
+
+    RectangularShadow {
+        visible: root.extras && root.gpu && root.inner && root.card === "glass" && root.g.shadow > 0 && root.width > 8 && root.height > 8
         anchors.fill: parent
         radius: root.r
         offset.y: 2 + 4 * root.g.shadow
@@ -163,8 +177,8 @@ Item {
         anchors.fill: parent
         radius: root.r
         antialiasing: true
-        color: Theme.tintMid
-        opacity: root.on && root.hot ? 1 : 0
+        color: Tokens.hoverStyle === "invert" ? Qt.alpha(Theme.accent, 0.85) : Theme.tintMid
+        opacity: root.on && root.hot && (Tokens.hoverStyle === "lift" || Tokens.hoverStyle === "invert") ? 1 : 0
         visible: opacity > 0
 
         Behavior on opacity {
@@ -179,7 +193,7 @@ Item {
         radius: root.r
         antialiasing: true
         color: root.litColor
-        opacity: root.lit ? Resin.litAlpha : 0
+        opacity: root.lit ? Resin.litAlpha * (0.4 + 0.6 * Tokens.accentStrength) : 0
         visible: opacity > 0
 
         Behavior on opacity {
@@ -228,7 +242,7 @@ Item {
     }
 
     Rectangle {
-        visible: root.extras && root.g.highlight > 0 && !root.shaped && root.height > 8
+        visible: root.extras && root.card === "glass" && root.g.highlight > 0 && !root.shaped && root.height > 8
         anchors.fill: parent
         radius: root.r
         antialiasing: true
@@ -273,7 +287,7 @@ Item {
     }
 
     Rectangle {
-        visible: root.on && root.g.rim > 0 && !root.shaped
+        visible: root.on && root.g.rim > 0 && !root.shaped && root.card !== "outline"
         anchors.fill: parent
         radius: root.r
         antialiasing: true
@@ -288,5 +302,58 @@ Item {
         path: root.outline
         stroke: root.rimColor
         strokeWidth: 2
+    }
+
+    Rectangle {
+        visible: root.card === "outline" || root.panel && root.on && Tokens.borderWidth > 0 && !root.shaped
+        anchors.fill: parent
+        radius: root.r
+        antialiasing: true
+        color: "transparent"
+        border.width: root.card === "outline" ? Math.max(1, Tokens.borderWidth) : Tokens.borderWidth
+        border.color: root.lineColor
+    }
+
+    GlassFill {
+        visible: root.shaped && Tokens.borderWidth > 0
+        anchors.fill: parent
+        path: root.outline
+        stroke: root.lineColor
+        strokeWidth: Tokens.borderWidth * 2
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        radius: root.r
+        antialiasing: true
+        color: "transparent"
+        border.width: 2
+        border.color: Qt.alpha(Theme.accent, 0.5 * Tokens.accentStrength)
+        opacity: root.on && root.hot && Tokens.hoverStyle === "glow" ? 1 : 0
+        visible: opacity > 0
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: Tokens.stateDuration
+            }
+        }
+    }
+
+    Rectangle {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.bottom: parent.bottom
+        anchors.leftMargin: root.r / 2
+        anchors.rightMargin: root.r / 2
+        height: 2
+        color: Theme.accent
+        opacity: root.on && root.hot && Tokens.hoverStyle === "underline" ? 1 : 0
+        visible: opacity > 0
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: Tokens.stateDuration
+            }
+        }
     }
 }

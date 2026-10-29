@@ -40,3 +40,9 @@ test("Glass takes its levels from its role, not straight from Resin", () => {
     const text = readFileSync(join(ROOT, "components/Glass.qml"), "utf8")
     assert.deepEqual(text.match(/Resin\.\w+/g), ["Resin.values", "Resin.litAlpha"])
 })
+
+test("glass draws every card and hover style the tokens can ask for", () => {
+    const text = readFileSync(join(ROOT, "components/Glass.qml"), "utf8")
+    for (const v of ["Tokens.cardStyle", "Tokens.hoverStyle", "Tokens.borderWidth", "Tokens.accentStrength", "\"lifted\"", "\"outline\"", "\"solid\"", "\"invert\"", "\"underline\"", "\"glow\""])
+        assert.ok(text.includes(v), v)
+})
