@@ -151,10 +151,14 @@ function catalog(userLooks) {
     return Object.assign({}, LOOKS, isObject(userLooks) ? userLooks : {})
 }
 
+const UNSAFE = ["__proto__", "constructor", "prototype"]
+
 function deepMerge(base, over) {
     const out = clone(base)
-    for (const key of Object.keys(over))
-        out[key] = isObject(out[key]) && isObject(over[key]) ? deepMerge(out[key], over[key]) : clone(over[key])
+    for (const key of Object.keys(over)) {
+        if (!UNSAFE.includes(key))
+            out[key] = isObject(out[key]) && isObject(over[key]) ? deepMerge(out[key], over[key]) : clone(over[key])
+    }
     return out
 }
 
@@ -177,11 +181,11 @@ function fromV1(raw) {
     return out
 }
 
-export function validateStyle(raw) {
+export function validateStyle(raw, base) {
     if (!isObject(raw) || typeof raw.name !== "string" || raw.name.trim() === "")
         return null
     const src = typeof raw.version === "number" && raw.version >= 2 ? raw : fromV1(raw)
-    const out = clone(LOOKS.classic)
+    const out = clone(isObject(base) ? base : LOOKS.classic)
     out.name = raw.name.slice(0, 40)
     for (const section of SECTIONS) {
         const sec = isObject(src[section]) ? src[section] : {}

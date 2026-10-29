@@ -258,3 +258,21 @@ test("the editor has a valid row for every value a section holds", () => {
         }
     }
 })
+
+test("a partial edit of a built-in keeps the built-in for everything it leaves out", () => {
+    const v = validateStyle({ version: 2, name: "Ink", controls: { toggle: "led" } }, LOOKS.ink)
+    assert.equal(v.controls.toggle, "led")
+    assert.equal(v.controls.slider, LOOKS.ink.controls.slider)
+    assert.deepEqual(v.glass, LOOKS.ink.glass)
+    assert.deepEqual(v.layout, LOOKS.ink.layout)
+    assert.equal(validateStyle({ version: 2, name: "Mine" }).glass.material, LOOKS.classic.glass.material)
+})
+
+test("style settings ignore __proto__ and constructor keys from a file", () => {
+    const v = validateStyle(JSON.parse('{"name":"Bad","settings":{"__proto__":{"polluted":true},"bar":{"constructor":{"x":1},"position":"left"}}}'))
+    const out = styleSettings(v)
+    assert.equal(out.polluted, undefined)
+    assert.equal(Object.getPrototypeOf(out), Object.prototype)
+    assert.equal(out.bar.position, "left")
+    assert.equal(Object.prototype.hasOwnProperty.call(out.bar, "constructor"), false)
+})

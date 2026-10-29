@@ -12,3 +12,8 @@ check printf '{' > "$HOME/.config/sylvaris/looks/neon.json"
 wait sylvaris look styles | grep -q '^neon built-in Neon$'
 syl look set neon
 wait sylvaris look state | grep -Eq '"preset": *"neon"'
+check printf '{"version":2,"name":"Ink","controls":{"toggle":"led"}}' > "$HOME/.config/sylvaris/looks/ink.json"
+wait sylvaris look styles | grep -q '^ink edited Ink$'
+syl look set ink
+wait sylvaris look state | grep -Eq '"preset": *"ink"'
+check sylvaris look state | grep -Eq '"material": *"ink"'

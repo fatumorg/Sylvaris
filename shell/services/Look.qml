@@ -258,7 +258,7 @@ Singleton {
 
     function remember(id: string, text: string): void {
         const p = S.parseJson(text);
-        const look = p.ok ? L.validateUserLook(p.value) : null;
+        const look = p.ok ? L.validateStyle(p.value, L.LOOKS[id]) : null;
         const next = Object.assign({}, root.userLooks);
         if (look === null)
             delete next[id];
