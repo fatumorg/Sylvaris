@@ -1,3 +1,10 @@
+import { PRESETS, OPEN_STYLES, REVEALS } from "./motion.mjs"
+import { STYLES, WORKSPACE_STYLES, DECK_EFFECTS } from "./bar.mjs"
+import { LAYOUTS } from "./center.mjs"
+import { STACKS } from "./notify.mjs"
+import { LOCK_FACES } from "./lock.mjs"
+import { IDLE } from "./island.mjs"
+
 export const MATERIALS = {
     lumen: { opacity: 0.5, layerOpacity: 0.32, tint: 0.12, sheen: 0.45, flow: 1.2, rim: 0.65, grain: 0.035, highlight: 0.55, glow: 0.22, shadow: 0.45 },
     resin: { opacity: 0.55, layerOpacity: 0.35, tint: 0.14, sheen: 0.35, flow: 1, rim: 0.5, grain: 0, highlight: 0, glow: 0, shadow: 0 },
@@ -9,28 +16,116 @@ export const MATERIALS = {
 
 export const CORNERS = ["round", "squircle", "bevel", "sharp"]
 export const DENSITY = { compact: 0.85, cozy: 1, roomy: 1.15 }
-export const WEIGHTS = ["light", "regular", "medium"]
+export const WEIGHTS = ["light", "regular", "medium", "heavy"]
+export const CASES = ["normal", "upper", "smallcaps"]
 export const ACCENTS = ["theme", "wallpaper"]
+export const SECTIONS = ["glass", "shape", "type", "controls", "motion", "layout", "atmosphere"]
+export const CONTROL_CHOICES = {
+    toggle: ["pill", "block", "check", "led"],
+    slider: ["fill", "line", "ticks"],
+    segmented: ["pill", "underline", "boxed"],
+    button: ["glass", "solid", "outline", "text"],
+    card: ["glass", "solid", "outline", "lifted"],
+    hover: ["lift", "glow", "invert", "underline"],
+    icon: ["plain", "plate", "ring", "glow"],
+    divider: ["none", "hairline", "dashed"]
+}
 
 const GLASS_KEYS = ["opacity", "layerOpacity", "tint", "sheen", "flow", "rim", "grain", "highlight", "glow", "shadow"]
 const LAYER_KEYS = ["shadow", "grain", "highlight", "glow"]
 const FONT_KEYS = ["ui", "mono", "display"]
 const MONO = "JetBrainsMono Nerd Font"
 
-function look(name, material, corners, radius, density, fonts, weight, settings) {
-    return { name: name, material: material, corners: corners, radius: radius, density: density, fonts: fonts, weight: weight, settings: settings }
+function controls(toggle, slider, segmented, button, card, hover, icon, divider) {
+    return { toggle: toggle, slider: slider, segmented: segmented, button: button, card: card, hover: hover, icon: icon, divider: divider }
+}
+
+function style(name, glass, shape, type, ctl, motion, layout, atmosphere) {
+    return { version: 2, name: name, glass: glass, shape: shape, type: type, controls: ctl, motion: motion, layout: layout, atmosphere: atmosphere }
+}
+
+function shape(corners, radius, density, border) {
+    return { corners: corners, radius: radius, density: density, border: border }
+}
+
+function type(ui, display, mono, weight, labelCase, tracking, scale) {
+    return { fonts: { ui: ui, display: display, mono: mono }, weight: weight, labelCase: labelCase, tracking: tracking, scale: scale }
+}
+
+function motion(preset, open, reveal, stagger, springiness) {
+    return { preset: preset, open: open, reveal: reveal, stagger: stagger, springiness: springiness }
+}
+
+function layout(barStyle, workspaceStyle, center, notifications, lockFace, islandIdle, deckEffect, deckGlow, padMode) {
+    return { barStyle: barStyle, workspaceStyle: workspaceStyle, center: center, notifications: notifications, lockFace: lockFace, islandIdle: islandIdle, deckEffect: deckEffect, deckGlow: deckGlow, padMode: padMode }
+}
+
+function atmosphere(aurora, accentStrength, wallBlur, wallDim, wallTint) {
+    return { aurora: aurora, accent: "theme", accentStrength: accentStrength, wallBlur: wallBlur, wallDim: wallDim, wallTint: wallTint }
 }
 
 export const LOOKS = {
-    lumen: look("Lumen", "lumen", "squircle", 1.15, "cozy", { ui: "Inter", mono: MONO, display: "Inter Display" }, "medium", { motion: { open: "morph" }, bar: { style: "float", workspaceStyle: "dots" }, center: { layout: "bento" }, notifications: { stack: "cards" }, lock: { face: "giant" }, deck: { glow: true } }),
-    classic: look("Classic", "resin", "round", 1, "cozy", { ui: "Inter", mono: MONO, display: "Inter" }, "regular", {}),
-    frost: look("Frost", "frost", "round", 1.3, "roomy", { ui: "Inter", mono: MONO, display: "Inter Display" }, "light", {}),
-    ink: look("Ink", "ink", "round", 0.6, "compact", { ui: "Inter", mono: MONO, display: "Inter Display" }, "medium", {}),
-    neon: look("Neon", "neon", "bevel", 0.8, "cozy", { ui: "Inter", mono: MONO, display: MONO }, "medium", {}),
-    paper: look("Paper", "paper", "round", 0.7, "roomy", { ui: "Inter", mono: MONO, display: "DejaVu Serif" }, "regular", {})
+    lumen: style("Lumen", { material: "lumen" }, shape("squircle", 1.15, "cozy", 0), type("Inter", "Inter Display", MONO, "medium", "normal", 0, 1),
+        controls("pill", "fill", "pill", "glass", "glass", "lift", "plain", "none"), motion("smooth", "morph", "edges", 0.35, 0.5),
+        layout("float", "dots", "bento", "cards", "giant", "pill", "magnify", true, "launchpad"), atmosphere(true, 0.6, 0, 0, 0)),
+    classic: style("Classic", { material: "resin" }, shape("round", 1, "cozy", 0), type("IBM Plex Sans", "IBM Plex Sans", "IBM Plex Mono", "regular", "normal", 0, 1),
+        controls("pill", "line", "boxed", "solid", "solid", "glow", "plain", "hairline"), motion("calm", "grow", "fade", 0.25, 0),
+        layout("slab", "numbers", "grid", "list", "default", "clock", "bloom", false, "launchpad"), atmosphere(false, 0.5, 0, 0, 0)),
+    frost: style("Frost", { material: "frost" }, shape("round", 1.3, "roomy", 1), type("Geist", "Geist", "Geist Mono", "light", "normal", 0.02, 1.05),
+        controls("pill", "line", "underline", "text", "outline", "glow", "ring", "hairline"), motion("calm", "blur", "fade", 0.45, 0),
+        layout("minimal", "dots", "grid", "list", "analog", "hide", "magnify", false, "launchpad"), atmosphere(true, 0.3, 0.2, 0, 0)),
+    ink: style("Ink", { material: "ink" }, shape("sharp", 0.6, "compact", 1.5), type("Geist", "Geist", MONO, "heavy", "upper", 0.08, 0.95),
+        controls("block", "ticks", "boxed", "outline", "outline", "invert", "plain", "hairline"), motion("snappy", "drop", "edges", 0.15, 0),
+        layout("slab", "numbers", "grid", "list", "digital", "clock", "none", false, "list"), atmosphere(false, 1, 0, 0.15, 0)),
+    neon: style("Neon", { material: "neon" }, shape("bevel", 0.8, "cozy", 1), type("Geist Mono", "Orbitron", "Departure Mono", "medium", "upper", 0.1, 1),
+        controls("led", "ticks", "boxed", "outline", "outline", "glow", "glow", "dashed"), motion("playful", "swing", "center", 0.5, 0.8),
+        layout("islands", "pills", "bento", "cards", "flip", "pill", "bloom", true, "launchpad"), atmosphere(true, 1, 0, 0, 0.2)),
+    paper: style("Paper", { material: "paper", grain: 0.2 }, shape("round", 0.5, "roomy", 1), type("Lora", "Fraunces", "IBM Plex Mono", "regular", "smallcaps", 0.03, 1.05),
+        controls("check", "line", "underline", "text", "lifted", "underline", "plain", "dashed"), motion("calm", "unfold", "fade", 0.3, 0),
+        layout("minimal", "numbers", "grid", "list", "word", "hide", "none", false, "list"), atmosphere(false, 0.4, 0, 0, 0))
+}
+
+const OWNED = {
+    "motion.preset": ["motion", "preset"], "motion.open": ["motion", "open"], "motion.reveal": ["motion", "reveal"], "motion.stagger": ["motion", "stagger"], "motion.springiness": ["motion", "springiness"],
+    "bar.style": ["layout", "barStyle"], "bar.workspaceStyle": ["layout", "workspaceStyle"], "center.layout": ["layout", "center"], "notifications.stack": ["layout", "notifications"],
+    "lock.face": ["layout", "lockFace"], "island.idle": ["layout", "islandIdle"], "deck.effect": ["layout", "deckEffect"], "deck.glow": ["layout", "deckGlow"], "pad.mode": ["layout", "padMode"],
+    "paper.blur": ["atmosphere", "wallBlur"], "paper.dim": ["atmosphere", "wallDim"], "paper.tint": ["atmosphere", "wallTint"]
 }
 
 export const DEFAULT_LOOK = { preset: "lumen", followTheme: false, shuffle: "off", parts: {} }
+
+function oneOf(list) {
+    return v => list.includes(v)
+}
+
+function range(lo, hi) {
+    return v => typeof v === "number" && isFinite(v) && v >= lo && v <= hi
+}
+
+function isBool(v) {
+    return typeof v === "boolean"
+}
+
+function accentValue(v) {
+    return ACCENTS.includes(v) || typeof v === "string" && /^#[0-9a-f]{6}$/i.test(v)
+}
+
+const RULES = {
+    glass: { material: v => MATERIALS[v] !== undefined },
+    shape: { corners: oneOf(CORNERS), radius: range(0, 2), density: v => DENSITY[v] !== undefined, border: range(0, 2) },
+    type: { weight: oneOf(WEIGHTS), labelCase: oneOf(CASES), tracking: range(-0.02, 0.12), scale: range(0.9, 1.15) },
+    controls: {},
+    motion: { preset: oneOf(PRESETS), open: oneOf(OPEN_STYLES), reveal: oneOf(REVEALS), stagger: range(0, 0.9), springiness: v => v === -1 || range(0, 1)(v) },
+    layout: {
+        barStyle: oneOf(STYLES), workspaceStyle: oneOf(WORKSPACE_STYLES), center: oneOf(LAYOUTS), notifications: oneOf(STACKS), lockFace: oneOf(LOCK_FACES),
+        islandIdle: oneOf(IDLE), deckEffect: oneOf(DECK_EFFECTS), deckGlow: isBool, padMode: oneOf(["launchpad", "list"])
+    },
+    atmosphere: { aurora: isBool, accent: accentValue, accentStrength: range(0, 1), wallBlur: range(0, 1), wallDim: range(0, 0.9), wallTint: range(0, 1) }
+}
+for (const key of GLASS_KEYS)
+    RULES.glass[key] = v => glassValue(key, v)
+for (const key of Object.keys(CONTROL_CHOICES))
+    RULES.controls[key] = oneOf(CONTROL_CHOICES[key])
 
 function isObject(v) {
     return v !== null && typeof v === "object" && !Array.isArray(v)
@@ -53,7 +148,95 @@ function glassValue(key, v) {
 }
 
 function catalog(userLooks) {
-    return Object.assign({}, isObject(userLooks) ? userLooks : {}, LOOKS)
+    return Object.assign({}, LOOKS, isObject(userLooks) ? userLooks : {})
+}
+
+function deepMerge(base, over) {
+    const out = clone(base)
+    for (const key of Object.keys(over))
+        out[key] = isObject(out[key]) && isObject(over[key]) ? deepMerge(out[key], over[key]) : clone(over[key])
+    return out
+}
+
+function fromV1(raw) {
+    const out = { glass: {}, shape: {}, type: {} }
+    for (const key of ["material"].concat(GLASS_KEYS)) {
+        if (raw[key] !== undefined)
+            out.glass[key] = raw[key]
+    }
+    for (const key of ["corners", "radius", "density"]) {
+        if (raw[key] !== undefined)
+            out.shape[key] = raw[key]
+    }
+    if (raw.fonts !== undefined)
+        out.type.fonts = raw.fonts
+    if (raw.weight !== undefined)
+        out.type.weight = raw.weight
+    if (raw.settings !== undefined)
+        out.legacy = raw.settings
+    return out
+}
+
+export function validateStyle(raw) {
+    if (!isObject(raw) || typeof raw.name !== "string" || raw.name.trim() === "")
+        return null
+    const src = typeof raw.version === "number" && raw.version >= 2 ? raw : fromV1(raw)
+    const out = clone(LOOKS.classic)
+    out.name = raw.name.slice(0, 40)
+    for (const section of SECTIONS) {
+        const sec = isObject(src[section]) ? src[section] : {}
+        for (const key of Object.keys(sec)) {
+            if (section === "type" && key === "fonts") {
+                for (const f of FONT_KEYS) {
+                    if (isObject(sec.fonts) && fontName(sec.fonts[f]))
+                        out.type.fonts[f] = sec.fonts[f]
+                }
+            } else if (RULES[section][key] !== undefined && RULES[section][key](sec[key])) {
+                out[section][key] = sec[key]
+            }
+        }
+    }
+    if (isObject(src.legacy) && Object.keys(src.legacy).length > 0)
+        out.legacy = clone(src.legacy)
+    return out
+}
+
+export function takeSection(style, section, from) {
+    const out = clone(style)
+    if (SECTIONS.includes(section) && isObject(from) && isObject(from[section]))
+        out[section] = clone(from[section])
+    return out
+}
+
+export function styleSettings(style) {
+    const out = {}
+    for (const path of Object.keys(OWNED)) {
+        const [section, key] = OWNED[path]
+        const v = isObject(style) && isObject(style[section]) ? style[section][key] : undefined
+        if (v === undefined)
+            continue
+        const [part, leaf] = path.split(".")
+        if (!isObject(out[part]))
+            out[part] = {}
+        out[part][leaf] = v
+    }
+    return isObject(style) && isObject(style.legacy) ? deepMerge(out, style.legacy) : out
+}
+
+export function originOf(id, userLooks) {
+    const mine = isObject(userLooks) && userLooks[id] !== undefined
+    if (LOOKS[id] !== undefined)
+        return mine ? "edited" : "built-in"
+    return mine ? "yours" : ""
+}
+
+export function styleFile(style) {
+    const out = { version: 2, name: String(style.name).slice(0, 40) }
+    for (const section of SECTIONS)
+        out[section] = clone(style[section])
+    if (isObject(style.legacy) && Object.keys(style.legacy).length > 0)
+        out.legacy = clone(style.legacy)
+    return out
 }
 
 function validPart(raw, errors, role) {
@@ -155,12 +338,12 @@ export function resolveLook(lk, glass, userLooks) {
     const l = isObject(lk) ? lk : {}
     const looks = catalog(userLooks)
     const base = looks[l.preset] !== undefined ? looks[l.preset] : LOOKS[DEFAULT_LOOK.preset]
-    const material = l.material !== undefined ? l.material : base.material
+    const material = l.material !== undefined ? l.material : base.glass.material
     const g = Object.assign({ enabled: true }, MATERIALS[material] !== undefined ? MATERIALS[material] : MATERIALS.lumen)
-    for (const key of LAYER_KEYS) {
-        if (base[key] !== undefined)
-            g[key] = base[key]
-        if (l[key] !== undefined)
+    for (const key of GLASS_KEYS) {
+        if (base.glass[key] !== undefined)
+            g[key] = base.glass[key]
+        if (LAYER_KEYS.includes(key) && l[key] !== undefined)
             g[key] = l[key]
     }
     if (isObject(glass)) {
@@ -169,9 +352,9 @@ export function resolveLook(lk, glass, userLooks) {
                 g[key] = glass[key]
         }
     }
-    const corners = l.corners !== undefined ? l.corners : base.corners
-    const radius = l.radius !== undefined ? l.radius : base.radius
-    const density = l.density !== undefined ? l.density : base.density
+    const corners = l.corners !== undefined ? l.corners : base.shape.corners
+    const radius = l.radius !== undefined ? l.radius : base.shape.radius
+    const density = l.density !== undefined ? l.density : base.shape.density
     return {
         preset: looks[l.preset] !== undefined ? l.preset : DEFAULT_LOOK.preset,
         name: base.name,
@@ -181,10 +364,16 @@ export function resolveLook(lk, glass, userLooks) {
         radius: corners === "sharp" ? radius * 0.25 : radius,
         density: DENSITY[density],
         densityName: density,
-        fonts: Object.assign({}, base.fonts, isObject(l.fonts) ? l.fonts : {}),
-        weight: l.weight !== undefined ? l.weight : base.weight,
-        accent: l.accent !== undefined ? l.accent : "theme",
-        aurora: typeof l.aurora === "boolean" ? l.aurora : material !== "resin",
+        border: base.shape.border,
+        fonts: Object.assign({}, base.type.fonts, isObject(l.fonts) ? l.fonts : {}),
+        weight: l.weight !== undefined ? l.weight : base.type.weight,
+        labelCase: base.type.labelCase,
+        tracking: base.type.tracking,
+        textScale: base.type.scale,
+        controls: clone(base.controls),
+        accent: l.accent !== undefined ? l.accent : base.atmosphere.accent,
+        accentStrength: base.atmosphere.accentStrength,
+        aurora: typeof l.aurora === "boolean" ? l.aurora : base.atmosphere.aurora,
         parts: isObject(l.parts) ? l.parts : {}
     }
 }
@@ -205,7 +394,7 @@ export function glassFor(resolved, role) {
 export function lookDefaults(lk, userLooks) {
     const looks = catalog(userLooks)
     const id = isObject(lk) && looks[lk.preset] !== undefined ? lk.preset : DEFAULT_LOOK.preset
-    return isObject(looks[id].settings) ? clone(looks[id].settings) : {}
+    return styleSettings(looks[id])
 }
 
 function dropPaths(raw, partial) {
@@ -227,7 +416,7 @@ export function applyLook(raw, id, userLooks) {
     const looks = catalog(userLooks)
     if (looks[id] === undefined)
         return out
-    dropPaths(out, isObject(looks[id].settings) ? looks[id].settings : {})
+    dropPaths(out, styleSettings(looks[id]))
     const prev = isObject(out.look) ? out.look : {}
     const next = { preset: id }
     if (typeof prev.followTheme === "boolean")
@@ -262,49 +451,36 @@ export function slugLook(name) {
 }
 
 export function validateUserLook(raw) {
-    if (!isObject(raw) || typeof raw.name !== "string" || raw.name.trim() === "")
-        return null
-    const base = LOOKS.classic
-    const out = clone(base)
-    out.name = raw.name.slice(0, 40)
-    if (MATERIALS[raw.material] !== undefined)
-        out.material = raw.material
-    if (CORNERS.includes(raw.corners))
-        out.corners = raw.corners
-    if (typeof raw.radius === "number" && raw.radius >= 0 && raw.radius <= 2)
-        out.radius = raw.radius
-    if (DENSITY[raw.density] !== undefined)
-        out.density = raw.density
-    if (WEIGHTS.includes(raw.weight))
-        out.weight = raw.weight
-    if (isObject(raw.fonts)) {
-        for (const f of FONT_KEYS) {
-            if (fontName(raw.fonts[f]))
-                out.fonts[f] = raw.fonts[f]
-        }
-    }
-    for (const key of LAYER_KEYS) {
-        if (unit(raw[key]))
-            out[key] = raw[key]
-    }
-    out.settings = isObject(raw.settings) ? clone(raw.settings) : {}
-    return out
+    return validateStyle(raw)
 }
 
 export function lookFile(name, resolved, settings) {
-    const out = {
+    const s = {
+        version: 2,
         name: String(name).slice(0, 40),
-        material: resolved.material,
-        corners: resolved.corners,
-        radius: resolved.corners === "sharp" ? resolved.radius * 4 : resolved.radius,
-        density: resolved.densityName,
-        fonts: clone(resolved.fonts),
-        weight: resolved.weight,
-        settings: isObject(settings) ? clone(settings) : {}
+        glass: { material: resolved.material },
+        shape: { corners: resolved.corners, radius: resolved.corners === "sharp" ? resolved.radius * 4 : resolved.radius, density: resolved.densityName, border: resolved.border },
+        type: { fonts: clone(resolved.fonts), weight: resolved.weight, labelCase: resolved.labelCase, tracking: resolved.tracking, scale: resolved.textScale },
+        controls: clone(resolved.controls),
+        motion: {},
+        layout: {},
+        atmosphere: { aurora: resolved.aurora, accent: resolved.accent, accentStrength: resolved.accentStrength }
     }
     for (const key of LAYER_KEYS)
-        out[key] = resolved.glass[key]
-    return out
+        s.glass[key] = resolved.glass[key]
+    const rest = isObject(settings) ? clone(settings) : {}
+    for (const path of Object.keys(OWNED)) {
+        const [part, leaf] = path.split(".")
+        const [section, key] = OWNED[path]
+        if (isObject(rest[part]) && rest[part][leaf] !== undefined) {
+            s[section][key] = rest[part][leaf]
+            delete rest[part][leaf]
+            if (Object.keys(rest[part]).length === 0)
+                delete rest[part]
+        }
+    }
+    s.legacy = rest
+    return styleFile(validateStyle(s))
 }
 
 function n(v) {

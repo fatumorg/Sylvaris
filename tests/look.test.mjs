@@ -1,9 +1,9 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
 import {
-    MATERIALS, CORNERS, DENSITY, WEIGHTS, LOOKS, DEFAULT_LOOK, validateLook, resolveLook, glassFor, lookDefaults, applyLook, pickFont, scaled, slugLook, validateUserLook, lookFile, cornerPath, blurRadius, shufflePick, daySeed
+    MATERIALS, CORNERS, DENSITY, WEIGHTS, CASES, SECTIONS, CONTROL_CHOICES, LOOKS, DEFAULT_LOOK, validateLook, resolveLook, glassFor, lookDefaults, applyLook, pickFont, scaled, slugLook, validateUserLook, validateStyle, takeSection, styleSettings, originOf, styleFile, lookFile, cornerPath, blurRadius, shufflePick, daySeed
 } from "../shell/lib/look.mjs"
-import { DEFAULT_GLASS } from "../shell/lib/settings.mjs"
+import { DEFAULT_GLASS, effectiveSettings } from "../shell/lib/settings.mjs"
 
 const pick = (o, keys) => keys.reduce((out, k) => Object.assign(out, { [k]: o[k] }), {})
 
@@ -15,7 +15,7 @@ test("classic keeps the 1.1 shape", () => {
     assert.equal(r.density, 1)
     assert.equal(r.corners, "round")
     assert.equal(r.weight, "regular")
-    assert.deepEqual(r.fonts, { ui: "Inter", mono: "JetBrainsMono Nerd Font", display: "Inter" })
+    assert.deepEqual(r.fonts, { ui: "IBM Plex Sans", mono: "IBM Plex Mono", display: "IBM Plex Sans" })
     assert.equal(r.glass.grain + r.glass.highlight + r.glass.glow + r.glass.shadow, 0)
 })
 
@@ -51,10 +51,14 @@ test("every material has every key in range", () => {
         assert.ok(MATERIALS[id].flow >= 0 && MATERIALS[id].flow <= 3)
     }
     for (const id of Object.keys(LOOKS)) {
-        assert.ok(MATERIALS[LOOKS[id].material] !== undefined, id)
-        assert.ok(CORNERS.includes(LOOKS[id].corners), id)
-        assert.ok(DENSITY[LOOKS[id].density] !== undefined, id)
-        assert.ok(WEIGHTS.includes(LOOKS[id].weight), id)
+        assert.ok(MATERIALS[LOOKS[id].glass.material] !== undefined, id)
+        assert.ok(CORNERS.includes(LOOKS[id].shape.corners), id)
+        assert.ok(DENSITY[LOOKS[id].shape.density] !== undefined, id)
+        assert.ok(WEIGHTS.includes(LOOKS[id].type.weight), id)
+        assert.ok(CASES.includes(LOOKS[id].type.labelCase), id)
+        for (const k of Object.keys(CONTROL_CHOICES))
+            assert.ok(CONTROL_CHOICES[k].includes(LOOKS[id].controls[k]), id + " " + k)
+        assert.deepEqual(validateStyle(styleFile(LOOKS[id])), LOOKS[id], id)
     }
     assert.equal(DEFAULT_LOOK.preset, "lumen")
 })
@@ -68,13 +72,13 @@ test("glassFor without a part override is the resolved glass", () => {
 })
 
 test("lookDefaults returns the look's settings partial", () => {
-    assert.deepEqual(lookDefaults({ preset: "classic" }, {}), {})
-    assert.deepEqual(lookDefaults({ preset: "mine" }, { mine: Object.assign({}, LOOKS.ink, { name: "Mine", settings: { motion: { preset: "calm" } } }) }), { motion: { preset: "calm" } })
-    assert.deepEqual(lookDefaults(undefined, {}), LOOKS.lumen.settings)
+    assert.deepEqual(lookDefaults({ preset: "classic" }, {}), styleSettings(LOOKS.classic))
+    assert.equal(lookDefaults({ preset: "mine" }, { mine: validateStyle({ name: "Mine", settings: { motion: { preset: "calm" } } }) }).motion.preset, "calm")
+    assert.deepEqual(lookDefaults(undefined, {}), styleSettings(LOOKS.lumen))
 })
 
 test("applyLook clears only keys the look owns", () => {
-    const r = applyLook({ motion: { preset: "calm", scale: 1.2 }, look: { corners: "sharp" } }, "mine", { mine: Object.assign({}, LOOKS.classic, { name: "Mine", settings: { motion: { preset: "snappy" } } }) })
+    const r = applyLook({ motion: { preset: "calm", scale: 1.2 }, look: { corners: "sharp" } }, "mine", { mine: validateStyle({ name: "Mine", settings: { motion: { preset: "snappy" } } }) })
     assert.equal(r.motion.preset, undefined)
     assert.equal(r.motion.scale, 1.2)
     assert.equal(r.look.preset, "mine")
@@ -110,21 +114,24 @@ test("slugLook makes safe file names", () => {
 
 test("validateUserLook fills gaps and rejects junk", () => {
     const u = validateUserLook({ name: "Night", material: "ink", radius: 5, settings: { motion: { preset: "calm" } } })
-    assert.equal(u.material, "ink")
-    assert.equal(u.radius, 1)
-    assert.equal(u.corners, "round")
-    assert.deepEqual(u.settings, { motion: { preset: "calm" } })
+    assert.equal(u.glass.material, "ink")
+    assert.equal(u.shape.radius, 1)
+    assert.equal(u.shape.corners, "round")
+    assert.deepEqual(u.legacy, { motion: { preset: "calm" } })
     assert.equal(validateUserLook({ material: "ink" }), null)
     assert.equal(validateUserLook([]), null)
 })
 
 test("lookFile saves the resolved look with its name", () => {
-    const f = lookFile("Night Owl", resolveLook({ preset: "ink", glow: 0.4 }, {}, {}), { motion: { preset: "calm" } })
+    const f = lookFile("Night Owl", resolveLook({ preset: "ink", glow: 0.4 }, {}, {}), Object.assign(styleSettings(LOOKS.ink), { motion: { preset: "calm" }, bar: { position: "bottom" } }))
+    assert.equal(f.version, 2)
     assert.equal(f.name, "Night Owl")
-    assert.equal(f.material, "ink")
-    assert.equal(f.glow, 0.4)
-    assert.deepEqual(f.settings, { motion: { preset: "calm" } })
-    assert.deepEqual(validateUserLook(f).fonts, f.fonts)
+    assert.equal(f.glass.material, "ink")
+    assert.equal(f.glass.glow, 0.4)
+    assert.equal(f.motion.preset, "calm")
+    assert.deepEqual(f.controls, LOOKS.ink.controls)
+    assert.deepEqual(f.legacy, { bar: { position: "bottom" } })
+    assert.deepEqual(validateUserLook(f).type.fonts, f.type.fonts)
 })
 
 test("cornerPath draws closed squircle and bevel outlines inside the box", () => {
@@ -185,4 +192,49 @@ test("daySeed differs from day to day", () => {
     assert.notEqual(daySeed("2026-10-28"), daySeed("2026-10-29"))
     assert.notEqual(daySeed("2026-10-31"), daySeed("2026-11-01"))
     assert.equal(daySeed("nope"), 0)
+})
+
+test("every built-in style differs from every other in every section", () => {
+    const ids = Object.keys(LOOKS)
+    for (const s of SECTIONS)
+        for (const a of ids)
+            for (const b of ids)
+                if (a < b) assert.notDeepEqual(LOOKS[a][s], LOOKS[b][s], a + " and " + b + " share " + s)
+})
+
+test("version 1 looks map onto sections and keep their settings", () => {
+    const v = validateStyle({ name: "Old", material: "neon", corners: "bevel", radius: 0.8, weight: "light", shadow: 0.3, settings: { bar: { style: "slab" } } })
+    assert.equal(v.glass.material, "neon"); assert.equal(v.glass.shadow, 0.3)
+    assert.equal(v.shape.corners, "bevel"); assert.equal(v.type.weight, "light")
+    assert.equal(styleSettings(v).bar.style, "slab")
+})
+
+test("version 2 style validation drops bad values and fills from classic", () => {
+    const v = validateStyle({ version: 2, name: "Mine", controls: { toggle: "led", slider: "wobbly" }, type: { tracking: 9 } })
+    assert.equal(v.controls.toggle, "led"); assert.equal(v.controls.slider, LOOKS.classic.controls.slider)
+    assert.equal(v.type.tracking, LOOKS.classic.type.tracking)
+    assert.equal(validateStyle({ version: 2 }), null)
+    assert.equal(validateStyle("{"), null)
+})
+
+test("take from copies a whole section and nothing else", () => {
+    const m = takeSection(LOOKS.ink, "layout", LOOKS.neon)
+    assert.deepEqual(m.layout, LOOKS.neon.layout); assert.deepEqual(m.controls, LOOKS.ink.controls)
+    m.layout.barStyle = "x"; assert.notEqual(LOOKS.neon.layout.barStyle, "x")
+})
+
+test("an edited built-in overrides it and reports its origin", () => {
+    const user = { ink: validateStyle({ version: 2, name: "Ink", controls: { toggle: "led" } }) }
+    assert.equal(resolveLook({ preset: "ink" }, {}, user).controls.toggle, "led")
+    assert.equal(originOf("ink", user), "edited"); assert.equal(originOf("ink", {}), "built-in"); assert.equal(originOf("nope", {}), "")
+})
+
+test("a style supplies layout as settings defaults, but config and your settings win", () => {
+    const fx = effectiveSettings({ bar: { style: "minimal" } }, { look: { preset: "neon" } }, {})
+    assert.equal(fx.bar.style, "minimal"); assert.equal(fx.lock.face, LOOKS.neon.layout.lockFace)
+    assert.equal(applyLook({ lock: { face: "word" } }, "ink", {}).lock, undefined)
+})
+
+test("missing style fonts fall back", () => {
+    assert.equal(pickFont("Orbitron", ["Inter"], "Inter"), "Inter")
 })

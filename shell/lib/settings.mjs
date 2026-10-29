@@ -13,7 +13,7 @@ import { EXTRAS, LAYOUTS } from "./center.mjs"
 import { validateKeybinds } from "./keys.mjs"
 import { DEFAULT_PLUGINS, validatePlugins, BUILTIN, builtinOn } from "./plugins.mjs"
 import { DEFAULT_SYNC, validateSync } from "./sync.mjs"
-import { PRESETS, OPEN_STYLES } from "./motion.mjs"
+import { PRESETS, OPEN_STYLES, REVEALS } from "./motion.mjs"
 import { DEFAULT_BAR, DEFAULT_DECK, validateBar, validateDeck } from "./bar.mjs"
 import { DEFAULT_EQ, validateEq } from "./eq.mjs"
 import { DEFAULT_POWER, validatePower } from "./power.mjs"
@@ -24,7 +24,7 @@ import { DEFAULT_TEMP, validateTemp } from "./temp.mjs"
 import { DEFAULT_LOOK, validateLook, lookDefaults } from "./look.mjs"
 
 export const CORNERS = ["top-left", "top-center", "top-right"]
-export const REVEALS = ["edges", "center", "fade"]
+export { REVEALS }
 export const PERFORMANCE = ["off", "auto", "on"]
 export const PLACES = CORNERS.concat("center")
 export const DEFAULT_PLACEMENT = { media: "auto", clip: "top-center", capture: "top-center", access: "top-center", diver: "center", fatest: "top-right", rgb: "top-right", temp: "top-right" }

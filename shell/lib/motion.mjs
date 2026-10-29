@@ -48,6 +48,7 @@ export function presetTokens(name) {
     return Object.assign({}, SMOOTH, TUNED[name] || {})
 }
 
+export const REVEALS = ["edges", "center", "fade"]
 export const OPEN_STYLES = ["grow", "morph", "drop", "unfold", "blur", "swing"]
 
 const IDENTITY = { sx: 1, sy: 1, dx: 0, dy: 0, opacity: 1, blur: 0, angle: 0 }

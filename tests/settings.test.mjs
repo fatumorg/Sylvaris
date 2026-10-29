@@ -7,7 +7,7 @@ import {
     PARTS, OPT_IN, SERVICE_DEPS, liveParts, screenSettings, screenKey, liveServices, CENTER_TILES, unsetPath, isModified
 } from "../shell/lib/settings.mjs"
 import { TYPES } from "../shell/lib/widgets.mjs"
-import { LOOKS } from "../shell/lib/look.mjs"
+import { LOOKS, styleSettings, validateStyle } from "../shell/lib/look.mjs"
 
 test("parseJson treats empty text as an empty object", () => {
     assert.deepEqual(parseJson(""), { ok: true, value: {} })
@@ -209,8 +209,8 @@ test("config.json can hold settings defaults that settings.json overrides", () =
     assert.equal(e.deck.size, 48)
     assert.equal(e.center.corner, "top-left")
     assert.equal(effectiveSettings(config, { center: { corner: "bogus" } }).center.corner, "top-right")
-    assert.deepEqual(effectiveSettings({}, {}), validateSettings(LOOKS.lumen.settings))
-    assert.equal(effectiveSettings({}, { look: { preset: "classic" } }).bar.style, "islands")
+    assert.deepEqual(effectiveSettings({}, {}), validateSettings(styleSettings(LOOKS.lumen)))
+    assert.equal(effectiveSettings({}, { look: { preset: "classic" } }).bar.style, LOOKS.classic.layout.barStyle)
 })
 
 test("parts default to every part but the opt-in ones and keep only boolean false", () => {
@@ -403,7 +403,7 @@ test("validateSettings checks the virtual display size", () => {
 test("the default look is lumen", () => assert.equal(effectiveSettings({}, {}).look.preset, "lumen"))
 
 test("a look's settings sit under config and user values", () => {
-    const looks = { mine: { name: "Mine", material: "ink", corners: "round", radius: 1, density: "cozy", fonts: {}, weight: "regular", settings: { motion: { preset: "calm" } } } }
+    const looks = { mine: validateStyle({ name: "Mine", material: "ink", corners: "round", radius: 1, density: "cozy", fonts: {}, weight: "regular", settings: { motion: { preset: "calm" } } }) }
     assert.equal(effectiveSettings({}, { look: { preset: "mine" } }, looks).motion.preset, "calm")
     assert.equal(effectiveSettings({}, { look: { preset: "mine" }, motion: { preset: "snappy" } }, looks).motion.preset, "snappy")
     assert.equal(effectiveSettings({ motion: { preset: "playful" } }, { look: { preset: "mine" } }, looks).motion.preset, "playful")
