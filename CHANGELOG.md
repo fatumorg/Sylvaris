@@ -4,6 +4,10 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Changed
+
+- Control Center tiles other than Wi-Fi and Bluetooth drop the button inside the tile, switch as a whole and light up while on; right-click opens details
+
 ### Fixed
 
 - SylCenter's bento layout puts small tiles three to a row so labels like Performance fit, and stretches a short last row instead of leaving gaps

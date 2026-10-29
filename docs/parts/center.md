@@ -17,6 +17,8 @@ The Wi-Fi and Bluetooth views are orbits: your devices or networks circle a glow
 
 SylSettings › Control Center picks what the panel shows.
 
+Wi-Fi and Bluetooth split in two: the icon switches them on or off and the rest opens their devices. Every other tile switches as a whole and lights up while it is on; right-click a tile marked › (the hotspot, FaTest, AirPods, lighting) to open its details.
+
 - `center.hidden` lists tiles to leave out: `wifi`, `bluetooth`, `night`, `dnd`, `hotspot`, or `toggle:<id>` for one of your [custom toggles](../configuration.md#custom-toggles).
 - `center.volume` and `center.media` turn the volume slider and the now playing card off.
 - `center.layout` is `grid` (even tiles, two to a row) or `bento` (the first two tiles wide, the rest as small tiles, three to a row, with a short last row stretched to fill it; click a small tile to switch it).

@@ -209,6 +209,14 @@ Item {
         }
     }
 
+    function split(key: string): bool {
+        return key === "wifi" || key === "bluetooth";
+    }
+
+    function hasMore(tile: var): bool {
+        return !root.split(tile.key) && tile.detail !== "" && (tile.detail !== "extra" || ["fatest", "airpods", "rgb"].indexOf(tile.key) >= 0);
+    }
+
     function bodyAction(tile: var): void {
         if (tile.detail === "extra")
             root.extraOpen(tile.key);
@@ -341,8 +349,11 @@ Item {
                     title: spec.title
                     subtitle: spec.subtitle
                     active: spec.active
+                    split: root.split(spec.key)
+                    more: root.hasMore(spec)
                     onIconClicked: root.iconAction(spec.key)
-                    onBodyClicked: cell.small ? root.iconAction(spec.key) : root.bodyAction(spec)
+                    onBodyClicked: cell.small || !split ? root.iconAction(spec.key) : root.bodyAction(spec)
+                    onMoreClicked: root.bodyAction(spec)
 
                     Behavior on x {
                         enabled: !Tokens.lite
@@ -389,8 +400,11 @@ Item {
                     title: modelData.title
                     subtitle: modelData.subtitle
                     active: modelData.active
+                    split: root.split(modelData.key)
+                    more: root.hasMore(modelData)
                     onIconClicked: root.iconAction(modelData.key)
-                    onBodyClicked: root.bodyAction(modelData)
+                    onBodyClicked: split ? root.bodyAction(modelData) : root.iconAction(modelData.key)
+                    onMoreClicked: root.bodyAction(modelData)
                 }
             }
         }

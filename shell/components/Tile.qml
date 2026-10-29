@@ -10,9 +10,12 @@ Item {
     property string subtitle: ""
     property bool active: false
     property bool small: false
+    property bool split: true
+    property bool more: false
 
     signal iconClicked
     signal bodyClicked
+    signal moreClicked
 
     implicitHeight: Tokens.tileHeight
 
@@ -27,6 +30,7 @@ Item {
             radius: parent.radius
             inner: true
             hot: hover.hovered
+            lit: root.active && !root.split
             offColor: hover.hovered ? Theme.tintMid : Theme.tint
             offBorder: Theme.cardLine
         }
@@ -58,7 +62,17 @@ Item {
         MouseArea {
             id: bodyArea
             anchors.fill: parent
-            onClicked: root.bodyClicked()
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onClicked: mouse => {
+                if (mouse.button === Qt.RightButton) {
+                    if (root.more)
+                        root.moreClicked();
+                    return;
+                }
+                if (!root.split)
+                    Sounds.play("toggle");
+                root.bodyClicked();
+            }
         }
 
         Rectangle {
@@ -81,6 +95,7 @@ Item {
             color: "transparent"
 
             Glass {
+                visible: root.split
                 anchors.fill: parent
                 z: -1
                 radius: parent.radius
@@ -93,7 +108,7 @@ Item {
                 anchors.centerIn: parent
                 text: root.icon
                 size: Tokens.tileIconFont
-                color: root.active ? Theme.onAccent : Theme.text
+                color: root.active && root.split ? Theme.onAccent : Theme.text
 
                 Behavior on color {
                     ColorAnimation {
@@ -104,6 +119,7 @@ Item {
 
             MouseArea {
                 id: iconArea
+                enabled: root.split
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
                 onClicked: {
@@ -116,7 +132,7 @@ Item {
         Column {
             anchors.left: root.small ? parent.left : iconBox.right
             anchors.leftMargin: root.small ? 6 : 14
-            anchors.right: parent.right
+            anchors.right: chevron.visible ? chevron.left : parent.right
             anchors.rightMargin: root.small ? 6 : 10
             anchors.verticalCenter: root.small ? undefined : parent.verticalCenter
             anchors.top: root.small ? iconBox.bottom : undefined
@@ -144,6 +160,19 @@ Item {
                 font.family: Tokens.fontUi
                 font.pixelSize: Tokens.smallSize
             }
+        }
+
+        Text {
+            id: chevron
+            visible: root.more && !root.split && !root.small
+            anchors.right: parent.right
+            anchors.rightMargin: 14
+            anchors.verticalCenter: parent.verticalCenter
+            textFormat: Text.PlainText
+            text: "›"
+            color: Theme.textDim
+            font.family: Tokens.fontUi
+            font.pixelSize: Tokens.titleSize
         }
     }
 }
