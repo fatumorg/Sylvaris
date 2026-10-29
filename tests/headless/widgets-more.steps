@@ -17,4 +17,10 @@ sleep 1
 check sylvaris widgets list | grep -q "^w109	fatest.*inactive"
 write sylvaris/settings.json {"version":1,"widgets":{"items":[{"id":"w110","type":"visualizer","anchor":"center","col":0,"row":0,"w":6,"h":2,"options":{"bars":48}}]}}
 wait grep -q "^bars = 48$" "$XDG_RUNTIME_DIR/sylvaris/cava-w110.conf"
+write sylvaris/settings.json {"version":1,"widgets":{"items":[{"id":"sa01","type":"stack","anchor":"top-left","col":0,"row":1,"w":4,"h":3,"children":[{"id":"no01","type":"note","w":4,"h":3,"options":{"text":"Buy"}},{"id":"c001","type":"clock","w":4,"h":2}]}]}}
+sleep 3
+pointer move 150 200 click 1
+sleep 1
+bg wtype -k End -s 100 " milk"
+wait grep -q "Buy milk" "$HOME/.config/sylvaris/settings.json"
 killshell

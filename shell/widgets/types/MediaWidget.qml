@@ -59,10 +59,26 @@ Item {
             color: Theme.tintMid
 
             Glyph {
+                visible: !root.vinyl
                 anchors.centerIn: parent
                 text: Icons.GLYPHS.music
                 color: root.accent
                 size: parent.width * 0.4
+            }
+
+            Repeater {
+                model: root.vinyl ? [0.82, 0.62, 0.42] : []
+
+                delegate: Rectangle {
+                    required property real modelData
+                    anchors.centerIn: parent
+                    width: parent.width * modelData
+                    height: width
+                    radius: width / 2
+                    color: "transparent"
+                    border.width: 1
+                    border.color: Qt.alpha(root.accent, 0.35)
+                }
             }
         }
 

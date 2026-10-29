@@ -9,6 +9,9 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - SylCenter's bento layout puts small tiles three to a row so labels like Performance fit, and stretches a short last row instead of leaving gaps
 - The terminal widget's kitty panel fits its widget exactly; the widget's padding is kept and margins, borders and padding from your kitty.conf no longer make it spill over
 - The terminal widget works as a terminal: with no command you can click it and type, clicks reach kitty instead of the widget frame, and changing its options restarts the panel
+- The system widget fits its numbers (`5.5/33 GB`, `↓629 B/s`) and draws its graphs from the right edge
+- The media widget's record look draws grooves instead of a music note under the centre hole when there is no cover
+- Widgets inside a stack get their own options, so a stacked clock keeps its face and date, and a stacked note takes typing and saves it
 
 ## [1.5.1] - 2026-10-28
 

@@ -40,7 +40,8 @@ PanelWindow {
     exclusionMode: ExclusionMode.Ignore
     WlrLayershell.layer: win.item !== null && win.item.layer === "overlay" ? WlrLayer.Overlay : win.item !== null && win.item.layer === "above" ? WlrLayer.Top : WlrLayer.Bottom
     WlrLayershell.namespace: "sylwidget-" + win.modelData
-    WlrLayershell.keyboardFocus: win.item !== null && win.item.type === "note" ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+    readonly property bool typing: win.item !== null && (win.item.type === "note" || win.item.type === "stack" && (win.item.children || []).some(c => c.type === "note"))
+    WlrLayershell.keyboardFocus: win.typing ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
     readonly property bool passThrough: win.item !== null && (win.item.clickThrough || win.item.type === "terminal")
     mask: Region {
         width: win.passThrough ? 0 : win.width

@@ -14,7 +14,10 @@ Item {
     readonly property var proxy: ({
             item: root.shown,
             accent: root.frame !== null ? root.frame.accent : Theme.accent,
-            paused: root.frame !== null && root.frame.paused
+            paused: root.frame !== null && root.frame.paused,
+            host: root.frame !== null ? root.frame.host : null,
+            pad: root.frame !== null ? root.frame.pad : 0,
+            radius: root.frame !== null ? root.frame.radius : 0
         })
 
     Timer {
@@ -46,7 +49,7 @@ Item {
         anchors.fill: parent
         anchors.bottomMargin: dots.visible ? 14 : 0
         source: root.shown === null || root.shown.type === "terminal" ? "" : Qt.resolvedUrl(root.shown.type.charAt(0).toUpperCase() + root.shown.type.slice(1) + "Widget.qml")
-        onLoaded: body.item.frame = root.proxy
+        onLoaded: body.item.frame = Qt.binding(() => root.proxy)
     }
 
     Row {

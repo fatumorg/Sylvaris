@@ -3,7 +3,6 @@ import SylStack
 import qs
 import qs.services
 import "../../lib/widgets.mjs" as Wd
-import "../../lib/files.mjs" as Fs
 
 Item {
     id: root
@@ -40,19 +39,19 @@ Item {
         {
             key: "memory",
             label: "Memory",
-            value: root.memNow.total > 0 ? Fs.sizeText(root.memNow.used) + " of " + Fs.sizeText(root.memNow.total) : "",
+            value: root.memNow.total > 0 ? Wd.usedOf(root.memNow.used, root.memNow.total) : "",
             trail: root.mem
         },
         {
             key: "disk",
             label: "Disk",
-            value: root.disk.total > 0 ? Fs.sizeText(root.disk.used) + " of " + Fs.sizeText(root.disk.total) : "",
+            value: root.disk.total > 0 ? Wd.usedOf(root.disk.used, root.disk.total) : "",
             share: root.disk.total > 0 ? root.disk.used / root.disk.total : 0
         },
         {
             key: "network",
             label: "Network",
-            value: "↓ " + Fs.sizeText(Math.round(root.rate.rx)) + "/s  ↑ " + Fs.sizeText(Math.round(root.rate.tx)) + "/s",
+            value: "↓" + Wd.rateText(root.rate.rx) + " ↑" + Wd.rateText(root.rate.tx),
             trail: root.net
         }
     ].filter(r => root.o[r.key] !== false)
@@ -145,7 +144,7 @@ Item {
                     id: label
                     textFormat: Text.PlainText
                     anchors.verticalCenter: parent.verticalCenter
-                    width: Math.min(150, parent.width * 0.45)
+                    width: parent.width * 0.58
                     elide: Text.ElideRight
                     text: row.modelData.label + "  " + row.modelData.value
                     color: Theme.text
@@ -176,7 +175,7 @@ Item {
                         const hi = row.modelData.key === "network" ? Math.max(1, Math.max.apply(null, t)) : 1;
                         ctx.beginPath();
                         for (let i = 0; i < t.length; i++) {
-                            const x = i / 39 * width;
+                            const x = (i + 40 - t.length) / 39 * width;
                             const y = height - 1 - t[i] / hi * (height - 2);
                             if (i === 0)
                                 ctx.moveTo(x, y);
@@ -186,8 +185,8 @@ Item {
                         ctx.strokeStyle = root.accent;
                         ctx.lineWidth = 1.5;
                         ctx.stroke();
-                        ctx.lineTo((t.length - 1) / 39 * width, height);
-                        ctx.lineTo(0, height);
+                        ctx.lineTo(width, height);
+                        ctx.lineTo((40 - t.length) / 39 * width, height);
                         ctx.closePath();
                         ctx.fillStyle = Qt.alpha(root.accent, 0.18);
                         ctx.fill();

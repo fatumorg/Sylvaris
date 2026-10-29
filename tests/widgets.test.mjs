@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { TYPES, DEFAULT_WIDGETS, validateWidgets, place, nudge, newId, covered, tooMany, servicesFor, span, cpuDelta, memUsed, netRate, daysUntil, validateOptions } from "../shell/lib/widgets.mjs"
+import { TYPES, DEFAULT_WIDGETS, validateWidgets, place, nudge, newId, covered, tooMany, servicesFor, span, cpuDelta, memUsed, netRate, daysUntil, validateOptions, rateText, usedOf } from "../shell/lib/widgets.mjs"
 
 const ON = { enabled: { diver: true, temp: true } }
 
@@ -296,4 +296,22 @@ test("daysUntil counts calendar days in local time", () => {
 
 test("a note keeps at most 20 000 characters", () => {
     assert.equal(validateOptions("note", { text: "x".repeat(25000) }).text.length, 20000)
+})
+
+test("system widget numbers stay short", () => {
+    assert.equal(rateText(0), "0 B/s")
+    assert.equal(rateText(780), "780 B/s")
+    assert.equal(rateText(1234), "1.2 kB/s")
+    assert.equal(rateText(56789000), "57 MB/s")
+    assert.equal(usedOf(4.6e9, 33.4e9), "4.6/33 GB")
+    assert.equal(usedOf(103e9, 386e9), "103/386 GB")
+    assert.equal(usedOf(900e9, 1.2e12), "0.9/1.2 TB")
+})
+
+test("a set reaches a widget inside a stack", () => {
+    const items = [{ id: "sa01", type: "stack", children: [{ id: "no01", type: "note", options: { text: "" } }, { id: "c001", type: "clock", options: {} }] }]
+    const out = apply(begin(items), { kind: "set", id: "no01", values: { options: { text: "milk" } } }).items
+    assert.equal(out[0].children[0].options.text, "milk")
+    assert.equal(out[0].children[1], items[0].children[1])
+    assert.equal(apply(begin(items), { kind: "set", id: "zzzz", values: { options: {} } }).items[0], items[0])
 })

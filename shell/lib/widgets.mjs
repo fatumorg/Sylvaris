@@ -465,6 +465,8 @@ export function begin(items) {
 
 export function apply(session, op) {
     const items = session.items.map(item => {
+        if (item.id !== op.id && op.kind === "set" && Array.isArray(item.children) && item.children.some(c => c.id === op.id))
+            return Object.assign({}, item, { children: item.children.map(c => c.id === op.id ? Object.assign({}, c, op.values) : c) })
         if (item.id !== op.id)
             return item
         if (op.kind === "move") {
@@ -673,6 +675,29 @@ function netTotals(dev) {
         tx += n[8] || 0
     }
     return { rx: rx, tx: tx }
+}
+
+const UNITS = ["B", "kB", "MB", "GB", "TB"]
+
+function unitFor(bytes) {
+    let i = 0
+    while (bytes >= 999.5 * 1000 ** i && i < UNITS.length - 1)
+        i++
+    return i
+}
+
+function short(v) {
+    return v < 9.95 ? v.toFixed(1) : String(Math.round(v))
+}
+
+export function rateText(bytesPerSecond) {
+    const i = unitFor(bytesPerSecond)
+    return (i === 0 ? String(Math.round(bytesPerSecond)) : short(bytesPerSecond / 1000 ** i)) + " " + UNITS[i] + "/s"
+}
+
+export function usedOf(used, total) {
+    const i = unitFor(total)
+    return short(used / 1000 ** i) + "/" + short(total / 1000 ** i) + " " + UNITS[i]
 }
 
 export function netRate(prev, next, ms) {
