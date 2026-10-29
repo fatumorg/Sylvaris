@@ -12,6 +12,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - The system widget fits its numbers (`5.5/33 GB`, `↓629 B/s`) and draws its graphs from the right edge
 - The media widget's record look draws grooves instead of a music note under the centre hole when there is no cover
 - Widgets inside a stack get their own options, so a stacked clock keeps its face and date, and a stacked note takes typing and saves it
+- SylSettings › Desktop › Widgets can fill a stack: pick it to add widgets to it, change their options or remove them; before, a stack could only be filled by editing settings.json
 
 ## [1.5.1] - 2026-10-28
 

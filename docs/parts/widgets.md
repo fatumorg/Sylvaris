@@ -30,7 +30,7 @@ Changes are saved when you are done; two widgets that ended up on top of each ot
 | `terminal` | a kitty panel running any command, like `cava` or `btop` | command, font size, background, padding, typing, start again |
 | `visualizer` | bars, mirrored bars, dots, a wave or a ring from `cava` | style, bars, frame rate, smoothing, colour, glow |
 | `diver` | today's plans (with the Diver plugin) | how many, done ones |
-| `stack` | several widgets in one place; scroll to flip, or let it turn by itself | seconds per turn |
+| `stack` | several widgets in one place; scroll to flip, or let it turn by itself. Pick the stack in SylSettings › Desktop › Widgets to add, change or remove what it holds (anything but a terminal or another stack) | seconds per turn |
 | `media` | the cover, title and artist of what is playing, with previous, play and next | spin the cover like a record, recolour (tint or mono), buttons |
 | `system` | processor and memory use and network speed as small graphs, and how full the disk is | which of the four to show, seconds between readings |
 | `sky` | the sun's path through today with sunrise and sunset, and the moon's phase (needs a location, like [SylClock](clock.md)) | moon, sunrise and sunset |

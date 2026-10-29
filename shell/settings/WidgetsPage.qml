@@ -9,7 +9,9 @@ Column {
 
     readonly property var cfg: Settings.values.widgets
     property string selected: ""
-    readonly property var picked: page.cfg.items.find(i => i.id === page.selected) || null
+    readonly property var picked: page.cfg.items.find(i => i.id === page.selected) || page.cfg.items.map(i => (i.children || []).find(c => c.id === page.selected)).find(c => c !== undefined) || null
+    readonly property var parentStack: page.picked === null ? null : page.cfg.items.find(i => (i.children || []).some(c => c.id === page.picked.id)) || null
+    readonly property var stackable: page.types.filter(t => t !== "stack" && t !== "terminal")
     readonly property var types: Object.keys(Wd.TYPES).filter(t => Wd.TYPES[t].plugin === undefined || Settings.values.plugins.enabled[Wd.TYPES[t].plugin] === true)
 
     function stored(list: var): var {
@@ -23,7 +25,23 @@ Column {
     }
 
     function patch(id: string, change: var): void {
-        Settings.set("widgets.items", page.stored(page.cfg.items.map(i => i.id === id ? Object.assign({}, i, change) : i)));
+        Settings.set("widgets.items", page.stored(page.cfg.items.map(i => i.id === id ? Object.assign({}, i, change) : i.children && i.children.some(c => c.id === id) ? Object.assign({}, i, {
+                children: i.children.map(c => c.id === id ? Object.assign({}, c, change) : c)
+            }) : i)));
+    }
+
+    function addToStack(type: string): void {
+        const ids = page.cfg.items.reduce((all, i) => all.concat([i.id], (i.children || []).map(c => c.id)), []);
+        const t = Wd.TYPES[type];
+        page.patch(page.picked.id, {
+            children: (page.picked.children || []).concat([{
+                    id: Wd.newId(ids),
+                    type: type,
+                    w: t.size[0],
+                    h: t.size[1],
+                    options: {}
+                }])
+        });
     }
 
     function option(key: string, value: var): void {
@@ -163,7 +181,77 @@ Column {
 
     Card {
         visible: page.picked !== null
-        title: page.picked === null ? "" : Wd.TYPES[page.picked.type].label + " " + page.picked.id
+        title: page.picked === null ? "" : Wd.TYPES[page.picked.type].label + " " + page.picked.id + (page.parentStack !== null ? " in stack " + page.parentStack.id : "")
+
+        SettingRow {
+            visible: page.picked !== null && page.picked.type === "stack"
+            title: "In this stack"
+            key: "widgets.stack"
+            subtitle: page.picked === null || !page.picked.children || page.picked.children.length === 0 ? "Nothing yet; add widgets below. Scroll over the stack to flip through them." : page.picked.children.map(c => Wd.TYPES[c.type].label + " " + c.id).join(", ")
+
+            Column {
+                spacing: 6
+
+                Repeater {
+                    model: page.picked === null || page.picked.type !== "stack" ? [] : page.picked.children || []
+
+                    delegate: Row {
+                        id: kid
+
+                        required property var modelData
+
+                        spacing: 6
+                        layoutDirection: Qt.RightToLeft
+
+                        Chip {
+                            text: "Remove " + Wd.TYPES[kid.modelData.type].label
+                            onClicked: page.patch(page.picked.id, {
+                                    children: page.picked.children.filter(c => c.id !== kid.modelData.id)
+                                })
+                        }
+
+                        Chip {
+                            text: "Change " + Wd.TYPES[kid.modelData.type].label
+                            onClicked: page.selected = kid.modelData.id
+                        }
+                    }
+                }
+            }
+        }
+
+        SettingRow {
+            visible: page.picked !== null && page.picked.type === "stack"
+            title: "Add to the stack"
+            key: "widgets.stack.add"
+
+            Flow {
+                width: 560
+                spacing: 6
+                layoutDirection: Qt.RightToLeft
+
+                Repeater {
+                    model: page.picked !== null && page.picked.type === "stack" ? page.stackable : []
+
+                    delegate: Chip {
+                        required property string modelData
+                        text: Wd.TYPES[modelData].label
+                        glyph: Icons.GLYPHS[Wd.TYPES[modelData].glyph] || ""
+                        onClicked: page.addToStack(modelData)
+                    }
+                }
+            }
+        }
+
+        SettingRow {
+            visible: page.parentStack !== null
+            title: "Back to the stack"
+            key: "widgets.stack.back"
+
+            Chip {
+                text: page.parentStack === null ? "" : "Stack " + page.parentStack.id
+                onClicked: page.selected = page.parentStack.id
+            }
+        }
 
         Repeater {
             model: page.picked === null ? [] : Wd.TYPES[page.picked.type].fields.filter(f => f.hidden !== true)
@@ -220,6 +308,7 @@ Column {
         }
 
         SettingRow {
+            visible: page.parentStack === null
             title: "Size"
             key: "widgets.size"
             subtitle: page.picked === null ? "" : page.picked.w + " × " + page.picked.h + " cells"
@@ -253,6 +342,7 @@ Column {
         }
 
         SettingRow {
+            visible: page.parentStack === null
             title: "Layer"
             key: "widgets.layer"
             subtitle: "On the desktop under windows, above them, or over everything"
@@ -268,6 +358,7 @@ Column {
         }
 
         SettingRow {
+            visible: page.parentStack === null
             title: "Click through"
             key: "widgets.clickThrough"
             subtitle: "Clicks go to whatever is under the widget"
@@ -281,6 +372,7 @@ Column {
         }
 
         SettingRow {
+            visible: page.parentStack === null
             title: "Hide behind full-screen windows"
             key: "widgets.hideFullscreen"
             last: true
