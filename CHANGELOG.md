@@ -17,6 +17,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - Control Center tiles other than Wi-Fi and Bluetooth drop the button inside the tile, switch as a whole and light up while on; right-click opens details
 - The wallpaper picker sets a wallpaper for every theme and screen by default; This theme and This screen still pick one just for them
 - Each style now reshapes everything: glass, shape, fonts, switches, sliders, tabs, buttons, cards, motion, the bar, Control Center, notifications, the lock clock, the island, the dock and the wallpaper
+- New fonts for five built-in styles: Lumen uses Figtree, Classic Public Sans, Frost Lexend, Neon Monaspace Krypton and Paper Source Serif 4; the Nix modules install them
 
 ### Fixed
 

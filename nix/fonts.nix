@@ -4,7 +4,11 @@ pkgs: [
   pkgs.orbitron
   pkgs.departure-mono
   pkgs.fraunces
-  pkgs.lora
+  pkgs.source-serif
+  pkgs.figtree
+  pkgs.public-sans
+  pkgs.lexend
+  pkgs.monaspace
   pkgs.inter
   pkgs.nerd-fonts.jetbrains-mono
 ]

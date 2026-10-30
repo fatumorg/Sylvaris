@@ -160,7 +160,7 @@
             test "$(jq -r .clock.corner $f)" = top-left
             test "$(jq -r '.pad // "unset"' $f)" = unset
             test ${lib.boolToString eval.config.fonts.fontconfig.enable} = true
-            test ${toString (lib.length (lib.filter (p: lib.hasPrefix "orbitron" p.name || lib.hasPrefix "lora" p.name) eval.config.home.packages))} = 2
+            test ${toString (lib.length (lib.filter (p: lib.hasPrefix "orbitron" p.name || lib.hasPrefix "figtree" p.name) eval.config.home.packages))} = 2
             test ${lib.head eval.config.xdg.mimeApps.defaultApplications."image/png"} = sylvaris-viewer.desktop
             test ${lib.head eval.config.xdg.mimeApps.defaultApplications."video/x-matroska"} = sylvaris-viewer.desktop
             test ${lib.head eval.config.xdg.mimeApps.defaultApplications."inode/directory"} = sylvaris-files.desktop

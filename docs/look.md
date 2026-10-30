@@ -9,7 +9,7 @@ A Look (a style) reshapes everything the shell draws: the glass, the corners and
 | Feel | soft light through frosted glass | the dependable desktop | cold air, quiet, lots of room | printed, dense, decisive | night city, synthwave | stationery and ink on paper |
 | Glass | lumen | resin | frost | ink | neon | paper, extra grain |
 | Shape | squircle, cozy | round, cozy | round, roomy, outlines | sharp, compact, thick outlines | bevel, cozy, outlines | soft round, roomy, outlines |
-| Fonts | Inter, Inter Display | IBM Plex Sans and Mono | Geist, Geist Mono, light | Geist, heavy, upper case | Geist Mono, Orbitron, Departure Mono, upper case | Lora, Fraunces, small caps |
+| Fonts | Figtree | Public Sans, IBM Plex Mono | Lexend, Geist Mono, light | Geist, heavy, upper case | Monaspace Krypton, Orbitron, Departure Mono, upper case | Source Serif 4, Fraunces, small caps |
 | Switches, sliders | pill, fill | pill, line | pill, line | block, ticks | lamp, ticks | check box, line |
 | Tabs, buttons, cards | pill, glass, glass | boxed, solid, solid | underline, text, outline | boxed, outline, outline | boxed, outline, outline | underline, text, lifted |
 | Hover, icons, dividers | lift, plain, none | glow, plain, hairline | glow, ring, hairline | invert, plain, hairline | glow, glow, dashed | underline, plain, dashed |

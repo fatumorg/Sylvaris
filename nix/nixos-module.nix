@@ -34,7 +34,7 @@ in
     fonts.enable = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Install the fonts the built-in styles use: IBM Plex, Geist, Orbitron, Departure Mono, Fraunces, Lora, Inter and JetBrains Mono Nerd Font.";
+      description = "Install the fonts the built-in styles use: Figtree, Public Sans, Lexend, Monaspace, Source Serif, IBM Plex, Geist, Orbitron, Departure Mono, Fraunces, Inter and JetBrains Mono Nerd Font.";
     };
 
     lock.enable = lib.mkOption {

@@ -65,22 +65,22 @@ function atmosphere(aurora, accentStrength, wallBlur, wallDim, wallTint) {
 }
 
 export const LOOKS = {
-    lumen: style("Lumen", { material: "lumen" }, shape("squircle", 1.15, "cozy", 0), type("Inter", "Inter Display", MONO, "medium", "normal", 0, 1),
+    lumen: style("Lumen", { material: "lumen" }, shape("squircle", 1.15, "cozy", 0), type("Figtree", "Figtree", MONO, "medium", "normal", 0, 1),
         controls("pill", "fill", "pill", "glass", "glass", "lift", "plain", "none"), motion("smooth", "morph", "edges", 0.35, 0.5),
         layout("float", "dots", "bento", "cards", "giant", "pill", "magnify", true, "launchpad"), atmosphere(true, 0.6, 0, 0, 0)),
-    classic: style("Classic", { material: "resin" }, shape("round", 1, "cozy", 0), type("IBM Plex Sans", "IBM Plex Sans", "IBM Plex Mono", "regular", "normal", 0, 1),
+    classic: style("Classic", { material: "resin" }, shape("round", 1, "cozy", 0), type("Public Sans", "Public Sans", "IBM Plex Mono", "regular", "normal", 0, 1),
         controls("pill", "line", "boxed", "solid", "solid", "glow", "plain", "hairline"), motion("calm", "grow", "fade", 0.25, 0),
         layout("slab", "numbers", "grid", "list", "default", "clock", "bloom", false, "launchpad"), atmosphere(false, 0.5, 0, 0, 0)),
-    frost: style("Frost", { material: "frost" }, shape("round", 1.3, "roomy", 1), type("Geist", "Geist", "Geist Mono", "light", "normal", 0.02, 1.05),
+    frost: style("Frost", { material: "frost" }, shape("round", 1.3, "roomy", 1), type("Lexend", "Lexend", "Geist Mono", "light", "normal", 0.02, 1.05),
         controls("pill", "line", "underline", "text", "outline", "glow", "ring", "hairline"), motion("calm", "blur", "fade", 0.45, 0),
         layout("minimal", "dots", "grid", "list", "analog", "hide", "magnify", false, "launchpad"), atmosphere(true, 0.3, 0.2, 0, 0)),
     ink: style("Ink", { material: "ink" }, shape("sharp", 0.6, "compact", 1.5), type("Geist", "Geist", MONO, "heavy", "upper", 0.08, 0.95),
         controls("block", "ticks", "boxed", "outline", "outline", "invert", "plain", "hairline"), motion("snappy", "drop", "edges", 0.15, 0),
         layout("slab", "numbers", "grid", "list", "digital", "clock", "none", false, "list"), atmosphere(false, 1, 0, 0.15, 0)),
-    neon: style("Neon", { material: "neon" }, shape("bevel", 0.8, "cozy", 1), type("Geist Mono", "Orbitron", "Departure Mono", "medium", "upper", 0.1, 1),
+    neon: style("Neon", { material: "neon" }, shape("bevel", 0.8, "cozy", 1), type("Monaspace Krypton", "Orbitron", "Departure Mono", "medium", "upper", 0.1, 1),
         controls("led", "ticks", "boxed", "outline", "outline", "glow", "glow", "dashed"), motion("playful", "swing", "center", 0.5, 0.8),
         layout("islands", "pills", "bento", "cards", "flip", "pill", "bloom", true, "launchpad"), atmosphere(true, 1, 0, 0, 0.2)),
-    paper: style("Paper", { material: "paper", grain: 0.2 }, shape("round", 0.5, "roomy", 1), type("Lora", "Fraunces", "IBM Plex Mono", "regular", "smallcaps", 0.03, 1.05),
+    paper: style("Paper", { material: "paper", grain: 0.2 }, shape("round", 0.5, "roomy", 1), type("Source Serif 4", "Fraunces", "IBM Plex Mono", "regular", "smallcaps", 0.03, 1.05),
         controls("check", "line", "underline", "text", "lifted", "underline", "plain", "dashed"), motion("calm", "unfold", "fade", 0.3, 0),
         layout("minimal", "numbers", "grid", "list", "word", "hide", "none", false, "list"), atmosphere(false, 0.4, 0, 0, 0))
 }

@@ -15,7 +15,7 @@ test("classic keeps the 1.1 shape", () => {
     assert.equal(r.density, 1)
     assert.equal(r.corners, "round")
     assert.equal(r.weight, "regular")
-    assert.deepEqual(r.fonts, { ui: "IBM Plex Sans", mono: "IBM Plex Mono", display: "IBM Plex Sans" })
+    assert.deepEqual(r.fonts, { ui: "Public Sans", mono: "IBM Plex Mono", display: "Public Sans" })
     assert.equal(r.glass.grain + r.glass.highlight + r.glass.glow + r.glass.shadow, 0)
 })
 
