@@ -28,6 +28,7 @@ Singleton {
             console.warn("sylvaris: " + e);
     }
     property var ids: []
+    property var managed: []
     readonly property var target: T.tokens(P.withAccent(root.theme, Look.accentHex))
     property var fromTokens: T.tokens(T.DEFAULT_THEME)
     property var toTokens: root.fromTokens
@@ -151,6 +152,70 @@ Singleton {
         for (let i = 0; i < folder.count; i++)
             out.push(String(folder.get(i, "fileBaseName")));
         root.ids = out.sort();
+        managedProc.running = false;
+        managedProc.running = true;
+    }
+
+    function owned(id: string): bool {
+        return root.ids.indexOf(id) >= 0 && root.managed.indexOf(id) < 0;
+    }
+
+    function themeOf(id: string): var {
+        const e = root.catalog[id];
+        return T.validateTheme(Object.assign({}, e !== undefined ? e : root.theme, {
+            id: id
+        })).theme;
+    }
+
+    function store(t: var): void {
+        writer.path = root.themesDir + "/" + t.id + ".json";
+        writer.setText(JSON.stringify(t, null, 2) + "\n");
+        root.remember(t.id, JSON.stringify(t));
+        if (root.ids.indexOf(t.id) < 0)
+            root.ids = root.ids.concat([t.id]).sort();
+        if (t.id === root.currentId)
+            root.theme = t;
+    }
+
+    function create(name: string, fromId: string): string {
+        const id = T.slugTheme(name);
+        if (id === "")
+            throw new Error("give the theme a name");
+        if (root.ids.indexOf(id) >= 0)
+            throw new Error("you already have a theme called " + id);
+        const t = root.themeOf(fromId !== "" ? fromId : root.currentId);
+        t.id = id;
+        t.name = String(name).trim().slice(0, 40);
+        root.store(t);
+        return id;
+    }
+
+    function duplicate(id: string): string {
+        const base = root.themeOf(id).name + " copy";
+        let name = base;
+        for (let n = 2; root.ids.indexOf(T.slugTheme(name)) >= 0; n++)
+            name = base + " " + n;
+        return root.create(name, id);
+    }
+
+    function edit(id: string, key: string, value: var): void {
+        if (!root.owned(id))
+            throw new Error(root.ids.indexOf(id) < 0 ? "unknown theme: " + id : id + " comes from your config and cannot be changed here; duplicate it first");
+        root.store(T.editTheme(root.themeOf(id), key, value));
+    }
+
+    function remove(id: string): void {
+        if (!root.owned(id))
+            throw new Error(root.ids.indexOf(id) < 0 ? "unknown theme: " + id : id + " comes from your config and cannot be removed here");
+        remover.command = ["rm", "-f", "--", root.themesDir + "/" + id + ".json"];
+        remover.running = true;
+        const left = root.ids.filter(i => i !== id);
+        const next = Object.assign({}, root.catalog);
+        delete next[id];
+        root.catalog = next;
+        root.ids = left;
+        if (id === root.currentId && left.length > 0)
+            root.apply(T.nextThemeId(left, id));
     }
 
     function apply(id: string): void {
@@ -243,6 +308,18 @@ Singleton {
         nameFilters: ["*.json"]
         showDirs: false
         onCountChanged: root.refreshIds()
+    }
+
+    Process {
+        id: remover
+    }
+
+    Process {
+        id: managedProc
+        command: ["find", root.themesDir, "-maxdepth", "1", "-name", "*.json", "(", "-type", "l", "-o", "!", "-writable", ")", "-printf", "%f\\n"]
+        stdout: StdioCollector {
+            onStreamFinished: root.managed = text.split("\n").filter(l => l !== "").map(l => l.slice(0, -5)).sort()
+        }
     }
 
     Process {

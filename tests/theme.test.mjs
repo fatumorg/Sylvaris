@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { DEFAULT_THEME, COLOR_KEYS, parseHex, withAlpha, validateTheme, tokens, nextThemeId, parseArgb, mixArgb, mixTokens, catalogEntry, linkCommand, parseLinkOutput, shareCommand, staleLinks } from "../shell/lib/theme.mjs"
+import { DEFAULT_THEME, COLOR_KEYS, parseHex, withAlpha, validateTheme, tokens, nextThemeId, parseArgb, mixArgb, mixTokens, catalogEntry, slugTheme, editTheme, linkCommand, parseLinkOutput, shareCommand, staleLinks } from "../shell/lib/theme.mjs"
 import { execFileSync } from "node:child_process"
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readlinkSync, symlinkSync, existsSync, statSync, lstatSync, chmodSync } from "node:fs"
 import { tmpdir } from "node:os"
@@ -325,4 +325,30 @@ test("a theme can name the look it goes with", () => {
     assert.equal(validateTheme(Object.assign({}, warm, { look: 3 })).theme.look, "")
     assert.equal(validateTheme(Object.assign({}, warm, { look: "../x" })).theme.look, "")
     assert.equal(catalogEntry("warm", Object.assign({}, warm, { look: "neon" })).look, "neon")
+})
+
+test("slugTheme turns a name into a theme id", () => {
+    assert.equal(slugTheme("  Night Owl! "), "night-owl")
+    assert.equal(slugTheme("???"), "")
+    assert.equal(slugTheme("a".repeat(50)).length, 40)
+})
+
+test("editTheme changes one value and rejects bad ones", () => {
+    const t = validateTheme(warm).theme
+    assert.equal(editTheme(t, "colors.accent", "#ABCDEF").colors.accent, "#abcdef")
+    assert.equal(editTheme(t, "alpha.glass", "0.4").alpha.glass, 0.4)
+    assert.equal(editTheme(t, "name", "  Ember ").name, "Ember")
+    assert.equal(editTheme(t, "wallpaper", "~/w.png").wallpaper, "~/w.png")
+    assert.equal(t.colors.accent, warm.colors.accent)
+    assert.throws(() => editTheme(t, "colors.accent", "red"), /colour/)
+    assert.throws(() => editTheme(t, "alpha.glass", 2), /0 to 1/)
+    assert.throws(() => editTheme(t, "name", " "), /name/)
+    assert.throws(() => editTheme(t, "colors.nope", "#000000"), /unknown/)
+    assert.throws(() => editTheme(t, "id", "x"), /unknown/)
+})
+
+test("a catalog entry is a whole theme that validates to itself", () => {
+    const e = catalogEntry("warm", warm)
+    assert.deepEqual(validateTheme(e).theme.alpha, validateTheme(warm).theme.alpha)
+    assert.deepEqual(validateTheme(e).theme.colors, validateTheme(warm).theme.colors)
 })

@@ -198,7 +198,35 @@ export function catalogEntry(id, raw) {
     const named = isObject(raw) && typeof raw.name === "string" && raw.name.trim() !== ""
     const name = named ? raw.name : id
     const t = validateTheme(isObject(raw) ? Object.assign({}, raw, { id: ID.test(id) ? id : "theme", name: name }) : raw).theme
-    return { id: id, name: name, description: t.description, wallpaper: t.wallpaper, look: t.look, colors: t.colors, links: t.links || {} }
+    return { id: id, name: name, description: t.description, wallpaper: t.wallpaper, workspaceIcon: t.workspaceIcon, look: t.look, colors: t.colors, alpha: t.alpha, links: t.links || {} }
+}
+
+export function slugTheme(name) {
+    return String(name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 40).replace(/-+$/, "")
+}
+
+export function editTheme(theme, key, value) {
+    const next = clone(theme)
+    const [group, field] = String(key).split(".")
+    if (group === "colors" && COLOR_KEYS.indexOf(field) >= 0) {
+        if (parseHex(value) === null)
+            throw new Error("not a colour like #5fb3a1: " + value)
+        next.colors[field] = value.toLowerCase()
+    } else if (group === "alpha" && ALPHA_KEYS.indexOf(field) >= 0) {
+        const n = typeof value === "number" ? value : Number(value)
+        if (!(n >= 0 && n <= 1))
+            throw new Error("alpha." + field + " goes from 0 to 1")
+        next.alpha[field] = Math.round(n * 1000) / 1000
+    } else if (key === "name") {
+        if (String(value).trim() === "")
+            throw new Error("a theme needs a name")
+        next.name = String(value).trim().slice(0, 40)
+    } else if (key === "description" || key === "wallpaper") {
+        next[key] = String(value).trim()
+    } else {
+        throw new Error("unknown theme key: " + key)
+    }
+    return validateTheme(next).theme
 }
 
 const UNLINK_SCRIPT = 'k=$1; shift; r=0; while [ "$k" -gt 0 ]; do if [ -L "$2" ] && [ "$(readlink "$2")" = "$1" ] && rm -f -- "$2"; then r=$((r + 1)); if [ -e "$2.before-sylvaris" ] || [ -L "$2.before-sylvaris" ]; then mv -- "$2.before-sylvaris" "$2"; fi; fi; shift 2; k=$((k - 1)); done; echo "removed $r"; '

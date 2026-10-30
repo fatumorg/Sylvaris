@@ -802,6 +802,18 @@ ShellRoot {
                     Theme.apply(id);
                 },
                 list: () => Theme.ids,
+                new: (...name) => Theme.create(name.join(" "), ""),
+                duplicate: id => {
+                    if (Theme.ids.indexOf(id) < 0)
+                        throw new Error("unknown theme: " + id);
+                    return Theme.duplicate(id);
+                },
+                edit: (id, key, ...value) => {
+                    if (id === undefined || key === undefined || value.length === 0)
+                        throw new Error("usage: theme edit <id> <colors.accent|alpha.glass|name|description|wallpaper> <value>");
+                    Theme.edit(id, key, value.join(" "));
+                },
+                remove: id => Theme.remove(id || ""),
                 generate: (path, mode) => {
                     const m = mode || (path === "dark" || path === "light" ? path : "");
                     const p = path === undefined || path === "dark" || path === "light" ? Look.wallPath : S.expandHome(path, Settings.home);

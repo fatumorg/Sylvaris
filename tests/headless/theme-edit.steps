@@ -1,0 +1,35 @@
+sleep 1.5
+check cp "$HOME/.config/sylvaris/themes/birch.json" "$HOME/birch-ro.json" && ln -sf "$HOME/birch-ro.json" "$HOME/.config/sylvaris/themes/birch.json"
+syl theme new Night Owl
+wait test -f "$HOME/.config/sylvaris/themes/night-owl.json"
+wait sylvaris theme list | grep -q night-owl
+check sylvaris theme edit night-owl colors.accent '#FF8800'
+wait grep -q '"accent": "#ff8800"' "$HOME/.config/sylvaris/themes/night-owl.json"
+syl theme edit night-owl alpha.glass 0.4
+wait grep -q '"glass": 0.4' "$HOME/.config/sylvaris/themes/night-owl.json"
+check ! sylvaris theme edit night-owl colors.accent orange
+syl theme duplicate coal
+wait test -f "$HOME/.config/sylvaris/themes/coal-copy.json"
+syl theme set night-owl
+wait sh -c "sylvaris state | grep -q night-owl"
+syl settings open appearance
+sleep 2.5
+shot theme-edit-list
+check ! sylvaris theme edit birch name Changed
+check ! sylvaris theme remove birch
+check test -L "$HOME/.config/sylvaris/themes/birch.json"
+check sylvaris theme edit night-owl colors.accent '#3fa0ff'
+sleep 1.5
+shot theme-edit-live
+pointer move 1478 1023 pause 0.3 click 1
+sleep 1.5
+shot theme-edit-editor
+pointer move 1514 1041 pause 0.3 click 1
+sleep 1
+shot theme-edit-colours
+pointer move 1430 1103 pause 0.3 mousedown 1 pause 0.2 move 1440 1103 move 1448 1103 move 1456 1103 move 1464 1103 move 1472 1103 move 1480 1103 move 1488 1103 move 1496 1103 move 1504 1103 move 1512 1103 move 1520 1103 move 1528 1103 move 1536 1103 move 1544 1103 move 1552 1103 move 1560 1103 move 1568 1103 move 1576 1103 move 1584 1103 move 1592 1103 move 1600 1103 pause 0.2 mouseup 1
+wait sh -c '! grep -q "\"accent\": \"#3fa0ff\"" "$HOME/.config/sylvaris/themes/night-owl.json"'
+check grep -q '"accent": "#' "$HOME/.config/sylvaris/themes/night-owl.json"
+syl theme remove coal-copy
+wait test ! -e "$HOME/.config/sylvaris/themes/coal-copy.json"
+check ! sylvaris theme list | grep -q coal-copy

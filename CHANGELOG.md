@@ -10,6 +10,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - sylvaris look styles, look take, look reset and look remove list, mix and restore styles from the command line
 - The Nix modules install the fonts the styles use; programs.sylvaris.fonts.enable = false keeps them out
 - SylSettings › Look edits any style, makes your own and takes any section from another style
+- Make, edit, duplicate and delete themes in SylSettings › Look › Appearance, with a colour mixer and live preview, and from the command line with sylvaris theme new, edit, duplicate and remove
 
 ### Changed
 
