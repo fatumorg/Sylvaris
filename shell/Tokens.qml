@@ -107,8 +107,8 @@ Singleton {
     readonly property int themeCardWidth: 560
     readonly property int themeCardHeight: 760
     readonly property int themeRingX: 900
-    readonly property int themeRingY: 220
-    readonly property int themeRingCenterY: 480
+    readonly property int themeRingY: 150
+    readonly property int themeRingCenterY: 580
     readonly property int themeNameSize: 190
     readonly property int themeRadius: Math.round(36 * root.radiusScale)
     readonly property var morphCurve: [0.2, 0.8, 0.2, 1, 1, 1]

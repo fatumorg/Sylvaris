@@ -33,9 +33,10 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - SylSettings' previews and the blurred backdrop behind SylPad, SylPower, the lock screen and SylViewer show the wallpaper you actually have, including one picked in SylPaper for a theme, and open paths with # or spaces
 - Segmented choices size each option to its label, so long ones like Control Center no longer spill into their neighbours, and elide when there is no room
 - Wallpapers, avatars, clipboard images and notification pictures whose paths contain #, ? or % now load
-- The login screen and the theme picker show the wallpaper you picked instead of the theme's own
+- The login screen shows the wallpaper you picked instead of the theme's own
 - Performance mode keeps compositor blur, animations, shadows and gaps off after Hyprland reloads its config, and night light and accessibility follow config reloads and monitor changes again
 - Control Center tiles that are on light their icon like Wi-Fi and Bluetooth instead of filling the whole tile, so their text stays readable in every style
+- The theme picker shows every theme with its own wallpaper again, applying one brings its wallpaper with it, and its cards no longer slide under the search field
 
 ## [1.5.1] - 2026-10-28
 

@@ -1,0 +1,19 @@
+sleep 1.5
+syl set paper.wallpaper "$HOME/one.png"
+check sylvaris get paper.wallpaper | grep -q one.png
+syl theme open
+sleep 1.5
+shot theme-wallpaper-picker
+syl theme search birch
+sleep 0.8
+syl theme apply
+sleep 1
+wait sylvaris get paper.wallpaper | grep -qv one.png
+syl set paper.wallpaper "$HOME/one.png"
+syl theme open
+sleep 1.2
+syl theme search amber
+sleep 0.6
+syl theme apply
+sleep 1
+check sylvaris get paper.wallpaper | grep -q one.png

@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { validatePaper, resolve, choose, isImage, fillMode, DEFAULT_PAPER } from "../shell/lib/paper.mjs"
+import { validatePaper, resolve, choose, preview, dropsPick, isImage, fillMode, DEFAULT_PAPER } from "../shell/lib/paper.mjs"
 
 test("validatePaper keeps sane values and drops bad ones", () => {
     const p = validatePaper({ fit: "stretch", blur: 4, dim: 0.4, themes: { noir: "/a.png", bad: 3 }, duration: 99999, transition: "slide" })
@@ -49,4 +49,20 @@ test("parallax defaults to 0.4 and clamps into 0 to 1", () => {
     assert.equal(validatePaper({ parallax: 0.2 }).parallax, 0.2)
     assert.equal(validatePaper({}).menu, true)
     assert.equal(validatePaper({ menu: false }).menu, false)
+})
+
+test("a theme preview shows that theme's own wallpaper, not one picked for every theme", () => {
+    const p = validatePaper({ wallpaper: "/kitten.png", themes: { noir: "/n.png" } })
+    assert.equal(preview(p, "warm", "/dachshund.png"), "/dachshund.png")
+    assert.equal(preview(p, "noir", "/noir-own.png"), "/n.png")
+    assert.equal(preview(p, "bare", ""), "/kitten.png")
+})
+
+test("applying another theme drops the every-theme pick only when that theme brings a wallpaper", () => {
+    const p = validatePaper({ wallpaper: "/kitten.png", themes: { noir: "/n.png" } })
+    assert.equal(dropsPick(p, "kitten", "warm", "/dachshund.png"), true)
+    assert.equal(dropsPick(p, "kitten", "kitten", "/kitten.png"), false)
+    assert.equal(dropsPick(p, "kitten", "bare", ""), false)
+    assert.equal(dropsPick(p, "kitten", "noir", "/noir-own.png"), false)
+    assert.equal(dropsPick(validatePaper({}), "kitten", "warm", "/d.png"), false)
 })

@@ -14,7 +14,7 @@ Item {
     property real enter: 1
     property point pointer: Qt.point(-1, -1)
     readonly property var entry: Theme.catalog[root.modelData] === undefined ? null : Theme.catalog[root.modelData]
-    readonly property string wall: root.entry === null ? "" : Look.wallFor(root.modelData, root.entry.wallpaper)
+    readonly property string wall: root.entry === null ? "" : Look.previewWall(root.modelData, root.entry.wallpaper)
     readonly property real depth: PathView.depth === undefined ? 1 : PathView.depth
     readonly property real turn: PathView.turn === undefined ? 0 : PathView.turn
     readonly property bool front: PathView.isCurrentItem === true

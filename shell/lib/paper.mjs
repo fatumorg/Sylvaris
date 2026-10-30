@@ -52,6 +52,16 @@ export function resolve(paper, themeId, themeWallpaper, output) {
     return paper.wallpaper || themeWallpaper || ""
 }
 
+export function preview(paper, themeId, themeWallpaper) {
+    if (paper.themes[themeId] !== undefined)
+        return paper.themes[themeId]
+    return themeWallpaper || paper.wallpaper || ""
+}
+
+export function dropsPick(paper, fromId, toId, toWallpaper) {
+    return paper.wallpaper !== "" && toId !== fromId && toWallpaper !== "" && paper.themes[toId] === undefined
+}
+
 export function choose(paper, scope, themeId, output, path) {
     const set = (map, key) => {
         const out = Object.assign({}, map)

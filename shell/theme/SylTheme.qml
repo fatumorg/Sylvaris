@@ -7,6 +7,7 @@ import qs.components
 import "../lib/preview.mjs" as P
 import "../lib/icons.mjs" as Icons
 import "../lib/capture.mjs" as Cap
+import "../lib/paper.mjs" as W
 
 Scope {
     id: root
@@ -99,6 +100,8 @@ Scope {
     function commit(): void {
         if (!root.shown)
             return;
+        if (root.frontEntry !== null && W.dropsPick(Settings.values.paper, Theme.currentId, root.front, root.frontEntry.wallpaper || ""))
+            Settings.put("paper.wallpaper", "");
         ThemePreview.commit(root.front);
         root.finish();
     }
@@ -295,7 +298,7 @@ Scope {
                             id: layerItem
                             required property string modelData
                             readonly property var e: Theme.catalog[modelData] === undefined ? null : Theme.catalog[modelData]
-                            readonly property string wall: layerItem.e === null ? "" : Look.wallFor(modelData, layerItem.e.wallpaper)
+                            readonly property string wall: layerItem.e === null ? "" : Look.previewWall(modelData, layerItem.e.wallpaper)
                             anchors.fill: parent
                             opacity: modelData === root.front ? 1 : 0
                             visible: opacity > 0

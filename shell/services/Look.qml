@@ -48,6 +48,10 @@ Singleton {
             console.warn("sylvaris: " + root.notice);
     }
 
+    function previewWall(id: string, wallpaper: string): string {
+        return S.expandHome(W.preview(Settings.values.paper, id, wallpaper), Settings.home);
+    }
+
     function wallFor(id: string, wallpaper: string): string {
         return S.expandHome(W.resolve(Settings.values.paper, id, wallpaper, ""), Settings.home);
     }
