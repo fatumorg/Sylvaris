@@ -514,6 +514,17 @@ export function liveServices(parts, plugins, widgets) {
     return out
 }
 
+export function share(prev, next) {
+    if (prev === next || JSON.stringify(prev) === JSON.stringify(next))
+        return prev
+    if (!isObject(prev) || !isObject(next))
+        return next
+    const out = {}
+    for (const key of Object.keys(next))
+        out[key] = share(prev[key], next[key])
+    return out
+}
+
 export function settingsLayer(config) {
     const out = {}
     if (!isObject(config))

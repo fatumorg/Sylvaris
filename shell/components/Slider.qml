@@ -13,11 +13,44 @@ Rectangle {
 
     readonly property string kind: Tokens.sliderStyle
     readonly property bool filled: root.kind === "fill"
-    readonly property real level: Math.max(0, Math.min(1, root.value))
+    property real live: 0
+    property real sent: -1
+    property bool holding: false
+    readonly property real level: Math.max(0, Math.min(1, root.holding ? root.live : root.value))
     readonly property real trackX: root.filled ? 0 : lead.x + lead.width + 14
     readonly property real trackW: root.filled ? root.width : Math.max(24, trailingText.x - 14 - root.trackX)
 
     signal moved(real v)
+
+    function send(v: real): void {
+        root.live = v;
+        root.holding = true;
+        if (pace.running)
+            return;
+        root.sent = v;
+        root.moved(v);
+        pace.start();
+    }
+
+    function release(): void {
+        pace.stop();
+        if (root.holding && root.sent !== root.live)
+            root.moved(root.live);
+        root.holding = false;
+        root.sent = -1;
+    }
+
+    Timer {
+        id: pace
+        interval: 40
+        onTriggered: {
+            if (root.sent === root.live)
+                return;
+            root.sent = root.live;
+            root.moved(root.live);
+            pace.start();
+        }
+    }
     signal iconClicked
     signal trailingClicked
 
@@ -155,13 +188,13 @@ Rectangle {
         preventStealing: true
         cursorShape: Qt.PointingHandCursor
         function pick(mx: real): void {
-            root.moved(Math.max(0, Math.min(1, (mx - root.trackX) / root.trackW)));
+            root.send(Math.max(0, Math.min(1, (mx - root.trackX) / root.trackW)));
         }
         onPressed: mouse => {
             if (!root.filled && mouse.x < root.trackX - 9)
                 mouse.accepted = false;
             else if (root.kind === "ticks")
-                root.moved(C.tickValue(Math.max(0, Math.min(C.TICKS - 1, Math.floor((mouse.x - root.trackX) / root.trackW * C.TICKS))), C.TICKS));
+                root.send(C.tickValue(Math.max(0, Math.min(C.TICKS - 1, Math.floor((mouse.x - root.trackX) / root.trackW * C.TICKS))), C.TICKS));
             else
                 pick(mouse.x);
         }
@@ -169,6 +202,8 @@ Rectangle {
             if (pressed)
                 pick(mouse.x);
         }
+        onReleased: root.release()
+        onCanceled: root.release()
         onWheel: wheel => root.moved(Math.max(0, Math.min(1, root.value + (wheel.angleDelta.y > 0 ? 0.05 : -0.05))))
     }
 

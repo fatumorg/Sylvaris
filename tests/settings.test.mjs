@@ -4,7 +4,7 @@ import assert from "node:assert/strict"
 import {
     CORNERS, DEFAULT_CONFIG, DEFAULT_SETTINGS, parseJson, expandHome, deepMerge, migrate,
     validateConfig, validateSettings, merge, getPath, setPath, serialize, DEFAULT_GLASS, resolveGlass, settingsLayer, effectiveSettings,
-    PARTS, OPT_IN, SERVICE_DEPS, liveParts, screenSettings, screenKey, liveServices, CENTER_TILES, unsetPath, isModified
+    PARTS, OPT_IN, SERVICE_DEPS, liveParts, screenSettings, screenKey, liveServices, CENTER_TILES, unsetPath, isModified, share
 } from "../shell/lib/settings.mjs"
 import { TYPES } from "../shell/lib/widgets.mjs"
 import { LOOKS, styleSettings, validateStyle } from "../shell/lib/look.mjs"
@@ -436,4 +436,17 @@ test("isModified is false for a value equal to the default", () => {
     assert.equal(isModified(effectiveSettings({}, { motion: { scale: 1 } }), base, "motion.scale"), false)
     assert.equal(isModified(effectiveSettings({}, { motion: { scale: 2 } }), base, "motion.scale"), true)
     assert.equal(isModified(base, base, "access.reader"), false)
+})
+
+test("share keeps unchanged parts of the settings as the same objects", () => {
+    const a = { bar: { style: "slab", size: 1 }, motion: { scale: 1 }, list: [1, 2] }
+    const b = { bar: { style: "slab", size: 1 }, motion: { scale: 1.5 }, list: [1, 2] }
+    const s = share(a, b)
+    assert.equal(s.bar, a.bar)
+    assert.equal(s.list, a.list)
+    assert.notEqual(s.motion, a.motion)
+    assert.equal(s.motion.scale, 1.5)
+    assert.deepEqual(s, b)
+    assert.equal(share(a, JSON.parse(JSON.stringify(a))), a)
+    assert.equal(share(undefined, b), b)
 })

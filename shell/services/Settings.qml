@@ -12,7 +12,9 @@ Singleton {
     readonly property string dir: (Stack.env("XDG_CONFIG_HOME") || (root.home + "/.config")) + "/sylvaris"
     readonly property string path: root.dir + "/settings.json"
     property var raw: ({})
-    readonly property var values: S.effectiveSettings(Config.values, root.raw, Look.userLooks)
+    readonly property var computed: S.effectiveSettings(Config.values, root.raw, Look.userLooks)
+    property var values: root.computed
+    onComputedChanged: root.values = S.share(root.values, root.computed)
     property string notice: ""
     property string editing: ""
     readonly property var shown: root.editing === "" ? root.values : S.screenSettings(root.values, root.editing)
@@ -24,9 +26,10 @@ Singleton {
     property string focusKey: ""
     property var undoStack: []
     property var lastChange: null
-    readonly property var base: S.effectiveSettings(Config.values, root.raw.look && root.raw.look.preset ? {
+    readonly property string rawPreset: root.raw.look && root.raw.look.preset ? root.raw.look.preset : ""
+    readonly property var base: S.effectiveSettings(Config.values, root.rawPreset !== "" ? {
         look: {
-            preset: root.raw.look.preset
+            preset: root.rawPreset
         }
     } : {}, Look.userLooks)
 

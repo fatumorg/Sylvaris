@@ -37,6 +37,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - Performance mode keeps compositor blur, animations, shadows and gaps off after Hyprland reloads its config, and night light and accessibility follow config reloads and monitor changes again
 - Control Center tiles that are on light their icon like Wi-Fi and Bluetooth instead of filling the whole tile, so their text stays readable in every style
 - The theme picker shows every theme with its own wallpaper again, applying one brings its wallpaper with it, and its cards no longer slide under the search field
+- Sliders in SylSettings follow the pointer smoothly instead of lagging behind every change
 
 ## [1.5.1] - 2026-10-28
 
