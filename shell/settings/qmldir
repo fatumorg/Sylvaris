@@ -33,6 +33,7 @@ MotionPreview 1.0 MotionPreview.qml
 NotesPage 1.0 NotesPage.qml
 NotificationsPage 1.0 NotificationsPage.qml
 NotifyPreview 1.0 NotifyPreview.qml
+OptionFields 1.0 OptionFields.qml
 PadPreview 1.0 PadPreview.qml
 PaperPreview 1.0 PaperPreview.qml
 PlacementPreview 1.0 PlacementPreview.qml

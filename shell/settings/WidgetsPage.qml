@@ -253,58 +253,10 @@ Column {
             }
         }
 
-        Repeater {
-            model: page.picked === null ? [] : Wd.TYPES[page.picked.type].fields.filter(f => f.hidden !== true)
-
-            delegate: SettingRow {
-                id: field
-
-                required property var modelData
-
-                title: field.modelData.label
-                key: "widgets.option." + field.modelData.key
-                readonly property var value: page.picked === null ? undefined : page.picked.options[field.modelData.key]
-
-                Row {
-
-                    Toggle {
-                        visible: field.modelData.kind === "toggle"
-                        checked: field.value === true
-                        onToggled: v => page.option(field.modelData.key, v)
-                    }
-
-                    Segmented {
-                        visible: field.modelData.kind === "choice"
-                        width: Math.min(460, 80 * (field.modelData.choices || []).length)
-                        options: page.options(field.modelData.choices || [])
-                        current: String(field.value)
-                        onPicked: key => page.option(field.modelData.key, typeof field.modelData.choices[0] === "number" ? Number(key) : key)
-                    }
-
-                    Slider {
-                        visible: field.modelData.kind === "number" && field.modelData.max <= 1
-                        width: 260
-                        value: typeof field.value === "number" ? field.value : 0
-                        label: Math.round((typeof field.value === "number" ? field.value : 0) * 100) + "%"
-                        onMoved: v => page.option(field.modelData.key, Math.round(v * 20) / 20)
-                    }
-
-                    Stepper {
-                        visible: field.modelData.kind === "number" && field.modelData.max > 1
-                        value: typeof field.value === "number" ? field.value : 0
-                        from: field.modelData.min === undefined ? 0 : field.modelData.min
-                        to: field.modelData.max === undefined ? 100 : field.modelData.max
-                        onStepped: v => page.option(field.modelData.key, v)
-                    }
-
-                    TextBox {
-                        visible: field.modelData.kind === "text" || field.modelData.kind === "path" || field.modelData.kind === "list" || field.modelData.kind === "color"
-                        width: 300
-                        text: Array.isArray(field.value) ? field.value.join(", ") : field.value === undefined ? "" : String(field.value)
-                        onAccepted: page.option(field.modelData.key, field.modelData.kind === "list" ? text.split(",").map(s => s.trim()).filter(s => s !== "") : text)
-                    }
-                }
-            }
+        OptionFields {
+            type: page.picked === null ? "" : page.picked.type
+            values: page.picked === null ? ({}) : page.picked.options
+            onEdited: (key, value) => page.option(key, value)
         }
 
         SettingRow {

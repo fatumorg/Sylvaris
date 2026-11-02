@@ -1,0 +1,9 @@
+sleep 1.5
+write sylvaris/settings.json {"version":1,"widgets":{"items":[{"id":"w000","type":"clock","anchor":"top-left","col":0,"row":1,"w":4,"h":2}]}}
+sleep 2
+syl settings open widgets
+sleep 2
+shot page
+pointer move 1549 794 click 1
+sleep 1
+shot change
