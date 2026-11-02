@@ -6,13 +6,16 @@ export const TARGETS = [
     { id: "vscode", label: "VS Code, VSCodium and Cursor", about: "Recolours the editor live through its settings.json" },
     { id: "zed", label: "Zed", about: "Pick the Sylvaris theme once" },
     { id: "neovim", label: "Neovim and Vim", about: "Use “colorscheme sylvaris”" },
-    { id: "firefox", label: "Firefox, LibreWolf, Zen and Mullvad Browser", about: "Colours the browser frame through userChrome.css after a browser restart" }
+    { id: "firefox", label: "Firefox, LibreWolf and Mullvad Browser", about: "Colours the browser frame through userChrome.css after a browser restart" },
+    { id: "zen", label: "Zen Browser", about: "Colours Zen's frame and spaces through userChrome.css after a browser restart" }
 ]
+
+const BROWSERS = ["firefox", "zen"]
 
 function defaults() {
     const out = {}
     for (const t of TARGETS)
-        out[t.id] = t.id !== "firefox"
+        out[t.id] = BROWSERS.indexOf(t.id) < 0
     return out
 }
 
@@ -23,7 +26,7 @@ export function validateSync(raw) {
     const src = v.targets !== null && typeof v.targets === "object" ? v.targets : {}
     const targets = {}
     for (const t of TARGETS)
-        targets[t.id] = typeof src[t.id] === "boolean" ? src[t.id] : DEFAULT_SYNC.targets[t.id]
+        targets[t.id] = typeof src[t.id] === "boolean" ? src[t.id] : t.id === "zen" && typeof src.firefox === "boolean" ? src.firefox : DEFAULT_SYNC.targets[t.id]
     return Object.assign({}, v, { enabled: v.enabled === true, targets: targets })
 }
 
@@ -195,6 +198,19 @@ export function firefoxCss(p) {
         [""]).join("\n")
 }
 
+export function zenCss(p) {
+    const vars = {
+        "--zen-main-browser-background": p.bg, "--zen-main-browser-background-toolbar": p.bg, "--zen-main-browser-background-old": p.bg,
+        "--zen-main-browser-background-toolbar-old": p.bg, "--zen-themed-toolbar-bg": p.bg, "--zen-themed-toolbar-bg-transparent": p.bg,
+        "--zen-primary-color": p.accent, "--zen-colors-primary": mix(p.bg2, p.accent, 0.25), "--zen-colors-secondary": mix(p.bg2, p.accent, 0.12),
+        "--zen-colors-tertiary": p.bg2, "--zen-colors-hover-bg": mix(p.bg2, p.fg, 0.1), "--zen-colors-primary-foreground": p.fg,
+        "--zen-colors-border": mix(p.bg2, p.fg, 0.12), "--zen-colors-border-contrast": mix(p.bg2, p.fg, 0.2), "--zen-colors-input-bg": p.bg,
+        "--zen-dialog-background": p.bg2, "--zen-urlbar-background": p.bg2, "--zen-urlbar-background-base": p.bg2,
+        "--zen-accent-button-background": p.accent, "--zen-accent-button-color": p.onAccent, "--zen-grainy-background-opacity": "0"
+    }
+    return firefoxCss(p) + [":root, :root:-moz-lwtheme {"].concat(Object.keys(vars).map(k => "  " + k + ": " + vars[k] + " !important;"), ["}", ""]).join("\n")
+}
+
 export function firefoxContentCss(p) {
     const pages = ["about:newtab", "about:home", "about:blank", "about:privatebrowsing", "about:preferences", "about:addons", "about:config"].map(u => "url-prefix(\"" + u + "\")").join(", ")
     return ["@-moz-document " + pages + " {", "  :root, body {", "    --newtab-background-color: " + p.bg + " !important;", "    --newtab-background-color-secondary: " + p.bg2 + " !important;",
@@ -245,7 +261,10 @@ export function plan(p, targets, configHome, home) {
     }
     target = "firefox"
     if (targets.firefox)
-        ops.push({ op: "firefox", target: target, content: firefoxCss(p), contentCss: firefoxContentCss(p), roots: [configHome + "/mozilla/firefox", home + "/.mozilla/firefox", home + "/.librewolf", home + "/.zen", home + "/.mullvad-browser/Browser/TorBrowser/Data/Browser"] })
+        ops.push({ op: "firefox", target: target, content: firefoxCss(p), contentCss: firefoxContentCss(p), roots: [configHome + "/mozilla/firefox", home + "/.mozilla/firefox", home + "/.librewolf", home + "/.mullvad-browser/Browser/TorBrowser/Data/Browser"] })
+    target = "zen"
+    if (targets.zen)
+        ops.push({ op: "firefox", target: target, content: zenCss(p), contentCss: firefoxContentCss(p), roots: [configHome + "/zen", home + "/.zen"] })
     return ops
 }
 

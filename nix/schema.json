@@ -365,7 +365,8 @@
       "vscode": true,
       "zed": true,
       "neovim": true,
-      "firefox": false
+      "firefox": false,
+      "zen": false
     }
   },
   "corners": {

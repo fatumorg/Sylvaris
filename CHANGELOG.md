@@ -6,6 +6,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Added
 
+- SylSync colours Zen Browser as its own switch under App colours, from its ~/.config/zen profiles, including Zen's spaces background and accent; it follows the Firefox switch until you set it
 - Widgets get zoom, padding and idle opacity, for all of them at once or one at a time; a faded widget comes back when you point at it
 - The weather widget can hide its condition and show fewer forecast days, and the calendar widget can hide its month title
 - Widgets can hang from nine places on the screen: the four corners, the middle of each edge and the centre; pick one under SylSettings › Desktop › Widgets › Position

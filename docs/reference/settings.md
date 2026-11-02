@@ -476,6 +476,7 @@ Explained in [sync](../parts/sync.md).
 | `sync.targets.zed` | `true` |  |
 | `sync.targets.neovim` | `true` |  |
 | `sync.targets.firefox` | `false` |  |
+| `sync.targets.zen` | `false` |  |
 
 ## corners
 

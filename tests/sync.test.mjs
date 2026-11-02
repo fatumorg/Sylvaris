@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { palette, summary, ansi, gtkCss, kittyConf, footIni, qtColors, vscodeTheme, zedTheme, nvimLua, vimColors, firefoxCss, firefoxContentCss, plan, TARGETS, DEFAULT_SYNC, validateSync } from "../shell/lib/sync.mjs"
+import { palette, summary, ansi, gtkCss, kittyConf, footIni, qtColors, vscodeTheme, zedTheme, nvimLua, vimColors, firefoxCss, firefoxContentCss, zenCss, plan, TARGETS, DEFAULT_SYNC, validateSync } from "../shell/lib/sync.mjs"
 
 const colors = { base: "#181310", surface: "#281f1a", accent: "#c9702f", accentHi: "#e0955c", accentDeep: "#a85c32", onAccent: "#181310", text: "#e7dac6", textDim: "#b2967b", textSoft: "#d3b9a1", danger: "#d9674a" }
 
@@ -42,6 +42,24 @@ test("plan writes only the chosen targets and asks for include lines", () => {
     const code = plan(palette(colors), { vscode: true, firefox: true }, "/h/.config", "/h")
     assert.ok(code.find(o => o.op === "vscode").dirs.includes("/h/.config/VSCodium/User"))
     assert.equal(code.find(o => o.op === "firefox").roots[0], "/h/.config/mozilla/firefox")
+    assert.ok(!code.some(o => o.roots && o.roots.some(r => r.includes("zen"))))
+})
+
+test("Zen is its own target that finds XDG profiles and paints Zen's own colours", () => {
+    const p = palette(colors)
+    const css = zenCss(p)
+    assert.ok(css.startsWith(firefoxCss(p)))
+    assert.ok(css.includes("--zen-main-browser-background: #181310 !important;"))
+    assert.ok(css.includes("--zen-primary-color: #c9702f !important;"))
+    const zen = plan(p, { zen: true }, "/h/.config", "/h").filter(o => o.target === "zen")
+    assert.equal(zen.length, 1)
+    assert.equal(zen[0].op, "firefox")
+    assert.deepEqual(zen[0].roots, ["/h/.config/zen", "/h/.zen"])
+    assert.equal(zen[0].content, css)
+    assert.equal(plan(p, { firefox: true }, "/h/.config", "/h").some(o => o.target === "zen"), false)
+    assert.equal(validateSync({ targets: { firefox: true } }).targets.zen, true)
+    assert.equal(validateSync({ targets: { firefox: true, zen: false } }).targets.zen, false)
+    assert.equal(validateSync({}).targets.zen, false)
 })
 
 test("validateSync is off by default and keeps known targets", () => {
