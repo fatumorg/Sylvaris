@@ -33,7 +33,21 @@ Item {
         });
     }
     readonly property string file: !root.item ? "" : root.item.type.charAt(0).toUpperCase() + root.item.type.slice(1) + "Widget.qml"
-    readonly property real pad: !root.item ? 0 : root.item.type === "terminal" ? 0 : root.item.type === "photos" || root.item.type === "sticker" ? 8 : 16
+    readonly property real pad: (!root.item ? 0 : root.item.type === "terminal" ? 0 : root.item.type === "photos" || root.item.type === "sticker" ? 8 : 16) * (typeof root.style.padding === "number" ? root.style.padding : 1)
+    readonly property real zoom: !root.item || root.item.type === "terminal" || typeof root.style.zoom !== "number" ? 1 : root.style.zoom
+    readonly property real idle: typeof root.style.idle === "number" ? root.style.idle : 1
+
+    opacity: root.idle >= 1 || hover.hovered ? 1 : root.idle
+
+    Behavior on opacity {
+        NumberAnimation {
+            duration: Tokens.stateDuration
+        }
+    }
+
+    HoverHandler {
+        id: hover
+    }
 
     Glass {
         anchors.fill: parent
@@ -44,8 +58,12 @@ Item {
 
     Loader {
         id: body
-        anchors.fill: parent
-        anchors.margins: root.pad
+        x: root.pad
+        y: root.pad
+        width: (root.width - 2 * root.pad) / root.zoom
+        height: (root.height - 2 * root.pad) / root.zoom
+        scale: root.zoom
+        transformOrigin: Item.TopLeft
         source: root.file === "" ? "" : Qt.resolvedUrl("types/" + root.file)
         layer.enabled: root.clear && body.GraphicsInfo.api !== GraphicsInfo.Software && body.GraphicsInfo.api !== GraphicsInfo.Unknown
         layer.effect: MultiEffect {

@@ -1,0 +1,9 @@
+sleep 1.5
+write sylvaris/settings.json {"version":1,"widgets":{"items":[{"id":"w000","type":"weather","anchor":"top-left","col":0,"row":1,"w":4,"h":2},{"id":"w001","type":"weather","anchor":"top-center","col":0,"row":1,"w":4,"h":2,"style":{"zoom":1.4}},{"id":"w002","type":"clock","anchor":"top-right","col":0,"row":1,"w":4,"h":2,"style":{"idle":0.3,"padding":0}}]}}
+sleep 2.5
+shot style
+check sylvaris widgets list | grep -q "^w001	weather"
+write sylvaris/settings.json {"version":1,"widgets":{"items":[{"id":"w000","type":"weather","anchor":"center-left","col":0,"row":0,"w":5,"h":2,"options":{"forecast":1,"condition":false}},{"id":"w001","type":"calendar","anchor":"center","col":0,"row":0,"w":4,"h":4,"options":{"title":false}}]}}
+sleep 2.5
+shot options
+check sylvaris widgets list | grep -q "^w001	calendar"

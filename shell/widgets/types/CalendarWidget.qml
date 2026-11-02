@@ -16,7 +16,8 @@ Item {
     readonly property var busy: root.o.dots !== false && Settings.values.plugins.enabled.diver === true ? Diver.busy(root.now.getFullYear(), root.now.getMonth()) : ({})
     readonly property bool weeks: root.o.weeks === true
     readonly property real cw: root.width / (root.weeks ? 8 : 7)
-    readonly property real ch: (root.height - title.height - 24) / 7
+    readonly property real head: title.visible ? title.height + 8 : 0
+    readonly property real ch: (root.height - root.head - 16) / 7
 
     function keyOf(cell: var): string {
         return cell.year + "-" + String(cell.month + 1).padStart(2, "0") + "-" + String(cell.day).padStart(2, "0");
@@ -32,6 +33,7 @@ Item {
     Text {
         id: title
         textFormat: Text.PlainText
+        visible: root.o.title !== false
         text: Qt.locale().standaloneMonthName(root.now.getMonth()) + " " + root.now.getFullYear()
         color: Theme.text
         font.family: Tokens.fontDisplay
@@ -41,7 +43,7 @@ Item {
 
     Column {
         visible: root.weeks
-        y: title.height + 8 + root.ch
+        y: root.head + root.ch
 
         Repeater {
             model: root.weeks ? C.rowWeeks(root.cells, root.firstDay) : []
@@ -66,7 +68,7 @@ Item {
 
     Grid {
         x: root.weeks ? root.cw : 0
-        y: title.height + 8
+        y: root.head
         columns: 7
 
         Repeater {

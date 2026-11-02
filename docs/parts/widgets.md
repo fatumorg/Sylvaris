@@ -23,8 +23,8 @@ Changes are saved when you are done; two widgets that ended up on top of each ot
 | Type | What it shows | Options |
 |---|---|---|
 | `clock` | digital, flip, analog, word clock, giant or orbit face | 24-hour time, seconds, date format, other time zones like `Tokyo +9`, font, align |
-| `weather` | now and the coming days, from [SylClock](clock.md)'s forecast | feels like, wind, humidity |
-| `calendar` | this month, with dots on days that have Diver plans | weeks start on Monday, dots |
+| `weather` | now and the coming days, from [SylClock](clock.md)'s forecast | condition, forecast days (0 to 7), feels like, wind, humidity |
+| `calendar` | this month, with dots on days that have Diver plans | month title, weeks start on Monday, week numbers, dots |
 | `batteries` | a ring per device: the laptop, AirPods (left, right and case), mice and keyboards | devices, ring width |
 | `photos` | one picture, a slideshow that fades, slides or slowly zooms (Ken Burns), a mosaic of four or a stack of polaroids from a folder; click to open it in [SylViewer](viewer.md) | folder or picture, folders inside, mode, transition, interval, shuffle, frame, recolour (tint or mono) |
 | `terminal` | a kitty panel running any command, like `cava` or `btop` | command, font size, background, padding, typing, start again |
@@ -52,7 +52,7 @@ Everything lives under `widgets` in `settings.json`:
 | `widgets.enabled` | `true` | show widgets at all |
 | `widgets.cell` | `80` | grid cell in pixels |
 | `widgets.gap` | `12` | space between cells |
-| `widgets.style` | `{"material": "inherit", ...}` | material (`inherit`, `glass`, `frosted`, `solid`, `clear`), opacity, roundness, shadow and accent for every widget |
+| `widgets.style` | `{"material": "inherit", ...}` | material (`inherit`, `glass`, `frosted`, `solid`, `clear`), opacity, roundness, shadow, accent, zoom (0.6 to 1.6, scales what is inside), padding (0 to 2) and idle opacity (0.15 to 1, the widget fades until you point at it) for every widget; an item's own `style` overrides any of them |
 | `widgets.items` | `[]` | the widgets |
 
 Each item has an `id`, a `type`, the `screen` it is on (empty means the first screen), the part of the screen it hangs from (`anchor`: `top-left`, `top-center`, `top-right`, `center-left`, `center`, `center-right`, `bottom-left`, `bottom-center` or `bottom-right`), `col` and `row` counted in cells from there (a centre anchor counts from the middle, so 0 is exactly centred), its size `w` × `h` in cells, a `layer` (`desktop` under windows, `above` them, or `overlay`), `clickThrough`, `hideFullscreen`, `workspaces` (only show on these), its own `style` and the type's `options`:

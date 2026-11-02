@@ -44,6 +44,11 @@ Column {
         });
     }
 
+    function itemStyle(key: string): real {
+        const own = page.picked === null || page.picked.style === undefined ? undefined : page.picked.style[key];
+        return typeof own === "number" ? own : page.cfg.style[key];
+    }
+
     function option(key: string, value: var): void {
         page.patch(page.selected, {
             options: Object.assign({}, page.picked.options, {
@@ -332,6 +337,48 @@ Column {
 
         SettingRow {
             visible: page.parentStack === null
+            title: "Zoom"
+            key: "widgets.item.zoom"
+            subtitle: "Makes the text and everything inside bigger or smaller"
+
+            Slider {
+                width: 260
+                value: (page.itemStyle("zoom") - 0.6) / 1
+                label: "×" + page.itemStyle("zoom").toFixed(2)
+                onMoved: v => page.patch(page.selected, { style: Object.assign({}, page.picked.style, { zoom: Math.round((0.6 + v) * 20) / 20 }) })
+            }
+        }
+
+        SettingRow {
+            visible: page.parentStack === null
+            title: "Padding"
+            key: "widgets.item.padding"
+
+            Slider {
+                width: 260
+                value: page.itemStyle("padding") / 2
+                label: "×" + page.itemStyle("padding").toFixed(2)
+                onMoved: v => page.patch(page.selected, { style: Object.assign({}, page.picked.style, { padding: Math.round(v * 2 * 20) / 20 }) })
+            }
+        }
+
+        SettingRow {
+            visible: page.parentStack === null
+            title: "Idle opacity"
+            key: "widgets.item.idle"
+            subtitle: "Fades the widget until the pointer is over it"
+            
+
+            Slider {
+                width: 260
+                value: (page.itemStyle("idle") - 0.15) / 0.85
+                label: Math.round(page.itemStyle("idle") * 100) + "%"
+                onMoved: v => page.patch(page.selected, { style: Object.assign({}, page.picked.style, { idle: Math.round((0.15 + v * 0.85) * 20) / 20 }) })
+            }
+        }
+
+        SettingRow {
+            visible: page.parentStack === null
             title: "Layer"
             key: "widgets.layer"
             subtitle: "On the desktop under windows, above them, or over everything"
@@ -418,11 +465,49 @@ Column {
         SettingRow {
             title: "Shadow"
             key: "widgets.style.shadow"
-            last: true
 
             Toggle {
                 checked: page.cfg.style.shadow
                 onToggled: v => Settings.set("widgets.style.shadow", v)
+            }
+        }
+
+        SettingRow {
+            title: "Zoom"
+            key: "widgets.style.zoom"
+            subtitle: "Makes the text and everything inside bigger or smaller"
+
+            Slider {
+                width: 260
+                value: (page.cfg.style.zoom - 0.6) / 1
+                label: "×" + page.cfg.style.zoom.toFixed(2)
+                onMoved: v => Settings.set("widgets.style.zoom", Math.round((0.6 + v) * 20) / 20)
+            }
+        }
+
+        SettingRow {
+            title: "Padding"
+            key: "widgets.style.padding"
+
+            Slider {
+                width: 260
+                value: page.cfg.style.padding / 2
+                label: "×" + page.cfg.style.padding.toFixed(2)
+                onMoved: v => Settings.set("widgets.style.padding", Math.round(v * 2 * 20) / 20)
+            }
+        }
+
+        SettingRow {
+            title: "Idle opacity"
+            key: "widgets.style.idle"
+            subtitle: "Fades the widget until the pointer is over it"
+            last: true
+
+            Slider {
+                width: 260
+                value: (page.cfg.style.idle - 0.15) / 0.85
+                label: Math.round(page.cfg.style.idle * 100) + "%"
+                onMoved: v => Settings.set("widgets.style.idle", Math.round((0.15 + v * 0.85) * 20) / 20)
             }
         }
     }

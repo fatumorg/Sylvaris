@@ -321,6 +321,9 @@ Explained in [island](../parts/island.md).
 | `widgets.style.shadow` | `true` |  |
 | `widgets.style.clear` | `false` |  |
 | `widgets.style.accent` | `""` |  |
+| `widgets.style.zoom` | `1` |  |
+| `widgets.style.padding` | `1` |  |
+| `widgets.style.idle` | `1` |  |
 | `widgets.items` | `[]` |  |
 
 ## archive

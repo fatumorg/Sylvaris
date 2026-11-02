@@ -385,3 +385,25 @@ test("old five-anchor configs still load unchanged", () => {
     const v = validateWidgets({ items: [{ id: "aaaa", type: "clock", anchor: "center" }, { id: "bbbb", type: "clock", anchor: "bottom-right" }, { id: "cccc", type: "clock", anchor: "middle" }] }, {}).values.items
     assert.deepEqual(v.map(i => i.anchor), ["center", "bottom-right", "top-left"])
 })
+
+import { validateStyle as styleOf, DEFAULT_STYLE as baseStyle } from "../shell/lib/widgets.mjs"
+
+test("style has zoom, padding and idle opacity with safe defaults", () => {
+    assert.equal(baseStyle.zoom, 1)
+    assert.equal(baseStyle.padding, 1)
+    assert.equal(baseStyle.idle, 1)
+    assert.deepEqual(styleOf({}, false).zoom, 1)
+})
+
+test("zoom, padding and idle opacity are clamped and dropped when junk", () => {
+    assert.deepEqual(styleOf({ zoom: 9, padding: -1, idle: 0 }, true), { zoom: 1.6, padding: 0, idle: 0.15 })
+    assert.deepEqual(styleOf({ zoom: "big", padding: null, idle: NaN }, true), {})
+})
+
+test("weather can cap its forecast and hide the condition, calendar can hide its title", () => {
+    assert.deepEqual([validateOptions("weather", {}).forecast, validateOptions("weather", {}).condition], [7, true])
+    assert.equal(validateOptions("weather", { forecast: 99 }).forecast, 7)
+    assert.equal(validateOptions("weather", { forecast: 0 }).forecast, 0)
+    assert.equal(validateOptions("calendar", {}).title, true)
+    assert.equal(validateOptions("calendar", { title: false }).title, false)
+})

@@ -8,7 +8,7 @@ export const LIMIT = 24
 
 const PRESETS = { S: [2, 2], M: [4, 2], L: [4, 4] }
 
-export const DEFAULT_STYLE = { material: "inherit", opacity: 1, radius: 1, shadow: true, clear: false, accent: "" }
+export const DEFAULT_STYLE = { material: "inherit", opacity: 1, radius: 1, shadow: true, clear: false, accent: "", zoom: 1, padding: 1, idle: 1 }
 export const DEFAULT_WIDGETS = { enabled: true, cell: 80, gap: 12, snap: true, style: DEFAULT_STYLE, items: [] }
 
 function sized(min, max) {
@@ -31,8 +31,10 @@ export const TYPES = {
     },
     weather: {
         label: "Weather", glyph: "partlyCloudy", sizes: sized([2, 2], [6, 4]), size: [2, 2], services: ["Weather", "Sky"],
-        defaults: { feels: true, wind: false, humidity: false },
+        defaults: { feels: true, wind: false, humidity: false, condition: true, forecast: 7 },
         fields: [
+            { key: "condition", label: "Condition", kind: "toggle" },
+            { key: "forecast", label: "Forecast days, at most", kind: "number", min: 0, max: 7 },
             { key: "feels", label: "Feels like", kind: "toggle" },
             { key: "wind", label: "Wind", kind: "toggle" },
             { key: "humidity", label: "Humidity", kind: "toggle" }
@@ -40,8 +42,9 @@ export const TYPES = {
     },
     calendar: {
         label: "Calendar", glyph: "calendar", sizes: sized([2, 2], [6, 5]), size: [4, 4], services: ["Diver"],
-        defaults: { monday: true, weeks: false, dots: true },
+        defaults: { monday: true, weeks: false, dots: true, title: true },
         fields: [
+            { key: "title", label: "Month title", kind: "toggle" },
             { key: "monday", label: "Weeks start on Monday", kind: "toggle" },
             { key: "weeks", label: "Week numbers", kind: "toggle" },
             { key: "dots", label: "Diver plans", kind: "toggle" }
@@ -259,6 +262,10 @@ export function validateStyle(raw, partial) {
     pick("shadow", typeof s.shadow === "boolean", s.shadow)
     pick("clear", typeof s.clear === "boolean", s.clear)
     pick("accent", typeof s.accent === "string" && /^(#[0-9a-fA-F]{6})?$/.test(s.accent), s.accent)
+    const real = v => typeof v === "number" && Number.isFinite(v)
+    pick("zoom", real(s.zoom), num(s.zoom, 0.6, 1.6, d.zoom))
+    pick("padding", real(s.padding), num(s.padding, 0, 2, d.padding))
+    pick("idle", real(s.idle), num(s.idle, 0.15, 1, d.idle))
     return out
 }
 

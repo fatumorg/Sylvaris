@@ -11,7 +11,7 @@ Item {
     property var frame: null
     readonly property var o: root.frame !== null && root.frame.item !== null ? root.frame.item.options : ({})
     readonly property var d: Weather.data
-    readonly property var days: root.d === null ? [] : root.d.days.slice(1, 1 + Math.max(0, Math.floor((root.width - 150) / 64)))
+    readonly property var days: root.d === null ? [] : root.d.days.slice(1, 1 + Math.max(0, Math.min(typeof root.o.forecast === "number" ? root.o.forecast : 7, Math.floor((root.width - 150) / 64))))
     readonly property string extra: root.d === null ? "" : [root.o.feels !== false ? "Feels " + root.d.feels + "°" : "", root.o.humidity === true ? root.d.humidity + "%" : "", root.o.wind === true ? root.d.wind + " " + root.d.windUnit : ""].filter(s => s !== "").join(" · ")
 
     Component.onCompleted: {
@@ -63,6 +63,7 @@ Item {
             width: parent.width
             elide: Text.ElideRight
             text: Weather.now === null ? "" : Weather.now.label
+            visible: root.o.condition !== false
             color: Theme.text
             font.family: Tokens.fontUi
             font.pixelSize: Tokens.smallSize
