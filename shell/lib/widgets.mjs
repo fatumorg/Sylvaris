@@ -353,7 +353,7 @@ export function span(cells, cell, gap) {
     return cells * cell + (cells - 1) * gap
 }
 
-export function place(item, screens, cell, gap) {
+export function place(item, screens, cell, gap, fit) {
     const s = (screens || []).find(x => x.name === item.screen) || (item.screen === "" && screens && screens.length > 0 ? screens[0] : null)
     if (!s)
         return null
@@ -369,6 +369,8 @@ export function place(item, screens, cell, gap) {
         x = (s.width - w) / 2 + item.col * (cell + gap)
         y = (s.height - h) / 2 + item.row * (cell + gap)
     }
+    if (fit === true && (x < 0 || y < 0 || x + w > s.width || y + h > s.height))
+        return null
     return {
         x: Math.round(Math.max(0, Math.min(s.width - w, x))),
         y: Math.round(Math.max(0, Math.min(s.height - h, y))),
@@ -387,15 +389,29 @@ export function nudge(items, screen, cell, gap, home = "") {
     return items.map(item => {
         if (on(item.screen) !== on(screen.name))
             return item
-        let next = item
-        let rect = place(next, [screen], cell, gap)
-        for (let i = 0; i < 200 && rect !== null && placed.some(p => overlaps(p, rect)); i++) {
-            next = Object.assign({}, next, { row: next.row + 1 })
-            rect = place(next, [screen], cell, gap)
-        }
-        if (rect !== null)
+        const rect = place(item, [screen], cell, gap)
+        if (rect === null)
+            return item
+        const free = r => r !== null && !placed.some(p => overlaps(p, r))
+        if (free(rect)) {
             placed.push(rect)
-        return next
+            return item
+        }
+        const step = cell + gap
+        const cols = Math.ceil(screen.width / step)
+        const rows = Math.ceil(screen.height / step)
+        for (let c = 0; c <= cols; c++) {
+            for (let r = 0; r <= rows; r++) {
+                const next = Object.assign({}, item, { col: item.col + c, row: item.row + r })
+                const at = place(next, [screen], cell, gap, true)
+                if (free(at)) {
+                    placed.push(at)
+                    return next
+                }
+            }
+        }
+        placed.push(rect)
+        return item
     })
 }
 

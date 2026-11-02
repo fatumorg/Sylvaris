@@ -77,6 +77,24 @@ test("nudge counts items without a screen as on the first screen", () => {
     assert.equal(nudge(items, s, 80, 12, "b")[1].row, 0)
 })
 
+test("nudge moves to the next column once a column is full instead of piling up", () => {
+    const s = { name: "a", width: 1920, height: 1080 }
+    const items = Array.from({ length: 10 }, (_, i) => ({ id: "w00" + i.toString(36), screen: "a", anchor: "top-left", col: 0, row: 0, w: 4, h: 4 }))
+    const rects = nudge(items, s, 80, 12).map(i => place(i, [s], 80, 12))
+    for (let i = 0; i < rects.length; i++)
+        for (let j = i + 1; j < rects.length; j++) {
+            const a = rects[i], b = rects[j]
+            assert.ok(!(a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h), "items " + i + " and " + j + " overlap")
+        }
+})
+
+test("nudge leaves an item where it asked to be when the screen is full", () => {
+    const s = { name: "a", width: 1920, height: 1080 }
+    const items = Array.from({ length: 11 }, (_, i) => ({ id: "w00" + i.toString(36), screen: "a", anchor: "top-left", col: 0, row: 0, w: 4, h: 4 }))
+    const last = nudge(items, s, 80, 12)[10]
+    assert.deepEqual([last.col, last.row], [0, 0])
+})
+
 test("plugin widgets validate but sleep while their plugin is off", () => {
     const raw = { items: [{ type: "diver" }, { type: "temp" }, { type: "clock" }] }
     assert.deepEqual(validateWidgets(raw, {}).values.items.map(i => i.inactive), [true, true, false])
