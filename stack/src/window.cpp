@@ -218,6 +218,10 @@ QQuickWindow *WindowBase::makeWindow()
         }
     });
     connect(w, &QQuickWindow::closing, this, [this] { emit closed(); });
+    connect(w, &QQuickWindow::sceneGraphError, this, [w](QQuickWindow::SceneGraphError, const QString &message) {
+        qWarning().noquote() << "window could not start drawing, hiding it:" << message;
+        QMetaObject::invokeMethod(w, &QWindow::hide, Qt::QueuedConnection);
+    });
     connect(w, &QQuickWindow::afterAnimating, this, [this] {
         if ((m_mask && m_mask->dynamic()) || (m_effect && m_effect->blurRegion() && m_effect->blurRegion()->dynamic()))
             refreshRegions();

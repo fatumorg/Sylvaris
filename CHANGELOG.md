@@ -21,6 +21,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Fixed
 
+- A window that cannot get a graphics context, such as a new widget while the GPU is busy, is hidden with a warning instead of crashing the whole shell
 - A new widget goes to the next free spot, moving to the next column when a column is full, instead of piling up at the bottom of the screen on top of the others
 - SylCenter's bento layout puts small tiles three to a row so labels like Performance fit, and stretches a short last row instead of leaving gaps
 - The terminal widget's kitty panel fits its widget exactly; the widget's padding is kept and margins, borders and padding from your kitty.conf no longer make it spill over
