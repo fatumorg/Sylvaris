@@ -333,3 +333,55 @@ test("a set reaches a widget inside a stack", () => {
     assert.equal(out[0].children[1], items[0].children[1])
     assert.equal(apply(begin(items), { kind: "set", id: "zzzz", values: { options: {} } }).items[0], items[0])
 })
+
+import { ANCHORS, zoneAt, offsetsFrom } from "../shell/lib/widgets.mjs"
+
+test("there are nine anchors, one per screen zone", () => {
+    assert.deepEqual(ANCHORS, ["top-left", "top-center", "top-right", "center-left", "center", "center-right", "bottom-left", "bottom-center", "bottom-right"])
+})
+
+test("the edge-centre anchors centre along their edge", () => {
+    const s = { name: "a", width: 1920, height: 1080 }
+    const at = anchor => place({ screen: "a", anchor: anchor, col: 0, row: 0, w: 4, h: 2 }, [s], 80, 12)
+    assert.deepEqual(at("top-center"), { x: 782, y: 12, w: 356, h: 172 })
+    assert.deepEqual(at("bottom-center"), { x: 782, y: 896, w: 356, h: 172 })
+    assert.deepEqual(at("center-left"), { x: 12, y: 454, w: 356, h: 172 })
+    assert.deepEqual(at("center-right"), { x: 1552, y: 454, w: 356, h: 172 })
+})
+
+test("zoneAt splits the screen in thirds", () => {
+    const s = { width: 1920, height: 1080 }
+    assert.equal(zoneAt(10, 10, s), "top-left")
+    assert.equal(zoneAt(960, 540, s), "center")
+    assert.equal(zoneAt(1900, 540, s), "center-right")
+    assert.equal(zoneAt(960, 1070, s), "bottom-center")
+})
+
+test("offsetsFrom puts a dropped rect back where it was for every anchor and resolution", () => {
+    for (const s of [{ name: "a", width: 1920, height: 1080 }, { name: "a", width: 3840, height: 2160 }]) {
+        for (const anchor of ANCHORS) {
+            const item = { screen: "a", anchor: anchor, col: 2, row: 1, w: 4, h: 2 }
+            const rect = place(item, [s], 80, 12)
+            const back = offsetsFrom(rect, anchor, s, 80, 12)
+            assert.deepEqual(place(Object.assign({}, item, back), [s], 80, 12), rect, anchor + " at " + s.width)
+        }
+    }
+})
+
+test("a widget dropped near the middle snaps exactly to the centre", () => {
+    const s = { name: "a", width: 1920, height: 1080 }
+    const rect = { x: (1920 - 356) / 2 + 20, y: (1080 - 172) / 2 - 30, w: 356, h: 172 }
+    assert.deepEqual(offsetsFrom(rect, "center", s, 80, 12), { col: 0, row: 0 })
+})
+
+test("moving right goes right for the centre anchors too", () => {
+    const s = begin([{ id: "aaaa", anchor: "top-center", col: 0, row: 0, w: 2, h: 2 }, { id: "bbbb", anchor: "center-right", col: 0, row: 0, w: 2, h: 2 }])
+    const a = apply(apply(s, { kind: "move", id: "aaaa", dc: 1, dr: 1 }), { kind: "move", id: "bbbb", dc: 1, dr: 1 })
+    assert.deepEqual([a.items[0].col, a.items[0].row], [1, 1])
+    assert.deepEqual([a.items[1].col, a.items[1].row], [-1, 1])
+})
+
+test("old five-anchor configs still load unchanged", () => {
+    const v = validateWidgets({ items: [{ id: "aaaa", type: "clock", anchor: "center" }, { id: "bbbb", type: "clock", anchor: "bottom-right" }, { id: "cccc", type: "clock", anchor: "middle" }] }, {}).values.items
+    assert.deepEqual(v.map(i => i.anchor), ["center", "bottom-right", "top-left"])
+})

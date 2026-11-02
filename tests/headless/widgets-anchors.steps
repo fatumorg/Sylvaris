@@ -1,0 +1,14 @@
+sleep 1.5
+write sylvaris/settings.json {"version":1,"widgets":{"items":[{"id":"w000","type":"clock","anchor":"top-left","col":0,"row":1,"w":4,"h":2},{"id":"w001","type":"text","anchor":"top-center","col":0,"row":1,"w":4,"h":1,"options":{"text":"top"}},{"id":"w002","type":"text","anchor":"bottom-center","col":0,"row":0,"w":4,"h":1,"options":{"text":"bottom"}},{"id":"w003","type":"text","anchor":"center-left","col":0,"row":0,"w":4,"h":1,"options":{"text":"left"}},{"id":"w004","type":"text","anchor":"center-right","col":0,"row":0,"w":4,"h":1,"options":{"text":"right"}}]}}
+sleep 2.5
+shot anchors
+syl widgets edit
+sleep 1
+pointer move 190 190 pause 0.3 mousedown 1 pause 0.2 move 400 300 move 800 500 move 1100 650 move 1280 720 pause 0.2 mouseup 1
+sleep 0.8
+syl widgets done
+sleep 1
+syl widgets list
+check sylvaris widgets list | grep -q "^w000	clock	-	center 0,0"
+check sylvaris widgets list | grep -q "^w002	text	-	bottom-center 0,0"
+shot anchors-centred

@@ -55,7 +55,7 @@ Everything lives under `widgets` in `settings.json`:
 | `widgets.style` | `{"material": "inherit", ...}` | material (`inherit`, `glass`, `frosted`, `solid`, `clear`), opacity, roundness, shadow and accent for every widget |
 | `widgets.items` | `[]` | the widgets |
 
-Each item has an `id`, a `type`, the `screen` it is on (empty means the first screen), the corner it hangs from (`anchor`), `col` and `row` counted in cells from that corner, its size `w` × `h` in cells, a `layer` (`desktop` under windows, `above` them, or `overlay`), `clickThrough`, `hideFullscreen`, `workspaces` (only show on these), its own `style` and the type's `options`:
+Each item has an `id`, a `type`, the `screen` it is on (empty means the first screen), the part of the screen it hangs from (`anchor`: `top-left`, `top-center`, `top-right`, `center-left`, `center`, `center-right`, `bottom-left`, `bottom-center` or `bottom-right`), `col` and `row` counted in cells from there (a centre anchor counts from the middle, so 0 is exactly centred), its size `w` × `h` in cells, a `layer` (`desktop` under windows, `above` them, or `overlay`), `clickThrough`, `hideFullscreen`, `workspaces` (only show on these), its own `style` and the type's `options`:
 
 ```json
 { "id": "w000", "type": "clock", "anchor": "top-right", "col": 0, "row": 1, "w": 4, "h": 2, "options": { "face": "analog" } }

@@ -343,6 +343,43 @@ Column {
 
         SettingRow {
             visible: page.parentStack === null
+            title: "Position"
+            key: "widgets.position"
+            subtitle: "The part of the screen it hangs from; drag it in edit mode to fine-tune"
+
+            Grid {
+                columns: 3
+                spacing: 4
+
+                Repeater {
+                    model: Wd.ANCHORS
+
+                    delegate: Chip {
+                        required property string modelData
+                        text: ({
+                                "top-left": "↖",
+                                "top-center": "↑",
+                                "top-right": "↗",
+                                "center-left": "←",
+                                "center": "•",
+                                "center-right": "→",
+                                "bottom-left": "↙",
+                                "bottom-center": "↓",
+                                "bottom-right": "↘"
+                            })[modelData]
+                        lit: page.picked !== null && page.picked.anchor === modelData
+                        onClicked: page.patch(page.selected, {
+                                anchor: modelData,
+                                col: 0,
+                                row: 0
+                            })
+                    }
+                }
+            }
+        }
+
+        SettingRow {
+            visible: page.parentStack === null
             title: "Layer"
             key: "widgets.layer"
             subtitle: "On the desktop under windows, above them, or over everything"

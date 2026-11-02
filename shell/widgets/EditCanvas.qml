@@ -166,14 +166,18 @@ PanelWindow {
                         canvas.host.selected = proxy.modelData;
                         return;
                     }
-                    const g = canvas.cfg.gap;
-                    canvas.host.change({
+                    const s = canvas.here[0];
+                    const anchor = Wd.zoneAt(proxy.x + proxy.width / 2, proxy.y + proxy.height / 2, s);
+                    canvas.host.change(Object.assign({
                         kind: "place",
                         id: proxy.modelData,
-                        anchor: "top-left",
-                        col: Wd.snap(proxy.x - g, canvas.cfg.cell, g),
-                        row: Wd.snap(proxy.y - g, canvas.cfg.cell, g)
-                    });
+                        anchor: anchor
+                    }, Wd.offsetsFrom({
+                        x: proxy.x,
+                        y: proxy.y,
+                        w: proxy.width,
+                        h: proxy.height
+                    }, anchor, s, canvas.cfg.cell, canvas.cfg.gap)));
                     proxy.dx = 0;
                     proxy.dy = 0;
                 }

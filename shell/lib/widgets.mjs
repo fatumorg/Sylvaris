@@ -1,7 +1,7 @@
 import { builtinOn } from "./plugins.mjs"
 import { isImage } from "./paper.mjs"
 
-export const ANCHORS = ["top-left", "top-right", "bottom-left", "bottom-right", "center"]
+export const ANCHORS = ["top-left", "top-center", "top-right", "center-left", "center", "center-right", "bottom-left", "bottom-center", "bottom-right"]
 export const LAYERS = ["desktop", "above", "overlay"]
 export const MATERIALS = ["inherit", "glass", "frosted", "solid", "clear"]
 export const LIMIT = 24
@@ -353,22 +353,47 @@ export function span(cells, cell, gap) {
     return cells * cell + (cells - 1) * gap
 }
 
+function axes(anchor) {
+    const parts = anchor === "center" ? ["center", "center"] : (ANCHORS.includes(anchor) ? anchor : "top-left").split("-")
+    const v = parts[0] === "center" ? "middle" : parts[0]
+    return { x: parts[1] === "center" ? "middle" : parts[1], y: v }
+}
+
+function along(side, offset, room, size, cell, gap) {
+    const step = cell + gap
+    if (side === "middle")
+        return (room - size) / 2 + offset * step
+    const d = gap + offset * step
+    return side === "right" || side === "bottom" ? room - d - size : d
+}
+
+function offsetAlong(side, pos, room, size, cell, gap) {
+    const step = cell + gap
+    if (side === "middle")
+        return Math.round((pos - (room - size) / 2) / step) + 0
+    const d = side === "right" || side === "bottom" ? room - pos - size : pos
+    return Math.round((d - gap) / step) + 0
+}
+
+export function zoneAt(x, y, screen) {
+    const third = (v, room) => v < room / 3 ? 0 : v < room * 2 / 3 ? 1 : 2
+    return [["top-left", "top-center", "top-right"], ["center-left", "center", "center-right"], ["bottom-left", "bottom-center", "bottom-right"]][third(y, screen.height)][third(x, screen.width)]
+}
+
+export function offsetsFrom(rect, anchor, screen, cell, gap) {
+    const a = axes(anchor)
+    return { col: offsetAlong(a.x, rect.x, screen.width, rect.w, cell, gap), row: offsetAlong(a.y, rect.y, screen.height, rect.h, cell, gap) }
+}
+
 export function place(item, screens, cell, gap, fit) {
     const s = (screens || []).find(x => x.name === item.screen) || (item.screen === "" && screens && screens.length > 0 ? screens[0] : null)
     if (!s)
         return null
     const w = Math.min(span(item.w, cell, gap), s.width)
     const h = Math.min(span(item.h, cell, gap), s.height)
-    const dx = gap + item.col * (cell + gap)
-    const dy = gap + item.row * (cell + gap)
-    const right = item.anchor === "top-right" || item.anchor === "bottom-right"
-    const bottom = item.anchor === "bottom-left" || item.anchor === "bottom-right"
-    let x = right ? s.width - dx - w : dx
-    let y = bottom ? s.height - dy - h : dy
-    if (item.anchor === "center") {
-        x = (s.width - w) / 2 + item.col * (cell + gap)
-        y = (s.height - h) / 2 + item.row * (cell + gap)
-    }
+    const a = axes(item.anchor)
+    const x = along(a.x, item.col, s.width, w, cell, gap)
+    const y = along(a.y, item.row, s.height, h, cell, gap)
     if (fit === true && (x < 0 || y < 0 || x + w > s.width || y + h > s.height))
         return null
     return {
@@ -486,8 +511,9 @@ export function apply(session, op) {
         if (item.id !== op.id)
             return item
         if (op.kind === "move") {
-            const sx = item.anchor === "top-right" || item.anchor === "bottom-right" ? -1 : 1
-            const sy = item.anchor === "bottom-left" || item.anchor === "bottom-right" ? -1 : 1
+            const a = axes(item.anchor)
+            const sx = a.x === "right" ? -1 : 1
+            const sy = a.y === "bottom" ? -1 : 1
             return Object.assign({}, item, { col: item.col + sx * (op.dc || 0), row: item.row + sy * (op.dr || 0) })
         }
         if (op.kind === "place")

@@ -6,6 +6,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Added
 
+- Widgets can hang from nine places on the screen: the four corners, the middle of each edge and the centre; pick one under SylSettings › Desktop › Widgets › Position
 - sylvaris paper shown prints the wallpaper each screen is drawing
 - sylvaris look styles, look take, look reset and look remove list, mix and restore styles from the command line
 - The Nix modules install the fonts the styles use; programs.sylvaris.fonts.enable = false keeps them out
@@ -21,6 +22,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Fixed
 
+- Dragging a widget in edit mode keeps it anchored to the part of the screen you dropped it in, so a centred widget stays centred instead of turning into a top-left one
 - A window that cannot get a graphics context, such as a new widget while the GPU is busy, is hidden with a warning instead of crashing the whole shell
 - A new widget goes to the next free spot, moving to the next column when a column is full, instead of piling up at the bottom of the screen on top of the others
 - SylCenter's bento layout puts small tiles three to a row so labels like Performance fit, and stretches a short last row instead of leaving gaps
