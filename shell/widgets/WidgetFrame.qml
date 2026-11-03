@@ -22,7 +22,7 @@ Item {
         const pick = ({
                 glass: "lumen",
                 frosted: "frost",
-                solid: "ink"
+                solid: "solid"
             })[root.style.material];
         const g = pick === undefined ? Look.glassFor("widgets") : Object.assign({
             enabled: Look.glass.enabled

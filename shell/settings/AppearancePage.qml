@@ -2,6 +2,7 @@ import QtQuick
 import qs.services
 import qs.components
 import "../lib/icons.mjs" as Icons
+import "../lib/palette.mjs" as P
 
 Column {
     id: page
@@ -11,6 +12,7 @@ Column {
     property string newName: ""
     property string fault: ""
     property string doomed: ""
+    property bool pastelDark: false
 
     function edit(id: string): void {
         if (id !== Theme.currentId)
@@ -132,6 +134,43 @@ Column {
                             page.attempt(() => Theme.remove(item.modelData));
                         }
                     }
+                }
+            }
+        }
+
+        SettingRow {
+            title: "Pastel theme"
+            key: "theme.pastel"
+            subtitle: "Solid soft colours; pair with the Pastel style or the solid material"
+
+            Row {
+                spacing: 6
+
+                Repeater {
+                    model: Object.keys(P.PASTELS)
+
+                    delegate: Chip {
+                        required property string modelData
+                        text: modelData.charAt(0).toUpperCase() + modelData.slice(1)
+                        lit: Theme.currentId === "pastel-" + modelData + (page.pastelDark ? "-dark" : "-light")
+                        onClicked: page.attempt(() => Theme.pastel(modelData, page.pastelDark))
+                    }
+                }
+
+                Segmented {
+                    width: 140
+                    current: page.pastelDark ? "dark" : "light"
+                    options: [
+                        {
+                            key: "light",
+                            label: "Light"
+                        },
+                        {
+                            key: "dark",
+                            label: "Dark"
+                        }
+                    ]
+                    onPicked: key => page.pastelDark = key === "dark"
                 }
             }
         }

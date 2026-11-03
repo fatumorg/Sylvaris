@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { quantize, contrast, themeFromPalette, wallId, wallTheme, withAccent, accentFrom } from "../shell/lib/palette.mjs"
+import { quantize, contrast, themeFromPalette, wallId, wallTheme, withAccent, accentFrom, PASTELS, pastelColors, pastelTheme } from "../shell/lib/palette.mjs"
 import { validateTheme, COLOR_KEYS, DEFAULT_THEME } from "../shell/lib/theme.mjs"
 
 function image(colors) {
@@ -98,4 +98,36 @@ test("withAccent swaps the accent family and keeps it readable", () => {
 test("accentFrom picks a colour from pixels or nothing", () => {
     assert.match(accentFrom(image([[[30, 30, 30], 50], [[40, 160, 220], 10]])), /^#[0-9a-f]{6}$/)
     assert.equal(accentFrom([]), "")
+})
+
+test("pastel palettes are soft, tinted and still readable", () => {
+    for (const seed of Object.values(PASTELS).concat(["#ff0000", "#101010", "#ffffff"])) {
+        for (const dark of [true, false]) {
+            const c = pastelColors(seed, dark)
+            for (const key of COLOR_KEYS)
+                assert.match(c[key], /^#[0-9a-f]{6}$/, key)
+            assert.ok(contrast(c.text, c.base) >= 7, "text " + seed)
+            assert.ok(contrast(c.textDim, c.base) >= 4.5, "textDim " + seed)
+            assert.ok(contrast(c.textSoft, c.base) >= 4.5, "textSoft " + seed)
+            assert.ok(contrast(c.onAccent, c.accent) >= 4.5, "onAccent " + seed)
+            assert.ok(contrast(c.text, c.surface) >= 4.5, "surface " + seed)
+        }
+    }
+    const light = pastelColors(PASTELS.mint, false)
+    assert.ok(contrast(light.base, "#ffffff") < 1.25)
+    assert.notEqual(light.base, "#ffffff")
+    assert.ok(contrast(pastelColors(PASTELS.mint, true).base, "#000000") < 2)
+})
+
+test("pastelTheme makes a named, valid, solid-looking theme from a name or a colour", () => {
+    const t = pastelTheme("peach", false)
+    assert.equal(t.id, "pastel-peach-light")
+    assert.equal(t.name, "Pastel Peach light")
+    const v = validateTheme(t)
+    assert.equal(v.ok, true, v.errors.join(", "))
+    assert.deepEqual(v.theme.colors, t.colors)
+    assert.equal(t.alpha.surface, 1)
+    assert.equal(pastelTheme("#9FE3C4", true).id, "pastel-9fe3c4-dark")
+    assert.equal(pastelTheme("9fe3c4", true).id, "pastel-9fe3c4-dark")
+    assert.throws(() => pastelTheme("tomato", true), /peach, mint/)
 })

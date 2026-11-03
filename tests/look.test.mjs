@@ -276,3 +276,13 @@ test("style settings ignore __proto__ and constructor keys from a file", () => {
     assert.equal(out.bar.position, "left")
     assert.equal(Object.prototype.hasOwnProperty.call(out.bar, "constructor"), false)
 })
+
+test("solid is fully opaque with no glass effects, and the Pastel style uses it", () => {
+    const m = MATERIALS.solid
+    assert.equal(m.opacity, 1)
+    assert.equal(m.layerOpacity, 1)
+    for (const k of ["tint", "sheen", "flow", "rim", "grain", "highlight", "glow"])
+        assert.equal(m[k], 0, k)
+    assert.equal(LOOKS.pastel.glass.material, "solid")
+    assert.equal(LOOKS.pastel.atmosphere.aurora, false)
+})

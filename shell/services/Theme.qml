@@ -190,6 +190,15 @@ Singleton {
         return id;
     }
 
+    function pastel(seed: string, dark: bool): string {
+        const t = P.pastelTheme(seed, dark);
+        if (root.ids.indexOf(t.id) >= 0 && !root.owned(t.id))
+            throw new Error(t.id + " comes from your config and cannot be changed here");
+        root.store(t);
+        root.apply(t.id);
+        return t.id;
+    }
+
     function duplicate(id: string): string {
         const base = root.themeOf(id).name + " copy";
         let name = base;

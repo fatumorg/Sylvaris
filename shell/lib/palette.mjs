@@ -206,3 +206,44 @@ export function withAccent(theme, hex) {
     const colors = Object.assign({}, theme.colors, accentSet(toHsl(c), luminance(theme.colors.base) < 0.18))
     return Object.assign({}, theme, { colors: colors })
 }
+
+export const PASTELS = { peach: "#ffb59a", mint: "#9fe3c4", sky: "#9fc8f5", lilac: "#c6b3f2", butter: "#f5df8f", rose: "#f5a8c2" }
+
+export function pastelColors(seed, dark) {
+    const h = toHsl(parseHex(seed)).h
+    const base = dark ? hsl(h, 0.2, 0.15) : hsl(h, 0.55, 0.93)
+    const surface = dark ? hsl(h, 0.18, 0.2) : hsl(h, 0.6, 0.97)
+    const accent = dark ? hsl(h, 0.6, 0.78) : hsl(h, 0.5, 0.6)
+    const white = contrast(accent, "#ffffff") >= contrast(accent, "#000000")
+    return {
+        base: base,
+        surface: surface,
+        text: readable(h, 0.25, dark ? 0.92 : 0.15, base, 7),
+        textDim: readable(h, 0.25, dark ? 0.7 : 0.4, base, 4.5),
+        textSoft: readable(h, 0.25, dark ? 0.82 : 0.28, base, 4.5),
+        danger: readable(6, 0.65, dark ? 0.7 : 0.45, base, 3),
+        accent: accent,
+        accentHi: hsl(h, 0.6, dark ? 0.86 : 0.72),
+        accentDeep: hsl(h, 0.5, dark ? 0.66 : 0.48),
+        onAccent: readable(h, 0.3, white ? 0.97 : 0.12, accent, 4.5)
+    }
+}
+
+export function pastelTheme(seed, dark) {
+    const raw = String(seed).toLowerCase()
+    const key = /^[0-9a-f]{6}$/.test(raw) ? "#" + raw : raw
+    const hex = PASTELS[key] || (/^#[0-9a-f]{6}$/.test(key) ? key : "")
+    if (hex === "")
+        throw new Error("pick a pastel (" + Object.keys(PASTELS).join(", ") + ") or a #rrggbb colour")
+    const label = PASTELS[key] ? key.charAt(0).toUpperCase() + key.slice(1) : key
+    const mode = dark ? "dark" : "light"
+    return {
+        version: 1,
+        id: "pastel-" + key.replace("#", "") + "-" + mode,
+        name: "Pastel " + label + " " + mode,
+        description: "Soft solid colours from " + hex,
+        wallpaper: "",
+        colors: pastelColors(hex, dark),
+        alpha: { surface: 1, glass: 0.96, line: 0.14, tint: 0.06 }
+    }
+}

@@ -803,6 +803,7 @@ ShellRoot {
                 },
                 list: () => Theme.ids,
                 new: (...name) => Theme.create(name.join(" "), ""),
+                pastel: (seed, mode) => Theme.pastel(seed || "", mode !== "light"),
                 duplicate: id => {
                     if (Theme.ids.indexOf(id) < 0)
                         throw new Error("unknown theme: " + id);

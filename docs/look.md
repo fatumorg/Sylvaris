@@ -4,21 +4,21 @@
 
 A Look (a style) reshapes everything the shell draws: the glass, the corners and spacing, the fonts, how switches, sliders, tabs, buttons, cards, hover and icons are built, the motion, the layout of the bar, Control Center, notifications, the lock clock, the island, the dock and the launcher, and how the accent and wallpaper are treated. Themes still own the colours. Pick one with `look.preset`:
 
-| | `lumen` (default) | `classic` | `frost` | `ink` | `neon` | `paper` |
-|---|---|---|---|---|---|---|
-| Feel | soft light through frosted glass | the dependable desktop | cold air, quiet, lots of room | printed, dense, decisive | night city, synthwave | stationery and ink on paper |
-| Glass | lumen | resin | frost | ink | neon | paper, extra grain |
-| Shape | squircle, cozy | round, cozy | round, roomy, outlines | sharp, compact, thick outlines | bevel, cozy, outlines | soft round, roomy, outlines |
-| Fonts | Figtree | Public Sans, IBM Plex Mono | Lexend, Geist Mono, light | Geist, heavy, upper case | Monaspace Krypton, Orbitron, Departure Mono, upper case | Source Serif 4, Fraunces, small caps |
-| Switches, sliders | pill, fill | pill, line | pill, line | block, ticks | lamp, ticks | check box, line |
-| Tabs, buttons, cards | pill, glass, glass | boxed, solid, solid | underline, text, outline | boxed, outline, outline | boxed, outline, outline | underline, text, lifted |
-| Hover, icons, dividers | lift, plain, none | glow, plain, hairline | glow, ring, hairline | invert, plain, hairline | glow, glow, dashed | underline, plain, dashed |
-| Motion | smooth, morph, springy | calm, grow | calm, blur | snappy, drop | playful, swing, very springy | calm, unfold |
-| Bar, workspaces | float, dots | slab, numbers | minimal, dots | slab, numbers | islands, pills | minimal, numbers |
-| Center, notifications | bento, cards | grid, list | grid, list | grid, list | bento, cards | grid, list |
-| Lock clock, island at rest | giant, pill | default, clock | analog, hidden | digital, clock | flip, pill | word, hidden |
-| Dock, launcher | magnify with glow, launchpad | bloom, launchpad | magnify, launchpad | no effect, list | bloom with glow, launchpad | no effect, list |
-| Atmosphere | aurora, accent 60% | accent 50% | aurora, accent 30%, wallpaper blur | accent 100%, wallpaper dimmed | aurora, accent 100%, wallpaper tinted | accent 40% |
+| | `lumen` (default) | `classic` | `frost` | `ink` | `neon` | `paper` | `pastel` |
+|---|---|---|---|---|---|---|---|
+| Feel | soft light through frosted glass | the dependable desktop | cold air, quiet, lots of room | printed, dense, decisive | night city, synthwave | stationery and ink on paper | soft solid colours, no glass |
+| Glass | lumen | resin | frost | ink | neon | paper, extra grain | solid |
+| Shape | squircle, cozy | round, cozy | round, roomy, outlines | sharp, compact, thick outlines | bevel, cozy, outlines | soft round, roomy, outlines | round, roomy |
+| Fonts | Figtree | Public Sans, IBM Plex Mono | Lexend, Geist Mono, light | Geist, heavy, upper case | Monaspace Krypton, Orbitron, Departure Mono, upper case | Source Serif 4, Fraunces, small caps | Figtree, Lexend, medium |
+| Switches, sliders | pill, fill | pill, line | pill, line | block, ticks | lamp, ticks | check box, line | pill, fill |
+| Tabs, buttons, cards | pill, glass, glass | boxed, solid, solid | underline, text, outline | boxed, outline, outline | boxed, outline, outline | underline, text, lifted | pill, solid, solid |
+| Hover, icons, dividers | lift, plain, none | glow, plain, hairline | glow, ring, hairline | invert, plain, hairline | glow, glow, dashed | underline, plain, dashed | lift, plate, none |
+| Motion | smooth, morph, springy | calm, grow | calm, blur | snappy, drop | playful, swing, very springy | calm, unfold | smooth, grow |
+| Bar, workspaces | float, dots | slab, numbers | minimal, dots | slab, numbers | islands, pills | minimal, numbers | float, pills |
+| Center, notifications | bento, cards | grid, list | grid, list | grid, list | bento, cards | grid, list | bento, cards |
+| Lock clock, island at rest | giant, pill | default, clock | analog, hidden | digital, clock | flip, pill | word, hidden | giant, pill |
+| Dock, launcher | magnify with glow, launchpad | bloom, launchpad | magnify, launchpad | no effect, list | bloom with glow, launchpad | no effect, list | magnify, launchpad |
+| Atmosphere | aurora, accent 60% | accent 50% | aurora, accent 30%, wallpaper blur | accent 100%, wallpaper dimmed | aurora, accent 100%, wallpaper tinted | accent 40% | accent 70%, no aurora |
 
 The motion, layout and wallpaper choices are ordinary settings that a Look supplies as defaults: anything you set yourself, in SylSettings or `config.json`, wins until you pick a Look again. The fonts come with the Nix modules (`programs.sylvaris.fonts.enable`); elsewhere a missing font falls back to Inter and JetBrainsMono Nerd Font, see [fonts for the styles](install.md#fonts-for-the-styles). Lite mode turns off every glow, blur, grain, sheen and hard shadow in every Look.
 
@@ -28,7 +28,7 @@ Change any part of a Look without leaving it. Each key under `look` overrides th
 
 | Key | Values | What it does |
 |---|---|---|
-| `material` | `lumen` `resin` `frost` `ink` `neon` `paper` | the glass recipe |
+| `material` | `lumen` `resin` `frost` `ink` `neon` `paper` `solid` | the glass recipe; `solid` is fully opaque, with no tint, sheen or grain |
 | `corners` | `round` `squircle` `bevel` `sharp` | corner shape |
 | `radius` | 0 to 2 | how round, as a multiple of the normal radius |
 | `density` | `compact` `cozy` `roomy` | padding, gaps and row heights |
@@ -62,6 +62,10 @@ Share one with `sylvaris look export ~/night-owl.json night-owl` (leave out the 
 ### A theme from your wallpaper
 
 `sylvaris theme generate` reads the wallpaper you have now, finds its main colours and writes a full theme to your themes folder as `wall-<id>.json`, then prints that id. Apply it with `sylvaris theme set <id>`. Give a path to use another picture, and add `dark` or `light` to choose the base; otherwise a bright picture gets a light theme. Text always keeps a contrast of at least 7:1 on the base, dimmed text 4.5:1, and text on the accent 4.5:1.
+
+### Pastel themes
+
+`sylvaris theme pastel <peach|mint|sky|lilac|butter|rose|rrggbb> [light|dark]` writes a solid pastel theme as `pastel-<name>-<light|dark>.json` and applies it (the `#` before a colour is optional, which saves quoting it in the shell); SylSettings › Look › Appearance has the same choice under **Pastel theme**. Pair it with the Pastel style, or `look.material` `solid`, for flat opaque surfaces instead of glass.
 
 A theme can name the Look it was made for with a `"look"` key. SylTheme draws that theme's card in its Look, and with `look.followTheme` on, applying the theme switches to its Look as well.
 

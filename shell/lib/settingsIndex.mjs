@@ -16,6 +16,7 @@ const ROWS = [
     {key: "theme", title: "Theme", tab: "appearance", words: ["colours", "colors", "dark", "light"]},
     {key: "iconTint", title: "Theme-coloured app icons", tab: "appearance", subtitle: "App icons in the bar, deck, launcher, switcher and notifications take the theme's accent", words: ["icons", "colour"]},
     {key: "theme.apply", title: "Themes", tab: "appearance", words: ["apply", "use", "duplicate", "delete", "remove"]},
+    {key: "theme.pastel", title: "Pastel theme", tab: "appearance", subtitle: "Solid soft colours; pair with the Pastel style or the solid material", words: ["pastel", "solid", "soft", "peach", "mint", "sky", "lilac", "butter", "rose", "colours", "colors"]},
     {key: "theme.new", title: "New theme", tab: "appearance", subtitle: "Starts as a copy of the theme you use now", words: ["create", "add", "own", "custom", "edit", "colours", "colors"]},
     {key: "theme.name", title: "Name", tab: "appearance"},
     {key: "theme.description", title: "Description", tab: "appearance"},

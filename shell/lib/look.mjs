@@ -11,7 +11,8 @@ export const MATERIALS = {
     frost: { opacity: 0.72, layerOpacity: 0.55, tint: 0.1, sheen: 0.25, flow: 0.6, rim: 0.45, grain: 0.07, highlight: 0.5, glow: 0, shadow: 0.35 },
     ink: { opacity: 0.9, layerOpacity: 0.75, tint: 0.05, sheen: 0.08, flow: 0.3, rim: 0.25, grain: 0, highlight: 0.15, glow: 0, shadow: 0.6 },
     neon: { opacity: 0.6, layerOpacity: 0.4, tint: 0.2, sheen: 0.3, flow: 2, rim: 0.9, grain: 0, highlight: 0.2, glow: 0.8, shadow: 0.2 },
-    paper: { opacity: 0.96, layerOpacity: 0.6, tint: 0.05, sheen: 0, flow: 0, rim: 0.2, grain: 0.14, highlight: 0.2, glow: 0, shadow: 0.3 }
+    paper: { opacity: 0.96, layerOpacity: 0.6, tint: 0.05, sheen: 0, flow: 0, rim: 0.2, grain: 0.14, highlight: 0.2, glow: 0, shadow: 0.3 },
+    solid: { opacity: 1, layerOpacity: 1, tint: 0, sheen: 0, flow: 0, rim: 0, grain: 0, highlight: 0, glow: 0, shadow: 0.25 }
 }
 
 export const CORNERS = ["round", "squircle", "bevel", "sharp"]
@@ -82,7 +83,10 @@ export const LOOKS = {
         layout("islands", "pills", "bento", "cards", "flip", "pill", "bloom", true, "launchpad"), atmosphere(true, 1, 0, 0, 0.2)),
     paper: style("Paper", { material: "paper", grain: 0.2 }, shape("round", 0.5, "roomy", 1), type("Source Serif 4", "Fraunces", "IBM Plex Mono", "regular", "smallcaps", 0.03, 1.05),
         controls("check", "line", "underline", "text", "lifted", "underline", "plain", "dashed"), motion("calm", "unfold", "fade", 0.3, 0),
-        layout("minimal", "numbers", "grid", "list", "word", "hide", "none", false, "list"), atmosphere(false, 0.4, 0, 0, 0))
+        layout("minimal", "numbers", "grid", "list", "word", "hide", "none", false, "list"), atmosphere(false, 0.4, 0, 0, 0)),
+    pastel: style("Pastel", { material: "solid" }, shape("round", 1.25, "roomy", 0), type("Figtree", "Lexend", "Geist Mono", "medium", "normal", 0, 1.02),
+        controls("pill", "fill", "pill", "solid", "solid", "lift", "plate", "none"), motion("smooth", "grow", "fade", 0.3, 0.3),
+        layout("float", "pills", "bento", "cards", "giant", "pill", "magnify", false, "launchpad"), atmosphere(false, 0.7, 0, 0.05, 0.15))
 }
 
 const OWNED = {

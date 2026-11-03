@@ -64,7 +64,7 @@ To show the version in fastfetch, add `{ "type": "command", "key": "DE", "text":
 | `switcher` | `next` `prev` `commit` `close` `state` |
 | `sync` | `now` `on` `off` `state` |
 | `temp` | see [SylTemp](plugins/temp.md) |
-| `theme` | `toggle` `open` `close` `next` `prev` `apply` `cycle` `search <text>` `set <id>` `list` `generate [path] [dark\|light]` |
+| `theme` | `toggle` `open` `close` `next` `prev` `apply` `cycle` `search <text>` `set <id>` `list` `generate [path] [dark\|light]` `pastel <name\|rrggbb> [light\|dark]` |
 | `weather` | `state` `refresh` |
 | `widgets` | `list` `edit` `done` `add <type>` `remove <id>` `state` |
 | `wifi` | `toggle` `on` `off` `connect <name>` `disconnect [name]` |

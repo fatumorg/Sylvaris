@@ -1,0 +1,16 @@
+sleep 1.5
+syl look set pastel
+syl theme pastel mint light
+sleep 2
+check sylvaris theme list | grep -q 'pastel-mint-light'
+check sylvaris look state | grep -q '"material":"solid"'
+syl center open
+sleep 2
+shot pastel-light
+syl center close
+syl theme pastel c6b3f2 dark
+sleep 2
+check sylvaris theme list | grep -q 'pastel-c6b3f2-dark'
+syl settings open appearance
+sleep 3
+shot pastel-dark-settings
