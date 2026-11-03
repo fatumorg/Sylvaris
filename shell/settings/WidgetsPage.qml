@@ -366,7 +366,7 @@ Column {
             visible: page.parentStack === null
             title: "Idle opacity"
             key: "widgets.item.idle"
-            subtitle: "Fades the widget until the pointer is over it"
+            subtitle: "Fades the widget until the pointer is over it; click-through and terminal widgets stay faded"
             
 
             Slider {
@@ -500,7 +500,7 @@ Column {
         SettingRow {
             title: "Idle opacity"
             key: "widgets.style.idle"
-            subtitle: "Fades the widget until the pointer is over it"
+            subtitle: "Fades the widget until the pointer is over it; click-through and terminal widgets stay faded"
             last: true
 
             Slider {

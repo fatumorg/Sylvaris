@@ -15,7 +15,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - Right-click the desktop and pick Add widget… to choose a widget, set its options with a live preview and drop it where you clicked; sylvaris widgets add takes a screen and point too
 - SylSync colours Zen Browser as its own switch under App colours, from its ~/.config/zen profiles, by tinting Zen's own space gradient; it follows the Firefox switch until you set it
 - An optional browser script recolours Firefox and Zen live when you switch themes, with no restart
-- Widgets get zoom, padding and idle opacity, for all of them at once or one at a time; a faded widget comes back when you point at it
+- Widgets get zoom, padding and idle opacity, for all of them at once or one at a time; a faded widget comes back when you point at it, while click-through and terminal widgets stay faded
 - The weather widget can hide its condition and show fewer forecast days, and the calendar widget can hide its month title
 - Widgets can hang from nine places on the screen: the four corners, the middle of each edge and the centre; pick one under SylSettings › Desktop › Widgets › Position
 - sylvaris paper shown prints the wallpaper each screen is drawing
