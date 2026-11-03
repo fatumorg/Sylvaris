@@ -96,6 +96,7 @@ Explained in [bar](../parts/bar.md).
 | `bar.floating` | `true` | yes |
 | `bar.position` | `"top"` | yes |
 | `bar.style` | `"islands"` | yes |
+| `bar.size` | `46` | yes |
 | `bar.left` | `["pad","workspaces","window"]` | yes |
 | `bar.center` | `["clock"]` | yes |
 | `bar.right` | `["media","tray","audio","network","bluetooth","battery","...` | yes |

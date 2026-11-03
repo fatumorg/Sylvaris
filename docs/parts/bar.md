@@ -6,9 +6,10 @@ The bar runs on every screen and keeps its space free of windows. It can sit on 
 sylvaris set bar.position left     # top, bottom, left or right
 sylvaris set bar.style float       # islands, slab, float or minimal
 sylvaris set bar.floating false    # span the whole edge
+sylvaris set bar.size 54           # 36 to 64 pixels thick, 46 by default
 ```
 
-Every screen can have its own bar. Pick the screen at the top of SylSettings, or set it directly: `sylvaris set screens.DP-2.bar.position left`. See [one screen at a time](../configuration.md#one-screen-at-a-time).
+`bar.size` scales the bar with its icons and text and is the same on every screen. Every screen can have its own bar. Pick the screen at the top of SylSettings, or set it directly: `sylvaris set screens.DP-2.bar.position left`. See [one screen at a time](../configuration.md#one-screen-at-a-time).
 
 ## What the bar does
 

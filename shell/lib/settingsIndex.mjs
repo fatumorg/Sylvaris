@@ -41,6 +41,7 @@ const ROWS = [
     {key: "notes.tabWidth", title: "Tab width", tab: "notes", words: ["editor", "indent"]},
     {key: "bar.enabled", title: "Show the bar", tab: "bar"},
     {key: "bar.position", title: "Edge", tab: "bar", subtitle: "Where the bar sits; left and right make it vertical", words: ["top", "bottom", "left", "right", "vertical"]},
+    {key: "bar.size", title: "Size", tab: "bar", subtitle: "How thick the bar is, with its icons and text", words: ["height", "thickness", "bigger", "smaller"]},
     {key: "bar.style", title: "Style", tab: "bar", subtitle: "Glass islands for each side, one slab, one floating pill, or a thin line"},
     {key: "bar.workspaceStyle", title: "Workspaces", tab: "bar", subtitle: "How each workspace is drawn", words: ["dots", "numbers", "pills", "icons"]},
     {key: "bar.workspaceIcons", title: "Workspace icons", tab: "bar"},

@@ -1408,6 +1408,12 @@ ShellRoot {
 
     Binding {
         target: Tokens
+        property: "barScale"
+        value: Settings.values.bar.size / 46
+    }
+
+    Binding {
+        target: Tokens
         property: "iconTint"
         value: Settings.values.iconTint
     }

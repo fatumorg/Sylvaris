@@ -156,3 +156,12 @@ test("middleSlot centres the middle group, slides it into the free gap, or gives
     assert.equal(middleSlot(1000, 450, 100, 450, 12), -1)
     assert.equal(middleSlot(1000, 0, 100, 0, 12), 450)
 })
+
+test("bar size is a whole number of pixels from 36 to 64", () => {
+    assert.equal(DEFAULT_BAR.size, 46)
+    assert.equal(validateBar({}).size, 46)
+    assert.equal(validateBar({ size: 52.4 }).size, 52)
+    assert.equal(validateBar({ size: 10 }).size, 36)
+    assert.equal(validateBar({ size: 99 }).size, 64)
+    assert.equal(validateBar({ size: "big" }).size, 46)
+})

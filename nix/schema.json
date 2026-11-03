@@ -57,6 +57,7 @@
     "floating": true,
     "position": "top",
     "style": "islands",
+    "size": 46,
     "left": [
       "pad",
       "workspaces",

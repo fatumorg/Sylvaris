@@ -145,14 +145,15 @@ Singleton {
     readonly property int padSearchHeight: 50
     readonly property int padListWidth: 640
     readonly property int padListRow: Math.round(54 * root.densityScale)
-    readonly property int barHeight: 46
+    property real barScale: 1
+    readonly property int barHeight: Math.round(46 * root.barScale)
     readonly property int barMargin: 10
     readonly property int barRadius: Math.round(18 * root.radiusScale)
     readonly property int barPadding: Math.round(6 * root.densityScale)
     readonly property int barGap: Math.round(4 * root.densityScale)
-    readonly property int barItemHeight: 34
-    readonly property int barGlyph: 17
-    readonly property int barText: 14
+    readonly property int barItemHeight: Math.round(34 * root.barScale)
+    readonly property int barGlyph: Math.round(17 * root.barScale)
+    readonly property int barText: Math.round(14 * root.barScale)
     readonly property int barTitleMax: 360
     readonly property int barMediaMax: 240
     readonly property int deckPadding: Math.round(9 * root.densityScale)

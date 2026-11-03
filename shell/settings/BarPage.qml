@@ -42,6 +42,21 @@ Column {
         }
 
         SettingRow {
+            title: "Size"
+            key: "bar.size"
+            subtitle: "How thick the bar is, with its icons and text, on every screen"
+
+            Stepper {
+                value: Settings.shown.bar.size
+                from: 36
+                to: 64
+                step: 2
+                suffix: " px"
+                onStepped: v => Settings.put("bar.size", v)
+            }
+        }
+
+        SettingRow {
             title: "Style"
             key: "bar.style"
             subtitle: "Glass islands for each side, one slab, one floating pill, or a thin line"

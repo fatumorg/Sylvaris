@@ -1,0 +1,15 @@
+sleep 1.5
+syl set bar.size 60
+sleep 1.2
+check grep -q '"size": 60' "$HOME/.config/sylvaris/settings.json"
+shot bar-60
+syl center open
+sleep 1.2
+shot center-60
+syl center close
+syl set bar.size 36
+sleep 1.2
+shot bar-36
+syl set bar.position left
+sleep 1.2
+shot bar-36-left

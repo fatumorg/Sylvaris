@@ -42,6 +42,7 @@ export const DEFAULT_BAR = {
     floating: true,
     position: "top",
     style: "islands",
+    size: 46,
     left: ["pad", "workspaces", "window"],
     center: ["clock"],
     right: ["media", "tray", "audio", "network", "bluetooth", "battery", "notifications", "center", "power"]
@@ -78,6 +79,7 @@ export function validateBar(raw) {
         style: STYLES.indexOf(b.style) >= 0 ? b.style : DEFAULT_BAR.style,
         workspaceIcons: WORKSPACE_LOOKS.indexOf(b.workspaceIcons) >= 0 ? b.workspaceIcons : DEFAULT_BAR.workspaceIcons,
         workspaceStyle: WORKSPACE_STYLES.indexOf(b.workspaceStyle) >= 0 ? b.workspaceStyle : DEFAULT_BAR.workspaceStyle,
+        size: typeof b.size === "number" && Number.isFinite(b.size) ? Math.max(36, Math.min(64, Math.round(b.size))) : DEFAULT_BAR.size,
         left: modules(b.left, DEFAULT_BAR.left, taken),
         center: modules(b.center, DEFAULT_BAR.center, taken),
         right: modules(b.right, DEFAULT_BAR.right, taken)
