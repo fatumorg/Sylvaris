@@ -145,7 +145,7 @@ let
 in
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "sylvaris";
-  version = "1.5.1";
+  version = "1.6.0";
 
   src = fetchFromGitHub {
     owner = "fatumorg";

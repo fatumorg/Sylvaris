@@ -4,6 +4,8 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-11-03
+
 ### Added
 
 - When Sylvaris starts outside a terminal, its log goes to ~/.local/state/sylvaris/shell.log, with the previous run kept as shell.log.old
@@ -465,7 +467,8 @@ The first official release, out of beta.
 - Relock a lock screen that is still closing and report locks that fail
 - Never prompt or hang on plugin clones and unfreeze settings once the file is gone
 
-[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.5.1...HEAD
+[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/fatumorg/Sylvaris/compare/v1.5.1...v1.6.0
 [1.5.1]: https://github.com/fatumorg/Sylvaris/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/fatumorg/Sylvaris/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/fatumorg/Sylvaris/compare/v1.3.0...v1.4.0
