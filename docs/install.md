@@ -243,7 +243,7 @@ The Wayland protocols it speaks ship inside `stack/protocols/`, so `wayland-prot
 
 ## SylGreet, the login screen
 
-> **Experimental.** Keep a second way to log in (another greeter or a text console) until you have tested it on your machine.
+> Keep a second way to log in (another greeter or a text console) until you have tested it on your machine.
 
 SylGreet runs under greetd inside sway, so it shows on every screen and looks like SylLock. It needs a native install; it does not work with the Nix route on other distributions.
 

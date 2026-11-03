@@ -1,7 +1,5 @@
 # SylLock
 
-> **Experimental.** Test it on your machine before you depend on it, and keep another way to unlock at hand.
-
 `sylvaris lock` locks every screen with the session-lock protocol and mirrors what you type on all of them. Nothing can draw over it, and the compositor keeps the session locked even if Sylvaris stops.
 
 The lock runs as its own SylStack process (`lock.qml`), separate from the bar, every other part and every plugin, so a crash in the main shell leaves the lock screen up and working. It looks like the rest of Sylvaris: your wallpaper, a large clock and a password field that shakes on a wrong password.

@@ -27,7 +27,7 @@ Obowiązuje od {{updated}}.
 ## § 5. Oprogramowanie i dokumentacja
 
 1. Sylvaris pobierasz z repozytorium na GitHubie, a nie z tej Strony. Korzystanie z oprogramowania regulują warunki licencji MIT dołączonej do repozytorium.
-2. Dokumentację przygotowujemy starannie, ale oprogramowanie ciągle się rozwija. Niektóre części, oznaczone jako eksperymentalne (SylLock, SylGreet i SylPolkit), mogą działać inaczej, niż zakładasz. Zanim zaczniesz na nich polegać, sprawdź je na swoim komputerze i zachowaj inny sposób logowania.
+2. Dokumentację przygotowujemy starannie, ale oprogramowanie ciągle się rozwija. Części, które chronią Twoją sesję (SylLock, SylGreet i SylPolkit), mogą działać inaczej, niż zakładasz. Zanim zaczniesz na nich polegać, sprawdź je na swoim komputerze i zachowaj inny sposób logowania.
 
 ## § 6. Zagrożenia związane z korzystaniem z internetu
 

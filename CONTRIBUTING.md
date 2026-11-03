@@ -78,7 +78,7 @@ One logical change per commit. Subject line only, lowercase, imperative, at most
 ```
 feat: add a clear button to key binding pills
 fix: give slurp an empty stdin so area capture does not hang
-docs: mark SylLock, SylGreet and SylPolkit as experimental
+docs: explain how SylGreet falls back to a text console
 ```
 
 Types: `feat`, `fix`, `refactor`, `perf`, `docs`, `style`, `test`, `chore`. Add one body line only when the reason is not obvious from the subject. Stage files by path, and keep unrelated changes out.

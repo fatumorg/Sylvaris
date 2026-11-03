@@ -1,7 +1,5 @@
 # SylGreet
 
-> **Experimental.** Test it on your machine before you depend on it, and keep another way to log in at hand.
-
 A login screen for greetd in the same style as [SylLock](lock.md), on every screen, with what you type mirrored on all of them. The session button in the bottom left (or F2) lists every installed session, such as Hyprland, niri or sway; the up and down arrows pick the user. Type the password and it starts that session, and remembers both for next time.
 
 Turn it on in NixOS:

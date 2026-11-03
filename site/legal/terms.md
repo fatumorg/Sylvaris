@@ -27,7 +27,7 @@ In force from {{updated}}. The Polish version of these terms is the binding one;
 ## 5. Software and documentation
 
 1. You download Sylvaris from its GitHub repository, not from this Site. The software is used under the MIT licence included in the repository.
-2. The documentation is written with care, but the software keeps changing. Parts marked experimental (SylLock, SylGreet and SylPolkit) may behave differently from what you expect. Test them on your computer before you rely on them, and keep another way to log in.
+2. The documentation is written with care, but the software keeps changing. The parts that guard your session (SylLock, SylGreet and SylPolkit) may behave differently from what you expect. Test them on your computer before you rely on them, and keep another way to log in.
 
 ## 6. Risks of using the internet
 

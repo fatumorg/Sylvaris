@@ -32,7 +32,7 @@ Sylvaris is made of parts. Each one can be turned off, and a part that is off is
 - [SylTheme](theme.md), themes with a live preview
 - [SylSync](sync.md), your theme's colours in other apps
 - [SylAccessibility](access.md), zoom, colour filters, text and pointer size
-- [SylLock](lock.md), [SylGreet](greet.md) and [SylPolkit](polkit.md), experimental
+- [SylLock](lock.md), [SylGreet](greet.md) and [SylPolkit](polkit.md)
 
 ## Plugins
 

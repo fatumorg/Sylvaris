@@ -21,7 +21,7 @@ make DESTDIR="$pkgdir" PREFIX=/usr install
 Two more pieces are up to the package:
 
 - **The PAM file.** SylLock checks passwords with the first PAM service of `sylvaris`, `hyprlock`, `swaylock` and `login` that exists. Install [`dist/pam/sylvaris`](../dist/pam/sylvaris) to `/etc/pam.d/sylvaris` and mark it as a config file, so it has its own.
-- **The login screen.** `make install-greeter` installs SylGreet for greetd, creates `/var/lib/sylvaris-greet` owned by the greeter user and needs that user to exist. Leave it to the user (it is experimental), or ship it as a separate package.
+- **The login screen.** `make install-greeter` installs SylGreet for greetd, creates `/var/lib/sylvaris-greet` owned by the greeter user and needs that user to exist. Leave it to the user, since it replaces their login screen, or ship it as a separate package.
 
 ## Dependencies
 
