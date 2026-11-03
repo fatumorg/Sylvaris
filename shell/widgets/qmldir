@@ -1,4 +1,5 @@
 module qs.widgets
+AddFlow 1.0 AddFlow.qml
 EditCanvas 1.0 EditCanvas.qml
 SylWidget 1.0 SylWidget.qml
 WidgetFrame 1.0 WidgetFrame.qml

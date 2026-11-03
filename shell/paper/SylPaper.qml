@@ -105,7 +105,9 @@ Popup {
             const run = words => () => Ipc.run(words);
             const out = [];
             if (Settings.values.parts.widgets)
-                out.push(item("Edit widgets", Icons.GLYPHS.pencil, "", {
+                out.push(item("Add widget…", Icons.GLYPHS.plus, "", {
+                    run: run(["widgets", "pick", at.screen.name, String(Math.round(at.x)), String(Math.round(at.y))])
+                }), item("Edit widgets", Icons.GLYPHS.pencil, "", {
                     run: run(["widgets", "edit"])
                 }), sep);
             out.push(item("Next wallpaper", Icons.GLYPHS.image, "", {

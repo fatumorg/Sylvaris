@@ -9,6 +9,8 @@ sylvaris widgets edit
 
 ## Adding and arranging
 
+Right-click the desktop and pick **Add widget…**: choose a type, set its options while a live preview shows the result, then **Add here**. The widget lands centred where you clicked, anchored to that part of the screen.
+
 `sylvaris widgets edit` (or **Edit widgets** in SylSettings › Desktop › Widgets) dims every screen and shows a grid with an outline for each widget:
 
 - **Drag** a widget to move it; it snaps to the grid.
@@ -68,7 +70,8 @@ A widget whose plugin is off (Diver, SylTemp, FaTest) stays in the list and come
 | Command | |
 |---|---|
 | `sylvaris widgets` | list them: id, type, screen, place and size |
-| `sylvaris widgets add <type>` | add one on the focused screen and print its id |
+| `sylvaris widgets add <type> [<screen> <x> <y>]` | add one on the focused screen, or centred on a point, and print its id |
+| `sylvaris widgets pick <screen> <x> <y>` | open the add flow at a point |
 | `sylvaris widgets remove <id>` | |
 | `sylvaris widgets edit`, `done` | start and finish arranging |
 | `sylvaris widgets state` | the same as JSON |

@@ -1086,10 +1086,19 @@ ShellRoot {
                 default: "list",
                 edit: () => root.need("widgets").edit(),
                 done: () => root.need("widgets").done(),
-                add: type => {
-                    if (type === undefined)
-                        throw new Error("usage: widgets add <type>");
-                    return root.need("widgets").add(String(type));
+                add: (type, screen, x, y) => {
+                    if (type === undefined || screen !== undefined && !(isFinite(Number(x)) && isFinite(Number(y))))
+                        throw new Error("usage: widgets add <type> [<screen> <x> <y>]");
+                    return root.need("widgets").add(String(type), screen === undefined ? null : {
+                        screen: String(screen),
+                        x: Number(x),
+                        y: Number(y)
+                    });
+                },
+                pick: (screen, x, y) => {
+                    if (screen === undefined || !isFinite(Number(x)) || !isFinite(Number(y)))
+                        throw new Error("usage: widgets pick <screen> <x> <y>");
+                    root.need("widgets").pick(String(screen), Number(x), Number(y));
                 },
                 remove: id => {
                     if (id === undefined)

@@ -334,7 +334,7 @@ test("a set reaches a widget inside a stack", () => {
     assert.equal(apply(begin(items), { kind: "set", id: "zzzz", values: { options: {} } }).items[0], items[0])
 })
 
-import { ANCHORS, zoneAt, offsetsFrom } from "../shell/lib/widgets.mjs"
+import { ANCHORS, zoneAt, offsetsFrom, dropAt } from "../shell/lib/widgets.mjs"
 
 test("there are nine anchors, one per screen zone", () => {
     assert.deepEqual(ANCHORS, ["top-left", "top-center", "top-right", "center-left", "center", "center-right", "bottom-left", "bottom-center", "bottom-right"])
@@ -406,4 +406,23 @@ test("weather can cap its forecast and hide the condition, calendar can hide its
     assert.equal(validateOptions("weather", { forecast: 0 }).forecast, 0)
     assert.equal(validateOptions("calendar", {}).title, true)
     assert.equal(validateOptions("calendar", { title: false }).title, false)
+})
+
+test("dropAt centres a new widget on the point it was dropped at", () => {
+    const s = { name: "A", width: 1920, height: 1080 }
+    const at = (x, y) => {
+        const spot = dropAt("clock", s, x, y, 64, 12)
+        const r = place(Object.assign({ screen: "A", w: 4, h: 2 }, spot), [s], 64, 12)
+        return { anchor: spot.anchor, cx: r.x + r.w / 2, cy: r.y + r.h / 2 }
+    }
+    assert.deepEqual(dropAt("clock", s, 960, 540, 64, 12), { anchor: "center", col: 0, row: 0 })
+    const near = at(500, 300)
+    assert.equal(near.anchor, "top-left")
+    assert.ok(Math.abs(near.cx - 500) <= 38 && Math.abs(near.cy - 300) <= 38)
+    const right = at(1700, 900)
+    assert.equal(right.anchor, "bottom-right")
+    assert.ok(Math.abs(right.cx - 1700) <= 38 && Math.abs(right.cy - 900) <= 38)
+    const edge = at(5, 5)
+    assert.equal(edge.anchor, "top-left")
+    assert.ok(edge.cx > 5 && edge.cy > 5)
 })

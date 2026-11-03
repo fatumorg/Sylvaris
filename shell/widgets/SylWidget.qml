@@ -13,6 +13,7 @@ Scope {
     property bool editing: false
     property var session: null
     property string selected: ""
+    property var picking: null
     readonly property var items: root.editing && root.session !== null ? root.session.items : root.cfg.items
     readonly property var screens: Stack.screens.map(s => ({
                 name: s.name,
@@ -97,7 +98,17 @@ Scope {
             root.session = Wd.undo(root.session);
     }
 
-    function add(type: string): string {
+    function pick(screen: string, x: real, y: real): void {
+        if (root.screens.find(s => s.name === screen) === undefined)
+            throw new Error("no screen called " + screen + "; pick one of: " + root.screens.map(s => s.name).join(", "));
+        root.picking = {
+            screen: screen,
+            x: x,
+            y: y
+        };
+    }
+
+    function add(type: string, at: var): string {
         if (Wd.TYPES[type] === undefined)
             throw new Error("unknown widget type " + type + "; pick one of: " + Object.keys(Wd.TYPES).join(", "));
         if (Wd.tooMany(root.items.concat([
@@ -106,23 +117,30 @@ Scope {
             throw new Error("there are already " + Wd.LIMIT + " widgets; remove one first");
         const t = Wd.TYPES[type];
         const id = Wd.newId(root.items.map(i => i.id));
+        const name = at ? at.screen : root.focusedScreen;
+        const found = root.screens.filter(s => s.name === name);
+        const screen = found.length > 0 ? found[0] : {
+            name: name,
+            width: 1920,
+            height: 1080
+        };
+        const spot = at ? Wd.dropAt(type, screen, at.x, at.y, root.cfg.cell, root.cfg.gap) : {
+            anchor: "top-left",
+            col: 0,
+            row: 1
+        };
         const item = {
             id: id,
             type: type,
-            screen: root.focusedScreen,
-            anchor: "top-left",
-            col: 0,
-            row: 1,
+            screen: name,
+            anchor: spot.anchor,
+            col: spot.col,
+            row: spot.row,
             w: t.size[0],
             h: t.size[1],
-            options: {}
+            options: Wd.validateOptions(type, at ? at.options : {})
         };
-        const screen = root.screens.filter(s => s.name === item.screen);
-        const placed = Wd.nudge(root.items.concat([item]), screen.length > 0 ? screen[0] : {
-            name: item.screen,
-            width: 1920,
-            height: 1080
-        }, root.cfg.cell, root.cfg.gap, root.screens.length > 0 ? root.screens[0].name : "");
+        const placed = Wd.nudge(root.items.concat([item]), screen, root.cfg.cell, root.cfg.gap, root.screens.length > 0 ? root.screens[0].name : "");
         if (root.editing)
             root.session = Wd.apply(root.session, {
                 kind: "add",
@@ -185,6 +203,14 @@ Scope {
                     screenData: output.modelData
                 }
             }
+        }
+    }
+
+    LazyLoader {
+        active: root.picking !== null
+
+        AddFlow {
+            host: root
         }
     }
 

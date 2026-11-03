@@ -392,6 +392,15 @@ export function offsetsFrom(rect, anchor, screen, cell, gap) {
     return { col: offsetAlong(a.x, rect.x, screen.width, rect.w, cell, gap), row: offsetAlong(a.y, rect.y, screen.height, rect.h, cell, gap) }
 }
 
+export function dropAt(type, screen, x, y, cell, gap) {
+    const t = TYPES[type]
+    const w = Math.min(span(t.size[0], cell, gap), screen.width)
+    const h = Math.min(span(t.size[1], cell, gap), screen.height)
+    const rect = { x: Math.max(0, Math.min(screen.width - w, x - w / 2)), y: Math.max(0, Math.min(screen.height - h, y - h / 2)), w: w, h: h }
+    const anchor = zoneAt(x, y, screen)
+    return Object.assign({ anchor: anchor }, offsetsFrom(rect, anchor, screen, cell, gap))
+}
+
 export function place(item, screens, cell, gap, fit) {
     const s = (screens || []).find(x => x.name === item.screen) || (item.screen === "" && screens && screens.length > 0 ? screens[0] : null)
     if (!s)

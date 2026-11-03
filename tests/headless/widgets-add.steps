@@ -1,0 +1,22 @@
+sleep 1.5
+write sylvaris/settings.json {"version":1,"widgets":{"items":[]}}
+sleep 2
+pointer move 1600 900 click 3
+sleep 1
+shot add-menu
+pointer move 1678 922 click 1
+sleep 1.2
+shot add-pick
+pointer move 1376 952 click 1
+sleep 1.2
+shot add-options
+pointer move 1592 938 click 1
+sleep 0.8
+pointer move 1815 1381 click 1
+sleep 2
+syl widgets list
+check sylvaris widgets list | grep -qE "^[a-z0-9]+	clock	HEADLESS-1	center 3,2	4x2"
+check sylvaris get widgets.items | grep -q '"face":"analog"'
+shot add-done
+syl widgets add text HEADLESS-1 200 200
+check sylvaris widgets list | grep -qE "^[a-z0-9]+	text	HEADLESS-1	top-left "
