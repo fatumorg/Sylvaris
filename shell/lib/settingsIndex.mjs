@@ -67,7 +67,7 @@ const ROWS = [
     {key: "clip.limit", title: "Items to keep", tab: "clip", subtitle: "Pinned items are kept on top of this", words: ["clipboard", "history"]},
     {key: "clip.images", title: "Keep images", tab: "clip", subtitle: "Screenshots and copied pictures, stored in ~/.cache/sylvaris/clip"},
     {key: "clip.persist", title: "Remember after restart", tab: "clip", subtitle: "Saves the history to ~/.local/state/sylvaris/clip.json"},
-    {key: "clock.format", title: "Time format", tab: "clock", subtitle: "12-hour or 24-hour time everywhere", words: ["12", "24", "am", "pm", "hour"]},
+    {key: "clock.format", title: "Time format", tab: "clock", subtitle: "12-hour or 24-hour time across the shell; clock widgets keep their own option", words: ["12", "24", "am", "pm", "hour"]},
     {key: "sky.source", title: "Source", tab: "clock"},
     {key: "sky.place", title: "Coordinates", tab: "clock"},
     {key: "deck.enabled", title: "Show the deck", tab: "deck", subtitle: "A dock for pinned and running apps along the bottom", words: ["dock", "taskbar"]},

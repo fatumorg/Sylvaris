@@ -3,6 +3,7 @@ import QtQuick.Shapes
 import qs
 import qs.services
 import qs.components
+import "../../lib/calendar.mjs" as Cal
 
 Item {
     id: root
@@ -13,7 +14,7 @@ Item {
     readonly property real moonSide: root.moon ? Math.min(root.height * 0.55, 72) : 0
 
     function hhmm(t: var): string {
-        return t === null || t === undefined ? "–" : Qt.formatTime(new Date(t), "hh:mm");
+        return t === null || t === undefined ? "–" : Qt.formatTime(new Date(t), Cal.timeFormat(Settings.values.clock.format, false));
     }
 
     Text {

@@ -15,7 +15,7 @@ Column {
         SettingRow {
             title: "Time format"
             key: "clock.format"
-            subtitle: "For the bar, SylClock, the island, Control Center, Diver and the lock screen"
+            subtitle: "For the bar, SylClock, the island, Control Center, Diver, the lock screen and sky widgets; clock widgets keep their own option"
             last: true
 
             Segmented {
