@@ -94,6 +94,12 @@ run() {
 
 case "${1:-}" in
 "")
+    if [ ! -t 2 ]; then
+        logdir="${XDG_STATE_HOME:-$HOME/.local/state}/sylvaris"
+        mkdir -p "$logdir"
+        [ -f "$logdir/shell.log" ] && mv -f "$logdir/shell.log" "$logdir/shell.log.old"
+        exec >"$logdir/shell.log" 2>&1
+    fi
     exec sylstack -p "$dir" -n
     ;;
 -h | --help | help)

@@ -6,6 +6,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Added
 
+- When Sylvaris starts outside a terminal, its log goes to ~/.local/state/sylvaris/shell.log, with the previous run kept as shell.log.old
 - bar.size (SylSettings › Bar › Size) makes the bar thinner or thicker, from 36 to 64 pixels, with its icons and text
 - 12-hour time: clock.format 12h (SylSettings › Clock › Time) switches the bar, SylClock, the island, Control Center, Diver, the lock screen and sky widgets; clock widgets keep their own 24-hour option
 - SylTop, a task manager that is on by default: processes as a list or a tree with end, kill, pause, priority, disk priority, processor pinning and open files; history graphs for the processor, each thread, memory and swap, disks, network, every graphics card and, with SylTemp on, temperatures; startup apps and user services to switch on or off; system and user services to start, stop and restart; and login sessions. It reads /proc only while its window is open, opens with sylvaris top, and Task manager can be bound to a key (Ctrl+Shift+Escape can now be recorded)

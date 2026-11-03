@@ -293,3 +293,4 @@ SylGreet lists the sessions in `/usr/share/wayland-sessions` and `/usr/local/sha
 | sway says `Proprietary Nvidia drivers are NOT supported` | sway's check for the NVIDIA driver | start sway with `--unsupported-gpu` |
 | Nothing appears, and the log names the Qt platform plugin `wayland` | Sylvaris was started outside a Wayland session | start it from your compositor's autostart |
 | A part is dim or does nothing | a tool it needs is missing | `sylvaris doctor` names it |
+| The shell vanished | it crashed, or the terminal it was started from closed | read `~/.local/state/sylvaris/shell.log` (the run before is `shell.log.old`); start it from your compositor's autostart so it outlives terminals |
