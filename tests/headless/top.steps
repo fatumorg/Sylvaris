@@ -10,6 +10,14 @@ syl top find sway
 sleep 1
 check sylvaris top state | grep -q '"query":"sway"'
 shot top-find
+bg sylvaris top tag $(pgrep -x sway | head -1) $SHELL_PID
+sleep 1.5
+check sylvaris top state | grep -q '"tagged":2'
+shot top-tagged
+check sylvaris top tag nope 2>&1 | grep -q "not a PID"
+syl top tag
+sleep 0.5
+check sylvaris top state | grep -q '"tagged":0'
 syl set top.tree true
 syl top find
 sleep 2.5

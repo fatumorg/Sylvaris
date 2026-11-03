@@ -27,6 +27,8 @@ Scope {
     property string query: ""
     property var folded: []
     property int selected: -1
+    property var tagged: []
+    readonly property var marked: root.sample === null ? [] : root.sample.procs.filter(p => root.tagged.indexOf(p.pid) >= 0)
     readonly property var procs: root.sample === null ? [] : T.filterProcs(root.sample.procs, root.query)
     readonly property var rows: root.cfg.tree && root.query === "" ? T.tree(root.procs, root.sortKey, root.desc, root.folded) : T.sortProcs(root.procs, root.sortKey, root.desc)
     readonly property var picked: root.sample === null ? null : root.sample.procs.find(p => p.pid === root.selected) || null
@@ -70,6 +72,7 @@ Scope {
         root.detail = null;
         root.note = "";
         root.selected = -1;
+        root.tagged = [];
     }
 
     function raise(): void {
@@ -109,7 +112,12 @@ Scope {
     }
 
     function fold(pid: int): void {
-        root.folded = root.folded.indexOf(pid) >= 0 ? root.folded.filter(p => p !== pid) : root.folded.concat([pid]);
+        root.folded = T.toggled(root.folded, pid);
+    }
+
+    function tag(pids: var): void {
+        root.open("processes");
+        root.tagged = pids.length === 0 ? [] : pids.reduce((list, pid) => T.toggled(list, pid), root.tagged);
     }
 
     function select(pid: int): void {
@@ -262,6 +270,7 @@ Scope {
             tree: root.cfg.tree,
             sort: root.sortKey,
             query: root.query,
+            tagged: root.marked.length,
             note: root.note
         };
     }

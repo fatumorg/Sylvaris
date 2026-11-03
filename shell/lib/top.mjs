@@ -92,3 +92,7 @@ export function tree(procs, key, desc, folded) {
 export function push(list, value, max) {
     return (Array.isArray(list) ? list : []).concat([value]).slice(-max)
 }
+
+export function toggled(list, x) {
+    return list.indexOf(x) >= 0 ? list.filter(v => v !== x) : list.concat([x])
+}

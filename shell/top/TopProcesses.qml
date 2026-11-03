@@ -24,6 +24,9 @@ Item {
         })
     readonly property real fixed: T.COLUMNS.filter(c => c.key !== "name").reduce((a, c) => a + page.widths[c.key], 0)
     readonly property var p: page.task.picked
+    readonly property bool many: page.task.marked.length > 0
+    readonly property var targets: page.many ? page.task.marked : page.p !== null ? [page.p] : []
+    readonly property bool stopped: page.targets.length > 0 && page.targets.every(t => t.state === "T")
 
     function cell(p: var, key: string): string {
         switch (key) {
@@ -129,6 +132,7 @@ Item {
 
             required property var modelData
             readonly property bool chosen: page.task.selected === row.modelData.pid
+            readonly property bool tagged: page.task.tagged.indexOf(row.modelData.pid) >= 0
 
             width: list.width
             height: 32
@@ -142,12 +146,27 @@ Item {
                 opacity: row.chosen || rowArea.containsMouse ? 1 : 0
             }
 
+            Rectangle {
+                visible: row.tagged
+                x: 2
+                width: 4
+                height: parent.height - 12
+                anchors.verticalCenter: parent.verticalCenter
+                radius: 2
+                color: Theme.accent
+            }
+
             MouseArea {
                 id: rowArea
                 anchors.fill: parent
                 hoverEnabled: true
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
-                onClicked: page.task.select(row.modelData.pid)
+                onClicked: mouse => {
+                    if (mouse.button === Qt.RightButton || (mouse.modifiers & Qt.ControlModifier))
+                        page.task.tag([row.modelData.pid]);
+                    else
+                        page.task.select(row.modelData.pid);
+                }
             }
 
             Row {
@@ -202,7 +221,7 @@ Item {
 
     Item {
         id: detail
-        visible: page.p !== null
+        visible: page.targets.length > 0
         anchors.bottom: parent.bottom
         width: parent.width
         height: visible ? box.implicitHeight + 24 : 0
@@ -223,7 +242,7 @@ Item {
             Text {
                 textFormat: Text.PlainText
                 width: parent.width
-                text: page.p === null ? "" : page.p.name + " · PID " + page.p.pid + " · " + page.p.user + " · nice " + page.p.nice
+                text: page.many ? page.targets.length + " tagged: " + page.targets.map(t => t.name).join(", ") : page.p === null ? "" : page.p.name + " · PID " + page.p.pid + " · " + page.p.user + " · nice " + page.p.nice
                 elide: Text.ElideRight
                 color: Theme.text
                 font.family: Tokens.fontUi
@@ -233,6 +252,7 @@ Item {
 
             Text {
                 textFormat: Text.PlainText
+                visible: !page.many
                 width: parent.width
                 text: page.p === null ? "" : page.p.cmd
                 elide: Text.ElideMiddle
@@ -248,45 +268,49 @@ Item {
                 Chip {
                     text: "End task"
                     glyph: Icons.GLYPHS.close
-                    onClicked: page.task.signalTo(page.p.pid, "term")
+                    onClicked: page.targets.forEach(t => page.task.signalTo(t.pid, "term"))
                 }
 
                 Chip {
                     text: "Kill"
                     glyph: Icons.GLYPHS.stopCircle
-                    onClicked: page.task.signalTo(page.p.pid, "kill")
+                    onClicked: page.targets.forEach(t => page.task.signalTo(t.pid, "kill"))
                 }
 
                 Chip {
-                    text: page.p !== null && page.p.state === "T" ? "Resume" : "Pause"
-                    glyph: page.p !== null && page.p.state === "T" ? Icons.GLYPHS.play : Icons.GLYPHS.pause
-                    onClicked: page.task.signalTo(page.p.pid, page.p.state === "T" ? "cont" : "stop")
+                    text: page.stopped ? "Resume" : "Pause"
+                    glyph: page.stopped ? Icons.GLYPHS.play : Icons.GLYPHS.pause
+                    onClicked: {
+                        const sig = page.stopped ? "cont" : "stop";
+                        page.targets.forEach(t => page.task.signalTo(t.pid, sig));
+                    }
                 }
 
                 Chip {
                     text: "Lower priority"
                     glyph: Icons.GLYPHS.down
-                    onClicked: page.task.renice(page.p.pid, Math.min(19, page.p.nice + 5))
+                    onClicked: page.targets.forEach(t => page.task.renice(t.pid, Math.min(19, t.nice + 5)))
                 }
 
                 Chip {
                     text: "Raise priority"
                     glyph: Icons.GLYPHS.up
-                    onClicked: page.task.renice(page.p.pid, Math.max(-20, page.p.nice - 5))
+                    onClicked: page.targets.forEach(t => page.task.renice(t.pid, Math.max(-20, t.nice - 5)))
                 }
 
                 Chip {
                     text: "Disk: idle only"
                     glyph: Icons.GLYPHS.sleep
-                    onClicked: page.task.ionice(page.p.pid, "idle")
+                    onClicked: page.targets.forEach(t => page.task.ionice(t.pid, "idle"))
                 }
 
                 Chip {
                     text: "Disk: normal"
-                    onClicked: page.task.ionice(page.p.pid, "best-effort")
+                    onClicked: page.targets.forEach(t => page.task.ionice(t.pid, "best-effort"))
                 }
 
                 Chip {
+                    visible: !page.many
                     text: "Processors…"
                     glyph: Icons.GLYPHS.memory
                     lit: page.pinning
@@ -298,15 +322,22 @@ Item {
                 }
 
                 Chip {
+                    visible: !page.many
                     text: "Open files"
                     glyph: Icons.GLYPHS.folder
                     lit: page.task.files !== null
                     onClicked: page.task.openFiles(page.p.pid)
                 }
+
+                Chip {
+                    visible: page.many
+                    text: "Clear tags"
+                    onClicked: page.task.tag([])
+                }
             }
 
             Flow {
-                visible: page.pinning && page.task.detail !== null
+                visible: !page.many && page.pinning && page.task.detail !== null
                 width: parent.width
                 spacing: 6
 
@@ -333,7 +364,7 @@ Item {
             }
 
             ListView {
-                visible: page.task.files !== null
+                visible: !page.many && page.task.files !== null
                 width: parent.width
                 height: Math.min(140, contentHeight)
                 clip: true
@@ -354,7 +385,7 @@ Item {
 
             Text {
                 textFormat: Text.PlainText
-                visible: page.task.files !== null && page.task.files.length === 0
+                visible: !page.many && page.task.files !== null && page.task.files.length === 0
                 text: "No open files you can see; processes of other users hide theirs"
                 color: Theme.textDim
                 font.family: Tokens.fontUi

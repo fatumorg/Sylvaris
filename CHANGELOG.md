@@ -4,6 +4,10 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Added
+
+- SylTop tags processes: right-click or Ctrl+click several, then end, kill, pause, reprioritise or idle them all at once; sylvaris top tag PID… does the same from a script
+
 ## [1.6.0] - 2026-11-03
 
 ### Added

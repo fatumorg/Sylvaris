@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { COLUMNS, sortProcs, filterProcs, tree, push, DEFAULT_TOP, validateTop, PAGES } from "../shell/lib/top.mjs"
+import { COLUMNS, sortProcs, filterProcs, tree, push, DEFAULT_TOP, validateTop, PAGES, toggled } from "../shell/lib/top.mjs"
 
 const procs = [
     { pid: 1, ppid: 0, name: "init", cmd: "/sbin/init", user: "root", cpu: 0, mem: 10, threads: 1, nice: 0, state: "S" },
@@ -57,4 +57,10 @@ test("validateTop keeps a sane interval and the tree switch", () => {
 
 test("every page has a label and a glyph", () => {
     assert.deepEqual(PAGES.map(p => p.id), ["processes", "performance", "startup", "services", "users"])
+})
+
+test("toggled adds a missing value and removes a present one", () => {
+    assert.deepEqual(toggled([], 4), [4])
+    assert.deepEqual(toggled([4, 7], 4), [7])
+    assert.deepEqual(toggled([4], 7), [4, 7])
 })

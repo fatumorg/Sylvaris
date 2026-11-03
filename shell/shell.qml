@@ -1160,6 +1160,11 @@ ShellRoot {
                 open: page => root.need("top").open(page || ""),
                 close: () => root.need("top").close(),
                 find: (...q) => root.need("top").find(q.join(" ")),
+                tag: (...pids) => root.need("top").tag(pids.map(n => {
+                        if (!/^[0-9]+$/.test(n))
+                            throw new Error("not a PID: " + n);
+                        return Number(n);
+                    })),
                 state: () => root.need("top").state()
             },
             archive: {
