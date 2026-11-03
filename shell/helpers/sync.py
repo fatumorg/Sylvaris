@@ -74,6 +74,10 @@ def firefox(op):
     for root in op["roots"]:
         for prof in profiles(root):
             chrome = os.path.join(prof, "chrome")
+            if op.get("json"):
+                results.append({"path": os.path.join(chrome, "sylvaris.json"), "status": write(os.path.join(chrome, "sylvaris.json"), op["json"])})
+            if not op.get("content"):
+                continue
             results.append({"path": os.path.join(chrome, "sylvaris.css"), "status": write(os.path.join(chrome, "sylvaris.css"), op["content"])})
             results.append({"path": os.path.join(chrome, "userChrome.css"), "status": ensure_line(os.path.join(chrome, "userChrome.css"), '@import "sylvaris.css";', first=True)})
             if op.get("contentCss"):

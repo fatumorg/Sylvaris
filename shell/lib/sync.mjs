@@ -6,8 +6,8 @@ export const TARGETS = [
     { id: "vscode", label: "VS Code, VSCodium and Cursor", about: "Recolours the editor live through its settings.json" },
     { id: "zed", label: "Zed", about: "Pick the Sylvaris theme once" },
     { id: "neovim", label: "Neovim and Vim", about: "Use “colorscheme sylvaris”" },
-    { id: "firefox", label: "Firefox, LibreWolf and Mullvad Browser", about: "Colours the browser frame through userChrome.css after a browser restart" },
-    { id: "zen", label: "Zen Browser", about: "Colours Zen's frame and spaces through userChrome.css after a browser restart" }
+    { id: "firefox", label: "Firefox, LibreWolf and Mullvad Browser", about: "Colours the browser frame through userChrome.css, live with the Sylvaris browser script and otherwise after a restart" },
+    { id: "zen", label: "Zen Browser", about: "Tints Zen's own space gradient live through the Sylvaris browser script" }
 ]
 
 const BROWSERS = ["firefox", "zen"]
@@ -198,17 +198,8 @@ export function firefoxCss(p) {
         [""]).join("\n")
 }
 
-export function zenCss(p) {
-    const vars = {
-        "--zen-main-browser-background": p.bg, "--zen-main-browser-background-toolbar": p.bg, "--zen-main-browser-background-old": p.bg,
-        "--zen-main-browser-background-toolbar-old": p.bg, "--zen-themed-toolbar-bg": p.bg, "--zen-themed-toolbar-bg-transparent": p.bg,
-        "--zen-primary-color": p.accent, "--zen-colors-primary": mix(p.bg2, p.accent, 0.25), "--zen-colors-secondary": mix(p.bg2, p.accent, 0.12),
-        "--zen-colors-tertiary": p.bg2, "--zen-colors-hover-bg": mix(p.bg2, p.fg, 0.1), "--zen-colors-primary-foreground": p.fg,
-        "--zen-colors-border": mix(p.bg2, p.fg, 0.12), "--zen-colors-border-contrast": mix(p.bg2, p.fg, 0.2), "--zen-colors-input-bg": p.bg,
-        "--zen-dialog-background": p.bg2, "--zen-urlbar-background": p.bg2, "--zen-urlbar-background-base": p.bg2,
-        "--zen-accent-button-background": p.accent, "--zen-accent-button-color": p.onAccent, "--zen-grainy-background-opacity": "0"
-    }
-    return firefoxCss(p) + [":root, :root:-moz-lwtheme {"].concat(Object.keys(vars).map(k => "  " + k + ": " + vars[k] + " !important;"), ["}", ""]).join("\n")
+export function zenColours(p) {
+    return JSON.stringify({ gradient: [p.accent, p.deep] }) + "\n"
 }
 
 export function firefoxContentCss(p) {
@@ -264,7 +255,7 @@ export function plan(p, targets, configHome, home) {
         ops.push({ op: "firefox", target: target, content: firefoxCss(p), contentCss: firefoxContentCss(p), roots: [configHome + "/mozilla/firefox", home + "/.mozilla/firefox", home + "/.librewolf", home + "/.mullvad-browser/Browser/TorBrowser/Data/Browser"] })
     target = "zen"
     if (targets.zen)
-        ops.push({ op: "firefox", target: target, content: zenCss(p), contentCss: firefoxContentCss(p), roots: [configHome + "/zen", home + "/.zen"] })
+        ops.push({ op: "firefox", target: target, json: zenColours(p), roots: [configHome + "/zen", home + "/.zen"] })
     return ops
 }
 

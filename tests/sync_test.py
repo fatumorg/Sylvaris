@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import os
 import tempfile
 import unittest
@@ -120,6 +121,19 @@ class SyncTest(unittest.TestCase):
         self.assertEqual([r["status"] for r in res], ["written", "added", "created"])
         with open(os.path.join(chrome, "userChrome.css")) as f:
             self.assertTrue(f.read().startswith('@import "sylvaris.css";\n'))
+
+    def test_zen_profiles_get_colours_only(self):
+        root = os.path.join(self.home, ".config", "zen")
+        os.makedirs(os.path.join(root, "z.default"))
+        with open(os.path.join(root, "profiles.ini"), "w") as f:
+            f.write("[Profile0]\nName=default\nIsRelative=1\nPath=z.default\n")
+        res = sync.apply([{"op": "firefox", "json": '{"gradient":["#c9702f"]}', "roots": [root]}])
+        self.assertEqual([r["status"] for r in res], ["written"])
+        prof = os.path.join(root, "z.default")
+        with open(os.path.join(prof, "chrome", "sylvaris.json")) as f:
+            self.assertEqual(json.load(f)["gradient"], ["#c9702f"])
+        self.assertFalse(os.path.exists(os.path.join(prof, "chrome", "userChrome.css")))
+        self.assertFalse(os.path.exists(os.path.join(prof, "user.js")))
 
 
 if __name__ == "__main__":

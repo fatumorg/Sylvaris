@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { palette, summary, ansi, gtkCss, kittyConf, footIni, qtColors, vscodeTheme, zedTheme, nvimLua, vimColors, firefoxCss, firefoxContentCss, zenCss, plan, TARGETS, DEFAULT_SYNC, validateSync } from "../shell/lib/sync.mjs"
+import { palette, summary, ansi, gtkCss, kittyConf, footIni, qtColors, vscodeTheme, zedTheme, nvimLua, vimColors, firefoxCss, firefoxContentCss, zenColours, plan, TARGETS, DEFAULT_SYNC, validateSync } from "../shell/lib/sync.mjs"
 
 const colors = { base: "#181310", surface: "#281f1a", accent: "#c9702f", accentHi: "#e0955c", accentDeep: "#a85c32", onAccent: "#181310", text: "#e7dac6", textDim: "#b2967b", textSoft: "#d3b9a1", danger: "#d9674a" }
 
@@ -45,17 +45,15 @@ test("plan writes only the chosen targets and asks for include lines", () => {
     assert.ok(!code.some(o => o.roots && o.roots.some(r => r.includes("zen"))))
 })
 
-test("Zen is its own target that finds XDG profiles and paints Zen's own colours", () => {
+test("Zen is its own target that hands Zen its own gradient colours", () => {
     const p = palette(colors)
-    const css = zenCss(p)
-    assert.ok(css.startsWith(firefoxCss(p)))
-    assert.ok(css.includes("--zen-main-browser-background: #181310 !important;"))
-    assert.ok(css.includes("--zen-primary-color: #c9702f !important;"))
+    assert.deepEqual(JSON.parse(zenColours(p)), { gradient: ["#c9702f", "#a85c32"] })
     const zen = plan(p, { zen: true }, "/h/.config", "/h").filter(o => o.target === "zen")
     assert.equal(zen.length, 1)
     assert.equal(zen[0].op, "firefox")
     assert.deepEqual(zen[0].roots, ["/h/.config/zen", "/h/.zen"])
-    assert.equal(zen[0].content, css)
+    assert.equal(zen[0].json, zenColours(p))
+    assert.equal(zen[0].content, undefined)
     assert.equal(plan(p, { firefox: true }, "/h/.config", "/h").some(o => o.target === "zen"), false)
     assert.equal(validateSync({ targets: { firefox: true } }).targets.zen, true)
     assert.equal(validateSync({ targets: { firefox: true, zen: false } }).targets.zen, false)
