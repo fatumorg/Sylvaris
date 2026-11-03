@@ -15,7 +15,7 @@ import time
 HZ = os.sysconf("SC_CLK_TCK")
 PAGE = os.sysconf("SC_PAGE_SIZE")
 SIGNALS = {"term": signal.SIGTERM, "kill": signal.SIGKILL, "stop": signal.SIGSTOP, "cont": signal.SIGCONT}
-IO_CLASSES = {"realtime": "1", "best-effort": "2", "idle": "3"}
+IO_CLASSES = {"best-effort": "2", "idle": "3"}
 UNIT = re.compile(r"^[A-Za-z0-9][A-Za-z0-9@:._\\-]*\.service$")
 DESKTOP = re.compile(r"^[A-Za-z0-9@:._+\-]+\.desktop$")
 VERBS = {"user": ["start", "stop", "restart", "enable", "disable"], "system": ["start", "stop", "restart"]}
@@ -193,7 +193,7 @@ def command(msg):
     if cmd == "ionice":
         level = msg.get("level", 4)
         if msg.get("class") not in IO_CLASSES or not isinstance(level, int) or not 0 <= level <= 7:
-            raise ValueError("ionice class is realtime, best-effort or idle, level 0 to 7")
+            raise ValueError("ionice class is best-effort or idle, level 0 to 7")
         args = ["ionice", "-c", IO_CLASSES[msg["class"]]] + ([] if msg["class"] == "idle" else ["-n", str(level)]) + ["-p", str(pid_of(msg))]
         done = subprocess.run(args, capture_output=True, text=True)
         if done.returncode != 0:
@@ -234,10 +234,6 @@ def entry(path):
             key, _, value = line.partition("=")
             out.setdefault(key.strip(), value.strip())
     return out
-
-
-def autostart_dirs(home, config_dirs):
-    return home + "/autostart", [d + "/autostart" for d in config_dirs]
 
 
 def autostart(user_dir, system_dirs, desktops=()):
@@ -346,7 +342,8 @@ def answer(root, line):
         if msg.get("cmd") == "files":
             return {"event": "files", "pid": pid_of(msg), "files": files(root, msg["pid"])}
         if msg.get("cmd") in ("startup", "autostart"):
-            user_dir, system_dirs = autostart_dirs(os.environ.get("XDG_CONFIG_HOME") or os.path.expanduser("~/.config"), (os.environ.get("XDG_CONFIG_DIRS") or "/etc/xdg").split(":"))
+            user_dir = (os.environ.get("XDG_CONFIG_HOME") or os.path.expanduser("~/.config")) + "/autostart"
+            system_dirs = [d + "/autostart" for d in (os.environ.get("XDG_CONFIG_DIRS") or "/etc/xdg").split(":")]
             if msg["cmd"] == "autostart":
                 if not isinstance(msg.get("on"), bool):
                     raise ValueError("autostart needs on true or false")

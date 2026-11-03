@@ -152,8 +152,7 @@ Scope {
         root.act({
             cmd: "ionice",
             pid: pid,
-            class: klass,
-            level: 4
+            class: klass
         });
     }
 
