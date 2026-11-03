@@ -135,6 +135,20 @@ class SyncTest(unittest.TestCase):
         self.assertFalse(os.path.exists(os.path.join(prof, "chrome", "userChrome.css")))
         self.assertFalse(os.path.exists(os.path.join(prof, "user.js")))
 
+    def test_zen_drops_frame_css_left_from_firefox_syncing(self):
+        root = os.path.join(self.home, ".config", "zen")
+        chrome = os.path.join(root, "z.default", "chrome")
+        os.makedirs(chrome)
+        with open(os.path.join(root, "profiles.ini"), "w") as f:
+            f.write("[Profile0]\nName=default\nIsRelative=1\nPath=z.default\n")
+        for name in ("sylvaris.css", "sylvaris-content.css", "zen-themes.css"):
+            with open(os.path.join(chrome, name), "w") as f:
+                f.write("#sidebar-box { background-color: #000 }\n")
+        res = sync.apply([{"op": "firefox", "json": '{"gradient":["#c9702f"]}', "roots": [root]}])
+        self.assertEqual([r["status"] for r in res], ["written", "removed", "removed"])
+        self.assertEqual(sorted(os.listdir(chrome)), ["sylvaris.json", "zen-themes.css"])
+        self.assertEqual([r["status"] for r in sync.apply([{"op": "firefox", "json": '{"gradient":["#c9702f"]}', "roots": [root]}])], ["same"])
+
 
 if __name__ == "__main__":
     unittest.main()

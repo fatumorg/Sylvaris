@@ -77,6 +77,11 @@ def firefox(op):
             if op.get("json"):
                 results.append({"path": os.path.join(chrome, "sylvaris.json"), "status": write(os.path.join(chrome, "sylvaris.json"), op["json"])})
             if not op.get("content"):
+                for name in ("sylvaris.css", "sylvaris-content.css"):
+                    path = os.path.join(chrome, name)
+                    if os.path.isfile(path) and not os.path.islink(path):
+                        os.remove(path)
+                        results.append({"path": path, "status": "removed"})
                 continue
             results.append({"path": os.path.join(chrome, "sylvaris.css"), "status": write(os.path.join(chrome, "sylvaris.css"), op["content"])})
             results.append({"path": os.path.join(chrome, "userChrome.css"), "status": ensure_line(os.path.join(chrome, "userChrome.css"), '@import "sylvaris.css";', first=True)})
