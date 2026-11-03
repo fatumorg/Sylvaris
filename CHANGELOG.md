@@ -34,6 +34,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Fixed
 
+- Settings written to a new settings.json while the shell runs are picked up even when ~/.config/sylvaris did not exist at startup; sylstack now watches the nearest folder that exists and follows it down as folders appear
 - SylTop no longer leaves the Services, Users or Startup page empty when it opens straight onto it.
 - Zen's tab sidebar takes the theme's gradient again: syncing Zen now removes the flat Firefox frame colours an earlier version left in its profile, which painted the sidebar the theme's base colour
 - With SylTemp's reading in the bar, the shell no longer grows by about 350 MB an hour and idles at a third of the processor time: the closed SylTemp panel, the temperature widget, the overlay, SylTop's graphs and the flip clock stop rebuilding themselves on every reading, and the closed panel does no work at all

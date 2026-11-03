@@ -300,28 +300,19 @@ public:
     {
         if (path.isEmpty())
             return;
-        const QString dir = QFileInfo(path).absolutePath();
         if (!m_files.contains(path, view))
             m_files.insert(path, view);
-        if (!m_dirs.contains(dir, view))
-            m_dirs.insert(dir, view);
-        if (QFileInfo::exists(path) && !m_watcher.files().contains(path))
-            m_watcher.addPath(path);
-        if (QFileInfo::exists(dir) && !m_watcher.directories().contains(dir))
-            m_watcher.addPath(dir);
+        follow(view, path);
     }
 
     void remove(FileViewCore *view, const QString &path)
     {
         if (path.isEmpty())
             return;
-        const QString dir = QFileInfo(path).absolutePath();
         m_files.remove(path, view);
-        m_dirs.remove(dir, view);
+        unwatchDir(view);
         if (!m_files.contains(path))
             m_watcher.removePath(path);
-        if (!m_dirs.contains(dir))
-            m_watcher.removePath(dir);
     }
 
 private:
@@ -335,11 +326,36 @@ private:
     {
         for (FileViewCore *v : views) {
             const QString path = m_files.key(v);
-            if (!path.isEmpty() && QFileInfo::exists(path) && !m_watcher.files().contains(path))
-                m_watcher.addPath(path);
+            if (!path.isEmpty())
+                follow(v, path);
         }
         for (FileViewCore *v : views)
             QMetaObject::invokeMethod(v, [v] { v->checkChanged(); }, Qt::QueuedConnection);
+    }
+
+    void follow(FileViewCore *view, const QString &path)
+    {
+        QString dir = QFileInfo(path).absolutePath();
+        while (!QFileInfo::exists(dir) && QFileInfo(dir).absolutePath() != dir)
+            dir = QFileInfo(dir).absolutePath();
+        if (m_dirs.key(view) != dir) {
+            unwatchDir(view);
+            m_dirs.insert(dir, view);
+        }
+        if (!m_watcher.directories().contains(dir))
+            m_watcher.addPath(dir);
+        if (QFileInfo::exists(path) && !m_watcher.files().contains(path))
+            m_watcher.addPath(path);
+    }
+
+    void unwatchDir(FileViewCore *view)
+    {
+        const QString dir = m_dirs.key(view);
+        if (dir.isEmpty())
+            return;
+        m_dirs.remove(dir, view);
+        if (!m_dirs.contains(dir))
+            m_watcher.removePath(dir);
     }
 
     QFileSystemWatcher m_watcher;
