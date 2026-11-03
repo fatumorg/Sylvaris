@@ -1,6 +1,10 @@
+import json
 import os
+import select
+import subprocess
 import sys
 import tempfile
+import time
 import unittest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "shell", "helpers"))
@@ -130,6 +134,25 @@ class TopTest(unittest.TestCase):
         self.assertEqual(top.answer(self.root, "not json")["event"], "error")
         self.assertEqual(top.answer(self.root, '{"cmd":"signal","pid":42,"sig":"boom"}')["event"], "error")
         self.assertEqual(top.answer(self.root, '{"cmd":"interval","seconds":2}'), {"event": "done", "cmd": "interval", "interval": 2.0})
+
+    def test_two_commands_in_one_write_both_get_answers(self):
+        helper = os.path.join(os.path.dirname(__file__), "..", "shell", "helpers", "top.py")
+        p = subprocess.Popen([sys.executable, "-I", helper], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        try:
+            os.write(p.stdin.fileno(), b'{"cmd":"interval","seconds":3}\n{"cmd":"interval","seconds":4}\n')
+            got = []
+            buf = b""
+            deadline = time.monotonic() + 5
+            while len(got) < 2 and time.monotonic() < deadline:
+                if not select.select([p.stdout], [], [], 0.2)[0]:
+                    continue
+                buf += os.read(p.stdout.fileno(), 65536)
+                *lines, buf = buf.split(b"\n")
+                got += [json.loads(x)["interval"] for x in lines if b'"done"' in x]
+            self.assertEqual(got, [3.0, 4.0])
+        finally:
+            p.kill()
+            p.wait()
 
     def test_autostart_merges_user_over_system_and_reads_hidden(self):
         user, system = os.path.join(self.root, "home", "autostart"), os.path.join(self.root, "xdg", "autostart")

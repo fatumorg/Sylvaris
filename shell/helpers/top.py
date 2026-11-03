@@ -375,15 +375,20 @@ def main():
     interval = 2.0
     prev = snapshot("")
     wait = 0.3
+    buf = b""
     while True:
-        ready, _, _ = select.select([sys.stdin], [], [], wait)
-        if ready:
-            line = sys.stdin.readline()
-            if not line:
-                return 0
-            reply = answer("", line)
+        if b"\n" in buf:
+            line, buf = buf.split(b"\n", 1)
+            reply = answer("", line.decode(errors="replace"))
             interval = reply.get("interval", interval)
             emit(reply)
+            continue
+        ready, _, _ = select.select([0], [], [], wait)
+        if ready:
+            chunk = os.read(0, 65536)
+            if not chunk:
+                return 0
+            buf += chunk
             continue
         cur = snapshot("")
         emit(sample(prev, cur))

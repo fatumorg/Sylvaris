@@ -1,6 +1,6 @@
 sleep 1.5
 check sylvaris top state | grep -q '"open":false'
-check ! pgrep -f 'helpers/top[.]py'
+check ! pgrep -f 'syl-hl-.*helpers/top[.]py'
 syl top open
 sleep 3
 check sylvaris top state | grep -q '"running":true'
@@ -30,7 +30,7 @@ shot top-users
 syl top close
 sleep 1.5
 check sylvaris top state | grep -q '"running":false'
-check ! pgrep -f 'helpers/top[.]py'
+check ! pgrep -f 'syl-hl-.*helpers/top[.]py'
 syl set parts.top false
 sleep 1.5
 check sylvaris top 2>&1 | grep -q "parts.top true"
