@@ -69,6 +69,8 @@ Column {
                 expanded: previewHover.hovered
                 atTop: I.placeOf(root.cfg.position).top
                 idle: root.cfg.idle
+                look: root.cfg.look
+                glow: root.cfg.glow
                 time: Qt.formatTime(new Date(), "HH:mm")
                 progress: 0.42
                 position: 89
@@ -180,6 +182,34 @@ Column {
                 ]
                 current: root.cfg.reveal
                 onPicked: key => Settings.put("island.reveal", key)
+            }
+        }
+
+        SettingRow {
+            title: "Look"
+            key: "island.look"
+            subtitle: "Ink is a solid black capsule; Material follows your glass"
+
+            Segmented {
+                width: 240
+                options: I.LOOKS.map(l => ({
+                            key: l,
+                            label: l.charAt(0).toUpperCase() + l.slice(1)
+                        }))
+                current: root.cfg.look
+                onPicked: key => Settings.put("island.look", key)
+            }
+        }
+
+        SettingRow {
+            title: "Glow"
+            key: "island.glow"
+            subtitle: "An ink island glows in the colour of what it shows"
+
+            Toggle {
+                checked: root.cfg.glow
+                enabled: root.on && root.cfg.look === "ink"
+                onToggled: v => Settings.put("island.glow", v)
             }
         }
 

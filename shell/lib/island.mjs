@@ -3,8 +3,10 @@ import { elapsed } from "./capture.mjs"
 export const DEFAULT_ISLAND = {
     media: true, recording: true, diver: true, volume: true, devices: true, notifications: false, messages: true, calls: true, pinCalls: true, privacy: true, status: true, keepPaused: true, hover: true, seconds: 5,
     position: "top-center", idle: "pill", reveal: "always", shortcuts: ["notify", "center", "media", "screenshot", "record", "dnd"],
-    screens: "focused", hideSites: ["youtube.com", "youtu.be"]
+    screens: "focused", hideSites: ["youtube.com", "youtu.be"], look: "ink", glow: true
 }
+
+export const LOOKS = ["ink", "material"]
 
 export const SCREENS = ["focused", "all"]
 
@@ -86,6 +88,7 @@ export function validateIsland(raw) {
     out.idle = IDLE.includes(v.idle) ? v.idle : DEFAULT_ISLAND.idle
     out.reveal = REVEAL.includes(v.reveal) ? v.reveal : DEFAULT_ISLAND.reveal
     out.screens = SCREENS.includes(v.screens) ? v.screens : DEFAULT_ISLAND.screens
+    out.look = LOOKS.includes(v.look) ? v.look : DEFAULT_ISLAND.look
     out.hideSites = Array.isArray(v.hideSites) ? [...new Set(v.hideSites.map(siteOf).filter(s => s !== ""))].slice(0, 20) : DEFAULT_ISLAND.hideSites.slice()
     out.shortcuts = Array.isArray(v.shortcuts) ? [...new Set(v.shortcuts.filter(id => Object.prototype.hasOwnProperty.call(SHORTCUTS, id)))].slice(0, MAX_SHORTCUTS) : DEFAULT_ISLAND.shortcuts.slice()
     return out
@@ -321,6 +324,24 @@ export function shortcutsFor(ids, live) {
 export function placeOf(position) {
     const [edge, side] = position.split("-")
     return { top: edge === "top", side: side }
+}
+
+export function haloOf(a, progress) {
+    const ring = v => ({ value: Number.isFinite(v) ? Math.max(0, Math.min(1, Math.round(v * 1000) / 1000)) : 0, live: false })
+    if (a === null || a === undefined)
+        return null
+    switch (a.kind) {
+    case "media":
+        return ring(progress)
+    case "volume":
+        return ring(a.muted ? 0 : a.value)
+    case "next":
+        return ring((15 - a.mins) / 15)
+    case "recording":
+        return a.started ? { value: 1, live: true } : null
+    default:
+        return null
+    }
 }
 
 export function rowHeight(kind) {

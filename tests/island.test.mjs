@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { DEFAULT_ISLAND, validateIsland, activities, label, joined, custom, SHORTCUTS, shortcutsFor, placeOf, cardHeight, CHAT_APPS, chatOf, isCall, pickActions, takes, hiddenSite, voiceOf, tucked, inUse, status, inCall, ownerOf, nodeKind, streamsOf, nextSession, VOICE_GRACE, voiceWindow, ownsFocus } from "../shell/lib/island.mjs"
+import { DEFAULT_ISLAND, validateIsland, activities, label, joined, custom, SHORTCUTS, shortcutsFor, placeOf, cardHeight, CHAT_APPS, chatOf, isCall, pickActions, takes, hiddenSite, voiceOf, tucked, inUse, status, inCall, ownerOf, nodeKind, streamsOf, nextSession, VOICE_GRACE, voiceWindow, ownsFocus, LOOKS, haloOf } from "../shell/lib/island.mjs"
 
 const idle = { flash: null, recording: { on: false }, alarm: null, focus: null, next: null, media: { title: "", playing: false } }
 
@@ -389,4 +389,28 @@ test("ownsFocus matches the focused app id, or its last dot segment, against the
     assert.equal(ownsFocus("org.telegram.desktop", "", "desktop2"), false)
     assert.equal(ownsFocus("", "", ""), false)
     assert.equal(ownsFocus(undefined, "", "firefox"), false)
+})
+
+test("validateIsland picks the ink look with a glow unless told otherwise", () => {
+    assert.equal(DEFAULT_ISLAND.look, "ink")
+    assert.equal(DEFAULT_ISLAND.glow, true)
+    assert.deepEqual(LOOKS, ["ink", "material"])
+    assert.equal(validateIsland({ look: "material" }).look, "material")
+    assert.equal(validateIsland({ look: "neon" }).look, "ink")
+    assert.equal(validateIsland({ glow: false }).glow, false)
+    assert.equal(validateIsland({ glow: "no" }).glow, true)
+})
+
+test("haloOf rings media, volume, upcoming tasks and recordings and nothing else", () => {
+    assert.equal(haloOf(null, 0.5), null)
+    assert.deepEqual(haloOf({ kind: "media", playing: true }, 0.25), { value: 0.25, live: false })
+    assert.deepEqual(haloOf({ kind: "media", playing: true }, 7), { value: 1, live: false })
+    assert.deepEqual(haloOf({ kind: "volume", value: 0.4, muted: false }, 0), { value: 0.4, live: false })
+    assert.deepEqual(haloOf({ kind: "volume", value: 0.4, muted: true }, 0), { value: 0, live: false })
+    assert.deepEqual(haloOf({ kind: "next", mins: 12 }, 0), { value: 0.2, live: false })
+    assert.deepEqual(haloOf({ kind: "next", mins: -3 }, 0), { value: 1, live: false })
+    assert.deepEqual(haloOf({ kind: "recording", started: true }, 0), { value: 1, live: true })
+    assert.equal(haloOf({ kind: "recording", started: false }, 0), null)
+    assert.equal(haloOf({ kind: "notification" }, 0.5), null)
+    assert.equal(haloOf({ kind: "media" }, NaN).value, 0)
 })

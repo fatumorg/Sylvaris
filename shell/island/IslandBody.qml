@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Shapes
 import qs
 import qs.services
 import qs.components
@@ -21,6 +22,12 @@ Item {
     property real length: 0
     property int unread: 0
     property bool quiet: false
+    property string look: "ink"
+    property bool glow: true
+    readonly property bool ink: root.look === "ink"
+    readonly property color fg: root.ink ? "#f5f5f7" : root.fg
+    readonly property color fgDim: root.ink ? "#a5a5ae" : root.fgDim
+    readonly property bool trailing: root.main !== null && ["recording", "focus", "volume"].indexOf(root.main.kind) >= 0
     readonly property string kindKey: root.items.map(a => a.kind).join(",")
     readonly property var kinds: root.kindKey === "" ? [] : root.kindKey.split(",")
     readonly property string shortcutKey: root.shortcuts.map(s => s.id).join(",")
@@ -32,7 +39,7 @@ Item {
     readonly property real cardWidth: 380
     readonly property real cardHeight: I.cardHeight(root.kinds, root.shortcutIds.length > 0)
     readonly property bool open: root.expanded && root.cardHeight > 0
-    readonly property real compactWidth: root.main !== null ? Math.min(360, compactRow.implicitWidth + 28) : Math.max(root.idle === "clock" ? 0 : 104, idleRow.implicitWidth + 32)
+    readonly property real compactWidth: root.main !== null ? Math.min(380, Math.max(root.trailing ? 150 : 0, compactRow.implicitWidth + trail.implicitWidth + (trail.implicitWidth > 0 ? 24 : 0) + 24)) : Math.max(root.idle === "clock" ? 0 : 104, idleRow.implicitWidth + 32)
     readonly property real bodyWidth: root.open ? root.cardWidth : root.compactWidth
     readonly property real bodyHeight: root.open ? root.cardHeight : root.pillHeight
     readonly property bool bubble: root.second !== null && !root.open
@@ -288,6 +295,132 @@ Item {
         }
     }
 
+    component Skin: Item {
+        id: skin
+
+        property real radius: 0
+        property color rim: "transparent"
+        readonly property bool lit: root.ink && root.glow && !Tokens.lite && skin.rim.a > 0
+
+        Glass {
+            role: "island"
+            visible: !root.ink
+            anchors.fill: parent
+            radius: skin.radius
+            raised: true
+            flowing: false
+            offColor: Theme.surface
+            offBorder: Theme.line
+        }
+
+        Rectangle {
+            visible: skin.lit
+            anchors.fill: parent
+            anchors.margins: -5
+            radius: skin.radius + 5
+            color: "transparent"
+            border.width: 3
+            border.color: Qt.alpha(skin.rim, 0.1)
+        }
+
+        Rectangle {
+            visible: skin.lit
+            anchors.fill: parent
+            anchors.margins: -2
+            radius: skin.radius + 2
+            color: "transparent"
+            border.width: 2
+            border.color: Qt.alpha(skin.rim, 0.24)
+        }
+
+        Rectangle {
+            visible: root.ink
+            anchors.fill: parent
+            radius: skin.radius
+            color: "#050506"
+            border.width: 1
+            border.color: skin.lit ? Qt.alpha(skin.rim, 0.62) : Qt.rgba(1, 1, 1, 0.09)
+
+            Behavior on border.color {
+                ColorAnimation {
+                    duration: Tokens.stateDuration
+                }
+            }
+        }
+    }
+
+    component Halo: Item {
+        id: halo
+
+        property var a: null
+        property real size: 30
+        readonly property var ring: I.haloOf(halo.a, root.progress)
+        property real pulse: 1
+        readonly property bool live: halo.visible && halo.ring !== null && halo.ring.live && !root.calm
+
+        width: halo.size
+        height: halo.size
+
+        SequentialAnimation on pulse {
+            running: halo.live
+            loops: Animation.Infinite
+            NumberAnimation {
+                to: 0.35
+                duration: Tokens.loopMs(900)
+                easing.type: Easing.InOutSine
+            }
+            NumberAnimation {
+                to: 1
+                duration: Tokens.loopMs(900)
+                easing.type: Easing.InOutSine
+            }
+        }
+
+        Shape {
+            anchors.fill: parent
+            visible: halo.ring !== null
+            opacity: halo.live ? halo.pulse : 1
+            preferredRendererType: Shape.CurveRenderer
+
+            ShapePath {
+                strokeColor: Qt.alpha(root.tintOf(halo.a), 0.2)
+                strokeWidth: 2
+                fillColor: "transparent"
+
+                PathAngleArc {
+                    centerX: halo.size / 2
+                    centerY: halo.size / 2
+                    radiusX: halo.size / 2 - 1
+                    radiusY: halo.size / 2 - 1
+                    startAngle: 0
+                    sweepAngle: 360
+                }
+            }
+
+            ShapePath {
+                strokeColor: root.tintOf(halo.a)
+                strokeWidth: 2
+                fillColor: "transparent"
+                capStyle: ShapePath.RoundCap
+
+                PathAngleArc {
+                    centerX: halo.size / 2
+                    centerY: halo.size / 2
+                    radiusX: halo.size / 2 - 1
+                    radiusY: halo.size / 2 - 1
+                    startAngle: -90
+                    sweepAngle: halo.ring === null ? 0 : Math.max(1, halo.ring.value * 360)
+                }
+            }
+        }
+
+        Lead {
+            anchors.centerIn: parent
+            a: halo.a
+            size: halo.size - 8
+        }
+    }
+
     component Bars: Row {
         id: bars
 
@@ -361,7 +494,7 @@ Item {
         Rectangle {
             anchors.fill: parent
             radius: press.square ? 12 : width / 2
-            color: press.danger ? (area.pressed ? Qt.darker(Theme.danger, 1.2) : Theme.danger) : press.strong ? (area.pressed ? Qt.darker(Theme.accent, 1.15) : area.containsMouse ? Theme.accentHi : Theme.accent) : press.lit ? Qt.alpha(Theme.accent, area.pressed ? 0.45 : area.containsMouse ? 0.35 : 0.26) : area.pressed ? Qt.alpha(Theme.text, 0.18) : area.containsMouse || press.activeFocus ? Qt.alpha(Theme.text, 0.1) : press.square ? Qt.alpha(Theme.text, 0.05) : "transparent"
+            color: press.danger ? (area.pressed ? Qt.darker(Theme.danger, 1.2) : Theme.danger) : press.strong ? (area.pressed ? Qt.darker(Theme.accent, 1.15) : area.containsMouse ? Theme.accentHi : Theme.accent) : press.lit ? Qt.alpha(Theme.accent, area.pressed ? 0.45 : area.containsMouse ? 0.35 : 0.26) : area.pressed ? Qt.alpha(root.fg, 0.18) : area.containsMouse || press.activeFocus ? Qt.alpha(root.fg, 0.1) : press.square ? Qt.alpha(root.fg, 0.05) : "transparent"
             border.width: press.activeFocus ? 1 : 0
             border.color: Theme.accent
 
@@ -376,7 +509,7 @@ Item {
             anchors.centerIn: parent
             text: press.glyph
             size: 18
-            color: press.strong || press.danger ? Theme.onAccent : press.lit ? Theme.accent : Theme.text
+            color: press.strong || press.danger ? Theme.onAccent : press.lit ? Theme.accent : root.fg
         }
 
         Rectangle {
@@ -430,9 +563,9 @@ Item {
         Rectangle {
             anchors.fill: parent
             radius: Tokens.radiusRow
-            color: rowArea.pressed ? Qt.alpha(Theme.text, 0.12) : rowArea.containsMouse ? Qt.alpha(Theme.text, 0.08) : Qt.alpha(Theme.text, 0.04)
+            color: rowArea.pressed ? Qt.alpha(root.fg, 0.12) : rowArea.containsMouse ? Qt.alpha(root.fg, 0.08) : Qt.alpha(root.fg, 0.04)
             border.width: 1
-            border.color: Qt.alpha(Theme.text, rowArea.containsMouse ? 0.08 : 0.04)
+            border.color: Qt.alpha(root.fg, rowArea.containsMouse ? 0.08 : 0.04)
 
             Behavior on color {
                 ColorAnimation {
@@ -490,7 +623,7 @@ Item {
                 width: parent.width
                 text: root.headOf(row.a)
                 elide: Text.ElideRight
-                color: Theme.text
+                color: root.fg
                 font.family: Tokens.fontUi
                 font.pixelSize: Tokens.bodySize
                 font.weight: Font.DemiBold
@@ -501,7 +634,7 @@ Item {
                 width: parent.width
                 text: root.subOf(row.a)
                 elide: Text.ElideRight
-                color: Theme.textDim
+                color: root.fgDim
                 font.family: row.modelData === "recording" || row.modelData === "volume" || row.modelData === "focus" ? Tokens.fontMono : Tokens.fontUi
                 font.pixelSize: Tokens.smallSize
             }
@@ -536,7 +669,7 @@ Item {
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 8
             text: C.elapsed(root.position * 1000)
-            color: Theme.textDim
+            color: root.fgDim
             font.family: Tokens.fontMono
             font.pixelSize: Tokens.tinySize - 1
         }
@@ -549,7 +682,7 @@ Item {
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 8
             text: "-" + C.elapsed(Math.max(0, root.length - root.position) * 1000)
-            color: Theme.textDim
+            color: root.fgDim
             font.family: Tokens.fontMono
             font.pixelSize: Tokens.tinySize - 1
         }
@@ -562,13 +695,13 @@ Item {
             anchors.bottomMargin: row.big ? 13 : 12
             height: 4
             radius: Tokens.r(2)
-            color: Qt.alpha(Theme.text, 0.14)
+            color: Qt.alpha(root.fg, 0.14)
 
             Rectangle {
                 width: parent.width * Math.max(0, Math.min(1, row.a === null ? 0 : row.modelData === "volume" ? row.a.value : root.progress))
                 height: parent.height
                 radius: Tokens.r(2)
-                color: row.a !== null && row.a.muted ? Theme.textDim : Theme.accent
+                color: row.a !== null && row.a.muted ? root.fgDim : Theme.accent
 
                 Behavior on width {
                     NumberAnimation {
@@ -586,6 +719,15 @@ Item {
         }
     }
 
+    Skin {
+        x: body.x
+        y: body.y
+        width: body.width
+        height: body.height
+        radius: Math.min(height / 2, root.ink ? 30 : Tokens.radiusPanel)
+        rim: root.main === null ? "transparent" : root.tintOf(root.main)
+    }
+
     Item {
         id: body
         width: root.bodyWidth
@@ -596,7 +738,7 @@ Item {
             NumberAnimation {
                 duration: Tokens.moveDuration
                 easing.type: Easing.BezierSpline
-                easing.bezierCurve: [0.2, 0, 0, 1, 1, 1]
+                easing.bezierCurve: Tokens.springCurve
             }
         }
 
@@ -604,18 +746,8 @@ Item {
             NumberAnimation {
                 duration: Tokens.moveDuration
                 easing.type: Easing.BezierSpline
-                easing.bezierCurve: [0.2, 0, 0, 1, 1, 1]
+                easing.bezierCurve: Tokens.springCurve
             }
-        }
-
-        Glass {
-            role: "island"
-            anchors.fill: parent
-            radius: Math.min(height / 2, Tokens.radiusPanel)
-            raised: true
-            flowing: false
-            offColor: Theme.surface
-            offBorder: Theme.line
         }
 
         MouseArea {
@@ -651,19 +783,20 @@ Item {
                 visible: root.main !== null
                 spacing: 10
 
-                Lead {
+                Halo {
                     anchors.verticalCenter: parent.verticalCenter
                     a: root.main
-                    size: 22
+                    size: 30
                 }
 
                 Text {
                     textFormat: Text.PlainText
                     anchors.verticalCenter: parent.verticalCenter
+                    visible: !root.trailing
                     width: Math.min(implicitWidth, 200)
                     text: root.main !== null ? I.label(root.main) : ""
                     elide: Text.ElideRight
-                    color: Theme.text
+                    color: root.fg
                     font.family: root.main !== null && ["recording", "focus", "volume"].indexOf(root.main.kind) >= 0 ? Tokens.fontMono : Tokens.fontUi
                     font.pixelSize: Tokens.smallSize
                     font.weight: Font.DemiBold
@@ -676,9 +809,29 @@ Item {
                     width: Math.min(implicitWidth, 110)
                     text: root.main !== null && root.main.kind === "media" && root.main.title && root.main.artist ? root.main.artist : ""
                     elide: Text.ElideRight
-                    color: Theme.textDim
+                    color: root.fgDim
                     font.family: Tokens.fontUi
                     font.pixelSize: Tokens.smallSize
+                }
+            }
+
+            Row {
+                id: trail
+                anchors.right: parent.right
+                anchors.rightMargin: 16
+                anchors.verticalCenter: parent.verticalCenter
+                visible: root.main !== null
+                spacing: 8
+
+                Text {
+                    textFormat: Text.PlainText
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: root.trailing
+                    text: root.main !== null ? I.label(root.main) : ""
+                    color: root.main !== null && root.main.kind === "recording" ? root.tintOf(root.main) : root.fg
+                    font.family: Tokens.fontMono
+                    font.pixelSize: Tokens.smallSize
+                    font.weight: Font.DemiBold
                 }
 
                 Bars {
@@ -688,22 +841,6 @@ Item {
                 }
             }
 
-            Rectangle {
-                visible: root.main !== null && root.main.kind === "media" && root.length > 0
-                x: 24
-                y: root.atTop ? parent.height - 4 : 2
-                width: parent.width - 48
-                height: 2
-                radius: Tokens.r(1)
-                color: Qt.alpha(Theme.text, 0.12)
-
-                Rectangle {
-                    width: parent.width * Math.max(0, Math.min(1, root.progress))
-                    height: parent.height
-                    radius: Tokens.r(1)
-                    color: Theme.accent
-                }
-            }
 
             Row {
                 id: idleRow
@@ -716,7 +853,7 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     visible: root.idle === "clock"
                     text: root.time
-                    color: Theme.text
+                    color: root.fg
                     font.family: Tokens.fontMono
                     font.pixelSize: Tokens.smallSize
                     font.weight: Font.DemiBold
@@ -727,7 +864,7 @@ Item {
                     visible: root.quiet
                     text: Icons.GLYPHS.dnd
                     size: 15
-                    color: Theme.textDim
+                    color: root.fgDim
                 }
 
                 Row {
@@ -746,7 +883,7 @@ Item {
                         textFormat: Text.PlainText
                         anchors.verticalCenter: parent.verticalCenter
                         text: root.unread > 99 ? "99+" : String(root.unread)
-                        color: Theme.text
+                        color: root.fg
                         font.family: Tokens.fontMono
                         font.pixelSize: Tokens.tinySize
                         font.weight: Font.DemiBold
@@ -759,7 +896,7 @@ Item {
                     width: 28
                     height: 4
                     radius: Tokens.r(2)
-                    color: Qt.alpha(Theme.text, 0.35)
+                    color: Qt.alpha(root.fg, 0.35)
                 }
             }
         }
@@ -837,23 +974,20 @@ Item {
             NumberAnimation {
                 duration: Tokens.moveDuration
                 easing.type: Easing.BezierSpline
-                easing.bezierCurve: [0.2, 0, 0, 1, 1, 1]
+                easing.bezierCurve: Tokens.springCurve
             }
         }
 
-        Glass {
+        Skin {
             anchors.fill: parent
             radius: height / 2
-            raised: true
-            flowing: false
-            offColor: Theme.surface
-            offBorder: Theme.line
+            rim: root.second === null ? "transparent" : root.tintOf(root.second)
         }
 
-        Lead {
+        Halo {
             anchors.centerIn: parent
             a: root.second
-            size: 22
+            size: 32
         }
 
         MouseArea {

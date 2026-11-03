@@ -1,0 +1,23 @@
+sleep 1.5
+syl set parts.island true
+sleep 2
+check sylvaris island | grep -q '"kind":"media"'
+shot island-look-compact
+syl set capture.countdown 0
+syl capture record screen
+sleep 2
+shot island-look-bubble
+syl island open
+sleep 1
+shot island-look-open
+syl island close
+syl capture stop
+sleep 2
+syl set island.media false
+sleep 1.5
+shot island-look-idle
+syl set island.media true
+syl set island.look material
+sleep 1.5
+check sylvaris island 2>&1 | grep -q "kind"
+shot island-look-material

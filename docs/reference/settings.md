@@ -273,6 +273,8 @@ Explained in [island](../parts/island.md).
 | `island.shortcuts` | `["notify","center","media","screenshot","record","dnd"]` | yes |
 | `island.screens` | `"focused"` |  |
 | `island.hideSites` | `["youtube.com","youtu.be"]` |  |
+| `island.look` | `"ink"` |  |
+| `island.glow` | `true` |  |
 
 ## viewer
 

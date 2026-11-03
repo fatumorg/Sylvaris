@@ -215,7 +215,9 @@
     "hideSites": [
       "youtube.com",
       "youtu.be"
-    ]
+    ],
+    "look": "ink",
+    "glow": true
   },
   "viewer": {
     "autoplay": true,

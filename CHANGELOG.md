@@ -6,6 +6,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Added
 
+- SylIsland has a new ink look, a solid black capsule that springs between a pill, a compact capsule with the activity's icon and its time or level, and the full card; a ring around the icon shows music progress, volume or a recording, an activity-coloured rim glows around it, and island.look material brings back the glass one
 - A Pastel style and a solid material give flat, opaque surfaces instead of glass, and sylvaris theme pastel (or Pastel theme under Appearance) makes a soft solid theme in peach, mint, sky, lilac, butter, rose or any colour, light or dark
 - SylCenter can show a Temperatures tile with the hottest processor, graphics and drive; it opens SylTemp and reads sensors only while it is on screen
 - Right-click the desktop and pick Add widget… to choose a widget, set its options with a live preview and drop it where you clicked; sylvaris widgets add takes a screen and point too

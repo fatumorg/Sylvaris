@@ -718,7 +718,7 @@ Scope {
                     item: win.edge ? body : null
                 }
             }
-            BackgroundEffect.blurRegion: Resin.enabled && win.onSurface ? blur : null
+            BackgroundEffect.blurRegion: Resin.enabled && win.onSurface && win.wcfg.look !== "ink" ? blur : null
 
             Region {
                 id: blur
@@ -778,6 +778,8 @@ Scope {
                 expanded: win.docked || root.pinned === win.name || root.cfg.hover && root.hotScreen === win.name
                 atTop: win.place.top
                 idle: win.wcfg.idle
+                look: win.wcfg.look
+                glow: win.wcfg.glow
                 time: root.time
                 replying: root.pinned === win.name ? root.replyTo : -1
                 progress: Media.length > 0 ? Media.position / Media.length : 0
