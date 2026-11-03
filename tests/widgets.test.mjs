@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { TYPES, DEFAULT_WIDGETS, validateWidgets, place, nudge, newId, covered, tooMany, servicesFor, span, cpuDelta, memUsed, netRate, daysUntil, validateOptions, rateText, usedOf } from "../shell/lib/widgets.mjs"
+import { TYPES, DEFAULT_WIDGETS, validateWidgets, place, nudge, newId, tooMany, servicesFor, span, cpuDelta, memUsed, netRate, daysUntil, validateOptions, rateText, usedOf } from "../shell/lib/widgets.mjs"
 
 const ON = { enabled: { diver: true, temp: true } }
 
@@ -130,10 +130,7 @@ test("newId is short and fresh", () => {
     assert.ok(taken.every(id => /^[a-z0-9]{4}$/.test(id)))
 })
 
-test("covered means fullscreen or maximized on that screen", () => {
-    assert.equal(covered([{ screen: "a", maximized: true }], "a"), true)
-    assert.equal(covered([{ screen: "b", fullscreen: true }], "a"), false)
-    assert.equal(covered([{ screen: "a" }], "a"), false)
+test("tooMany caps the widget count", () => {
     assert.equal(tooMany(new Array(25).fill({})), true)
     assert.equal(tooMany(new Array(24).fill({})), false)
 })

@@ -456,10 +456,6 @@ export function nudge(items, screen, cell, gap, home = "") {
     })
 }
 
-export function covered(windows, screen) {
-    return (windows || []).some(w => w.screen === screen && w.visible !== false && (w.fullscreen === true || w.maximized === true))
-}
-
 export function tooMany(items) {
     return items.length > LIMIT
 }
