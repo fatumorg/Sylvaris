@@ -266,7 +266,8 @@
       "accent": "",
       "zoom": 1,
       "padding": 1,
-      "idle": 1
+      "idle": 1,
+      "font": ""
     },
     "items": []
   },

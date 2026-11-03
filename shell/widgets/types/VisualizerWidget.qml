@@ -8,6 +8,7 @@ Item {
     id: root
 
     property var frame: null
+    readonly property string fontUi: root.frame !== null ? root.frame.fontUi : Tokens.fontUi
     readonly property var o: root.frame !== null && root.frame.item !== null ? root.frame.item.options : ({})
     readonly property int count: root.o.bars || 32
     readonly property bool live: root.visible && !(root.frame !== null && root.frame.paused) && !Tokens.paused
@@ -65,7 +66,7 @@ Item {
         anchors.centerIn: parent
         text: root.error
         color: Theme.textDim
-        font.family: Tokens.fontUi
+        font.family: root.fontUi
         font.pixelSize: Tokens.smallSize
     }
 

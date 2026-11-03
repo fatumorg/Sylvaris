@@ -10,6 +10,7 @@ Item {
     id: root
 
     property var frame: null
+    readonly property string fontUi: root.frame !== null ? root.frame.fontUi : Tokens.fontUi
     readonly property var o: root.frame !== null && root.frame.item !== null ? root.frame.item.options : ({})
     readonly property string path: root.o.source ? S.expandHome(root.o.source, Stack.env("HOME")) : ""
 
@@ -22,7 +23,7 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         text: root.path === "" ? "Pick a picture or GIF in SylSettings › Desktop › Widgets" : "Cannot open " + root.path
         color: Theme.textDim
-        font.family: Tokens.fontUi
+        font.family: root.fontUi
         font.pixelSize: Tokens.smallSize
     }
 

@@ -6,6 +6,7 @@ Item {
     id: root
 
     property var frame: null
+    readonly property string fontUi: root.frame !== null ? root.frame.fontUi : Tokens.fontUi
     readonly property var item: root.frame !== null ? root.frame.item : null
     readonly property var o: root.item !== null ? root.item.options : ({})
     readonly property string stored: root.o.text || ""
@@ -70,7 +71,7 @@ Item {
             color: root.ink
             selectionColor: root.paper ? "#c9a227" : Theme.accent
             selectedTextColor: root.paper ? "#1d1808" : Theme.onAccent
-            font.family: Tokens.fontUi
+            font.family: root.fontUi
             font.pixelSize: root.o.size || 14
             Keys.onEscapePressed: edit.focus = false
             onTextChanged: {

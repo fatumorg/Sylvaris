@@ -36,6 +36,8 @@ Item {
     readonly property real pad: (!root.item ? 0 : root.item.type === "terminal" ? 0 : root.item.type === "photos" || root.item.type === "sticker" ? 8 : 16) * (typeof root.style.padding === "number" ? root.style.padding : 1)
     readonly property real zoom: !root.item || root.item.type === "terminal" || typeof root.style.zoom !== "number" ? 1 : root.style.zoom
     readonly property real idle: typeof root.style.idle === "number" ? root.style.idle : 1
+    readonly property string fontUi: typeof root.style.font === "string" && root.style.font !== "" ? root.style.font : Tokens.fontUi
+    readonly property string fontDisplay: typeof root.style.font === "string" && root.style.font !== "" ? root.style.font : Tokens.fontDisplay
 
     opacity: root.idle >= 1 || hover.hovered ? 1 : root.idle
 

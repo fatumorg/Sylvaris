@@ -8,6 +8,8 @@ Item {
     id: root
 
     property var frame: null
+    readonly property string fontUi: root.frame !== null ? root.frame.fontUi : Tokens.fontUi
+    readonly property string fontDisplay: root.frame !== null ? root.frame.fontDisplay : Tokens.fontDisplay
     readonly property var o: root.frame !== null && root.frame.item !== null ? root.frame.item.options : ({})
     property date now: new Date()
     readonly property int firstDay: root.o.monday === false ? 0 : 1
@@ -36,7 +38,7 @@ Item {
         visible: root.o.title !== false
         text: Qt.locale().standaloneMonthName(root.now.getMonth()) + " " + root.now.getFullYear()
         color: Theme.text
-        font.family: Tokens.fontDisplay
+        font.family: root.fontDisplay
         font.pixelSize: Tokens.bodySize
         font.weight: Font.DemiBold
     }
@@ -57,7 +59,7 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 text: modelData
                 color: Theme.textDim
-                font.family: Tokens.fontUi
+                font.family: root.fontUi
                 font.pixelSize: Tokens.tinySize
                 font.features: {
                     "tnum": 1
@@ -83,7 +85,7 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 text: modelData
                 color: Theme.textDim
-                font.family: Tokens.fontUi
+                font.family: root.fontUi
                 font.pixelSize: Tokens.tinySize
             }
         }
@@ -115,7 +117,7 @@ Item {
                     text: cell.modelData.day
                     opacity: cell.modelData.inMonth ? 1 : 0.35
                     color: cell.today ? Theme.onAccent : Theme.text
-                    font.family: Tokens.fontUi
+                    font.family: root.fontUi
                     font.pixelSize: Math.max(10, Math.min(Tokens.smallSize, root.ch * 0.5))
                 }
 

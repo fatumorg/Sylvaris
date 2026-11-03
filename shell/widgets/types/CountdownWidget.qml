@@ -7,6 +7,8 @@ Item {
     id: root
 
     property var frame: null
+    readonly property string fontUi: root.frame !== null ? root.frame.fontUi : Tokens.fontUi
+    readonly property string fontDisplay: root.frame !== null ? root.frame.fontDisplay : Tokens.fontDisplay
     readonly property var o: root.frame !== null && root.frame.item !== null ? root.frame.item.options : ({})
     property real now: Date.now()
     readonly property var days: Wd.daysUntil(root.o.date, root.now)
@@ -39,7 +41,7 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         text: "Set a date like 2026-12-24 in SylSettings › Desktop › Widgets"
         color: Theme.textDim
-        font.family: Tokens.fontUi
+        font.family: root.fontUi
         font.pixelSize: Tokens.smallSize
     }
 
@@ -56,7 +58,7 @@ Item {
             horizontalAlignment: Text.AlignHCenter
             text: root.days === null ? "" : String(Math.abs(root.days))
             color: root.frame !== null ? root.frame.accent : Theme.accent
-            font.family: Tokens.fontDisplay
+            font.family: root.fontDisplay
             font.pixelSize: Math.min(root.height * 0.5, root.width * 0.4)
             font.weight: Font.DemiBold
             font.features: {
@@ -73,7 +75,7 @@ Item {
             elide: Text.ElideRight
             text: root.caption
             color: root.days === 0 ? Theme.text : Theme.textDim
-            font.family: root.days === 0 ? Tokens.fontDisplay : Tokens.fontUi
+            font.family: root.days === 0 ? root.fontDisplay : root.fontUi
             font.pixelSize: root.days === 0 ? Tokens.titleSize : Tokens.smallSize
             font.weight: root.days === 0 ? Font.DemiBold : Font.Normal
         }

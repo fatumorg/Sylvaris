@@ -7,6 +7,7 @@ Item {
     id: root
 
     property var frame: null
+    readonly property string fontDisplay: root.frame !== null ? root.frame.fontDisplay : Tokens.fontDisplay
     readonly property var o: root.frame !== null && root.frame.item !== null ? root.frame.item.options : ({})
     readonly property color colour: root.o.colour ? root.o.colour : Theme.text
     readonly property bool outlined: root.o.style === "outlined"
@@ -24,7 +25,7 @@ Item {
         horizontalAlignment: root.o.align === "left" ? Text.AlignLeft : root.o.align === "right" ? Text.AlignRight : Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         color: root.colour
-        font.family: root.o.font ? root.o.font : Tokens.fontDisplay
+        font.family: root.o.font ? root.o.font : root.fontDisplay
         font.pixelSize: 400
         font.weight: Font.DemiBold
     }

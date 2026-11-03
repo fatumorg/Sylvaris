@@ -7,6 +7,7 @@ Item {
     id: root
 
     property var frame: null
+    readonly property string fontUi: root.frame !== null ? root.frame.fontUi : Tokens.fontUi
     readonly property var item: root.frame !== null ? root.frame.item : null
     readonly property var kids: root.item !== null && root.item.children ? root.item.children.filter(c => !c.inactive) : []
     property int at: 0
@@ -40,7 +41,7 @@ Item {
         wrapMode: Text.Wrap
         horizontalAlignment: Text.AlignHCenter
         color: Theme.textDim
-        font.family: Tokens.fontUi
+        font.family: root.fontUi
         font.pixelSize: Tokens.smallSize
     }
 

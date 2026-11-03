@@ -8,7 +8,7 @@ export const LIMIT = 24
 
 const PRESETS = { S: [2, 2], M: [4, 2], L: [4, 4] }
 
-export const DEFAULT_STYLE = { material: "inherit", opacity: 1, radius: 1, shadow: true, clear: false, accent: "", zoom: 1, padding: 1, idle: 1 }
+export const DEFAULT_STYLE = { material: "inherit", opacity: 1, radius: 1, shadow: true, clear: false, accent: "", zoom: 1, padding: 1, idle: 1, font: "" }
 export const DEFAULT_WIDGETS = { enabled: true, cell: 80, gap: 12, snap: true, style: DEFAULT_STYLE, items: [] }
 
 function sized(min, max) {
@@ -266,6 +266,7 @@ export function validateStyle(raw, partial) {
     pick("zoom", real(s.zoom), num(s.zoom, 0.6, 1.6, d.zoom))
     pick("padding", real(s.padding), num(s.padding, 0, 2, d.padding))
     pick("idle", real(s.idle), num(s.idle, 0.15, 1, d.idle))
+    pick("font", typeof s.font === "string" && s.font.length <= 80, typeof s.font === "string" ? s.font.trim() : "")
     return out
 }
 

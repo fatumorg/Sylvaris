@@ -9,6 +9,8 @@ Item {
     id: root
 
     property var frame: null
+    readonly property string fontUi: root.frame !== null ? root.frame.fontUi : Tokens.fontUi
+    readonly property string fontDisplay: root.frame !== null ? root.frame.fontDisplay : Tokens.fontDisplay
     readonly property var o: root.frame !== null && root.frame.item !== null ? root.frame.item.options : ({})
     readonly property var d: Weather.data
     readonly property var days: root.d === null ? [] : root.d.days.slice(1, 1 + Math.max(0, Math.min(typeof root.o.forecast === "number" ? root.o.forecast : 7, Math.floor((root.width - 150) / 64))))
@@ -28,7 +30,7 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         text: Weather.error !== "" ? Weather.error : !Sky.available ? "Set a location in SylSettings › Desktop › Sky" : "Fetching the forecast…"
         color: Theme.textDim
-        font.family: Tokens.fontUi
+        font.family: root.fontUi
         font.pixelSize: Tokens.smallSize
     }
 
@@ -52,7 +54,7 @@ Item {
                 textFormat: Text.PlainText
                 text: root.d === null ? "" : root.d.temp + "°"
                 color: Theme.text
-                font.family: Tokens.fontDisplay
+                font.family: root.fontDisplay
                 font.pixelSize: Math.min(44, root.height * 0.34)
                 font.weight: Font.DemiBold
             }
@@ -65,7 +67,7 @@ Item {
             text: Weather.now === null ? "" : Weather.now.label
             visible: root.o.condition !== false
             color: Theme.text
-            font.family: Tokens.fontUi
+            font.family: root.fontUi
             font.pixelSize: Tokens.smallSize
         }
 
@@ -76,7 +78,7 @@ Item {
             elide: Text.ElideRight
             text: root.extra
             color: Theme.textDim
-            font.family: Tokens.fontUi
+            font.family: root.fontUi
             font.pixelSize: Tokens.tinySize
         }
     }
@@ -99,7 +101,7 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: Qt.locale().dayName(new Date(modelData.date + "T12:00").getDay(), Locale.ShortFormat)
                     color: Theme.textDim
-                    font.family: Tokens.fontUi
+                    font.family: root.fontUi
                     font.pixelSize: Tokens.tinySize
                 }
 
@@ -115,7 +117,7 @@ Item {
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: modelData.max + "° " + modelData.min + "°"
                     color: Theme.text
-                    font.family: Tokens.fontUi
+                    font.family: root.fontUi
                     font.pixelSize: Tokens.tinySize
                 }
             }

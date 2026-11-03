@@ -7,6 +7,8 @@ Item {
     id: root
 
     property var frame: null
+    readonly property string fontUi: root.frame !== null ? root.frame.fontUi : Tokens.fontUi
+    readonly property string fontDisplay: root.frame !== null ? root.frame.fontDisplay : Tokens.fontDisplay
     readonly property var o: root.frame !== null && root.frame.item !== null ? root.frame.item.options : ({})
     readonly property var tasks: Diver.agendaToday.filter(x => root.o.done === true || !x.task.done).slice(0, root.o.count || 5)
 
@@ -15,7 +17,7 @@ Item {
         textFormat: Text.PlainText
         text: "Today"
         color: Theme.text
-        font.family: Tokens.fontDisplay
+        font.family: root.fontDisplay
         font.pixelSize: Tokens.bodySize
         font.weight: Font.DemiBold
     }
@@ -26,7 +28,7 @@ Item {
         anchors.centerIn: parent
         text: Diver.active ? "Nothing planned" : "Pair Diver in SylSettings › Plugins › Diver"
         color: Theme.textDim
-        font.family: Tokens.fontUi
+        font.family: root.fontUi
         font.pixelSize: Tokens.smallSize
     }
 

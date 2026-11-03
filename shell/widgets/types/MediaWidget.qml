@@ -9,6 +9,8 @@ Item {
     id: root
 
     property var frame: null
+    readonly property string fontUi: root.frame !== null ? root.frame.fontUi : Tokens.fontUi
+    readonly property string fontDisplay: root.frame !== null ? root.frame.fontDisplay : Tokens.fontDisplay
     readonly property var o: root.frame !== null && root.frame.item !== null ? root.frame.item.options : ({})
     readonly property color accent: root.frame !== null ? root.frame.accent : Theme.accent
     readonly property bool vinyl: root.o.vinyl === true
@@ -41,7 +43,7 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         text: "Nothing is playing"
         color: Theme.textDim
-        font.family: Tokens.fontUi
+        font.family: root.fontUi
         font.pixelSize: Tokens.smallSize
     }
 
@@ -132,7 +134,7 @@ Item {
             elide: Text.ElideRight
             text: Media.title
             color: Theme.text
-            font.family: Tokens.fontDisplay
+            font.family: root.fontDisplay
             font.pixelSize: Tokens.bodySize
             font.weight: Font.DemiBold
         }
@@ -143,7 +145,7 @@ Item {
             elide: Text.ElideRight
             text: Media.artist
             color: Theme.textDim
-            font.family: Tokens.fontUi
+            font.family: root.fontUi
             font.pixelSize: Tokens.smallSize
         }
 

@@ -379,6 +379,20 @@ Column {
 
         SettingRow {
             visible: page.parentStack === null
+            title: "Font"
+            key: "widgets.item.font"
+            subtitle: "A font family for this widget's text; empty follows the style"
+
+            TextBox {
+                width: 260
+                placeholder: page.cfg.style.font !== "" ? page.cfg.style.font : "Style font"
+                text: page.picked === null || page.picked.style === undefined || typeof page.picked.style.font !== "string" ? "" : page.picked.style.font
+                onAccepted: page.patch(page.selected, { style: Object.assign({}, page.picked.style, { font: text.trim() }) })
+            }
+        }
+
+        SettingRow {
+            visible: page.parentStack === null
             title: "Layer"
             key: "widgets.layer"
             subtitle: "On the desktop under windows, above them, or over everything"
@@ -494,6 +508,19 @@ Column {
                 value: page.cfg.style.padding / 2
                 label: "×" + page.cfg.style.padding.toFixed(2)
                 onMoved: v => Settings.set("widgets.style.padding", Math.round(v * 2 * 20) / 20)
+            }
+        }
+
+        SettingRow {
+            title: "Font"
+            key: "widgets.style.font"
+            subtitle: "A font family for every widget's text; clock and text widgets keep their own; empty follows the style"
+
+            TextBox {
+                width: 260
+                placeholder: "Style font"
+                text: page.cfg.style.font
+                onAccepted: Settings.set("widgets.style.font", text.trim())
             }
         }
 

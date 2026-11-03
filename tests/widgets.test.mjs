@@ -423,3 +423,10 @@ test("dropAt centres a new widget on the point it was dropped at", () => {
     assert.equal(edge.anchor, "top-left")
     assert.ok(edge.cx > 5 && edge.cy > 5)
 })
+
+test("style font is a trimmed family name, empty by default, and long or odd values fall back", () => {
+    assert.equal(baseStyle.font, "")
+    assert.equal(styleOf({ font: "  Inter  " }, false).font, "Inter")
+    assert.equal(styleOf({ font: 3 }, false).font, "")
+    assert.deepEqual(styleOf({ font: "x".repeat(81) }, true), {})
+})

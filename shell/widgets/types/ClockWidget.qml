@@ -8,6 +8,7 @@ Item {
     id: root
 
     property var frame: null
+    readonly property string fontUi: root.frame !== null ? root.frame.fontUi : Tokens.fontUi
     readonly property var o: root.frame !== null && root.frame.item !== null ? root.frame.item.options : ({})
     readonly property var zones: (root.o.zones || []).map(z => Wd.zoneTime(face.now, z, root.o.hours24 !== false)).filter(z => z !== null)
 
@@ -20,7 +21,7 @@ Item {
         seconds: root.o.seconds === true
         dateFormat: root.o.date !== undefined ? root.o.date : ""
         align: root.o.align || "center"
-        family: root.o.font || ""
+        family: root.o.font || (root.frame !== null && typeof root.frame.style.font === "string" ? root.frame.style.font : "")
         accent: root.frame !== null ? root.frame.accent : Theme.accent
         paused: root.frame !== null && root.frame.paused
     }
@@ -50,7 +51,7 @@ Item {
                     textFormat: Text.PlainText
                     text: modelData.label
                     color: Theme.textDim
-                    font.family: Tokens.fontUi
+                    font.family: root.fontUi
                     font.pixelSize: Tokens.tinySize
                 }
             }

@@ -9,6 +9,8 @@ Item {
     id: root
 
     property var frame: null
+    readonly property string fontUi: root.frame !== null ? root.frame.fontUi : Tokens.fontUi
+    readonly property string fontDisplay: root.frame !== null ? root.frame.fontDisplay : Tokens.fontDisplay
     readonly property var o: root.frame !== null && root.frame.item !== null ? root.frame.item.options : ({})
     readonly property color accent: root.frame !== null ? root.frame.accent : Theme.accent
     property var st: null
@@ -54,7 +56,7 @@ Item {
             elide: Text.ElideRight
             text: root.running ? (root.st.phase === "upload" ? "Upload" : root.st.phase === "download" ? "Download" : "Starting…") : root.last === null ? "No tests yet" : "Last test"
             color: Theme.textDim
-            font.family: Tokens.fontUi
+            font.family: root.fontUi
             font.pixelSize: Tokens.tinySize
         }
 
@@ -65,7 +67,7 @@ Item {
             visible: root.running || root.last !== null
             text: root.running ? F.speed(root.st.phase === "upload" ? root.st.upload : root.st.download) : root.last === null ? "" : F.speed(root.last.download)
             color: Theme.text
-            font.family: Tokens.fontDisplay
+            font.family: root.fontDisplay
             font.pixelSize: Math.min(30, root.height * 0.3)
             font.weight: Font.DemiBold
         }
@@ -77,7 +79,7 @@ Item {
             visible: !root.running && root.extra !== ""
             text: root.extra
             color: Theme.textDim
-            font.family: Tokens.fontUi
+            font.family: root.fontUi
             font.pixelSize: Tokens.tinySize
         }
     }

@@ -328,6 +328,7 @@ Explained in [island](../parts/island.md).
 | `widgets.style.zoom` | `1` |  |
 | `widgets.style.padding` | `1` |  |
 | `widgets.style.idle` | `1` |  |
+| `widgets.style.font` | `""` |  |
 | `widgets.items` | `[]` |  |
 
 ## archive

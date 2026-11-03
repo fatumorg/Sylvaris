@@ -8,6 +8,7 @@ Item {
     id: root
 
     property var frame: null
+    readonly property string fontUi: root.frame !== null ? root.frame.fontUi : Tokens.fontUi
     readonly property var item: root.frame !== null ? root.frame.item : null
     readonly property string socket: (Stack.env("XDG_RUNTIME_DIR") || "/tmp") + "/sylvaris/kitty-" + (root.item !== null ? root.item.id : "x") + ".sock"
     readonly property var rect: root.frame !== null ? root.frame.rect : null
@@ -102,7 +103,7 @@ Item {
         horizontalAlignment: Text.AlignHCenter
         text: root.error
         color: Theme.textDim
-        font.family: Tokens.fontUi
+        font.family: root.fontUi
         font.pixelSize: Tokens.smallSize
     }
 }

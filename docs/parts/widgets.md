@@ -54,7 +54,7 @@ Everything lives under `widgets` in `settings.json`:
 | `widgets.enabled` | `true` | show widgets at all |
 | `widgets.cell` | `80` | grid cell in pixels |
 | `widgets.gap` | `12` | space between cells |
-| `widgets.style` | `{"material": "inherit", ...}` | material (`inherit`, `glass`, `frosted`, `solid`, `clear`), opacity, roundness, shadow, accent, zoom (0.6 to 1.6, scales what is inside), padding (0 to 2) and idle opacity (0.15 to 1, the widget fades until you point at it; click-through and terminal widgets stay faded) for every widget; an item's own `style` overrides any of them |
+| `widgets.style` | `{"material": "inherit", ...}` | material (`inherit`, `glass`, `frosted`, `solid`, `clear`), opacity, roundness, shadow, accent, zoom (0.6 to 1.6, scales what is inside), padding (0 to 2) and idle opacity (0.15 to 1, the widget fades until you point at it; click-through and terminal widgets stay faded) and font (a family name; empty follows the style, clock and text widgets keep their own) for every widget; an item's own `style` overrides any of them |
 | `widgets.items` | `[]` | the widgets |
 
 Each item has an `id`, a `type`, the `screen` it is on (empty means the first screen), the part of the screen it hangs from (`anchor`: `top-left`, `top-center`, `top-right`, `center-left`, `center`, `center-right`, `bottom-left`, `bottom-center` or `bottom-right`), `col` and `row` counted in cells from there (a centre anchor counts from the middle, so 0 is exactly centred), its size `w` × `h` in cells, a `layer` (`desktop` under windows, `above` them, or `overlay`), `clickThrough`, `hideFullscreen`, `workspaces` (only show on these), its own `style` and the type's `options`:

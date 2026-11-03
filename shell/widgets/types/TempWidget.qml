@@ -10,6 +10,8 @@ Item {
     id: root
 
     property var frame: null
+    readonly property string fontUi: root.frame !== null ? root.frame.fontUi : Tokens.fontUi
+    readonly property string fontDisplay: root.frame !== null ? root.frame.fontDisplay : Tokens.fontDisplay
     readonly property var o: root.frame !== null && root.frame.item !== null ? root.frame.item.options : ({})
     readonly property var list: {
         const mine = (root.o.sensors || []).map(id => Temps.sensors.find(s => T.sensorId(s) === id)).filter(s => s !== undefined);
@@ -32,7 +34,7 @@ Item {
         wrapMode: Text.Wrap
         text: Temps.error !== "" ? Temps.error : "Waiting for TempInfoCLI"
         color: Theme.textDim
-        font.family: Tokens.fontUi
+        font.family: root.fontUi
         font.pixelSize: Tokens.smallSize
     }
 
@@ -97,7 +99,7 @@ Item {
                         anchors.centerIn: parent
                         text: Math.round(ring.sensor.value) + (ring.sensor.unit === "°C" ? "°" : "")
                         color: Theme.text
-                        font.family: Tokens.fontDisplay
+                        font.family: root.fontDisplay
                         font.pixelSize: root.size * 0.28
                         font.weight: Font.DemiBold
                     }
@@ -111,7 +113,7 @@ Item {
                     elide: Text.ElideRight
                     text: T.short(ring.sensor).replace(/ \S+$/, "")
                     color: Theme.textDim
-                    font.family: Tokens.fontUi
+                    font.family: root.fontUi
                     font.pixelSize: Tokens.tinySize
                 }
             }
