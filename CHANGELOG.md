@@ -4,16 +4,13 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-11-03
+
 ### Added
 
 - More widget options: weather can hide its icon, calendar the days of other months, batteries their level and name, Diver its heading, media the artist and a stack its page dots; notes and countdowns can align left, centre or right, a countdown can drop its caption, and a sticker can fill its box
 - Widgets take a font family, for all of them at once or one at a time; clock and text widgets keep their own font option
 - SylTop tags processes: right-click or Ctrl+click several, then end, kill, pause, reprioritise or idle them all at once; sylvaris top tag PID… does the same from a script
-
-## [1.6.0] - 2026-11-03
-
-### Added
-
 - When Sylvaris starts outside a terminal, its log goes to ~/.local/state/sylvaris/shell.log, with the previous run kept as shell.log.old
 - bar.size (SylSettings › Bar › Size) makes the bar thinner or thicker, from 36 to 64 pixels, with its icons and text
 - 12-hour time: clock.format 12h (SylSettings › Clock › Time) switches the bar, SylClock, the island, Control Center, Diver, the lock screen and sky widgets; clock widgets keep their own 24-hour option
