@@ -70,6 +70,29 @@ class TopTest(unittest.TestCase):
         self.assertEqual(top.gpus(self.root), [{"name": "card0", "busy": 3, "memUsed": 100, "memTotal": 1000}, {"name": "card1", "busy": 40, "memUsed": 900, "memTotal": 1000}])
         self.assertEqual(self.sample()["gpus"][1]["busy"], 40)
 
+    def test_nvidia_smi_runs_at_most_every_six_seconds(self):
+        calls = []
+
+        class Done:
+            stdout = "RTX, 40, 100, 200\n"
+
+        saved = (top.shutil.which, top.subprocess.run, dict(top.NVIDIA))
+        top.shutil.which = lambda name: "/bin/" + name
+        top.subprocess.run = lambda *a, **k: calls.append(a) or Done()
+        try:
+            top.NVIDIA["at"] = -6.0
+            first = [g for g in top.gpus("") if g["name"] == "RTX"]
+            second = [g for g in top.gpus("") if g["name"] == "RTX"]
+            self.assertEqual(len(calls), 1)
+            self.assertEqual(first, second)
+            self.assertEqual(first[0]["busy"], 40)
+            top.NVIDIA["at"] -= 6
+            top.gpus("")
+            self.assertEqual(len(calls), 2)
+        finally:
+            top.shutil.which, top.subprocess.run = saved[0], saved[1]
+            top.NVIDIA.update(saved[2])
+
     def test_long_command_lines_are_cut(self):
         fake(self.root, 100, 50, 1000, 10000)
         proc(self.root, 50, "long", 1, 0, 0, 1, ["x" * 1000])

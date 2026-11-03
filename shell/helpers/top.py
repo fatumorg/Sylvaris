@@ -90,6 +90,9 @@ def number(path):
     return int(text) if text.isdigit() else 0
 
 
+NVIDIA = {"at": -6.0, "rows": []}
+
+
 def gpus(root):
     out = []
     for card in sorted(glob.glob(root + "/sys/class/drm/card*/device/gpu_busy_percent")):
@@ -97,13 +100,17 @@ def gpus(root):
         if read(card).strip().isdigit():
             out.append({"name": os.path.basename(os.path.dirname(dev)), "busy": number(card), "memUsed": number(dev + "/mem_info_vram_used"), "memTotal": number(dev + "/mem_info_vram_total")})
     if root == "" and shutil.which("nvidia-smi"):
-        try:
-            lines = subprocess.run(["nvidia-smi", "--query-gpu=name,utilization.gpu,memory.used,memory.total", "--format=csv,noheader,nounits"], capture_output=True, text=True, timeout=2).stdout.splitlines()
-            for line in lines:
-                name, busy, used, total = (x.strip() for x in line.split(","))
-                out.append({"name": name, "busy": int(busy), "memUsed": int(used) * 1048576, "memTotal": int(total) * 1048576})
-        except (OSError, ValueError, subprocess.SubprocessError):
-            pass
+        if time.monotonic() - NVIDIA["at"] >= 6:
+            NVIDIA["at"] = time.monotonic()
+            NVIDIA["rows"] = []
+            try:
+                lines = subprocess.run(["nvidia-smi", "--query-gpu=name,utilization.gpu,memory.used,memory.total", "--format=csv,noheader,nounits"], capture_output=True, text=True, timeout=2).stdout.splitlines()
+                for line in lines:
+                    name, busy, used, total = (x.strip() for x in line.split(","))
+                    NVIDIA["rows"].append({"name": name, "busy": int(busy), "memUsed": int(used) * 1048576, "memTotal": int(total) * 1048576})
+            except (OSError, ValueError, subprocess.SubprocessError):
+                pass
+        out += NVIDIA["rows"]
     return out
 
 
