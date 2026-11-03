@@ -24,6 +24,7 @@ Sylvaris is made of parts. Each one can be turned off, and a part that is off is
 - [SylPower](power.md), the power menu
 - [SylPaper](paper.md), wallpapers
 - [SylWidget](widgets.md), widgets on the desktop
+- [SylTop](top.md), a task manager with live graphs, startup apps and services
 
 ## System
 

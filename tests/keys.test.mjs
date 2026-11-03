@@ -29,6 +29,8 @@ test("bindArgs and unbindArgs speak Hyprland Lua, classic Hyprland and sway", ()
 
 test("keyName turns key events into key names", () => {
     assert.equal(keyName(0x56, "v"), "V")
+    assert.equal(keyName(0x01000000, ""), "Escape")
+    assert.equal(validateKeybinds({ "top toggle": "ctrl+shift+Escape" })["top toggle"], "CTRL+SHIFT+Escape")
     assert.equal(keyName(0x20, " "), "space")
     assert.equal(keyName(0x01000004, "\r"), "Return")
     assert.equal(keyName(0x01000001, "\t"), "Tab")

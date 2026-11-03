@@ -285,6 +285,10 @@
     "size": 14,
     "recent": []
   },
+  "top": {
+    "interval": 2,
+    "tree": false
+  },
   "rgb": {
     "on": true,
     "color": "",

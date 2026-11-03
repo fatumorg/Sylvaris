@@ -55,6 +55,7 @@ SwitcherPage 1.0 SwitcherPage.qml
 SylSettings 1.0 SylSettings.qml
 SyncPage 1.0 SyncPage.qml
 ThemeEditor 1.0 ThemeEditor.qml
+TopPage 1.0 TopPage.qml
 UndoToast 1.0 UndoToast.qml
 ViewerPage 1.0 ViewerPage.qml
 WallpaperPage 1.0 WallpaperPage.qml

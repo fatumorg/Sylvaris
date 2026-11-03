@@ -25,6 +25,7 @@ import qs.viewer
 import qs.files
 import qs.archive
 import qs.notes
+import qs.top
 import qs.island
 import qs.capture
 import qs.access
@@ -68,6 +69,7 @@ ShellRoot {
             widgets: widgetsLoader,
             archive: archiveLoader,
             notes: notesLoader,
+            top: topLoader,
             access: accessLoader,
             plugins: pluginsLoader,
             sync: syncLoader
@@ -288,6 +290,7 @@ ShellRoot {
             files: root.part("files") !== null ? root.part("files").state() : undefined,
             archive: root.part("archive") !== null ? root.part("archive").state() : undefined,
             notes: root.part("notes") !== null ? root.part("notes").state() : undefined,
+            top: root.part("top") !== null ? root.part("top").state() : undefined,
             access: root.part("access") !== null ? root.part("access").state() : undefined,
             fatest: root.part("fatest") !== null ? root.part("fatest").state() : undefined,
             rgb: root.part("rgb") !== null ? root.part("rgb").state() : undefined,
@@ -592,6 +595,16 @@ ShellRoot {
         SylNotes {
             id: notesPart
             onOpened: root.solo(notesPart)
+        }
+    }
+
+    LazyLoader {
+        id: topLoader
+        active: root.on("top")
+
+        SylTop {
+            id: topPart
+            onOpened: root.solo(topPart)
         }
     }
 
@@ -1140,6 +1153,14 @@ ShellRoot {
                 save: () => root.need("notes").save(),
                 close: () => root.need("notes").close(),
                 state: () => root.need("notes").state()
+            },
+            top: {
+                default: "toggle",
+                toggle: () => root.need("top").toggle(),
+                open: page => root.need("top").open(page || ""),
+                close: () => root.need("top").close(),
+                find: (...q) => root.need("top").find(q.join(" ")),
+                state: () => root.need("top").state()
             },
             archive: {
                 default: "state",

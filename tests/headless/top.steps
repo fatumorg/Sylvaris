@@ -1,0 +1,36 @@
+sleep 1.5
+check sylvaris top state | grep -q '"open":false'
+check ! pgrep -f 'helpers/top[.]py'
+syl top open
+sleep 3
+check sylvaris top state | grep -q '"running":true'
+check sylvaris top state | grep -q '"procs":[1-9]'
+shot top-processes
+syl top find sway
+sleep 1
+check sylvaris top state | grep -q '"query":"sway"'
+shot top-find
+syl set top.tree true
+syl top find
+sleep 2.5
+check sylvaris top state | grep -q '"tree":true'
+shot top-tree
+syl top open performance
+sleep 6
+shot top-performance
+syl top open startup
+sleep 2
+shot top-startup
+syl top open services
+sleep 3
+shot top-services
+syl top open users
+sleep 2
+shot top-users
+syl top close
+sleep 1.5
+check sylvaris top state | grep -q '"running":false'
+check ! pgrep -f 'helpers/top[.]py'
+syl set parts.top false
+sleep 1.5
+check sylvaris top 2>&1 | grep -q "parts.top true"

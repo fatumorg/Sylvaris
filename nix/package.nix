@@ -18,6 +18,7 @@
   libarchive,
   coreutils,
   procps,
+  util-linux,
   pipewire,
   python3,
   curl,
@@ -108,6 +109,10 @@ let
     ];
     widgets = [ cava ];
     notes = [ ];
+    top = [
+      python
+      util-linux
+    ];
     access = [ ];
     fatest = [ ];
     rgb = [ python ];

@@ -41,6 +41,7 @@ To show the version in fastfetch, add `{ "type": "command", "key": "DE", "text":
 | `capture` | `toggle` `open` `close` `shot <area\|window\|screen>` `record <area\|screen>` `stop` `edit [file]` `state` |
 | `center` | `toggle` `open` `close` `view <name>` |
 | `clip` | `toggle` `open` `close` `clear` `list` `copy <n>` `state` |
+| `top` | `toggle` `open [processes\|performance\|startup\|services\|users]` `close` `find <text>` `state` |
 | `clock` | `toggle` `open` `close` `day <yyyy-mm-dd\|today>` |
 | `diver` | see [Diver](plugins/diver.md#commands) |
 | `dnd` | `toggle` `on` `off` |

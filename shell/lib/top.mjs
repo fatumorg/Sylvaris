@@ -1,3 +1,21 @@
+export const DEFAULT_TOP = { interval: 2, tree: false }
+
+export const PAGES = [
+    { id: "processes", label: "Processes", glyph: "listBulleted" },
+    { id: "performance", label: "Performance", glyph: "chart" },
+    { id: "startup", label: "Startup", glyph: "bolt" },
+    { id: "services", label: "Services", glyph: "settings" },
+    { id: "users", label: "Users", glyph: "desktop" }
+]
+
+export function validateTop(raw) {
+    const v = raw !== null && typeof raw === "object" && !Array.isArray(raw) ? raw : {}
+    return {
+        interval: typeof v.interval === "number" && v.interval >= 1 && v.interval <= 5 ? Math.round(v.interval * 2) / 2 : DEFAULT_TOP.interval,
+        tree: typeof v.tree === "boolean" ? v.tree : DEFAULT_TOP.tree
+    }
+}
+
 export const COLUMNS = [
     { key: "name", label: "Name", text: true },
     { key: "pid", label: "PID" },

@@ -23,6 +23,7 @@ export const PART_PACKAGES = {
     files: ["wl-clipboard", "glib", "python", "udisks"],
     archive: ["libarchive", "python"],
     notes: [],
+    top: ["python", "util-linux"],
     widgets: ["cava"],
     access: [],
     plugins: ["git"],
@@ -58,7 +59,8 @@ export const PACKAGE_BINS = {
     "wf-recorder": ["wf-recorder"],
     ffmpeg: ["ffmpeg"],
     udisks: ["udisksctl"],
-    libarchive: ["bsdtar", "bsdcat"]
+    libarchive: ["bsdtar", "bsdcat"],
+    "util-linux": ["ionice"]
 }
 
 export const CORE_BINS = ["sylstack"]

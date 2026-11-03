@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { COLUMNS, sortProcs, filterProcs, tree, push } from "../shell/lib/top.mjs"
+import { COLUMNS, sortProcs, filterProcs, tree, push, DEFAULT_TOP, validateTop, PAGES } from "../shell/lib/top.mjs"
 
 const procs = [
     { pid: 1, ppid: 0, name: "init", cmd: "/sbin/init", user: "root", cpu: 0, mem: 10, threads: 1, nice: 0, state: "S" },
@@ -45,4 +45,16 @@ test("tree survives a parent loop", () => {
 test("push keeps the newest values up to the limit", () => {
     assert.deepEqual(push([1, 2, 3], 4, 3), [2, 3, 4])
     assert.deepEqual(push(undefined, 1, 3), [1])
+})
+
+test("validateTop keeps a sane interval and the tree switch", () => {
+    assert.deepEqual(validateTop(null), DEFAULT_TOP)
+    assert.deepEqual(validateTop({ interval: 1.3, tree: true }), { interval: 1.5, tree: true })
+    assert.equal(validateTop({ interval: 0.2 }).interval, 2)
+    assert.equal(validateTop({ interval: "3" }).interval, 2)
+    assert.equal(validateTop({ tree: "yes" }).tree, false)
+})
+
+test("every page has a label and a glyph", () => {
+    assert.deepEqual(PAGES.map(p => p.id), ["processes", "performance", "startup", "services", "users"])
 })

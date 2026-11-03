@@ -27,7 +27,8 @@ export const ACTIONS = [
     { id: "access zoom out", label: "Zoom out" },
     { id: "dnd toggle", label: "Do not disturb" },
     { id: "nightlight toggle", label: "Night light" },
-    { id: "privacy toggle", label: "Mute microphones and cameras" }
+    { id: "privacy toggle", label: "Mute microphones and cameras" },
+    { id: "top toggle", label: "Task manager", part: "top" }
 ]
 
 const MODS = ["SUPER", "CTRL", "ALT", "SHIFT"]
@@ -85,7 +86,7 @@ export function unbindArgs(compositor, usingLua, combo) {
 }
 
 const SPECIAL = {
-    0x20: "space", 0x01000004: "Return", 0x01000005: "Return", 0x01000001: "Tab", 0x01000003: "BackSpace",
+    0x01000000: "Escape", 0x20: "space", 0x01000004: "Return", 0x01000005: "Return", 0x01000001: "Tab", 0x01000003: "BackSpace",
     0x01000007: "Delete", 0x01000006: "Insert", 0x01000010: "Home", 0x01000011: "End", 0x01000016: "Prior", 0x01000017: "Next",
     0x01000009: "Print", 0x01000012: "Left", 0x01000013: "Up", 0x01000014: "Right", 0x01000015: "Down"
 }

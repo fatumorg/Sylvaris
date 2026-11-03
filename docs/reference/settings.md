@@ -351,6 +351,13 @@ Explained in [island](../parts/island.md).
 | `notes.size` | `14` |  |
 | `notes.recent` | `[]` |  |
 
+## top
+
+| Key | Default | Per screen |
+|---|---|:---:|
+| `top.interval` | `2` |  |
+| `top.tree` | `false` |  |
+
 ## rgb
 
 Explained in [plugins/rgb](../plugins/rgb.md).
@@ -556,6 +563,7 @@ Explained in [configuration](../configuration.md#turning-parts-off).
 | `parts.widgets` | `true` |  |
 | `parts.archive` | `true` |  |
 | `parts.notes` | `true` |  |
+| `parts.top` | `true` |  |
 | `parts.access` | `true` |  |
 | `parts.plugins` | `true` |  |
 | `parts.sync` | `true` |  |

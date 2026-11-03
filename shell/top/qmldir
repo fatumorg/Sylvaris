@@ -1,0 +1,9 @@
+module qs.top
+SylTop 1.0 SylTop.qml
+TopGraph 1.0 TopGraph.qml
+TopPerformance 1.0 TopPerformance.qml
+TopProcesses 1.0 TopProcesses.qml
+TopServices 1.0 TopServices.qml
+TopStartup 1.0 TopStartup.qml
+TopUsers 1.0 TopUsers.qml
+TopWindow 1.0 TopWindow.qml

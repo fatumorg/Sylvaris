@@ -131,6 +131,41 @@ class TopTest(unittest.TestCase):
         self.assertEqual(top.answer(self.root, '{"cmd":"signal","pid":42,"sig":"boom"}')["event"], "error")
         self.assertEqual(top.answer(self.root, '{"cmd":"interval","seconds":2}'), {"event": "done", "cmd": "interval", "interval": 2.0})
 
+    def test_autostart_merges_user_over_system_and_reads_hidden(self):
+        user, system = os.path.join(self.root, "home", "autostart"), os.path.join(self.root, "xdg", "autostart")
+        write(self.root, "xdg/autostart/agent.desktop", "[Desktop Entry]\nType=Application\nName=Agent\nExec=agent\n")
+        write(self.root, "xdg/autostart/gnome.desktop", "[Desktop Entry]\nName=Gnome\nX-GNOME-Autostart-enabled=false\n")
+        write(self.root, "home/autostart/chat.desktop", "[Desktop Entry]\nName=Chat\nExec=chat --tray\nHidden=true\n[Desktop Action x]\nName=Other\n")
+        write(self.root, "home/autostart/notes.txt", "x")
+        write(self.root, "xdg/autostart/kde.desktop", "[Desktop Entry]\nName=Kde\nOnlyShowIn=KDE;\n")
+        write(self.root, "xdg/autostart/nohypr.desktop", "[Desktop Entry]\nName=No\nNotShowIn=Hyprland;\n")
+        write(self.root, "xdg/autostart/chat.desktop", "[Desktop Entry]\nName=System chat\n")
+        apps = top.autostart(user, [system], ["Hyprland"])
+        self.assertEqual([(a["file"], a["name"], a["on"], a["mine"]) for a in apps], [("agent.desktop", "Agent", True, False), ("chat.desktop", "Chat", False, True), ("gnome.desktop", "Gnome", False, False)])
+
+    def test_set_autostart_writes_a_user_copy_and_flips_hidden(self):
+        user, system = os.path.join(self.root, "home", "autostart"), os.path.join(self.root, "xdg", "autostart")
+        write(self.root, "xdg/autostart/agent.desktop", "[Desktop Entry]\nName=Agent\nExec=agent\nX-GNOME-Autostart-enabled=true\n[Desktop Action a]\nName=A\n")
+        top.set_autostart(user, [system], "agent.desktop", False)
+        self.assertEqual(top.entry(os.path.join(user, "agent.desktop"))["Hidden"], "true")
+        self.assertNotIn("X-GNOME-Autostart-enabled", top.entry(os.path.join(user, "agent.desktop")))
+        self.assertIn("[Desktop Action a]", top.read(os.path.join(user, "agent.desktop")))
+        self.assertEqual(top.autostart(user, [system])[0]["on"], False)
+        top.set_autostart(user, [system], "agent.desktop", True)
+        self.assertEqual(top.autostart(user, [system])[0]["on"], True)
+        self.assertNotIn("Hidden=true", top.read(os.path.join(system, "agent.desktop")))
+        with self.assertRaises(ValueError):
+            top.set_autostart(user, [system], "../evil.desktop", True)
+        with self.assertRaises(ValueError):
+            top.set_autostart(user, [system], "missing.desktop", True)
+
+    def test_unit_actions_are_checked_and_system_ones_go_through_pkexec(self):
+        self.assertEqual(top.unit_args({"scope": "user", "verb": "enable", "name": "syncthing.service"}), ["systemctl", "--user", "enable", "--", "syncthing.service"])
+        self.assertEqual(top.unit_args({"scope": "system", "verb": "restart", "name": "bluetooth.service"}), ["pkexec", "systemctl", "restart", "--", "bluetooth.service"])
+        for bad in ({"scope": "system", "verb": "enable", "name": "a.service"}, {"scope": "user", "verb": "mask", "name": "a.service"}, {"scope": "user", "verb": "stop", "name": "-x.service"}, {"scope": "user", "verb": "stop", "name": "a;b.service"}, {"scope": "root", "verb": "stop", "name": "a.service"}):
+            with self.assertRaises(ValueError):
+                top.unit_args(bad)
+
 
 if __name__ == "__main__":
     unittest.main()

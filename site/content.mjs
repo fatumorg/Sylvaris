@@ -13,7 +13,7 @@ export const NAV = [
     {
         title: "Parts",
         items: [["parts/README.md", "All parts"], ["parts/bar.md", "SylBar"], ["parts/center.md", "SylCenter"], ["parts/clock.md", "SylClock"], ["parts/notify.md", "SylNotify"],
-            ["parts/island.md", "SylIsland"], ["parts/deck.md", "SylDeck"], ["parts/pad.md", "SylPad"], ["parts/switcher.md", "SylSwitch"], ["parts/clip.md", "SylClip"], ["parts/viewer.md", "SylViewer"], ["parts/files.md", "SylFiles"], ["parts/archive.md", "SylArchive"], ["parts/notes.md", "SylNotes"],
+            ["parts/island.md", "SylIsland"], ["parts/deck.md", "SylDeck"], ["parts/pad.md", "SylPad"], ["parts/switcher.md", "SylSwitch"], ["parts/clip.md", "SylClip"], ["parts/viewer.md", "SylViewer"], ["parts/files.md", "SylFiles"], ["parts/archive.md", "SylArchive"], ["parts/notes.md", "SylNotes"], ["parts/top.md", "SylTop"],
             ["parts/capture.md", "SylCapture"], ["parts/media.md", "SylMedia"], ["parts/power.md", "SylPower"], ["parts/paper.md", "SylPaper"], ["parts/widgets.md", "SylWidget"], ["parts/settings.md", "SylSettings"],
             ["parts/theme.md", "SylTheme"], ["parts/sync.md", "SylSync"], ["parts/access.md", "SylAccessibility"], ["parts/lock.md", "SylLock"], ["parts/greet.md", "SylGreet"],
             ["parts/polkit.md", "SylPolkit"]]
@@ -46,6 +46,7 @@ export const PARTS = [
     { id: "media", name: "SylMedia", group: "tools", page: "parts/media.md", text: "The player for any MPRIS app, a 10-band equalizer for everything you hear, and the battery of every device." },
     { id: "power", name: "SylPower", group: "tools", page: "parts/power.md", text: "Lock, suspend, restart or shut down from a small constellation, with a countdown before anything ends your session." },
     { id: "paper", name: "SylPaper", group: "tools", page: "parts/paper.md", text: "Wallpapers that change with your theme, per screen if you like, with blur, dim and tint." },
+    { id: "top", name: "SylTop", group: "tools", page: "parts/top.md", text: "A task manager: processes as a list or a tree with end, kill, pause, priority and processor pinning, live graphs for the processor, memory, disks, network and graphics, plus startup apps, services and sessions." },
     { id: "widgets", name: "SylWidget", group: "tools", page: "parts/widgets.md", text: "Clocks, weather, photos, sticky notes, now playing, system graphs, stickers, a live terminal and more right on the desktop, dragged and resized in place." },
     { id: "settings", name: "SylSettings", group: "system", page: "parts/settings.md", text: "Every setting in one place: seven hubs around a core, search that finds any option as you type, undo, and a picker for one screen at a time." },
     { id: "theme", name: "SylTheme", group: "system", page: "parts/theme.md", text: "Themes on a turning ring. The whole desktop previews a theme before you keep it." },

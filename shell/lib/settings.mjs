@@ -7,6 +7,7 @@ import { DEFAULT_WIDGETS, validateWidgets, servicesFor } from "./widgets.mjs"
 import { DEFAULT_CORNERS, validateCorners } from "./corners.mjs"
 import { DEFAULT_ARCHIVE, validateArchive } from "./archive.mjs"
 import { DEFAULT_NOTES, validateNotes } from "./notes.mjs"
+import { DEFAULT_TOP, validateTop } from "./top.mjs"
 import { DEFAULT_CAPTURE, validateCapture } from "./capture.mjs"
 import { DEFAULT_ACCESS, validateAccess } from "./access.mjs"
 import { EXTRAS, LAYOUTS } from "./center.mjs"
@@ -54,6 +55,7 @@ export const PARTS = {
     widgets: [],
     archive: [],
     notes: [],
+    top: [],
     access: ["NightLight"],
     plugins: ["Plugins"],
     sync: ["Sync"],
@@ -131,6 +133,7 @@ export const DEFAULT_SETTINGS = {
     widgets: DEFAULT_WIDGETS,
     archive: DEFAULT_ARCHIVE,
     notes: DEFAULT_NOTES,
+    top: DEFAULT_TOP,
     rgb: DEFAULT_RGB,
     temp: DEFAULT_TEMP,
     placement: DEFAULT_PLACEMENT,
@@ -397,6 +400,7 @@ export function validateSettings(raw, userLooks) {
     v.files = validateFiles(v.files)
     v.archive = validateArchive(v.archive)
     v.notes = validateNotes(v.notes)
+    v.top = validateTop(v.top)
     v.rgb = validateRgb(v.rgb)
     v.temp = validateTemp(v.temp)
     const place = isObject(v.placement) ? v.placement : {}

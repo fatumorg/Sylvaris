@@ -977,6 +977,7 @@ Scope {
                                     widgets: widgetsPage,
                                     archive: archivePage,
                                     notes: notesPage,
+                                    top: topPage,
                                     island: islandPage,
                                     capture: capturePage,
                                     access: accessPage,
@@ -1104,6 +1105,12 @@ Scope {
         id: notesPage
 
         NotesPage {}
+    }
+
+    Component {
+        id: topPage
+
+        TopPage {}
     }
 
     Component {

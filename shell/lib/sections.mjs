@@ -37,6 +37,7 @@ export const SECTIONS = [
     { key: "capture", label: "Capture", glyph: GLYPHS.camera, group: "apps" },
     { key: "clip", label: "Clipboard", glyph: GLYPHS.clipboard, group: "apps" },
     { key: "notes", label: "Notes", glyph: GLYPHS.pencil, group: "apps" },
+    { key: "top", label: "Task manager", glyph: GLYPHS.chart, group: "apps" },
     { key: "diver", label: "Diver", glyph: GLYPHS.planner, group: "apps", plugin: "diver" },
     { key: "fatest", label: "FaTest", glyph: GLYPHS.speed, group: "apps", plugin: "fatest" },
     { key: "temp", label: "SylTemp", glyph: GLYPHS.thermometer, group: "apps", plugin: "temp" },
@@ -61,7 +62,7 @@ export const HUBS = [
     { key: "look", label: "Look", icon: GLYPHS.palette, tabs: ["look", "appearance", "motion", "sync"] },
     { key: "desktop", label: "Desktop", icon: GLYPHS.image, tabs: ["wallpaper", "widgets", "clock", "weather"] },
     { key: "panels", label: "Panels", icon: GLYPHS.grid, tabs: ["bar", "deck", "center", "island", "notifications", "launcher", "switcher"] },
-    { key: "apps", label: "Apps", icon: GLYPHS.apps, tabs: ["files", "archive", "viewer", "capture", "clip", "notes"] },
+    { key: "apps", label: "Apps", icon: GLYPHS.apps, tabs: ["files", "archive", "viewer", "capture", "clip", "notes", "top"] },
     { key: "system", label: "System", icon: GLYPHS.settings, tabs: ["general", "displays", "sound", "power", "access", "keybinds", "commands"] },
     { key: "security", label: "Security", icon: GLYPHS.shield, tabs: ["lock", "polkit"] },
     { key: "plugins", label: "Plugins", icon: GLYPHS.puzzle, tabs: ["plugins", "diver", "fatest", "rgb", "temp"] }

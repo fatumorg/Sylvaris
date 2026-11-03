@@ -10,6 +10,7 @@ Card {
 
     property string capturing: ""
     readonly property var binds: Settings.shown.keybinds
+    readonly property var actions: K.ACTIONS.filter(a => a.part === undefined || Settings.shown.parts[a.part] !== false)
 
     function assign(id: string, combo: string): void {
         const next = Object.assign({}, root.binds);
@@ -24,7 +25,7 @@ Card {
     note: Keybinds.supported ? "Click an action, then press the keys. Sylvaris adds the binding to " + (Compositor.name === "hyprland" ? "Hyprland" : "sway") + " right away. Esc cancels; Backspace or × removes the binding. Bindings already in your compositor config show up here too." + (Keybinds.included ? "" : " To have them land in your config as well, add " + Keybinds.include + " to your config.") : "Your compositor cannot take new bindings at runtime; copy the lines from Advanced › Commands into its config instead."
 
     Repeater {
-        model: K.ACTIONS
+        model: root.actions
 
         delegate: SettingRow {
             id: row
@@ -35,7 +36,7 @@ Card {
             readonly property string combo: row.own || Keybinds.external[row.modelData.id] || ""
             title: row.modelData.label
             subtitle: "sylvaris " + row.modelData.id + (row.own === "" && row.combo !== "" ? " · from your compositor config" : "")
-            last: index === K.ACTIONS.length - 1
+            last: index === root.actions.length - 1
 
             Item {
                 width: 190

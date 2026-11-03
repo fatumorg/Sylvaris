@@ -9,12 +9,17 @@ import shutil
 import signal
 import subprocess
 import sys
+import threading
 import time
 
 HZ = os.sysconf("SC_CLK_TCK")
 PAGE = os.sysconf("SC_PAGE_SIZE")
 SIGNALS = {"term": signal.SIGTERM, "kill": signal.SIGKILL, "stop": signal.SIGSTOP, "cont": signal.SIGCONT}
 IO_CLASSES = {"realtime": "1", "best-effort": "2", "idle": "3"}
+UNIT = re.compile(r"^[A-Za-z0-9][A-Za-z0-9@:._\\-]*\.service$")
+DESKTOP = re.compile(r"^[A-Za-z0-9@:._+\-]+\.desktop$")
+VERBS = {"user": ["start", "stop", "restart", "enable", "disable"], "system": ["start", "stop", "restart"]}
+LOCK = threading.Lock()
 DISK = re.compile(r"^(sd[a-z]+|vd[a-z]+|xvd[a-z]+|hd[a-z]+|nvme\d+n\d+|mmcblk\d+)$")
 USERS = {}
 NAMES = {}
@@ -218,6 +223,121 @@ def files(root, pid):
     return out
 
 
+def entry(path):
+    out = {}
+    group = ""
+    for line in read(path).splitlines():
+        line = line.strip()
+        if line.startswith("["):
+            group = line
+        elif group == "[Desktop Entry]" and "=" in line and not line.startswith("#"):
+            key, _, value = line.partition("=")
+            out.setdefault(key.strip(), value.strip())
+    return out
+
+
+def autostart_dirs(home, config_dirs):
+    return home + "/autostart", [d + "/autostart" for d in config_dirs]
+
+
+def autostart(user_dir, system_dirs, desktops=()):
+    files = {}
+    for d in list(reversed(system_dirs)) + [user_dir]:
+        try:
+            for name in os.listdir(d):
+                if DESKTOP.match(name):
+                    files[name] = d + "/" + name
+        except OSError:
+            pass
+    out = []
+    for name, path in sorted(files.items()):
+        e = entry(path)
+        only = [x for x in e.get("OnlyShowIn", "").split(";") if x]
+        if e.get("Type", "Application") != "Application" or only and not set(only) & set(desktops) or set(x for x in e.get("NotShowIn", "").split(";") if x) & set(desktops):
+            continue
+        on = e.get("Hidden", "false").lower() != "true" and e.get("X-GNOME-Autostart-enabled", "true").lower() != "false"
+        out.append({"file": name, "name": e.get("Name", name[:-8]), "exec": e.get("Exec", ""), "icon": e.get("Icon", ""), "on": on, "mine": path.startswith(user_dir + "/")})
+    return out
+
+
+def set_autostart(user_dir, system_dirs, name, on):
+    if not DESKTOP.match(name or ""):
+        raise ValueError("pick an autostart entry")
+    path = user_dir + "/" + name
+    source = path if os.path.exists(path) else next((d + "/" + name for d in system_dirs if os.path.exists(d + "/" + name)), None)
+    if source is None:
+        raise ValueError("no autostart entry called " + name)
+    lines = read(source).splitlines()
+    out = []
+    group = ""
+    placed = False
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("["):
+            if group == "[Desktop Entry]" and not placed:
+                out.append("Hidden=" + ("false" if on else "true"))
+                placed = True
+            group = stripped
+        if group == "[Desktop Entry]" and re.match(r"^(Hidden|X-GNOME-Autostart-enabled)\s*=", stripped):
+            continue
+        out.append(line)
+    if not placed:
+        out.append("Hidden=" + ("false" if on else "true"))
+    os.makedirs(user_dir, exist_ok=True)
+    with open(path + ".part", "w") as f:
+        f.write("\n".join(out) + "\n")
+    os.replace(path + ".part", path)
+
+
+def systemctl_json(args):
+    try:
+        done = subprocess.run(["systemctl"] + args + ["--output=json", "--no-pager"], capture_output=True, text=True, timeout=10)
+        return json.loads(done.stdout or "[]")
+    except (OSError, ValueError, subprocess.SubprocessError):
+        return []
+
+
+def services():
+    out = {}
+    for scope in ("system", "user"):
+        rows = systemctl_json((["--user"] if scope == "user" else []) + ["list-units", "--type=service", "--all"])
+        out[scope] = [{"unit": r.get("unit", ""), "active": r.get("active", ""), "sub": r.get("sub", ""), "description": r.get("description", "")} for r in rows if r.get("load") == "loaded"]
+    return out
+
+
+def user_units():
+    rows = systemctl_json(["--user", "list-unit-files", "--type=service"])
+    return [{"unit": r.get("unit_file", ""), "on": r.get("state") == "enabled"} for r in rows if r.get("state") in ("enabled", "disabled") and not r.get("unit_file", "").endswith("@.service")]
+
+
+def sessions():
+    out = []
+    try:
+        ids = [line.split()[0] for line in subprocess.run(["loginctl", "list-sessions", "--no-legend", "--no-pager"], capture_output=True, text=True, timeout=5).stdout.splitlines() if line.split()]
+        for sid in ids:
+            info = dict(line.partition("=")[::2] for line in subprocess.run(["loginctl", "show-session", sid, "-p", "Id", "-p", "Name", "-p", "Seat", "-p", "TTY", "-p", "Class", "-p", "Type", "-p", "State", "-p", "Remote", "-p", "Active"], capture_output=True, text=True, timeout=5).stdout.splitlines())
+            out.append({"id": info.get("Id", sid), "user": info.get("Name", ""), "seat": info.get("Seat", ""), "tty": info.get("TTY", ""), "class": info.get("Class", ""), "type": info.get("Type", ""), "state": info.get("State", ""), "remote": info.get("Remote") == "yes", "active": info.get("Active") == "yes"})
+    except (OSError, subprocess.SubprocessError):
+        pass
+    return out
+
+
+def unit_args(msg):
+    scope, verb, name = msg.get("scope"), msg.get("verb"), msg.get("name")
+    if scope not in VERBS or verb not in VERBS[scope] or not isinstance(name, str) or not UNIT.match(name):
+        raise ValueError("unit needs scope user or system, a verb it allows and a .service name")
+    return ["systemctl", "--user", verb, "--", name] if scope == "user" else ["pkexec", "systemctl", verb, "--", name]
+
+
+def run_unit(args, name, verb):
+    try:
+        done = subprocess.run(args, capture_output=True, text=True, timeout=120)
+        reply = {"event": "done", "cmd": "unit", "name": name, "verb": verb} if done.returncode == 0 else {"event": "error", "message": done.stderr.strip() or verb + " " + name + " failed"}
+    except (OSError, subprocess.SubprocessError) as e:
+        reply = {"event": "error", "message": str(e)}
+    emit(reply)
+
+
 def answer(root, line):
     try:
         msg = json.loads(line)
@@ -225,6 +345,21 @@ def answer(root, line):
             raise ValueError("commands are JSON objects")
         if msg.get("cmd") == "files":
             return {"event": "files", "pid": pid_of(msg), "files": files(root, msg["pid"])}
+        if msg.get("cmd") in ("startup", "autostart"):
+            user_dir, system_dirs = autostart_dirs(os.environ.get("XDG_CONFIG_HOME") or os.path.expanduser("~/.config"), (os.environ.get("XDG_CONFIG_DIRS") or "/etc/xdg").split(":"))
+            if msg["cmd"] == "autostart":
+                if not isinstance(msg.get("on"), bool):
+                    raise ValueError("autostart needs on true or false")
+                set_autostart(user_dir, system_dirs, msg.get("file"), msg["on"])
+            return {"event": "startup", "apps": autostart(user_dir, system_dirs, (os.environ.get("XDG_CURRENT_DESKTOP") or "").split(":")), "units": user_units()}
+        if msg.get("cmd") == "services":
+            return dict({"event": "services"}, **services())
+        if msg.get("cmd") == "users":
+            return {"event": "users", "sessions": sessions()}
+        if msg.get("cmd") == "unit":
+            args = unit_args(msg)
+            threading.Thread(target=run_unit, args=(args, msg["name"], msg["verb"]), daemon=True).start()
+            return {"event": "pending", "cmd": "unit", "name": msg["name"], "verb": msg["verb"]}
         if msg.get("cmd") == "detail":
             pid = pid_of(msg)
             return {"event": "detail", "pid": pid, "affinity": sorted(os.sched_getaffinity(pid)), "cores": os.cpu_count()}
@@ -234,8 +369,9 @@ def answer(root, line):
 
 
 def emit(obj):
-    sys.stdout.write(json.dumps(obj, separators=(",", ":")) + "\n")
-    sys.stdout.flush()
+    with LOCK:
+        sys.stdout.write(json.dumps(obj, separators=(",", ":")) + "\n")
+        sys.stdout.flush()
 
 
 def main():

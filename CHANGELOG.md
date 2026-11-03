@@ -6,6 +6,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Added
 
+- SylTop, a task manager that is on by default: processes as a list or a tree with end, kill, pause, priority, disk priority, processor pinning and open files; history graphs for the processor, each thread, memory and swap, disks, network, every graphics card and, with SylTemp on, temperatures; startup apps and user services to switch on or off; system and user services to start, stop and restart; and login sessions. It reads /proc only while its window is open, opens with sylvaris top, and Task manager can be bound to a key (Ctrl+Shift+Escape can now be recorded)
 - SylIsland has a new ink look, a solid black capsule that springs between a pill, a compact capsule with the activity's icon and its time or level, and the full card; a ring around the icon shows music progress, volume or a recording, an activity-coloured rim glows around it, and island.look material brings back the glass one
 - A Pastel style and a solid material give flat, opaque surfaces instead of glass, and sylvaris theme pastel (or Pastel theme under Appearance) makes a soft solid theme in peach, mint, sky, lilac, butter, rose or any colour, light or dark
 - SylCenter can show a Temperatures tile with the hottest processor, graphics and drive; it opens SylTemp and reads sensors only while it is on screen
