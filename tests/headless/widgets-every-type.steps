@@ -1,0 +1,63 @@
+sleep 1.5
+write sylvaris/settings.json {"version":1,"widgets":{"items":[]}}
+sleep 2
+syl widgets add clock
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add weather
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add calendar
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add batteries
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add terminal
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add visualizer
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add photos
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add diver
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add temp
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add stack
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add media
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add system
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add sky
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add note
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add countdown
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add shelf
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add text
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add sticker
+sleep 1.5
+check kill -0 $SHELL_PID
+syl widgets add fatest
+sleep 1.5
+check kill -0 $SHELL_PID
+shot every-type
+check test "$(sylvaris widgets list | wc -l)" -eq 19
+check ! grep -E "TypeError|ReferenceError|Cannot read" "$OUT/shell.log"

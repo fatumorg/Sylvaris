@@ -443,3 +443,10 @@ test("the newer per-type options default on and fall back when invalid", () => {
     assert.equal(validateOptions("sticker", { fit: "fill" }).fit, "fill")
     assert.equal(validateOptions("sticker", { fit: "zoom" }).fit, "fit")
 })
+
+test("the every-type headless run adds every widget type", async () => {
+    const { readFileSync } = await import("node:fs")
+    const steps = readFileSync(new URL("./headless/widgets-every-type.steps", import.meta.url), "utf8")
+    for (const t of Object.keys(TYPES))
+        assert.ok(steps.includes("syl widgets add " + t + "\n"), t + " is missing from widgets-every-type.steps")
+})
