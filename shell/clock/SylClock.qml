@@ -44,7 +44,7 @@ Popup {
     }
 
     function hhmm(t: real): string {
-        return t ? Qt.formatTime(new Date(t), "HH:mm") : "—";
+        return t ? Qt.formatTime(new Date(t), C.timeFormat(Settings.values.clock.format, false)) : "—";
     }
 
     function span(ms: real): string {
@@ -124,7 +124,7 @@ Popup {
 
             Text {
                 textFormat: Text.PlainText
-                text: Qt.formatTime(root.now, "HH:mm")
+                text: Qt.formatTime(root.now, C.timeFormat(Settings.values.clock.format, false))
                 color: Theme.text
                 font.family: Tokens.fontMono
                 font.pixelSize: Tokens.clockSize
@@ -879,7 +879,7 @@ Popup {
                         textFormat: Text.PlainText
                         anchors.horizontalCenter: parent.horizontalCenter
                         y: 0
-                        text: modelData.time
+                        text: Settings.values.clock.format === "12h" ? Qt.formatTime(new Date("2000-01-01T" + modelData.time + ":00"), "h AP") : modelData.time
                         color: Theme.textDim
                         font.family: Tokens.fontMono
                         font.pixelSize: 11

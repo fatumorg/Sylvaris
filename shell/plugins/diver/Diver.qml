@@ -5,6 +5,7 @@ import SylStack
 import qs.services
 import "../../lib/diver.mjs" as D
 import "../../lib/plan.mjs" as P
+import "../../lib/calendar.mjs" as Cal
 
 Singleton {
     id: root
@@ -399,7 +400,7 @@ Singleton {
         if (!root.cfg.notify)
             return;
         const when = r.before > 0 ? "in " + r.before + " min · " : "";
-        Stack.execDetached(["notify-send", "-a", "Diver", "-u", r.alarm ? "critical" : "normal", r.title, when + Qt.formatTime(new Date(r.start), "HH:mm") + (r.path !== "" ? " · " + r.path : "")]);
+        Stack.execDetached(["notify-send", "-a", "Diver", "-u", r.alarm ? "critical" : "normal", r.title, when + Qt.formatTime(new Date(r.start), Cal.timeFormat(Settings.values.clock.format, false)) + (r.path !== "" ? " · " + r.path : "")]);
     }
 
     function state(): var {
@@ -413,12 +414,12 @@ Singleton {
             today: root.agendaToday.map(x => ({
                         id: x.task.id,
                         text: D.plain(x.task.text),
-                        start: x.allDay ? null : Qt.formatTime(new Date(x.start), "HH:mm")
+                        start: x.allDay ? null : Qt.formatTime(new Date(x.start), Cal.timeFormat(Settings.values.clock.format, false))
                     })),
             next: root.next === null ? null : {
                 id: root.next.task.id,
                 text: D.plain(root.next.task.text),
-                start: Qt.formatTime(new Date(root.next.start), "HH:mm")
+                start: Qt.formatTime(new Date(root.next.start), Cal.timeFormat(Settings.values.clock.format, false))
             },
             alarm: root.alarm,
             focus: root.focusing ? {

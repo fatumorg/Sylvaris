@@ -1,11 +1,34 @@
 import QtQuick
 import qs
 import qs.services
+import qs.components
+import "../lib/calendar.mjs" as Cal
 
 Column {
     required property var host
 
     spacing: 24
+
+    Card {
+        title: "Time"
+
+        SettingRow {
+            title: "Time format"
+            key: "clock.format"
+            subtitle: "For the bar, SylClock, the island, Control Center, Diver and the lock screen"
+            last: true
+
+            Segmented {
+                width: 260
+                current: Settings.shown.clock.format
+                options: Cal.HOURS.map(h => ({
+                            key: h,
+                            label: h === "12h" ? "12-hour" : "24-hour"
+                        }))
+                onPicked: key => Settings.put("clock.format", key)
+            }
+        }
+    }
 
     Card {
         title: "Location"

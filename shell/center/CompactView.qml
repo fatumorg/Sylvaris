@@ -10,6 +10,7 @@ import "../lib/center.mjs" as C
 import "../lib/rgb.mjs" as R
 import "../lib/capture.mjs" as Cap
 import "../lib/temp.mjs" as T
+import "../lib/calendar.mjs" as Cal
 
 Item {
     id: root
@@ -265,7 +266,7 @@ Item {
                 id: clockColumn
 
                 Digits {
-                    text: Qt.formatTime(root.now, "HH:mm")
+                    text: Qt.formatTime(root.now, Cal.timeFormat(Settings.values.clock.format, false))
                     color: Theme.text
                     font.family: Tokens.fontMono
                     font.pixelSize: Tokens.clockSize

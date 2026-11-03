@@ -4,6 +4,7 @@ import qs.services
 import qs.components
 import "../lib/icons.mjs" as Icons
 import "../lib/lock.mjs" as L
+import "../lib/calendar.mjs" as Cal
 
 Column {
     id: root
@@ -36,7 +37,7 @@ Column {
                 Text {
                     textFormat: Text.PlainText
                     anchors.horizontalCenter: parent.horizontalCenter
-                    text: Qt.formatTime(new Date(), root.cfg.seconds ? "HH:mm:ss" : "HH:mm")
+                    text: Qt.formatTime(new Date(), Cal.timeFormat(Settings.values.clock.format, root.cfg.seconds))
                     color: Theme.text
                     font.family: Tokens.fontUi
                     font.pixelSize: 44

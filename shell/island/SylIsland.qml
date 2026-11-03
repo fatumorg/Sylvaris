@@ -4,6 +4,7 @@ import qs
 import qs.services
 import qs.plugins.diver
 import "../lib/island.mjs" as I
+import "../lib/calendar.mjs" as Cal
 import "../lib/notify.mjs" as N
 import "../lib/privacy.mjs" as P
 
@@ -23,7 +24,7 @@ Scope {
     property var flash: null
     property bool armed: false
     property real now: Date.now()
-    property string time: Qt.formatTime(new Date(), "HH:mm")
+    property string time: Qt.formatTime(new Date(), Cal.timeFormat(Settings.values.clock.format, false))
     property int lastNote: -1
     property var devicesBefore: []
     property int replyTo: -1
@@ -492,7 +493,7 @@ Scope {
         repeat: true
         triggeredOnStart: true
         running: root.cfg.idle === "clock"
-        onTriggered: root.time = Qt.formatTime(new Date(), "HH:mm")
+        onTriggered: root.time = Qt.formatTime(new Date(), Cal.timeFormat(Settings.values.clock.format, false))
     }
 
     Timer {

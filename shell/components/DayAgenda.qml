@@ -3,6 +3,7 @@ import qs
 import qs.services
 import qs.plugins.diver
 import "../lib/icons.mjs" as Icons
+import "../lib/calendar.mjs" as Cal
 
 Item {
     id: root
@@ -171,7 +172,7 @@ Item {
                     x: 22
                     anchors.verticalCenter: parent.verticalCenter
                     width: 46
-                    text: entry.modelData.allDay ? "·" : Qt.formatTime(new Date(entry.modelData.start), "HH:mm")
+                    text: entry.modelData.allDay ? "·" : Qt.formatTime(new Date(entry.modelData.start), Cal.timeFormat(Settings.values.clock.format, false))
                     color: Theme.accent
                     font.family: Tokens.fontMono
                     font.pixelSize: Tokens.tinySize

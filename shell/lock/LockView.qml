@@ -2,6 +2,7 @@ import QtQuick
 import qs
 import qs.services
 import qs.components
+import "../lib/calendar.mjs" as Cal
 
 Item {
     id: root
@@ -54,6 +55,7 @@ Item {
         opacity: root.reveal
         face: root.lock.cfg.face === "default" ? "digital" : root.lock.cfg.face
         seconds: root.lock.cfg.seconds
+        hours24: Settings.values.clock.format !== "12h"
         dateFormat: "dddd, d MMMM"
         paused: !visible
     }
@@ -68,7 +70,7 @@ Item {
         Text {
             textFormat: Text.PlainText
             anchors.horizontalCenter: parent.horizontalCenter
-            text: Qt.formatTime(new Date(root.lock.now), root.lock.cfg.seconds ? "HH:mm:ss" : "HH:mm")
+            text: Qt.formatTime(new Date(root.lock.now), Cal.timeFormat(Settings.values.clock.format, root.lock.cfg.seconds))
             color: Theme.text
             font.family: Tokens.fontUi
             font.pixelSize: Math.min(160, root.height * 0.14)

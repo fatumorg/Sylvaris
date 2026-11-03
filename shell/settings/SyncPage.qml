@@ -3,6 +3,7 @@ import qs
 import qs.services
 import qs.components
 import "../lib/sync.mjs" as S
+import "../lib/calendar.mjs" as Cal
 
 Column {
     id: root
@@ -75,7 +76,7 @@ Column {
         SettingRow {
             title: "Match apps to the theme"
             key: "sync.enabled"
-            subtitle: root.cfg.enabled ? (Sync.last > 0 ? "Last synced " + Qt.formatTime(new Date(Sync.last), "HH:mm") : "Syncing…") : "Off"
+            subtitle: root.cfg.enabled ? (Sync.last > 0 ? "Last synced " + Qt.formatTime(new Date(Sync.last), Cal.timeFormat(Settings.values.clock.format, false)) : "Syncing…") : "Off"
             last: true
 
             Toggle {

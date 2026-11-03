@@ -26,7 +26,8 @@
     "layout": "grid"
   },
   "clock": {
-    "corner": "top-center"
+    "corner": "top-center",
+    "format": "24h"
   },
   "nightLight": {
     "enabled": false,

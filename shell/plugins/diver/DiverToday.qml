@@ -5,6 +5,7 @@ import qs.components
 import "../../lib/diver.mjs" as D
 import "../../lib/plan.mjs" as P
 import "../../lib/icons.mjs" as Icons
+import "../../lib/calendar.mjs" as Cal
 
 Flickable {
     id: root
@@ -46,7 +47,7 @@ Flickable {
     signal focusTask(string id)
 
     function whenOf(x: var, day: bool): string {
-        const time = x.allDay || !x.task.time ? "" : Qt.formatTime(new Date(x.start || D.at(x.task.due, x.task.time)), "HH:mm");
+        const time = x.allDay || !x.task.time ? "" : Qt.formatTime(new Date(x.start || D.at(x.task.due, x.task.time)), Cal.timeFormat(Settings.values.clock.format, false));
         const date = day ? P.dayLabel(x.start ? D.dayKey(x.start) : x.task.due) : "";
         return [date, time].filter(Boolean).join(" ");
     }
@@ -79,7 +80,7 @@ Flickable {
                 Text {
                     textFormat: Text.PlainText
                     width: parent.width
-                    text: Diver.next === null ? "Nothing else timed today" : "Next  " + Qt.formatTime(new Date(Diver.next.start), "HH:mm") + "  " + D.plain(Diver.next.task.text)
+                    text: Diver.next === null ? "Nothing else timed today" : "Next  " + Qt.formatTime(new Date(Diver.next.start), Cal.timeFormat(Settings.values.clock.format, false)) + "  " + D.plain(Diver.next.task.text)
                     elide: Text.ElideRight
                     color: Theme.text
                     font.family: Tokens.fontUi

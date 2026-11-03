@@ -40,3 +40,13 @@ export function rowWeeks(cells, firstDay) {
     }
     return out
 }
+
+export const HOURS = ["24h", "12h"]
+
+export function hourFormat(hours) {
+    return hours === "12h" ? "h" : "HH"
+}
+
+export function timeFormat(hours, seconds) {
+    return hourFormat(hours) + ":mm" + (seconds ? ":ss" : "") + (hours === "12h" ? " AP" : "")
+}

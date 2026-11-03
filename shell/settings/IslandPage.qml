@@ -5,6 +5,7 @@ import qs.components
 import qs.island
 import "../lib/island.mjs" as I
 import "../lib/icons.mjs" as Icons
+import "../lib/calendar.mjs" as Cal
 
 Column {
     id: root
@@ -71,7 +72,7 @@ Column {
                 idle: root.cfg.idle
                 look: root.cfg.look
                 glow: root.cfg.glow
-                time: Qt.formatTime(new Date(), "HH:mm")
+                time: Qt.formatTime(new Date(), Cal.timeFormat(Settings.values.clock.format, false))
                 progress: 0.42
                 position: 89
                 length: 212

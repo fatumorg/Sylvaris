@@ -24,6 +24,7 @@ Explained in [clock](../parts/clock.md).
 | Key | Default | Per screen |
 |---|---|:---:|
 | `clock.corner` | `"top-center"` | yes |
+| `clock.format` | `"24h"` |  |
 
 ## nightLight
 

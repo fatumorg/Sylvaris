@@ -15,6 +15,7 @@ import { validateKeybinds } from "./keys.mjs"
 import { DEFAULT_PLUGINS, validatePlugins, BUILTIN, builtinOn } from "./plugins.mjs"
 import { DEFAULT_SYNC, validateSync } from "./sync.mjs"
 import { PRESETS, OPEN_STYLES, REVEALS } from "./motion.mjs"
+import { HOURS } from "./calendar.mjs"
 import { DEFAULT_BAR, DEFAULT_DECK, validateBar, validateDeck } from "./bar.mjs"
 import { DEFAULT_EQ, validateEq } from "./eq.mjs"
 import { DEFAULT_POWER, validatePower } from "./power.mjs"
@@ -107,7 +108,7 @@ export const DEFAULT_CONFIG = {
 export const DEFAULT_SETTINGS = {
     version: SETTINGS_VERSION,
     center: { corner: "top-right", hidden: [], extra: [], volume: true, media: true, layout: "grid" },
-    clock: { corner: "top-center" },
+    clock: { corner: "top-center", format: "24h" },
     nightLight: { enabled: false, temperature: 4000 },
     displays: { layouts: {}, virtual: { enabled: false, width: 2388, height: 1668 } },
     toggleState: {},
@@ -303,7 +304,7 @@ export function validateSettings(raw, userLooks) {
     })
 
     const clock = isObject(v.clock) ? v.clock : {}
-    v.clock = Object.assign({}, clock, { corner: CORNERS.includes(clock.corner) ? clock.corner : d.clock.corner })
+    v.clock = Object.assign({}, clock, { corner: CORNERS.includes(clock.corner) ? clock.corner : d.clock.corner, format: HOURS.includes(clock.format) ? clock.format : d.clock.format })
 
     const nl = isObject(v.nightLight) ? v.nightLight : {}
     const t = nl.temperature

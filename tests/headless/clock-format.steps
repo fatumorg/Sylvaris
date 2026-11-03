@@ -1,0 +1,12 @@
+sleep 1.5
+syl set clock.format 12h
+sleep 1.2
+check grep -q '"format": "12h"' "$HOME/.config/sylvaris/settings.json"
+shot bar-12h
+syl clock
+sleep 1.5
+shot clock-12h
+syl clock
+syl set clock.format 24h
+sleep 1.2
+shot bar-24h

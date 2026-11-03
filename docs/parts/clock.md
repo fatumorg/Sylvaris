@@ -26,4 +26,4 @@ programs.sylvaris.settings.location = { latitude = 52.23; longitude = 21.01; };
 
 ## Calendar
 
-Click a day to see its plans and add to them when the [Diver plugin](../plugins/diver.md) is on. `sylvaris clock day <yyyy-mm-dd|today>` opens the clock on a day. `clock.corner` sets where the clock opens, per screen if you like.
+Click a day to see its plans and add to them when the [Diver plugin](../plugins/diver.md) is on. `sylvaris clock day <yyyy-mm-dd|today>` opens the clock on a day. `clock.corner` sets where the clock opens, per screen if you like. `clock.format` picks `24h` (the default) or `12h` time for every clock in the shell: the bar, SylClock, the island, Control Center, Diver and the lock screen; set it under SylSettings › Clock › Time.

@@ -3,6 +3,7 @@ import qs.services
 import qs.components
 import qs.settings
 import "../../lib/icons.mjs" as Icons
+import "../../lib/calendar.mjs" as Cal
 
 Column {
     id: diverColumn
@@ -66,9 +67,9 @@ Column {
 
         SettingRow {
             visible: Diver.paired
-            title: "Synced " + (Diver.lastSync > 0 ? Qt.formatTime(new Date(Diver.lastSync), "HH:mm:ss") : "not yet")
+            title: "Synced " + (Diver.lastSync > 0 ? Qt.formatTime(new Date(Diver.lastSync), Cal.timeFormat(Settings.values.clock.format, true)) : "not yet")
             key: "diver.sync"
-            subtitle: Diver.agendaToday.length + " planned today" + (Diver.next !== null ? " · next: " + Diver.plain(Diver.next.task.text) + " at " + Qt.formatTime(new Date(Diver.next.start), "HH:mm") : "")
+            subtitle: Diver.agendaToday.length + " planned today" + (Diver.next !== null ? " · next: " + Diver.plain(Diver.next.task.text) + " at " + Qt.formatTime(new Date(Diver.next.start), Cal.timeFormat(Settings.values.clock.format, false)) : "")
 
             Row {
                 spacing: 8

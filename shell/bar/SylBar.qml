@@ -7,6 +7,7 @@ import qs.plugins.temp
 import qs.components
 import "../lib/icons.mjs" as Icons
 import "../lib/bar.mjs" as B
+import "../lib/calendar.mjs" as Cal
 
 Scope {
     id: root
@@ -537,7 +538,7 @@ Scope {
             Digits {
                 visible: !root.vertical
                 anchors.verticalCenter: parent.verticalCenter
-                text: Qt.formatTime(root.now, "HH:mm")
+                text: Qt.formatTime(root.now, Cal.timeFormat(Settings.values.clock.format, false))
                 color: clockButton.lit ? Theme.onAccent : Theme.text
                 font.family: Tokens.fontUi
                 font.pixelSize: Tokens.barText
@@ -555,7 +556,7 @@ Scope {
 
                 Digits {
                     anchors.horizontalCenter: parent.horizontalCenter
-                    text: Qt.formatTime(root.now, "HH")
+                    text: Qt.formatTime(root.now, Cal.hourFormat(Settings.values.clock.format))
                     color: Theme.text
                     font.family: Tokens.fontUi
                     font.pixelSize: Tokens.barText + 3
@@ -900,7 +901,7 @@ Scope {
             compact: root.vertical || n === null
             glyph: Diver.alarm !== null ? Icons.GLYPHS.alarm : Icons.GLYPHS.planner
             tint: Diver.alarm !== null || (n !== null && mins <= 10) ? Theme.danger : Theme.text
-            label: n === null ? "" : Diver.plain(n.task.text).slice(0, 26) + "  " + (mins <= 0 ? "now" : mins < 60 ? mins + "m" : Qt.formatTime(new Date(n.start), "HH:mm"))
+            label: n === null ? "" : Diver.plain(n.task.text).slice(0, 26) + "  " + (mins <= 0 ? "now" : mins < 60 ? mins + "m" : Qt.formatTime(new Date(n.start), Cal.timeFormat(Settings.values.clock.format, false)))
             lit: root.isOpen("clock", screenRef)
             onClicked: root.request("clock", "", screenRef)
         }

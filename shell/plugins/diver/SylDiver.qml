@@ -4,6 +4,7 @@ import qs
 import qs.services
 import qs.components
 import "../../lib/icons.mjs" as Icons
+import "../../lib/calendar.mjs" as Cal
 
 Scope {
     id: root
@@ -195,7 +196,7 @@ Scope {
                     textFormat: Text.PlainText
                     anchors.horizontalCenter: parent.horizontalCenter
                     y: 160
-                    text: card.a === null ? "" : Qt.formatTime(new Date(card.a.start), "HH:mm")
+                    text: card.a === null ? "" : Qt.formatTime(new Date(card.a.start), Cal.timeFormat(Settings.values.clock.format, false))
                     color: Theme.text
                     font.family: Tokens.fontUi
                     font.pixelSize: 64

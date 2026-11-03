@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { monthGrid, shiftMonth, weekdayLabels, isSameDay, isoWeek, rowWeeks } from "../shell/lib/calendar.mjs"
+import { monthGrid, shiftMonth, weekdayLabels, isSameDay, isoWeek, rowWeeks, timeFormat, hourFormat, HOURS } from "../shell/lib/calendar.mjs"
 
 test("monthGrid has 42 cells starting on the requested weekday", () => {
     const monday = monthGrid(2026, 8, 1)
@@ -48,4 +48,14 @@ test("each calendar row gets the week of its Monday, whichever day starts the ro
     assert.deepEqual(rowWeeks(monday, 1), [40, 41, 42, 43, 44, 45])
     const sunday = monthGrid(2026, 9, 0)
     assert.deepEqual(rowWeeks(sunday, 0).slice(0, 2), [40, 41])
+})
+
+test("time formats follow the 12 or 24 hour choice", () => {
+    assert.equal(timeFormat("24h", false), "HH:mm")
+    assert.equal(timeFormat("24h", true), "HH:mm:ss")
+    assert.equal(timeFormat("12h", false), "h:mm AP")
+    assert.equal(timeFormat("12h", true), "h:mm:ss AP")
+    assert.equal(timeFormat("nonsense", false), "HH:mm")
+    assert.equal(hourFormat("12h"), "h")
+    assert.equal(hourFormat("24h"), "HH")
 })

@@ -450,3 +450,9 @@ test("share keeps unchanged parts of the settings as the same objects", () => {
     assert.equal(share(a, JSON.parse(JSON.stringify(a))), a)
     assert.equal(share(undefined, b), b)
 })
+
+test("clock format is 24h or 12h", () => {
+    assert.equal(DEFAULT_SETTINGS.clock.format, "24h")
+    assert.equal(validateSettings({ clock: { format: "12h" } }).clock.format, "12h")
+    assert.equal(validateSettings({ clock: { format: "13h" } }).clock.format, "24h")
+})

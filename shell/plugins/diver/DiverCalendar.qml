@@ -6,6 +6,7 @@ import qs.settings
 import "../../lib/diver.mjs" as D
 import "../../lib/plan.mjs" as P
 import "../../lib/icons.mjs" as Icons
+import "../../lib/calendar.mjs" as Cal
 
 Item {
     id: root
@@ -226,7 +227,7 @@ Item {
                         required property var modelData
                         width: dayList.width
                         task: modelData.task
-                        when: modelData.allDay ? "all day" : Qt.formatTime(new Date(modelData.start), "HH:mm")
+                        when: modelData.allDay ? "all day" : Qt.formatTime(new Date(modelData.start), Cal.timeFormat(Settings.values.clock.format, false))
                         path: modelData.path.filter(Boolean).join(" › ")
                         showPath: true
                         onOpen: root.edit(modelData.task.id, modelData.ci + "-" + modelData.gi + "-" + modelData.si)
