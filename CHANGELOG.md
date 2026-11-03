@@ -32,6 +32,8 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Fixed
 
+- With SylTemp's reading in the bar, the shell no longer grows by about 350 MB an hour and idles at a third of the processor time: the closed SylTemp panel, the temperature widget, the overlay, SylTop's graphs and the flip clock stop rebuilding themselves on every reading, and the closed panel does no work at all
+- Changing the wallpaper frees the old picture once the fade ends instead of keeping it in memory for every screen
 - Dragging a widget in edit mode keeps it anchored to the part of the screen you dropped it in, so a centred widget stays centred instead of turning into a top-left one
 - A window that cannot get a graphics context, such as a new widget while the GPU is busy, is hidden with a warning instead of crashing the whole shell
 - A new widget goes to the next free spot, moving to the next column when a column is full, instead of piling up at the bottom of the screen on top of the others

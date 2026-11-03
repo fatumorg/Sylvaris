@@ -42,12 +42,13 @@ Item {
         spacing: 12
 
         Repeater {
-            model: root.list
+            model: root.list.length
 
             delegate: Column {
                 id: ring
 
-                required property var modelData
+                required property int index
+                readonly property var sensor: root.list[ring.index] || T.BLANK
 
                 spacing: 4
 
@@ -75,7 +76,7 @@ Item {
                         }
 
                         ShapePath {
-                            strokeColor: Temps.tone(ring.modelData)
+                            strokeColor: Temps.tone(ring.sensor)
                             strokeWidth: 6
                             fillColor: "transparent"
                             capStyle: ShapePath.RoundCap
@@ -86,7 +87,7 @@ Item {
                                 radiusX: root.size / 2 - 3
                                 radiusY: root.size / 2 - 3
                                 startAngle: -90
-                                sweepAngle: Math.max(1, T.headroom(ring.modelData) * 360)
+                                sweepAngle: Math.max(1, T.headroom(ring.sensor) * 360)
                             }
                         }
                     }
@@ -94,7 +95,7 @@ Item {
                     Text {
                         textFormat: Text.PlainText
                         anchors.centerIn: parent
-                        text: Math.round(ring.modelData.value) + (ring.modelData.unit === "°C" ? "°" : "")
+                        text: Math.round(ring.sensor.value) + (ring.sensor.unit === "°C" ? "°" : "")
                         color: Theme.text
                         font.family: Tokens.fontDisplay
                         font.pixelSize: root.size * 0.28
@@ -108,7 +109,7 @@ Item {
                     width: root.size
                     horizontalAlignment: Text.AlignHCenter
                     elide: Text.ElideRight
-                    text: T.short(ring.modelData).replace(/ \S+$/, "")
+                    text: T.short(ring.sensor).replace(/ \S+$/, "")
                     color: Theme.textDim
                     font.family: Tokens.fontUi
                     font.pixelSize: Tokens.tinySize

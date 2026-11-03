@@ -2,6 +2,8 @@ export const FALLBACK = { cpu: [75, 90], gpu: [75, 90], mobo: [60, 80], storage:
 export const SHOWS = ["off", "toggle", "fullscreen", "apps"]
 export const STYLES = ["compact", "card", "bars", "graph"]
 export const OVERLAY_CORNERS = ["top-left", "top-right", "bottom-left", "bottom-right"]
+export const BLANK = Object.freeze({ label: "", kind: "other", value: 0, unit: "" })
+export const BLANK_GROUP = Object.freeze({ name: "", kind: "other", sensors: [BLANK] })
 
 export const DEFAULT_TEMP = {
     interval: 1,

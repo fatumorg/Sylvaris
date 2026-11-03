@@ -23,13 +23,14 @@ Column {
     }
 
     Repeater {
-        model: root.style === "compact" ? [] : root.sensors
+        model: root.style === "compact" ? 0 : root.sensors.length
 
         delegate: Column {
             id: row
 
-            required property var modelData
-            readonly property var trail: Temps.history[T.sensorId(row.modelData)] || []
+            required property int index
+            readonly property var sensor: root.sensors[row.index] || T.BLANK
+            readonly property var trail: Temps.history[T.sensorId(row.sensor)] || []
 
             width: root.rowWidth
             spacing: 3
@@ -41,7 +42,7 @@ Column {
                 Text {
                     textFormat: Text.PlainText
                     width: parent.width - value.implicitWidth - 8
-                    text: row.modelData.kind === "cpu" ? "CPU" : row.modelData.kind === "gpu" ? "GPU" : row.modelData.kind === "storage" ? "Drive" : row.modelData.label
+                    text: row.sensor.kind === "cpu" ? "CPU" : row.sensor.kind === "gpu" ? "GPU" : row.sensor.kind === "storage" ? "Drive" : row.sensor.label
                     elide: Text.ElideRight
                     color: Theme.textSoft
                     font.family: Tokens.fontUi
@@ -52,8 +53,8 @@ Column {
                     id: value
                     textFormat: Text.PlainText
                     anchors.right: parent.right
-                    text: T.short(row.modelData).replace(/^\S+ /, "")
-                    color: Temps.tone(row.modelData)
+                    text: T.short(row.sensor).replace(/^\S+ /, "")
+                    color: Temps.tone(row.sensor)
                     font.family: Tokens.fontUi
                     font.pixelSize: Tokens.smallSize
                     font.weight: Font.DemiBold
@@ -61,17 +62,17 @@ Column {
             }
 
             Rectangle {
-                visible: root.style === "bars" && T.level(row.modelData) !== "none"
+                visible: root.style === "bars" && T.level(row.sensor) !== "none"
                 width: parent.width
                 height: 4
                 radius: height / 2
                 color: Qt.alpha(Theme.text, 0.1)
 
                 Rectangle {
-                    width: parent.width * T.headroom(row.modelData)
+                    width: parent.width * T.headroom(row.sensor)
                     height: parent.height
                     radius: height / 2
-                    color: Temps.tone(row.modelData)
+                    color: Temps.tone(row.sensor)
                 }
             }
 
@@ -88,7 +89,7 @@ Column {
                         return;
                     const lo = Math.min.apply(null, t) - 1;
                     const hi = Math.max.apply(null, t) + 1;
-                    ctx.strokeStyle = Temps.tone(row.modelData);
+                    ctx.strokeStyle = Temps.tone(row.sensor);
                     ctx.lineWidth = 1.5;
                     ctx.beginPath();
                     for (let i = 0; i < t.length; i++) {

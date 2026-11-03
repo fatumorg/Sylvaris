@@ -9,7 +9,7 @@ import "../../lib/icons.mjs" as Icons
 Popup {
     id: root
 
-    readonly property var groups: T.devices(Temps.sensors)
+    readonly property var groups: root.live ? T.devices(Temps.sensors) : []
 
     namespace: "syltemp"
     corner: root.local.placement.temp
@@ -85,13 +85,14 @@ Popup {
             }
 
             Repeater {
-                model: root.groups
+                model: root.groups.length
 
                 delegate: Item {
                     id: card
 
-                    required property var modelData
-                    readonly property var lead: T.headline(card.modelData.sensors)[0] || T.hottest(card.modelData.sensors) || card.modelData.sensors[0]
+                    required property int index
+                    readonly property var group: root.groups[card.index] || T.BLANK_GROUP
+                    readonly property var lead: T.headline(card.group.sensors)[0] || T.hottest(card.group.sensors) || card.group.sensors[0]
                     readonly property string leadId: T.sensorId(card.lead)
                     readonly property var trail: Temps.history[card.leadId] || []
 
@@ -132,7 +133,7 @@ Popup {
                                 Text {
                                     textFormat: Text.PlainText
                                     width: parent.width
-                                    text: card.modelData.name
+                                    text: card.group.name
                                     elide: Text.ElideRight
                                     color: Theme.text
                                     font.family: Tokens.fontUi
@@ -204,13 +205,14 @@ Popup {
                         }
 
                         Repeater {
-                            model: card.modelData.sensors
+                            model: card.group.sensors.length
 
                             delegate: Item {
                                 id: line
 
-                                required property var modelData
-                                readonly property string sid: T.sensorId(line.modelData)
+                                required property int index
+                                readonly property var sensor: card.group.sensors[line.index] || T.BLANK
+                                readonly property string sid: T.sensorId(line.sensor)
                                 readonly property bool pinned: Temps.cfg.pinned.indexOf(line.sid) >= 0
 
                                 width: inner.width
@@ -220,7 +222,7 @@ Popup {
                                     textFormat: Text.PlainText
                                     anchors.verticalCenter: parent.verticalCenter
                                     width: parent.width - 130
-                                    text: line.modelData.label
+                                    text: line.sensor.label
                                     elide: Text.ElideRight
                                     color: Theme.textSoft
                                     font.family: Tokens.fontUi
@@ -232,8 +234,8 @@ Popup {
                                     anchors.verticalCenter: parent.verticalCenter
                                     anchors.right: pinChip.left
                                     anchors.rightMargin: 10
-                                    text: (line.modelData.unit === "°C" ? Math.round(line.modelData.value) + "°" : Math.round(line.modelData.value) + " " + line.modelData.unit)
-                                    color: Temps.tone(line.modelData)
+                                    text: (line.sensor.unit === "°C" ? Math.round(line.sensor.value) + "°" : Math.round(line.sensor.value) + " " + line.sensor.unit)
+                                    color: Temps.tone(line.sensor)
                                     font.family: Tokens.fontUi
                                     font.pixelSize: Tokens.smallSize
                                     font.weight: Font.DemiBold

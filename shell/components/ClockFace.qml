@@ -72,12 +72,13 @@ Item {
             spacing: 8
 
             Repeater {
-                model: root.seconds ? [root.hh, root.mm, root.ss] : [root.hh, root.mm]
+                model: root.seconds ? 3 : 2
 
                 delegate: Rectangle {
                     id: card
 
-                    required property string modelData
+                    required property int index
+                    readonly property string digits: [root.hh, root.mm, root.ss][card.index]
 
                     width: flipText.implicitWidth + 20
                     height: flipText.implicitHeight + 8
@@ -94,7 +95,7 @@ Item {
                     Digits {
                         id: flipText
                         anchors.centerIn: parent
-                        text: card.modelData
+                        text: card.digits
                         color: root.color
                         font.family: root.fontName
                         font.pixelSize: Math.max(18, Math.min(root.height * 0.45, root.width / (root.seconds ? 5.4 : 3.8)))

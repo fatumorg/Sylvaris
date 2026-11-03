@@ -79,10 +79,12 @@ Flickable {
                 spacing: 3
 
                 Repeater {
-                    model: page.s === null ? [] : page.s.cpu.cores
+                    model: page.s === null ? 0 : page.s.cpu.cores.length
 
                     delegate: Item {
-                        required property real modelData
+                        id: core
+                        required property int index
+                        readonly property real load: page.s === null ? 0 : page.s.cpu.cores[core.index] || 0
                         width: (bars.width - bars.spacing * (page.s.cpu.cores.length - 1)) / Math.max(1, page.s.cpu.cores.length)
                         height: bars.height
 
@@ -95,7 +97,7 @@ Flickable {
                         Glass {
                             anchors.bottom: parent.bottom
                             width: parent.width
-                            height: Math.max(2, parent.height * modelData / 100)
+                            height: Math.max(2, parent.height * core.load / 100)
                             radius: Tokens.r(3)
                             inner: true
                             lit: true
@@ -138,33 +140,36 @@ Flickable {
         }
 
         Repeater {
-            model: page.s === null ? [] : page.s.gpus
+            model: page.s === null ? 0 : page.s.gpus.length
 
             delegate: TopGraph {
-                required property var modelData
+                id: gpu
                 required property int index
+                readonly property var card: page.s === null ? null : page.s.gpus[gpu.index] || null
                 width: page.cardW
                 height: page.cardH
-                title: modelData.name
-                value: modelData.busy + "%"
-                sub: modelData.memTotal > 0 ? "Video memory " + F.sizeText(modelData.memUsed) + " of " + F.sizeText(modelData.memTotal) : ""
-                first: page.h.gpus && page.h.gpus[index] ? page.h.gpus[index] : []
+                title: gpu.card === null ? "" : gpu.card.name
+                value: gpu.card === null ? "" : gpu.card.busy + "%"
+                sub: gpu.card !== null && gpu.card.memTotal > 0 ? "Video memory " + F.sizeText(gpu.card.memUsed) + " of " + F.sizeText(gpu.card.memTotal) : ""
+                first: page.h.gpus && page.h.gpus[gpu.index] ? page.h.gpus[gpu.index] : []
             }
         }
 
         Repeater {
-            model: page.temps
+            model: page.temps.length
 
             delegate: TopGraph {
-                required property var modelData
+                id: temp
+                required property int index
+                readonly property var sensor: page.temps[temp.index] || Tp.BLANK
                 width: page.cardW
                 height: page.cardH
-                title: modelData.device || modelData.label
-                value: Math.round(modelData.value) + "°"
-                sub: modelData.label
-                first: Temps.history[Tp.sensorId(modelData)] || []
-                firstTint: Temps.tone(modelData)
-                max: Tp.limits(modelData)[1] + 10
+                title: temp.sensor.device || temp.sensor.label
+                value: Math.round(temp.sensor.value) + "°"
+                sub: temp.sensor.label
+                first: Temps.history[Tp.sensorId(temp.sensor)] || []
+                firstTint: Temps.tone(temp.sensor)
+                max: Tp.limits(temp.sensor)[1] + 10
             }
         }
     }

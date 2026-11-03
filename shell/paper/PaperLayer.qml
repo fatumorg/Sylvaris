@@ -69,6 +69,11 @@ PanelWindow {
     }
 
     onUrlChanged: root.load()
+    onMixChanged: {
+        const back = root.flip ? a : b;
+        if (root.mix === 1 && back.source.toString() !== root.url.toString())
+            back.source = "";
+    }
     Component.onCompleted: {
         a.source = root.url;
         root.flip = false;
