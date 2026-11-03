@@ -131,3 +131,8 @@ test("pastelTheme makes a named, valid, solid-looking theme from a name or a col
     assert.equal(pastelTheme("9fe3c4", true).id, "pastel-9fe3c4-dark")
     assert.throws(() => pastelTheme("tomato", true), /peach, mint/)
 })
+
+test("pastelTheme refuses names that are not pastels", () => {
+    assert.throws(() => pastelTheme("constructor", false), /pick a pastel/)
+    assert.throws(() => pastelTheme("toString", true), /pick a pastel/)
+})

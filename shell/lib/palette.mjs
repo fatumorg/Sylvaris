@@ -232,10 +232,10 @@ export function pastelColors(seed, dark) {
 export function pastelTheme(seed, dark) {
     const raw = String(seed).toLowerCase()
     const key = /^[0-9a-f]{6}$/.test(raw) ? "#" + raw : raw
-    const hex = PASTELS[key] || (/^#[0-9a-f]{6}$/.test(key) ? key : "")
+    const hex = (Object.hasOwn(PASTELS, key) && PASTELS[key]) || (/^#[0-9a-f]{6}$/.test(key) ? key : "")
     if (hex === "")
         throw new Error("pick a pastel (" + Object.keys(PASTELS).join(", ") + ") or a #rrggbb colour")
-    const label = PASTELS[key] ? key.charAt(0).toUpperCase() + key.slice(1) : key
+    const label = Object.hasOwn(PASTELS, key) ? key.charAt(0).toUpperCase() + key.slice(1) : key
     const mode = dark ? "dark" : "light"
     return {
         version: 1,
