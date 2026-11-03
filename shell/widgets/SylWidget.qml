@@ -119,6 +119,8 @@ Scope {
         const id = Wd.newId(root.items.map(i => i.id));
         const name = at ? at.screen : root.focusedScreen;
         const found = root.screens.filter(s => s.name === name);
+        if (at && found.length === 0)
+            throw new Error("no screen called " + name + "; pick one of: " + root.screens.map(s => s.name).join(", "));
         const screen = found.length > 0 ? found[0] : {
             name: name,
             width: 1920,

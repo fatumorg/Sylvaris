@@ -20,3 +20,5 @@ check sylvaris get widgets.items | grep -q '"face":"analog"'
 shot add-done
 syl widgets add text HEADLESS-1 200 200
 check sylvaris widgets list | grep -qE "^[a-z0-9]+	text	HEADLESS-1	top-left "
+check sylvaris widgets add text NOPE-9 200 200 2>&1 | grep -q "no screen called NOPE-9"
+check ! sylvaris widgets list | grep -q "NOPE-9"
