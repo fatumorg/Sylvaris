@@ -69,6 +69,11 @@ def profiles(root):
     return out
 
 
+def starts(path, head):
+    with open(path, encoding="utf-8", errors="replace") as f:
+        return f.read(len(head)) == head
+
+
 def firefox(op):
     results = []
     for root in op["roots"]:
@@ -77,9 +82,9 @@ def firefox(op):
             if op.get("json"):
                 results.append({"path": os.path.join(chrome, "sylvaris.json"), "status": write(os.path.join(chrome, "sylvaris.json"), op["json"])})
             if not op.get("content"):
-                for name in ("sylvaris.css", "sylvaris-content.css"):
+                for name, head in (("sylvaris.css", ":root"), ("sylvaris-content.css", "@-moz-document")):
                     path = os.path.join(chrome, name)
-                    if os.path.isfile(path) and not os.path.islink(path):
+                    if os.path.isfile(path) and not os.path.islink(path) and starts(path, head):
                         os.remove(path)
                         results.append({"path": path, "status": "removed"})
                 continue

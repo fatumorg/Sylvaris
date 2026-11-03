@@ -141,12 +141,24 @@ class SyncTest(unittest.TestCase):
         os.makedirs(chrome)
         with open(os.path.join(root, "profiles.ini"), "w") as f:
             f.write("[Profile0]\nName=default\nIsRelative=1\nPath=z.default\n")
-        for name in ("sylvaris.css", "sylvaris-content.css", "zen-themes.css"):
+        for name, text in (("sylvaris.css", ":root { --lwt-accent-color: #000 }\n"), ("sylvaris-content.css", "@-moz-document url-prefix(\"about:home\") {}\n"), ("zen-themes.css", ":root {}\n")):
             with open(os.path.join(chrome, name), "w") as f:
-                f.write("#sidebar-box { background-color: #000 }\n")
+                f.write(text)
         res = sync.apply([{"op": "firefox", "json": '{"gradient":["#c9702f"]}', "roots": [root]}])
         self.assertEqual([r["status"] for r in res], ["written", "removed", "removed"])
         self.assertEqual(sorted(os.listdir(chrome)), ["sylvaris.json", "zen-themes.css"])
+
+    def test_zen_keeps_a_sylvaris_css_it_did_not_write(self):
+        root = os.path.join(self.home, ".config", "zen")
+        chrome = os.path.join(root, "z.default", "chrome")
+        os.makedirs(chrome)
+        with open(os.path.join(root, "profiles.ini"), "w") as f:
+            f.write("[Profile0]\nName=default\nIsRelative=1\nPath=z.default\n")
+        with open(os.path.join(chrome, "sylvaris.css"), "w") as f:
+            f.write("#sidebar-box { background-color: #000 }\n")
+        res = sync.apply([{"op": "firefox", "json": '{"gradient":["#c9702f"]}', "roots": [root]}])
+        self.assertEqual([r["status"] for r in res], ["written"])
+        self.assertTrue(os.path.exists(os.path.join(chrome, "sylvaris.css")))
         self.assertEqual([r["status"] for r in sync.apply([{"op": "firefox", "json": '{"gradient":["#c9702f"]}', "roots": [root]}])], ["same"])
 
 
