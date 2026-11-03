@@ -31,32 +31,35 @@ export const TYPES = {
     },
     weather: {
         label: "Weather", glyph: "partlyCloudy", sizes: sized([2, 2], [6, 4]), size: [2, 2], services: ["Weather", "Sky"],
-        defaults: { feels: true, wind: false, humidity: false, condition: true, forecast: 7 },
+        defaults: { feels: true, wind: false, humidity: false, condition: true, forecast: 7, icon: true },
         fields: [
             { key: "condition", label: "Condition", kind: "toggle" },
             { key: "forecast", label: "Forecast days, at most", kind: "number", min: 0, max: 7 },
             { key: "feels", label: "Feels like", kind: "toggle" },
             { key: "wind", label: "Wind", kind: "toggle" },
-            { key: "humidity", label: "Humidity", kind: "toggle" }
+            { key: "humidity", label: "Humidity", kind: "toggle" },
+            { key: "icon", label: "Condition icon", kind: "toggle" }
         ]
     },
     calendar: {
         label: "Calendar", glyph: "calendar", sizes: sized([2, 2], [6, 5]), size: [4, 4], services: ["Diver"],
-        defaults: { monday: true, weeks: false, dots: true, title: true },
+        defaults: { monday: true, weeks: false, dots: true, title: true, outside: true },
         fields: [
             { key: "title", label: "Month title", kind: "toggle" },
             { key: "monday", label: "Weeks start on Monday", kind: "toggle" },
             { key: "weeks", label: "Week numbers", kind: "toggle" },
-            { key: "dots", label: "Diver plans", kind: "toggle" }
+            { key: "dots", label: "Diver plans", kind: "toggle" },
+            { key: "outside", label: "Days of other months", kind: "toggle" }
         ]
     },
     batteries: {
         label: "Batteries", glyph: "battery", sizes: sized([2, 2], [6, 2]), size: [4, 2], services: ["Battery", "BluetoothService", "Headphones"],
-        defaults: { devices: [], hideEmpty: true, ring: 6 },
+        defaults: { devices: [], hideEmpty: true, ring: 6, text: true },
         fields: [
             { key: "devices", label: "Devices", kind: "list" },
             { key: "hideEmpty", label: "Hide when there are none", kind: "toggle" },
-            { key: "ring", label: "Ring width", kind: "number", min: 2, max: 14 }
+            { key: "ring", label: "Ring width", kind: "number", min: 2, max: 14 },
+            { key: "text", label: "Level and name", kind: "toggle" }
         ]
     },
     terminal: {
@@ -100,10 +103,11 @@ export const TYPES = {
     },
     diver: {
         label: "Diver", glyph: "planner", sizes: sized([2, 2], [6, 6]), size: [4, 4], services: ["Diver"], plugin: "diver",
-        defaults: { count: 5, done: false },
+        defaults: { count: 5, done: false, title: true },
         fields: [
             { key: "count", label: "Tasks", kind: "number", min: 1, max: 20 },
-            { key: "done", label: "Show done", kind: "toggle" }
+            { key: "done", label: "Show done", kind: "toggle" },
+            { key: "title", label: "Today heading", kind: "toggle" }
         ]
     },
     temp: {
@@ -116,18 +120,20 @@ export const TYPES = {
     },
     stack: {
         label: "Stack", glyph: "layers", sizes: sized([2, 2], [8, 6]), size: [4, 2], services: [],
-        defaults: { every: 0 },
+        defaults: { every: 0, dots: true },
         fields: [
-            { key: "every", label: "Turn every (seconds, 0 = never)", kind: "number", min: 0, max: 3600 }
+            { key: "every", label: "Turn every (seconds, 0 = never)", kind: "number", min: 0, max: 3600 },
+            { key: "dots", label: "Page dots", kind: "toggle" }
         ]
     },
     media: {
         label: "Now playing", glyph: "music", sizes: sized([2, 2], [8, 4]), size: [4, 2], services: ["Media"],
-        defaults: { vinyl: false, recolour: "off", controls: true },
+        defaults: { vinyl: false, recolour: "off", controls: true, artist: true },
         fields: [
             { key: "vinyl", label: "Spin the cover like a record", kind: "toggle" },
             { key: "recolour", label: "Recolour the cover", kind: "choice", choices: ["off", "tint", "mono"] },
-            { key: "controls", label: "Buttons", kind: "toggle" }
+            { key: "controls", label: "Buttons", kind: "toggle" },
+            { key: "artist", label: "Artist", kind: "toggle" }
         ]
     },
     system: {
@@ -151,19 +157,22 @@ export const TYPES = {
     },
     note: {
         label: "Note", glyph: "pencil", sizes: sized([2, 2], [8, 8]), size: [3, 3], services: [],
-        defaults: { text: "", size: 14, paper: true },
+        defaults: { text: "", size: 14, paper: true, align: "left" },
         fields: [
             { key: "text", label: "Text", kind: "text", max: 20000, hidden: true },
             { key: "size", label: "Text size", kind: "number", min: 9, max: 40 },
-            { key: "paper", label: "Sticky note colour", kind: "toggle" }
+            { key: "paper", label: "Sticky note colour", kind: "toggle" },
+            { key: "align", label: "Align", kind: "choice", choices: ["left", "center", "right"] }
         ]
     },
     countdown: {
         label: "Countdown", glyph: "timer", sizes: sized([2, 1], [6, 4]), size: [2, 2], services: [],
-        defaults: { date: "", title: "" },
+        defaults: { date: "", title: "", align: "center", caption: true },
         fields: [
             { key: "date", label: "Date, like 2026-12-24", kind: "text" },
-            { key: "title", label: "What happens then", kind: "text" }
+            { key: "title", label: "What happens then", kind: "text" },
+            { key: "align", label: "Align", kind: "choice", choices: ["left", "center", "right"] },
+            { key: "caption", label: "Caption", kind: "toggle" }
         ]
     },
     shelf: {
@@ -187,11 +196,12 @@ export const TYPES = {
     },
     sticker: {
         label: "Sticker", glyph: "starFour", sizes: sized([1, 1], [12, 10]), size: [2, 2], services: [],
-        defaults: { source: "", recolour: "off", strength: 0.6 },
+        defaults: { source: "", recolour: "off", strength: 0.6, fit: "fit" },
         fields: [
             { key: "source", label: "Picture or GIF", kind: "path" },
             { key: "recolour", label: "Recolour", kind: "choice", choices: ["off", "tint", "mono"] },
-            { key: "strength", label: "Strength", kind: "number", min: 0, max: 1 }
+            { key: "strength", label: "Strength", kind: "number", min: 0, max: 1 },
+            { key: "fit", label: "Fit", kind: "choice", choices: ["fit", "fill"] }
         ]
     },
     fatest: {

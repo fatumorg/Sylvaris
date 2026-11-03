@@ -67,6 +67,7 @@ Item {
             height: Math.max(flick.height, contentHeight)
             textFormat: TextEdit.PlainText
             wrapMode: TextEdit.Wrap
+            horizontalAlignment: root.o.align === "center" ? TextEdit.AlignHCenter : root.o.align === "right" ? TextEdit.AlignRight : TextEdit.AlignLeft
             selectByMouse: true
             color: root.ink
             selectionColor: root.paper ? "#c9a227" : Theme.accent

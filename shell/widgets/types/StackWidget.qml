@@ -18,7 +18,10 @@ Item {
             paused: root.frame !== null && root.frame.paused,
             host: root.frame !== null ? root.frame.host : null,
             pad: root.frame !== null ? root.frame.pad : 0,
-            radius: root.frame !== null ? root.frame.radius : 0
+            radius: root.frame !== null ? root.frame.radius : 0,
+            style: root.frame !== null ? root.frame.style : ({}),
+            fontUi: root.frame !== null ? root.frame.fontUi : Tokens.fontUi,
+            fontDisplay: root.frame !== null ? root.frame.fontDisplay : Tokens.fontDisplay
         })
 
     Timer {
@@ -55,7 +58,7 @@ Item {
 
     Row {
         id: dots
-        visible: root.kids.length > 1
+        visible: root.kids.length > 1 && !(root.item !== null && root.item.options.dots === false)
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
         spacing: 5

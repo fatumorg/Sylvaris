@@ -108,6 +108,7 @@ Item {
 
                 Text {
                     textFormat: Text.PlainText
+                    visible: root.o.text !== false
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: root.size
                     horizontalAlignment: Text.AlignHCenter

@@ -1,0 +1,10 @@
+sleep 1.5
+shot sticker-src
+check cp "$OUT/sticker-src.png" "$HOME/sticker.png"
+write sylvaris/settings.json {"version":1,"widgets":{"items":[{"id":"p1","type":"calendar","anchor":"top-left","col":0,"row":1,"w":3,"h":3,"options":{"outside":false}},{"id":"p2","type":"countdown","anchor":"top-left","col":3,"row":1,"w":3,"h":2,"options":{"date":"2030-01-01","title":"2030","align":"left","caption":false}},{"id":"p3","type":"note","anchor":"top-right","col":0,"row":1,"w":3,"h":3,"options":{"text":"Centred","align":"center"}},{"id":"p4","type":"media","anchor":"bottom-left","col":0,"row":0,"w":4,"h":2,"options":{"artist":false}},{"id":"p5","type":"batteries","anchor":"bottom-center","col":0,"row":0,"w":4,"h":2,"options":{"text":false,"hideEmpty":false}},{"id":"p6","type":"diver","anchor":"center-left","col":0,"row":0,"w":3,"h":3,"options":{"title":false}},{"id":"p7","type":"sticker","anchor":"bottom-right","col":0,"row":0,"w":3,"h":2,"options":{"source":"~/sticker.png","fit":"fill"}},{"id":"p8","type":"clock","anchor":"center","col":0,"row":0,"w":4,"h":2,"style":{"font":"monospace"}},{"id":"p9","type":"stack","anchor":"center-right","col":0,"row":0,"w":4,"h":2,"options":{"dots":false},"children":[{"id":"p10","type":"text","options":{"text":"One"}},{"id":"p11","type":"clock"}]}]}}
+sleep 4
+shot widgets-parts
+check test "$(sylvaris widgets list | wc -l)" -ge 9
+check sylvaris get widgets.items | grep -q '"outside":false'
+check sylvaris get widgets.items | grep -q '"fit":"fill"'
+check ! grep -E "Unable to assign|TypeError" "$OUT/shell.log"

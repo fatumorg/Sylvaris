@@ -430,3 +430,16 @@ test("style font is a trimmed family name, empty by default, and long or odd val
     assert.equal(styleOf({ font: 3 }, false).font, "")
     assert.deepEqual(styleOf({ font: "x".repeat(81) }, true), {})
 })
+
+test("the newer per-type options default on and fall back when invalid", () => {
+    assert.equal(validateOptions("weather", {}).icon, true)
+    assert.equal(validateOptions("calendar", { outside: false }).outside, false)
+    assert.equal(validateOptions("batteries", { text: "no" }).text, true)
+    assert.equal(validateOptions("diver", {}).title, true)
+    assert.equal(validateOptions("media", { artist: false }).artist, false)
+    assert.equal(validateOptions("note", { align: "middle" }).align, "left")
+    assert.deepEqual([validateOptions("countdown", {}).align, validateOptions("countdown", {}).caption], ["center", true])
+    assert.equal(validateOptions("stack", { dots: false }).dots, false)
+    assert.equal(validateOptions("sticker", { fit: "fill" }).fit, "fill")
+    assert.equal(validateOptions("sticker", { fit: "zoom" }).fit, "fit")
+})

@@ -44,6 +44,7 @@ Item {
             spacing: 8
 
             Glyph {
+                visible: root.o.icon !== false
                 anchors.verticalCenter: parent.verticalCenter
                 text: Weather.now === null ? "" : Icons.GLYPHS[Weather.now.glyph]
                 color: root.frame !== null ? root.frame.accent : Theme.accent

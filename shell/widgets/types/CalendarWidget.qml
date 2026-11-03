@@ -115,6 +115,7 @@ Item {
                     textFormat: Text.PlainText
                     anchors.centerIn: parent
                     text: cell.modelData.day
+                    visible: cell.modelData.inMonth || root.o.outside !== false
                     opacity: cell.modelData.inMonth ? 1 : 0.35
                     color: cell.today ? Theme.onAccent : Theme.text
                     font.family: root.fontUi

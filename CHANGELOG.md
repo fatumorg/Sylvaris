@@ -6,6 +6,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Added
 
+- More widget options: weather can hide its icon, calendar the days of other months, batteries their level and name, Diver its heading, media the artist and a stack its page dots; notes and countdowns can align left, centre or right, a countdown can drop its caption, and a sticker can fill its box
 - Widgets take a font family, for all of them at once or one at a time; clock and text widgets keep their own font option
 - SylTop tags processes: right-click or Ctrl+click several, then end, kill, pause, reprioritise or idle them all at once; sylvaris top tag PID… does the same from a script
 

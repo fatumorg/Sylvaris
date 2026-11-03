@@ -42,7 +42,7 @@ Item {
             id: picture
             anchors.fill: parent
             source: root.path === "" ? "" : C.fileUri(root.path)
-            fillMode: Image.PreserveAspectFit
+            fillMode: root.o.fit === "fill" ? Image.PreserveAspectCrop : Image.PreserveAspectFit
             asynchronous: true
             smooth: true
             mipmap: true

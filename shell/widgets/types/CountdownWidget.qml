@@ -13,6 +13,7 @@ Item {
     property real now: Date.now()
     readonly property var days: Wd.daysUntil(root.o.date, root.now)
     readonly property string title: root.o.title || ""
+    readonly property int align: root.o.align === "left" ? Text.AlignLeft : root.o.align === "right" ? Text.AlignRight : Text.AlignHCenter
     readonly property string caption: {
         const n = root.days;
         if (n === null)
@@ -55,7 +56,7 @@ Item {
             textFormat: Text.PlainText
             visible: root.days !== 0
             width: parent.width
-            horizontalAlignment: Text.AlignHCenter
+            horizontalAlignment: root.align
             text: root.days === null ? "" : String(Math.abs(root.days))
             color: root.frame !== null ? root.frame.accent : Theme.accent
             font.family: root.fontDisplay
@@ -68,8 +69,9 @@ Item {
 
         Text {
             textFormat: Text.PlainText
+            visible: root.o.caption !== false || root.days === 0
             width: parent.width
-            horizontalAlignment: Text.AlignHCenter
+            horizontalAlignment: root.align
             wrapMode: Text.Wrap
             maximumLineCount: 2
             elide: Text.ElideRight

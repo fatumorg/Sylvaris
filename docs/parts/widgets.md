@@ -25,22 +25,22 @@ Changes are saved when you are done; two widgets that ended up on top of each ot
 | Type | What it shows | Options |
 |---|---|---|
 | `clock` | digital, flip, analog, word clock, giant or orbit face | 24-hour time, seconds, date format, other time zones like `Tokyo +9`, font, align |
-| `weather` | now and the coming days, from [SylClock](clock.md)'s forecast | condition, forecast days (0 to 7), feels like, wind, humidity |
-| `calendar` | this month, with dots on days that have Diver plans | month title, weeks start on Monday, week numbers, dots |
-| `batteries` | a ring per device: the laptop, AirPods (left, right and case), mice and keyboards | devices, ring width |
+| `weather` | now and the coming days, from [SylClock](clock.md)'s forecast | condition, forecast days (0 to 7), feels like, wind, humidity, condition icon |
+| `calendar` | this month, with dots on days that have Diver plans | month title, weeks start on Monday, week numbers, dots, days of other months |
+| `batteries` | a ring per device: the laptop, AirPods (left, right and case), mice and keyboards | devices, ring width, level and name |
 | `photos` | one picture, a slideshow that fades, slides or slowly zooms (Ken Burns), a mosaic of four or a stack of polaroids from a folder; click to open it in [SylViewer](viewer.md) | folder or picture, folders inside, mode, transition, interval, shuffle, frame, recolour (tint or mono) |
 | `terminal` | a kitty panel running any command, like `cava` or `btop` | command, font size, background, padding, typing, start again |
 | `visualizer` | bars, mirrored bars, dots, a wave or a ring from `cava` | style, bars, frame rate, smoothing, colour, glow |
-| `diver` | today's plans (with the Diver plugin) | how many, done ones |
-| `stack` | several widgets in one place; scroll to flip, or let it turn by itself. Pick the stack in SylSettings › Desktop › Widgets to add, change or remove what it holds (anything but a terminal or another stack) | seconds per turn |
-| `media` | the cover, title and artist of what is playing, with previous, play and next | spin the cover like a record, recolour (tint or mono), buttons |
+| `diver` | today's plans (with the Diver plugin) | how many, done ones, today heading |
+| `stack` | several widgets in one place; scroll to flip, or let it turn by itself. Pick the stack in SylSettings › Desktop › Widgets to add, change or remove what it holds (anything but a terminal or another stack) | seconds per turn, page dots |
+| `media` | the cover, title and artist of what is playing, with previous, play and next | spin the cover like a record, recolour (tint or mono), buttons, artist |
 | `system` | processor and memory use and network speed as small graphs, and how full the disk is | which of the four to show, seconds between readings |
 | `sky` | the sun's path through today with sunrise and sunset, and the moon's phase (needs a location, like [SylClock](clock.md)) | moon, sunrise and sunset |
-| `note` | a sticky note; click it and type, it saves as you go (up to 20 000 characters) | text size, sticky note colour |
-| `countdown` | days until (or since) a date | the date, like `2026-12-24`, and what happens then |
+| `note` | a sticky note; click it and type, it saves as you go (up to 20 000 characters) | text size, sticky note colour, align |
+| `countdown` | days until (or since) a date | the date, like `2026-12-24`, and what happens then, align, caption |
 | `shelf` | app icons that open with a click; empty means the apps pinned to [SylDeck](deck.md) | apps by desktop id, names |
 | `text` | any text in any font, filled or outlined, sized to fit | text, font, style, align, colour |
-| `sticker` | a picture or GIF without a frame of its own | picture or GIF, recolour (tint or mono), strength |
+| `sticker` | a picture or GIF without a frame of its own | picture or GIF, recolour (tint or mono), strength, fit or fill |
 | `fatest` | the last speed test and a button that runs one (with the FaTest plugin) | upload, ping |
 
 The terminal widget needs kitty 0.42 or newer; Sylvaris starts `kitty +kitten panel` at the widget's place and moves it with the widget. The command runs as given, never through a shell. With no command it opens your shell, and you can click it and type; a command only takes keys when **Type into it** is on. Changing an option restarts the panel. The visualizer needs `cava`, which the Nix package brings along.

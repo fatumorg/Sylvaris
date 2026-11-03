@@ -15,6 +15,8 @@ Item {
     Text {
         id: title
         textFormat: Text.PlainText
+        visible: root.o.title !== false
+        height: visible ? implicitHeight : 0
         text: "Today"
         color: Theme.text
         font.family: root.fontDisplay
@@ -33,7 +35,7 @@ Item {
     }
 
     Column {
-        y: title.height + 8
+        y: title.visible ? title.height + 8 : 0
         width: parent.width
         height: parent.height - y
         clip: true

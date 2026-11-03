@@ -143,6 +143,7 @@ Item {
             textFormat: Text.PlainText
             width: parent.width
             elide: Text.ElideRight
+            visible: root.o.artist !== false
             text: Media.artist
             color: Theme.textDim
             font.family: root.fontUi
