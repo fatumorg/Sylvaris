@@ -4,12 +4,13 @@ import { EXTRAS, offeredExtras, airpodsLine, speedLine, layoutBento } from "../s
 import { validateSettings } from "../shell/lib/settings.mjs"
 
 test("extra tiles are opt-in and plugin tiles need their plugin", () => {
-    assert.deepEqual(EXTRAS.map(e => e.key), ["fatest", "airpods", "rgb", "awake", "screenshot", "record", "clip", "lock"])
+    assert.deepEqual(EXTRAS.map(e => e.key), ["fatest", "airpods", "rgb", "awake", "temp", "screenshot", "record", "clip", "lock"])
     const none = offeredExtras({ enabled: {} }).map(e => e.key)
     assert.deepEqual(none, ["screenshot", "record", "clip", "lock"])
     const both = offeredExtras({ enabled: { fatest: true, airpods: true } }).map(e => e.key)
     assert.deepEqual(both, ["fatest", "airpods", "screenshot", "record", "clip", "lock"])
     assert.deepEqual(offeredExtras(undefined).map(e => e.key), none)
+    assert.deepEqual(offeredExtras({ enabled: { temp: true } }).map(e => e.key), ["temp", "screenshot", "record", "clip", "lock"])
 })
 
 test("center.extra keeps known extras once, in order given", () => {

@@ -13,7 +13,7 @@ sylvaris temp pin "Board/fan1"   # pin a sensor, or unpin it; ids come from stat
 
 The panel has a card per device: the processor, each graphics card, the board, the drives and the rest. Each card shows its main reading, how close it is to its limit, the last two minutes and the peak, with every sensor below it. The limits come from TempInfoCLI, so the colours match the terminal.
 
-TempInfoCLI only runs while something shows a temperature: the panel, the overlay, the bar chip or a SylTemp widget. Close them all and it stops.
+TempInfoCLI only runs while something shows a temperature: the panel, the overlay, the bar chip, the SylCenter tile or a SylTemp widget. Close them all and it stops.
 
 | Key (`temp.`) | Default | Meaning |
 |---|---|---|
@@ -27,4 +27,4 @@ TempInfoCLI only runs while something shows a temperature: the panel, the overla
 | `overlay.corner`, `overlay.x`, `overlay.y` | `top-left`, `16`, `16` | where it sits on the focused screen |
 | `overlay.scale`, `overlay.opacity` | `1`, `0.85` | size and opacity |
 
-The overlay sits above everything and never takes a click. Add `temp` to a side of the bar (or flip Show in the bar in SylSettings › SylTemp) for the bar chip; it opens the panel. SylWidget has a SylTemp widget with rings, a list or graphs. `placement.temp` sets where the panel opens.
+The overlay sits above everything and never takes a click. Add `temp` to a side of the bar (or flip Show in the bar in SylSettings › SylTemp) for the bar chip; it opens the panel. SylWidget has a SylTemp widget with rings, a list or graphs, and SylCenter a Temperatures tile once `center.extra` has `temp`. `placement.temp` sets where the panel opens.

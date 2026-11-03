@@ -22,7 +22,7 @@ Wi-Fi and Bluetooth split in two: the icon switches them on or off and the rest 
 - `center.hidden` lists tiles to leave out: `wifi`, `bluetooth`, `night`, `dnd`, `hotspot`, or `toggle:<id>` for one of your [custom toggles](../configuration.md#custom-toggles).
 - `center.volume` and `center.media` turn the volume slider and the now playing card off.
 - `center.layout` is `grid` (even tiles, two to a row) or `bento` (the first two tiles wide, the rest as small tiles, three to a row, with a short last row stretched to fill it; click a small tile to switch it).
-- `center.extra` adds optional tiles: `screenshot` and `record` (an area, or stop a recording), `clip` (clipboard history), `lock`, and, once their plugins are on, `fatest`, `airpods`, `rgb` and `awake`.
+- `center.extra` adds optional tiles: `screenshot` and `record` (an area, or stop a recording), `clip` (clipboard history), `lock`, and, once their plugins are on, `fatest`, `airpods`, `rgb`, `awake` and `temp` (the hottest processor, graphics and drive; click it for the SylTemp panel).
 
 `center.corner` sets where it opens: `top-left`, `top-center` or `top-right`. With the bar at the bottom or on a side, the panel follows the bar. The corner can differ per screen.
 

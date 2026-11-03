@@ -1,0 +1,12 @@
+sleep 1.5
+syl plugins enable temp
+syl set center.extra ["temp"]
+sleep 1
+syl center open
+sleep 3
+shot center-temp
+check sylvaris temp state | grep -q '"available":true'
+pointer move 2419 429 click 1
+sleep 1.5
+check sylvaris temp state | grep -q '"open":true'
+shot center-temp-open

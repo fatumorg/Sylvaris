@@ -3,11 +3,13 @@ import SylStack
 import qs
 import qs.services
 import qs.components
+import qs.plugins.temp
 import "../lib/icons.mjs" as Icons
 import "../lib/settings.mjs" as S
 import "../lib/center.mjs" as C
 import "../lib/rgb.mjs" as R
 import "../lib/capture.mjs" as Cap
+import "../lib/temp.mjs" as T
 
 Item {
     id: root
@@ -21,9 +23,14 @@ Item {
     readonly property var toggles: Toggles.items
     readonly property var cfg: Settings.values.center
     readonly property var tiles: root.buildTiles().filter(t => root.cfg.hidden.indexOf(t.key) < 0)
+    readonly property bool wantsTemps: root.visible && root.cfg.extra.indexOf("temp") >= 0
 
     implicitWidth: Tokens.centerCompactWidth
     implicitHeight: column.implicitHeight + Tokens.panelPaddingY * 2
+
+    onWantsTempsChanged: Temps.want("center", root.wantsTemps)
+    Component.onCompleted: Temps.want("center", root.wantsTemps)
+    Component.onDestruction: Temps.want("center", false)
 
     function toggleTile(t: var): var {
         return {
@@ -117,6 +124,11 @@ Item {
             tile.active = Awake.on;
             return tile;
         }
+        if (e.key === "temp") {
+            tile.subtitle = Temps.error !== "" ? Temps.error : T.compact(Temps.shown) || "Reading sensors";
+            tile.active = p !== undefined && p !== null && p.shown;
+            return tile;
+        }
         if (p === undefined || p === null)
             return null;
         if (e.key === "fatest") {
@@ -151,6 +163,8 @@ Item {
             root.peers.rgb.setOn(!root.peers.rgb.cfg.on);
         } else if (key === "awake") {
             Awake.set(!Awake.on);
+        } else if (key === "temp") {
+            root.extraOpen(key);
         } else if (key === "record" && cap.recording) {
             cap.stop();
         } else {
@@ -167,6 +181,8 @@ Item {
         root.dismiss();
         if (key === "fatest")
             root.peers.fatest.open();
+        else if (key === "temp" && root.peers.temp)
+            root.peers.temp.toggle();
         else if (key === "rgb")
             root.peers.rgb.open();
         else if (key === "airpods" && root.peers.media) {

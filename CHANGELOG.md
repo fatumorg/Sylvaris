@@ -6,6 +6,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Added
 
+- SylCenter can show a Temperatures tile with the hottest processor, graphics and drive; it opens SylTemp and reads sensors only while it is on screen
 - Right-click the desktop and pick Add widget… to choose a widget, set its options with a live preview and drop it where you clicked; sylvaris widgets add takes a screen and point too
 - SylSync colours Zen Browser as its own switch under App colours, from its ~/.config/zen profiles, by tinting Zen's own space gradient; it follows the Firefox switch until you set it
 - An optional browser script recolours Firefox and Zen live when you switch themes, with no restart

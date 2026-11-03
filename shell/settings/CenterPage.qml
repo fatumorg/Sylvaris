@@ -208,7 +208,7 @@ Column {
         SettingRow {
             title: "Extra tiles"
             key: "center.extra"
-            subtitle: "Speed Test and AirPods show up here once their plugins are on"
+            subtitle: "Plugin tiles such as Speed Test, AirPods and Temperatures show up here once their plugins are on"
 
             Flow {
                 width: 360

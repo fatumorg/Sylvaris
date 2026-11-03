@@ -52,7 +52,7 @@ const ROWS = [
     {key: "capture.audio", title: "Record sound", tab: "capture", subtitle: "Needs PipeWire or PulseAudio"},
     {key: "capture.audioSource", title: "Sound from", tab: "capture", advanced: true},
     {key: "center.hidden", title: "Tiles", tab: "center", subtitle: "Click to show or hide", words: ["quick settings", "toggles"]},
-    {key: "center.extra", title: "Extra tiles", tab: "center", subtitle: "Speed Test and AirPods show up here once their plugins are on"},
+    {key: "center.extra", title: "Extra tiles", tab: "center", subtitle: "Plugin tiles such as Speed Test, AirPods and Temperatures show up here once their plugins are on"},
     {key: "center.layout", title: "Layout", tab: "center", subtitle: "Even tiles, or two wide tiles over small ones", words: ["bento", "grid", "tiles"]},
     {key: "center.volume", title: "Volume slider", tab: "center", subtitle: "Output volume with a shortcut to the outputs"},
     {key: "center.media", title: "Now playing", tab: "center", subtitle: "The media card while something plays"},

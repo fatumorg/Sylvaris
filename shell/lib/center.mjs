@@ -5,6 +5,7 @@ export const EXTRAS = [
     { key: "airpods", label: "AirPods", glyph: "headphones", plugin: "airpods" },
     { key: "rgb", label: "Lighting", glyph: "rgb", plugin: "rgb" },
     { key: "awake", label: "Keep Awake", glyph: "eye", plugin: "awake" },
+    { key: "temp", label: "Temperatures", glyph: "thermometer", plugin: "temp" },
     { key: "screenshot", label: "Screenshot", glyph: "camera", plugin: "" },
     { key: "record", label: "Record", glyph: "record", plugin: "" },
     { key: "clip", label: "Clipboard", glyph: "clipboard", plugin: "" },
