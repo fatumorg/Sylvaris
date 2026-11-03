@@ -152,7 +152,7 @@ Item {
                 width: 4
                 height: parent.height - 12
                 anchors.verticalCenter: parent.verticalCenter
-                radius: 2
+                radius: width / 2
                 color: Theme.accent
             }
 
