@@ -177,7 +177,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   '';
 
   meta = {
-    description = "Modular desktop shell for Hyprland, niri and sway, built on SylStack";
+    description = "Modular Wayland desktop shell for Hyprland, niri and sway, built on SylStack";
     homepage = "https://sylvaris.fatum.cc";
     changelog = "https://github.com/fatumorg/Sylvaris/blob/v${finalAttrs.version}/CHANGELOG.md";
     license = lib.licenses.mit;

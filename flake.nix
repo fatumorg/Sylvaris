@@ -1,5 +1,5 @@
 {
-  description = "Sylvaris, a modular desktop shell for Hyprland, niri and sway";
+  description = "Sylvaris, a modular Wayland desktop shell for Hyprland, niri and sway";
 
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 

@@ -45,6 +45,7 @@ stdenv.mkDerivation {
 
   meta = {
     description = "Small Qt Quick runtime for Wayland desktop shells, made for Sylvaris";
+    homepage = "https://sylvaris.fatum.cc/docs/architecture.html";
     license = lib.licenses.mit;
     platforms = lib.platforms.linux;
     mainProgram = "sylstack";

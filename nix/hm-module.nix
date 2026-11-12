@@ -55,7 +55,7 @@ let
 in
 {
   options.programs.sylvaris = lib.mapAttrs (k: optionsFor [ k ]) schema // {
-    enable = lib.mkEnableOption "Sylvaris, a modular desktop shell";
+    enable = lib.mkEnableOption "Sylvaris, a modular Wayland desktop shell";
 
     package = lib.mkOption {
       type = lib.types.package;
