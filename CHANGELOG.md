@@ -4,6 +4,8 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-11-12
+
 ### Added
 
 - The website gives search engines a sitemap, canonical addresses, Open Graph and structured data, and an llms.txt summary; its robots.txt lets search and AI search crawlers in and keeps GPTBot out
@@ -484,7 +486,8 @@ The first official release, out of beta.
 - Relock a lock screen that is still closing and report locks that fail
 - Never prompt or hang on plugin clones and unfreeze settings once the file is gone
 
-[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.6.0...HEAD
+[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.7.0...HEAD
+[1.7.0]: https://github.com/fatumorg/Sylvaris/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/fatumorg/Sylvaris/compare/v1.5.1...v1.6.0
 [1.5.1]: https://github.com/fatumorg/Sylvaris/compare/v1.5.0...v1.5.1
 [1.5.0]: https://github.com/fatumorg/Sylvaris/compare/v1.4.0...v1.5.0
