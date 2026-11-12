@@ -8,6 +8,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 - The website gives search engines a sitemap, canonical addresses, Open Graph and structured data, and an llms.txt summary; its robots.txt lets search and AI search crawlers in and keeps GPTBot out
 - The website's home page has a short section on what Sylvaris is and how it differs from shell toolkits, with links to the comparison and the questions page
+- The README says what Sylvaris is in one paragraph, links the website, the questions page and the comparison, lists the requirements and names every part
 - Three new documentation pages: Questions and answers, Compared with other shells (Quickshell, AGS, eww, Waybar) and How Sylvaris is built
 
 ### Fixed

@@ -5,8 +5,17 @@
 <h1 align="center">Sylvaris</h1>
 
 <p align="center">
-  <b>A glass desktop shell for Hyprland, niri and sway.</b><br>
+  <b>A modular Wayland desktop shell for Hyprland, niri and sway.</b><br>
   One process, twenty-five parts, and every one of them optional.
+</p>
+
+<p align="center">
+  <a href="https://sylvaris.fatum.cc">Website</a> ·
+  <a href="https://sylvaris.fatum.cc/docs/start.html">Getting started</a> ·
+  <a href="docs/README.md">Documentation</a> ·
+  <a href="docs/faq.md">FAQ</a> ·
+  <a href="docs/compare.md">Compared with other shells</a> ·
+  <a href="https://github.com/fatumorg/Sylvaris/discussions">Community</a>
 </p>
 
 <p align="center">
@@ -22,6 +31,8 @@
 <p align="center">
   <img src="docs/demo/center.gif" width="840" alt="SylCenter and SylClock">
 </p>
+
+Sylvaris gives Hyprland, niri and sway a bar, a control center, notifications, a launcher, a dock, a lock and login screen and about twenty other parts, drawn in one glassmorphism design. It is written in QML and JavaScript and runs on SylStack, its own Qt Quick runtime in C++, so it is a finished shell rather than a toolkit like Quickshell or AGS. On NixOS every setting is a typed Home Manager option.
 
 ## 🧪 Try it
 
@@ -53,7 +64,8 @@ nix run github:fatumorg/Sylvaris
       <b>SylIsland</b> live activities you can control<br>
       <b>SylDeck</b> dock that hides when windows open<br>
       <b>SylPad</b> launcher, grid or list<br>
-      <b>SylWidget</b> clocks, notes, now playing and more on the desktop
+      <b>SylWidget</b> clocks, notes, now playing and more on the desktop<br>
+      <b>SylPaper</b> wallpapers per theme and screen
     </td>
     <td width="33%" valign="top">
       <h3>🛠️ Tools</h3>
@@ -64,11 +76,15 @@ nix run github:fatumorg/Sylvaris
       <b>SylDiver</b> <a href="https://diver.fatum.cc">Diver</a> planner and alarms<br>
       <b>SylFiles</b> file manager, as many windows as you like<br>
       <b>SylNotes</b> small editor for notes and code<br>
+      <b>SylViewer</b> images and videos over the desktop<br>
+      <b>SylArchive</b> zip, rar, 7z and tar as folders<br>
+      <b>SylTop</b> task manager with history graphs<br>
       <b>SylTemp</b> temperatures, with an overlay for games<br>
       <b>SylPower</b> power menu constellation
     </td>
     <td width="33%" valign="top">
       <h3>🎨 System</h3>
+      <b>SylSettings</b> every setting, searchable<br>
       <b>SylTheme</b> themes with live preview<br>
       <b>SylSync</b> apps follow your theme<br>
       <b>SylLock</b> · <b>SylGreet</b> lock and login<br>
@@ -124,7 +140,15 @@ nix run github:fatumorg/Sylvaris
 }
 ```
 
-Every setting is a typed Home Manager option. For the lock screen's PAM service and the SylGreet login screen, also import `sylvaris.nixosModules.sylvaris`. Every option is in [docs/nix.md](docs/nix.md). Not on Nix? [docs/install.md](docs/install.md) has steps for Arch, Fedora, Debian, Ubuntu, Linux Mint, openSUSE, Void, Gentoo and every other distribution: `make` builds SylStack, `sudo make install` puts everything in place.
+Keep the `follows` line, so the lock screen loads PAM modules built from the same nixpkgs as your system. Every setting is a typed Home Manager option. For the lock screen's PAM service and the SylGreet login screen, also import `sylvaris.nixosModules.sylvaris`. Every option is in [docs/nix.md](docs/nix.md). Not on Nix? [docs/install.md](docs/install.md) has steps for Arch, Fedora, Debian, Ubuntu, Linux Mint, openSUSE, Void, Gentoo and every other distribution: `make` builds SylStack, `sudo make install` puts everything in place.
+
+### Requirements
+
+- Linux with Hyprland (Lua or classic config), niri or sway. GNOME, KDE Plasma, COSMIC and X11 are not supported.
+- Qt 6.9 or newer. Distributions with an older Qt, such as Linux Mint 22, Ubuntu 24.04 and Debian 13, can use Nix, which brings its own.
+- The fonts Inter and JetBrainsMono Nerd Font, which the Nix modules install for you.
+
+[What works on each compositor](docs/compositors.md#what-each-compositor-supports) is generated from the code; the main difference is that sway has no blur.
 
 ## 🚀 Start
 
@@ -160,7 +184,7 @@ Resident memory of the Sylvaris process, including SylStack, Qt and, with a GPU,
 
 ## 📖 Learn more
 
-The [documentation](docs/README.md) covers every part, command and setting, theme bundles, plugins, Nix and development, one page each. [ARCHITECTURE.md](ARCHITECTURE.md) explains how the shell is built, [CONTRIBUTING.md](CONTRIBUTING.md) how to work on it, and [CHANGELOG.md](CHANGELOG.md) what changed.
+The [documentation](docs/README.md), also at [sylvaris.fatum.cc](https://sylvaris.fatum.cc), covers every part, command and setting, theme bundles, plugins, Nix and development, one page each. [Questions and answers](docs/faq.md) covers X11, Quickshell, requirements and memory use, and [compared with other shells](docs/compare.md) puts Sylvaris next to Quickshell, AGS, eww and Waybar. [How Sylvaris is built](docs/architecture.md) and [ARCHITECTURE.md](ARCHITECTURE.md) explain the internals, [CONTRIBUTING.md](CONTRIBUTING.md) how to work on it, and [CHANGELOG.md](CHANGELOG.md) what changed.
 
 ## 💬 Community
 
