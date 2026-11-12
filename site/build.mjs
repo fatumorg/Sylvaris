@@ -3,7 +3,7 @@ import { dirname, join, relative, normalize, posix } from "node:path"
 import { fileURLToPath } from "node:url"
 import { execFileSync } from "node:child_process"
 import { render, escape } from "./markdown.mjs"
-import { PARTS, NAV, LEGAL, REPO, FORUM } from "./content.mjs"
+import { PARTS, NAV, LEGAL, REPO, FORUM, SITE, SUMMARY } from "./content.mjs"
 
 const here = dirname(fileURLToPath(import.meta.url))
 const root = join(here, "..")
@@ -104,14 +104,40 @@ function searchDialog() {
         "<ol class=\"results\" role=\"listbox\" aria-label=\"Results\"></ol><p class=\"search-hint\">Arrows to move, Enter to open.</p></dialog>"
 }
 
-function page({ base, title, description, body, current, bodyClass, lang }) {
+const SOCIAL = { path: "/docs/assets/social.png", width: 1280, height: 640, alt: "Sylvaris, a glass desktop shell for Hyprland, niri and sway" }
+const sitemap = []
+const summaries = {}
+
+function modified(file) {
+    try {
+        return execFileSync("git", ["log", "-1", "--format=%cs", "--", file], { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim()
+    } catch (e) {
+        return ""
+    }
+}
+
+function jsonLd(data) {
+    return "<script type=\"application/ld+json\">" + JSON.stringify(data).replace(/</g, "\\u003c") + "</script>\n"
+}
+
+function page({ base, title, description, body, current, bodyClass, lang, path, ld, alternates, noindex, type, lastmod }) {
+    const url = path === undefined ? "" : SITE + "/" + path
+    if (url && !noindex)
+        sitemap.push({ url: url, lastmod: lastmod || "" })
+    const meta = (key, value) => value ? "<meta " + key + " content=\"" + escape(String(value)) + "\">\n" : ""
     return "<!doctype html>\n<html lang=\"" + (lang || "en") + "\"" + (bodyClass === "home" ? " class=\"home-root\"" : "") + ">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
-        "<title>" + escape(title) + "</title>\n<meta name=\"description\" content=\"" + escape(description || "") + "\">\n" +
+        "<title>" + escape(title) + "</title>\n" + meta("name=\"description\"", description) +
+        (noindex ? "<meta name=\"robots\" content=\"noindex\">\n" : "") +
+        (url ? "<link rel=\"canonical\" href=\"" + url + "\">\n" : "") +
+        (alternates || []).map(a => "<link rel=\"alternate\" hreflang=\"" + a.lang + "\" href=\"" + SITE + "/" + a.path + "\">\n").join("") +
         "<meta name=\"color-scheme\" content=\"dark light\">\n<meta name=\"theme-color\" content=\"#140f0c\">\n" +
         "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'self'; img-src 'self' data:; media-src 'self'; style-src 'self'; script-src 'self'; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'\">\n" +
         "<meta name=\"referrer\" content=\"strict-origin-when-cross-origin\">\n" +
-        "<meta property=\"og:title\" content=\"" + escape(title) + "\">\n<meta property=\"og:description\" content=\"" + escape(description || "") + "\">\n" +
-        "<meta property=\"og:type\" content=\"website\">\n<meta property=\"og:image\" content=\"/docs/assets/social.png\">\n<meta name=\"twitter:card\" content=\"summary_large_image\">\n" +
+        meta("property=\"og:site_name\"", "Sylvaris") + meta("property=\"og:title\"", title) + meta("property=\"og:description\"", description) +
+        meta("property=\"og:type\"", type || "website") + meta("property=\"og:url\"", url) + meta("property=\"og:locale\"", lang === "pl" ? "pl_PL" : "en_US") +
+        meta("property=\"og:image\"", SITE + SOCIAL.path) + meta("property=\"og:image:width\"", SOCIAL.width) + meta("property=\"og:image:height\"", SOCIAL.height) + meta("property=\"og:image:alt\"", SOCIAL.alt) +
+        "<meta name=\"twitter:card\" content=\"summary_large_image\">\n" + meta("name=\"twitter:title\"", title) + meta("name=\"twitter:description\"", description) + meta("name=\"twitter:image\"", SITE + SOCIAL.path) + meta("name=\"twitter:image:alt\"", SOCIAL.alt) +
+        (ld || []).map(jsonLd).join("") +
         "<link rel=\"icon\" href=\"" + base + "assets/logo.svg\" type=\"image/svg+xml\">\n" +
         "<link rel=\"preload\" href=\"" + base + "assets/fonts/atkinson-400.woff2\" as=\"font\" type=\"font/woff2\" crossorigin>\n" +
         "<link rel=\"preload\" href=\"" + base + "assets/fonts/fraunces-600.woff2\" as=\"font\" type=\"font/woff2\" crossorigin>\n" +
@@ -148,6 +174,14 @@ function sectionOf(doc) {
     return "docs"
 }
 
+function questions(html) {
+    return [...html.matchAll(/<h2 id="[^"]*">(?:<a [^>]*>#<\/a>)?([\s\S]*?)<\/h2>([\s\S]*?)(?=<h2 |$)/g)].map(m => ({
+        "@type": "Question",
+        name: plain(m[1]),
+        acceptedAnswer: { "@type": "Answer", text: plain(m[2]) }
+    }))
+}
+
 function buildDocs(index) {
     const files = readdirSync(docs, { recursive: true }).map(f => String(f).split("\\").join("/")).filter(f => f.endsWith(".md"))
     const order = flatNav().map(i => i[0])
@@ -166,7 +200,28 @@ function buildDocs(index) {
             "<div class=\"doc-foot\"><a class=\"edit\" href=\"" + REPO + "/blob/main/docs/" + doc + "\">Edit this page on GitHub</a>" +
             "<nav class=\"pager\" aria-label=\"Next and previous\">" + nav(prev, "prev", "Previous") + nav(next, "next", "Next") + "</nav></div></main>" +
             toc(r.headings) + "</div>"
-        write(join(dist, out), page({ base: base, title: (r.title || "Sylvaris") + " · Sylvaris", description: describe(r.html), body: body, current: sectionOf(doc), bodyClass: "docs" }))
+        const title = (r.title || "Sylvaris") + " · Sylvaris"
+        const lastmod = modified("docs/" + doc)
+        summaries[out] = describe(r.html)
+        const crumbs = [["Sylvaris", SITE + "/"], ["Documentation", SITE + "/docs/index.html"]].concat(out === "docs/index.html" ? [] : [[r.title || doc, SITE + "/" + out]])
+        const ld = [{
+            "@context": "https://schema.org",
+            "@type": "TechArticle",
+            headline: r.title || "Sylvaris",
+            description: describe(r.html),
+            url: SITE + "/" + out,
+            inLanguage: "en",
+            dateModified: lastmod || undefined,
+            isPartOf: { "@type": "WebSite", name: "Sylvaris", url: SITE + "/" },
+            about: { "@type": "SoftwareApplication", name: "Sylvaris", url: SITE + "/" }
+        }, {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: crumbs.map(([name, item], n) => ({ "@type": "ListItem", position: n + 1, name: name, item: item }))
+        }]
+        if (doc === "faq.md")
+            ld.push({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: questions(r.html) })
+        write(join(dist, out), page({ base: base, title: title, description: describe(r.html), body: body, current: sectionOf(doc), bodyClass: "docs", path: out, ld: ld, type: "article", lastmod: lastmod, noindex: doc === "guide.md" }))
         index.push({
             t: r.title,
             u: out,
@@ -184,7 +239,8 @@ function buildLegal() {
         const other = LEGAL.find(o => o.pair === p.pair && o.lang !== p.lang)
         const switcher = other ? "<p class=\"lang-switch\"><a href=\"" + other.slug + ".html\" hreflang=\"" + other.lang + "\" lang=\"" + other.lang + "\">" + (other.lang === "pl" ? "Wersja polska" : "English version") + "</a></p>" : ""
         const body = "<main id=\"content\" class=\"legal\"><article class=\"prose\">" + switcher + html + "</article></main>"
-        write(join(dist, "legal", p.slug + ".html"), page({ base: "../", title: p.title + " · Sylvaris", description: describe(html), body: body, current: "", bodyClass: "legal-page", lang: p.lang }))
+        const alternates = other ? [p, other].map(o => ({ lang: o.lang, path: "legal/" + o.slug + ".html" })) : []
+        write(join(dist, "legal", p.slug + ".html"), page({ base: "../", title: p.title + " · Sylvaris", description: describe(html), body: body, current: "", bodyClass: "legal-page", lang: p.lang, path: "legal/" + p.slug + ".html", alternates: alternates, lastmod: modified("site/legal/" + p.slug + ".md") }))
     }
 }
 
@@ -193,7 +249,39 @@ function buildLanding() {
     const parts = PARTS.map(p => "<li><button type=\"button\" class=\"node\" data-part=\"" + p.id + "\" data-group=\"" + p.group + "\" aria-controls=\"part-card\"><span class=\"node-dot\" aria-hidden=\"true\"></span>" + p.name + "</button></li>").join("")
     const data = JSON.stringify(PARTS.map(p => ({ id: p.id, name: p.name, group: p.group, text: p.text, url: urlOf(p.page) })))
     const body = tpl.replace("{{PARTS}}", parts).replace("{{VERSION}}", VERSION).replace(/\{\{REPO\}\}/g, REPO).replace(/\{\{FORUM\}\}/g, FORUM)
-    write(join(dist, "index.html"), page({ base: "", title: "Sylvaris · a glass desktop shell for Hyprland, niri and sway", description: "A desktop shell for Hyprland, niri and sway: bar, control center, notifications, launcher, island, lock screen and more, every part optional, all in one warm glass.", body: body, current: "", bodyClass: "home" }))
+    const description = "A modular Wayland desktop shell for Hyprland, niri and sway, built with Qt Quick on its own runtime: bar, control center, notifications, launcher, lock screen and more in one glass design, with NixOS and Home Manager modules."
+    const ld = [{
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "Sylvaris",
+        url: SITE + "/",
+        inLanguage: "en",
+        description: SUMMARY
+    }, {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        name: "Sylvaris",
+        description: SUMMARY,
+        url: SITE + "/",
+        sameAs: [REPO],
+        downloadUrl: REPO + "/releases",
+        installUrl: SITE + "/docs/install.html",
+        softwareHelp: SITE + "/docs/index.html",
+        releaseNotes: REPO + "/blob/main/CHANGELOG.md",
+        applicationCategory: "DesktopEnhancementApplication",
+        applicationSubCategory: "Wayland desktop shell",
+        operatingSystem: "Linux",
+        softwareVersion: VERSION,
+        softwareRequirements: "Qt 6.9 or newer; Hyprland, niri or sway",
+        programmingLanguage: ["QML", "JavaScript", "C++"],
+        license: "https://opensource.org/licenses/MIT",
+        isAccessibleForFree: true,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        screenshot: SITE + "/docs/assets/press/desktop.png",
+        image: SITE + SOCIAL.path,
+        featureList: PARTS.map(p => p.name + ": " + p.text)
+    }]
+    write(join(dist, "index.html"), page({ base: "", title: "Sylvaris: a Wayland desktop shell for Hyprland, niri and sway", description: description, body: body, current: "", bodyClass: "home", path: "", ld: ld, lastmod: modified("site/landing.html") }))
     write(join(dist, "assets/parts.json"), data)
 }
 
@@ -243,8 +331,39 @@ buildLegal()
 buildLanding()
 write(join(dist, "assets/search.json"), JSON.stringify(index))
 const video = process.env.SITE_NO_MEDIA ? true : buildMedia()
-write(join(dist, "robots.txt"), "User-agent: *\nAllow: /\n")
-write(join(dist, "404.html"), page({ base: "/", title: "Not here · Sylvaris", description: "", current: "", bodyClass: "lost", body: "<main id=\"content\" class=\"lost-main\"><h1>This page drifted off.</h1><p>The address may have changed when the docs were split into pages. The <a href=\"/docs/index.html\">documentation index</a> lists everything, and search (Ctrl K) finds the rest.</p></main>" }))
+write(join(dist, "404.html"), page({ base: "/", title: "Not here · Sylvaris", description: "", current: "", bodyClass: "lost", noindex: true, body: "<main id=\"content\" class=\"lost-main\"><h1>This page drifted off.</h1><p>The address may have changed when the docs were split into pages. The <a href=\"/docs/index.html\">documentation index</a> lists everything, and search (Ctrl K) finds the rest.</p></main>" }))
+
+write(join(dist, "sitemap.xml"), "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n" +
+    sitemap.sort((a, b) => a.url.localeCompare(b.url)).map(e => "  <url><loc>" + escape(e.url) + "</loc>" + (e.lastmod ? "<lastmod>" + e.lastmod + "</lastmod>" : "") + "</url>\n").join("") + "</urlset>\n")
+write(join(dist, "robots.txt"), [
+    "User-agent: *",
+    "Content-Signal: search=yes, ai-input=yes, ai-train=no",
+    "Allow: /",
+    "",
+    "User-agent: Googlebot",
+    "User-agent: Bingbot",
+    "User-agent: DuckDuckBot",
+    "User-agent: Applebot",
+    "User-agent: OAI-SearchBot",
+    "User-agent: ChatGPT-User",
+    "User-agent: Claude-SearchBot",
+    "User-agent: Claude-User",
+    "User-agent: PerplexityBot",
+    "User-agent: Perplexity-User",
+    "Allow: /",
+    "",
+    "User-agent: GPTBot",
+    "Disallow: /",
+    "",
+    "Sitemap: " + SITE + "/sitemap.xml",
+    ""
+].join("\n"))
+write(join(dist, "llms.txt"), "# Sylvaris\n\n> " + SUMMARY + "\n\n" +
+    "Version " + VERSION + ", MIT licence. Source: " + REPO + ". Runs on Linux with Qt 6.9 or newer under Hyprland, niri or sway. Every part can be turned off, every setting is a `sylvaris` command and a typed Home Manager option.\n\n" +
+    NAV.map(g => "## " + g.title + "\n\n" + g.items.map(([doc, label]) => {
+        const words = summaries[urlOf(doc)]
+        return "- [" + label + "](" + SITE + "/" + urlOf(doc) + ")" + (words ? ": " + words : "")
+    }).join("\n")).join("\n\n") + "\n")
 
 console.log("built " + relative(process.cwd(), dist) + ": " + index.length + " doc pages, " + LEGAL.length + " legal pages" + (video ? "" : ", demo GIFs copied as-is (ffmpeg not found)"))
 if (op.missing.length > 0) {

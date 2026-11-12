@@ -67,12 +67,12 @@ test("the built site loads nothing from other servers and every page links to th
         for (const f of files.filter(f => /\.(html|css|js)$/.test(f))) {
             const text = readFileSync(join(out, f), "utf8")
             assert.equal(/(src|srcset|poster)=["']https?:/i.test(text), false, f + " loads something from another server")
-            assert.equal(/<link[^>]+href=["']https?:/i.test(text), false, f + " links a stylesheet or font from another server")
+            assert.equal(/<link(?![^>]*rel="(canonical|alternate)")[^>]+href=["']https?:/i.test(text), false, f + " links a stylesheet or font from another server")
             assert.equal(/url\(["']?https?:/i.test(text), false, f + " pulls a url() from another server")
             if (f.endsWith(".js"))
                 assert.equal(/localStorage|sessionStorage|indexedDB|document\.cookie/.test(text), false, f + " stores something in the browser")
             if (f.endsWith(".html"))
-                assert.equal(/<script(?![^>]*\ssrc=)[^>]*>|\sstyle=|\son[a-z]+=/i.test(text), false, f + " has inline script or style, which the Content-Security-Policy blocks")
+                assert.equal(/<script(?![^>]*\ssrc=)(?![^>]*type="application\/ld\+json")[^>]*>|\sstyle=|\son[a-z]+=/i.test(text), false, f + " has inline script or style, which the Content-Security-Policy blocks")
         }
         for (const f of pages.filter(p => !p.startsWith("legal/")))
             assert.match(readFileSync(join(out, f), "utf8"), /polityka-prywatnosci\.html/, f)
@@ -86,7 +86,7 @@ test("every page links the forum, shares a local preview image and embeds nothin
     const { mkdtempSync, readdirSync, readFileSync, rmSync, existsSync } = await import("node:fs")
     const { tmpdir } = await import("node:os")
     const { join } = await import("node:path")
-    const { FORUM } = await import("../site/content.mjs")
+    const { FORUM, SITE } = await import("../site/content.mjs")
     const out = mkdtempSync(join(tmpdir(), "sylsite-"))
     try {
         execFileSync("node", [new URL("../site/build.mjs", import.meta.url).pathname], { env: Object.assign({}, process.env, { SITE_OUT: out, SITE_NO_MEDIA: "1" }), stdio: "ignore" })
@@ -96,8 +96,8 @@ test("every page links the forum, shares a local preview image and embeds nothin
             assert.ok(text.includes("href=\"" + FORUM + "\""), f + " does not link the forum")
             assert.equal(/<iframe/i.test(text), false, f + " embeds a frame")
             const og = /<meta property="og:image" content="([^"]+)"/.exec(text)
-            assert.ok(og !== null && og[1].startsWith("/"), f + " has no local og:image")
-            assert.ok(existsSync(join(out, og[1])), og[1] + " is missing")
+            assert.ok(og !== null && og[1].startsWith(SITE + "/"), f + " has no og:image on this site")
+            assert.ok(existsSync(join(out, og[1].slice(SITE.length))), og[1] + " is missing")
             assert.match(text, /<meta name="twitter:card" content="summary_large_image">/, f)
         }
         assert.match(readFileSync(join(out, "index.html"), "utf8"), /class="forum-notice"/)
@@ -106,6 +106,51 @@ test("every page links the forum, shares a local preview image and embeds nothin
         assert.ok(shots.length >= 6, "the press kit shows its screenshots")
         for (const s of shots)
             assert.ok(existsSync(join(out, "docs", s)), s + " is missing from the built site")
+    } finally {
+        rmSync(out, { recursive: true, force: true })
+    }
+})
+
+test("every indexed page has a canonical url, is in the sitemap and carries valid structured data", async () => {
+    const { execFileSync } = await import("node:child_process")
+    const { mkdtempSync, readdirSync, readFileSync, rmSync } = await import("node:fs")
+    const { tmpdir } = await import("node:os")
+    const { join } = await import("node:path")
+    const { SITE } = await import("../site/content.mjs")
+    const out = mkdtempSync(join(tmpdir(), "sylsite-"))
+    try {
+        execFileSync("node", [new URL("../site/build.mjs", import.meta.url).pathname], { env: Object.assign({}, process.env, { SITE_OUT: out, SITE_NO_MEDIA: "1" }), stdio: "ignore" })
+        const sitemap = readFileSync(join(out, "sitemap.xml"), "utf8")
+        const listed = new Set([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1]))
+        const pages = readdirSync(out, { recursive: true }).map(String).filter(f => f.endsWith(".html"))
+        for (const f of pages) {
+            const text = readFileSync(join(out, f), "utf8")
+            for (const m of text.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g))
+                assert.equal(JSON.parse(m[1])["@context"], "https://schema.org", f)
+            if (/<meta name="robots" content="noindex">/.test(text)) {
+                assert.equal([...listed].some(u => u.endsWith("/" + f)), false, f + " is noindex but in the sitemap")
+                continue
+            }
+            const canonical = /<link rel="canonical" href="([^"]+)">/.exec(text)
+            assert.ok(canonical !== null, f + " has no canonical url")
+            assert.equal(canonical[1], SITE + "/" + (f === "index.html" ? "" : f), f)
+            assert.ok(listed.has(canonical[1]), f + " is missing from the sitemap")
+        }
+        assert.ok(readFileSync(join(out, "404.html"), "utf8").includes("noindex"))
+        const home = readFileSync(join(out, "index.html"), "utf8")
+        assert.match(home, /"@type":"SoftwareApplication"/)
+        assert.doesNotMatch(home, /aggregateRating|"review"/, "no ratings or reviews that nobody gave")
+        const faq = readFileSync(join(out, "docs/faq.html"), "utf8")
+        const data = [...faq.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => JSON.parse(m[1])).find(d => d["@type"] === "FAQPage")
+        assert.ok(data && data.mainEntity.length >= 5 && data.mainEntity.every(q => q.name.endsWith("?") && q.acceptedAnswer.text.length > 20))
+        const robots = readFileSync(join(out, "robots.txt"), "utf8")
+        assert.match(robots, /^Sitemap: https:\/\/sylvaris\.fatum\.cc\/sitemap\.xml$/m)
+        assert.match(robots, /User-agent: OAI-SearchBot\n(User-agent: .*\n)*Allow: \//)
+        assert.match(robots, /User-agent: GPTBot\nDisallow: \//)
+        const llms = readFileSync(join(out, "llms.txt"), "utf8")
+        assert.match(llms, /^# Sylvaris\n\n> /)
+        for (const m of llms.matchAll(/\]\((https:[^)]+)\)/g))
+            assert.ok(pages.includes(m[1].slice(SITE.length + 1)), m[1] + " in llms.txt is not a built page")
     } finally {
         rmSync(out, { recursive: true, force: true })
     }
