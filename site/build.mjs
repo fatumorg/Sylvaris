@@ -59,8 +59,8 @@ function plain(html) {
 }
 
 function describe(html) {
-    const m = /<p>([\s\S]*?)<\/p>/.exec(html)
-    const text = m ? plain(m[1]) : ""
+    const paragraphs = [...html.matchAll(/<p>([\s\S]*?)<\/p>/g)].map(m => plain(m[1]))
+    const text = paragraphs.find(p => p.length >= 60) || paragraphs[0] || ""
     return text.length > 158 ? text.slice(0, 155).replace(/\s\S*$/, "") + "..." : text
 }
 
