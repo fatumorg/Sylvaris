@@ -1,6 +1,6 @@
 # Getting started
 
-Sylvaris is a desktop shell for Hyprland, niri and sway: a bar, a control center, notifications, a launcher, a lock screen and about twenty other parts, all in one process and all drawn in the same warm glass. It runs on SylStack, its own small runtime that comes with it, and needs Qt 6.9 or newer.
+Sylvaris is a Wayland desktop shell for Hyprland, niri and sway: a bar, a control center, notifications, a launcher, a lock screen and about twenty other parts, all in one process and all drawn in the same warm glass. It runs on SylStack, its own small runtime that comes with it, and needs Qt 6.9 or newer.
 
 ## 1. Install it
 
