@@ -208,7 +208,7 @@ function buildDocs(index) {
             "@context": "https://schema.org",
             "@type": "TechArticle",
             headline: r.title || "Sylvaris",
-            description: describe(r.html),
+            description: summaries[out],
             url: SITE + "/" + out,
             inLanguage: "en",
             dateModified: lastmod || undefined,
@@ -221,7 +221,7 @@ function buildDocs(index) {
         }]
         if (doc === "faq.md")
             ld.push({ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: questions(r.html) })
-        write(join(dist, out), page({ base: base, title: title, description: describe(r.html), body: body, current: sectionOf(doc), bodyClass: "docs", path: out, ld: ld, type: "article", lastmod: lastmod, noindex: doc === "guide.md" }))
+        write(join(dist, out), page({ base: base, title: title, description: summaries[out], body: body, current: sectionOf(doc), bodyClass: "docs", path: out, ld: ld, type: "article", lastmod: lastmod, noindex: doc === "guide.md" }))
         index.push({
             t: r.title,
             u: out,
