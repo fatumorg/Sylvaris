@@ -66,7 +66,19 @@ server {
 
 - `build.mjs` renders every page. The docs keep their folder layout, so `docs/parts/island.md` becomes `docs/parts/island.html`, and links to files outside `docs/` point to GitHub.
 - `markdown.mjs` is a small Markdown renderer for exactly what the docs use, tested in `tests/site.test.mjs`.
-- `content.mjs` holds the documentation menu, the parts shown on the landing page and the list of legal pages.
+- `content.mjs` holds the site address, the one-paragraph summary, the documentation menu, the parts shown on the landing page and the list of legal pages.
+- Every page gets a canonical address, Open Graph and Twitter tags and schema.org data (a `SoftwareApplication` on the home page, `TechArticle` and `BreadcrumbList` on each doc page, `FAQPage` on `docs/faq.html`). The build also writes `sitemap.xml` with each page's last commit date, `robots.txt` and `llms.txt`, a plain-text map of the docs for AI search tools.
 - `landing.html` is the home page; `legal/*.md` are the legal pages in Polish and English, with `{{name}}`-style fields filled from `operator.json`.
 - `assets/` holds the stylesheet, one script and the fonts. `fonts.sh` rebuilds the font subsets from nixpkgs; their licence is in `assets/fonts/OFL.txt`.
 - The demo videos are made from the GIFs in `docs/demo` with `ffmpeg` and cached in `dist/media`.
+
+## Search engines and crawlers
+
+`robots.txt` lets every crawler in, names the search and AI search crawlers (Googlebot, Bingbot, OAI-SearchBot, ChatGPT-User, Claude-SearchBot, PerplexityBot and others) explicitly, keeps GPTBot out and points to the sitemap. Its `Content-Signal` line allows search and AI answers but not training.
+
+If the site sits behind Cloudflare, check two settings in the dashboard, because they act before this file does:
+
+- **Managed robots.txt** puts Cloudflare's own block in front of this file. It disallows Google-Extended, which Gemini also uses for grounding answers in search results, and it leaves `ai-input` unset.
+- **Block AI bots** (AI Crawl Control) answers some crawlers with 403 whatever robots.txt says. PerplexityBot is one of them.
+
+After a deploy, submit `https://sylvaris.fatum.cc/sitemap.xml` in Google Search Console and Bing Webmaster Tools.
