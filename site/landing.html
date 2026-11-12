@@ -1,7 +1,7 @@
 <main id="content" class="landing">
   <section class="hero">
     <div class="hero-copy">
-      <p class="hero-for">for Hyprland, niri and sway</p>
+      <p class="hero-for">Wayland shell for Hyprland, niri and sway</p>
       <h1 class="wordmark">Sylvaris</h1>
       <p class="hero-line">A desktop shell drawn in warm, living glass.</p>
       <p class="hero-text">The bar, a control center, notifications, a launcher, a lock screen and about twenty other parts, all in one process. Keep the ones you like and switch off the rest: a part that is off never loads, and the tools it needs can stay uninstalled.</p>
@@ -20,7 +20,7 @@
         <span class="mb-group mb-right"><i class="mb-i"></i><i class="mb-i"></i><i class="mb-i"></i><i class="mb-bell"></i></span>
       </div>
 
-      <div class="island" data-island tabindex="0" aria-label="SylIsland. Hover or focus to expand.">
+      <div class="island" data-island tabindex="0" role="group" aria-label="SylIsland. Hover or focus to expand.">
         <div class="island-pill">
           <span class="isl-lead" data-isl-lead></span>
           <span class="isl-label" data-isl-label>Night Drive</span>
@@ -46,7 +46,7 @@
       <div class="mini-toast" aria-hidden="true"><span class="tt-ic"></span><span><b>Diver</b><small>Stand-up in 10 minutes</small></span></div>
       <div class="mini-deck" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 
-      <div class="mini-center" aria-label="SylCenter">
+      <div class="mini-center" role="group" aria-label="SylCenter">
         <div class="mc-head"><span class="mc-time" data-clock>18:37</span><span class="mc-date" data-date>Wed, 23 Sep</span></div>
         <div class="mc-tiles">
           <button type="button" class="tile" aria-pressed="true"><span class="tile-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9a13 13 0 0 1 18 0M6 12.5a8.5 8.5 0 0 1 12 0M9.2 15.8a4 4 0 0 1 5.6 0"/><circle cx="12" cy="19" r="1"/></svg></span><span><b>Wi-Fi</b><small>Home 5G</small></span></button>
@@ -62,6 +62,20 @@
   <aside class="forum-notice" aria-label="Community">
     <p><b>Sylvaris has a community forum.</b> Ask questions, share your desktop and Looks, and follow announcements. <a href="{{FORUM}}" rel="noopener">GitHub Discussions</a></p>
   </aside>
+
+  <section class="about" id="about" aria-labelledby="about-title">
+    <div class="sect-head">
+      <h2 id="about-title">A finished shell, not a kit</h2>
+      <p>Toolkits such as Quickshell and AGS let you write your own shell. Sylvaris comes built: you set it up with settings, commands or Home Manager, and every part was designed to work with the others. <a href="docs/compare.html">How it compares</a></p>
+    </div>
+    <dl class="facts">
+      <div><dt>Qt Quick, its own runtime</dt><dd>Written in QML and JavaScript on SylStack, a small C++ runtime for Qt 6.9 or newer.</dd></div>
+      <div><dt>Three compositors</dt><dd>Hyprland, niri and sway, with a table of the few things one of them cannot do.</dd></div>
+      <div><dt>Made for NixOS</dt><dd>A flake with a typed Home Manager option for every setting and a NixOS module for the lock and login screens.</dd></div>
+      <div><dt>One glass design</dt><dd>Seven Looks restyle every part at once, and SylSync carries your theme into GTK, Qt, terminals and editors.</dd></div>
+    </dl>
+    <p class="weight-note">Wondering about X11, memory use or the lock screen? <a href="docs/faq.html">Questions and answers</a></p>
+  </section>
 
   <section class="parts" id="parts" aria-labelledby="parts-title">
     <div class="sect-head">
@@ -122,8 +136,8 @@
       </div>
       <div class="tab-panel" role="tabpanel" id="panel-nix" aria-labelledby="tab-nix">
 <pre data-lang="nix"><code>inputs.sylvaris.url = "github:fatumorg/Sylvaris";
+inputs.sylvaris.inputs.nixpkgs.follows = "nixpkgs";
 
-# in your Home Manager modules
 imports = [ inputs.sylvaris.homeManagerModules.sylvaris ];
 programs.sylvaris = {
   enable = true;
@@ -168,9 +182,8 @@ git clone {{REPO}}
 cd Sylvaris &amp;&amp; make &amp;&amp; sudo make install install-pam</code></pre>
       </div>
       <div class="tab-panel" role="tabpanel" id="panel-other" aria-labelledby="tab-other">
-<pre data-lang="sh"><code># Linux Mint 22, Ubuntu 24.04, Debian 13 and anything
-# whose Qt is older than 6.9: Nix brings its own
-sh &lt;(curl -L https://nixos.org/nix/install) --daemon
+<p class="tab-note">For Linux Mint 22, Ubuntu 24.04, Debian 13 and anything else whose Qt is older than 6.9. Nix brings its own.</p>
+<pre data-lang="sh"><code>sh &lt;(curl -L https://nixos.org/nix/install) --daemon
 nix --extra-experimental-features 'nix-command flakes' \
   profile install github:fatumorg/Sylvaris
 sylvaris doctor</code></pre>

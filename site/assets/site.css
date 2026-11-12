@@ -281,6 +281,13 @@ section { scroll-margin-top: 90px; }
 .forum-notice p { margin: 0; padding: 14px 20px; border: 1px solid var(--line-strong); border-radius: var(--radius); background: var(--tint); color: var(--text-soft); text-align: center; }
 .forum-notice b { color: var(--text); }
 .forum-notice a { color: var(--accent-hi); font-weight: 600; white-space: nowrap; }
+.about { padding: 96px 0 0; }
+.about .sect-head a, .about .weight-note a { color: var(--accent-hi); font-weight: 600; }
+.facts { max-width: 1320px; margin: 40px auto 0; padding: 0 24px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
+.facts div { border-top: 1px solid var(--line-strong); padding-top: 16px; }
+.facts dt { font-weight: 700; color: var(--text); }
+.facts dd { margin: 6px 0 0; color: var(--text-soft); }
+.tab-note { margin: 0 0 12px; color: var(--text-soft); }
 .parts { padding: 96px 0 72px; }
 .part-filter { max-width: 1320px; margin: 28px auto 0; padding: 0 24px; display: flex; gap: 8px; flex-wrap: wrap; }
 .part-filter button, .tab-list button {
@@ -461,6 +468,7 @@ dialog.search[open] { animation: rise 0.28s var(--ease); }
   .hero, .install, .make { grid-template-columns: 1fr; }
   .stage { transform: none; }
   .sect-head { grid-template-columns: 1fr; gap: 12px; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .foot-in { grid-template-columns: 1fr 1fr; }
   .search-open { min-width: 0; }
   .search-open span, .search-open kbd { display: none; }
@@ -488,6 +496,7 @@ dialog.search[open] { animation: rise 0.28s var(--ease); }
   .island { top: 12%; }
   .foot-in { grid-template-columns: 1fr; padding: 28px 22px; }
   .pager { grid-template-columns: 1fr; }
+  .facts { grid-template-columns: 1fr; gap: 18px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
