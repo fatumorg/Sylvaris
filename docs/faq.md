@@ -1,5 +1,7 @@
 # Questions and answers
 
+Short answers to what people ask most about Sylvaris, the Wayland desktop shell for Hyprland, niri and sway, with links to the pages that go deeper.
+
 ## What is Sylvaris?
 
 Sylvaris is a modular desktop shell for Wayland. It gives Hyprland, niri and sway a bar, a control center, notifications, a launcher, a dock, a lock and login screen and about twenty other parts, all in one process and one glass design. It is written in QML and JavaScript and runs on SylStack, its own Qt Quick runtime written in C++. It is free software under the MIT licence.

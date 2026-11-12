@@ -1,5 +1,7 @@
 # Look and motion
 
+How Sylvaris looks comes from four layers that you can change separately. A [theme](#theme-bundles) sets the colours and the wallpaper. A [Look](#looks) sets the shape of everything: glass, corners, spacing, fonts, controls, motion and layout. [Resin Glass](#resin-glass) is the material every surface is drawn in, and the compositor blurs behind it. [Motion and performance](#motion-and-performance) settings change how animation feels and how fast it runs, cut it down to fades, and trim effects on slower machines. [SylSync](parts/sync.md) then carries the theme's colours into GTK, Qt, terminals, editors and Firefox.
+
 ## Looks
 
 A Look (a style) reshapes everything the shell draws: the glass, the corners and spacing, the fonts, how switches, sliders, tabs, buttons, cards, hover and icons are built, the motion, the layout of the bar, Control Center, notifications, the lock clock, the island, the dock and the launcher, and how the accent and wallpaper are treated. Themes still own the colours. Pick one with `look.preset`:

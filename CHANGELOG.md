@@ -10,6 +10,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 - The website's home page has a short section on what Sylvaris is and how it differs from shell toolkits, with links to the comparison and the questions page
 - The README says what Sylvaris is in one paragraph, links the website, the questions page and the comparison, lists the requirements and names every part
 - The Nix packages name their homepage and changelog, and every package description calls Sylvaris a Wayland desktop shell
+- Look and motion opens with how themes, Looks, Resin Glass, motion and SylSync fit together
 - Three new documentation pages: Questions and answers, Compared with other shells (Quickshell, AGS, eww, Waybar) and How Sylvaris is built
 
 ### Fixed

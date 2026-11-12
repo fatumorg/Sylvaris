@@ -1,5 +1,7 @@
 # Working on Sylvaris
 
+How to build Sylvaris from source, run its tests and find your way around the code. You need Nix for the development shell; everything else comes with it.
+
 ```sh
 git clone https://github.com/fatumorg/Sylvaris
 cd Sylvaris
