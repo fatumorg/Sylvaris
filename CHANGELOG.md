@@ -4,6 +4,14 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Added
+
+- Three new documentation pages: Questions and answers, Compared with other shells (Quickshell, AGS, eww, Waybar) and How Sylvaris is built
+
+### Fixed
+
+- The plugins page said four plugins come built in; there are six, and the documentation index now lists SylTemp with them
+
 ## [1.6.0] - 2026-11-03
 
 ### Added

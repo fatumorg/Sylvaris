@@ -1,10 +1,12 @@
 export const REPO = "https://github.com/fatumorg/Sylvaris"
 export const FORUM = REPO + "/discussions"
+export const SITE = "https://sylvaris.fatum.cc"
+export const SUMMARY = "Sylvaris is a modular Wayland desktop shell for Hyprland, niri and sway, written in QML on its own Qt Quick runtime, SylStack, with a glass design system and NixOS and Home Manager modules."
 
 export const NAV = [
     {
         title: "Start here",
-        items: [["README.md", "Overview"], ["start.md", "Getting started"], ["install.md", "Installing without Nix"], ["nix.md", "Nix and Home Manager"]]
+        items: [["README.md", "Overview"], ["start.md", "Getting started"], ["install.md", "Installing without Nix"], ["nix.md", "Nix and Home Manager"], ["compare.md", "Compared with other shells"], ["faq.md", "Questions and answers"]]
     },
     {
         title: "Using it",
@@ -24,7 +26,7 @@ export const NAV = [
     },
     {
         title: "Reference",
-        items: [["reference/settings.md", "Every setting"], ["packaging.md", "Packaging"], ["development.md", "Working on Sylvaris"]]
+        items: [["reference/settings.md", "Every setting"], ["architecture.md", "How it is built"], ["packaging.md", "Packaging"], ["development.md", "Working on Sylvaris"]]
     }
 ]
 

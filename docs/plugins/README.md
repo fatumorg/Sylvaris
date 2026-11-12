@@ -1,6 +1,6 @@
 # SylPlugins
 
-Plugins add widgets, panels and background helpers to Sylvaris. Four come built in, and you can write or install your own.
+Plugins add widgets, panels and background helpers to Sylvaris. Six come built in, and you can write or install your own.
 
 Every plugin, built in or not, stays off until you turn it on in SylSettings › Plugins or from a terminal:
 
