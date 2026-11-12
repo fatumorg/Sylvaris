@@ -15,6 +15,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Fixed
 
+- SylNotes no longer freezes the whole shell while an open file keeps growing on disk, such as a game console log; typing in large files no longer stalls either
 - The plugins page said four plugins come built in; there are six, and the documentation index now lists SylTemp with them
 
 ## [1.6.0] - 2026-11-03

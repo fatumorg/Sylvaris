@@ -91,8 +91,12 @@ FocusScope {
         ed.big = raw.length > 1048576;
         const text = binary ? raw.replace(/\u0000/g, "␀") : N.stripEol(raw);
         ed.ready = false;
-        if (text !== edit.text)
-            edit.text = text;
+        if (text !== edit.text) {
+            if (!ed.readOnly && edit.length > 0 && text.startsWith(edit.text))
+                edit.insert(edit.length, text.slice(edit.length));
+            else
+                edit.text = text;
+        }
         ed.savedText = text;
         ed.ready = true;
     }
@@ -249,7 +253,7 @@ FocusScope {
             ed.notes.remember(ed.path);
         }
         onSaveFailed: error => ed.problem = error === FileViewError.PermissionDenied ? "You do not have permission to save here" : "Could not save this file"
-        onFileChanged: ed.diskChanged()
+        onFileChanged: diskTimer.running = true
     }
 
     FileView {
@@ -263,6 +267,12 @@ FocusScope {
                 Stack.execDetached(["chmod", "600", "--", swapFile.path]);
             swapFile.first = false;
         }
+    }
+
+    Timer {
+        id: diskTimer
+        interval: 300
+        onTriggered: ed.diskChanged()
     }
 
     Timer {
@@ -341,7 +351,7 @@ FocusScope {
         anchors.right: parent.right
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        contentWidth: ed.cfg.wrap ? width : Math.max(width, edit.implicitWidth + 32)
+        contentWidth: ed.cfg.wrap ? width : Math.max(width, edit.contentWidth + 32)
         contentHeight: Math.max(height, edit.contentHeight + 32)
         boundsBehavior: Flickable.StopAtBounds
         clip: true
@@ -358,7 +368,7 @@ FocusScope {
             id: edit
             x: 12
             y: 8
-            width: ed.cfg.wrap ? flick.width - 24 : Math.max(flick.width - 24, edit.implicitWidth)
+            width: ed.cfg.wrap ? flick.width - 24 : Math.max(flick.width - 24, edit.contentWidth)
             textFormat: TextEdit.PlainText
             wrapMode: ed.cfg.wrap ? TextEdit.Wrap : TextEdit.NoWrap
             font.family: Tokens.fontMono

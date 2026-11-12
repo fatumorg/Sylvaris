@@ -29,6 +29,12 @@ syl notes open ~/plain.txt
 wait sylvaris notes state | grep -q '"title":"plain.txt","dirty":false,"readOnly":false[^}]*"length":4'
 check printf 'changed on disk' > "$HOME/plain.txt"
 wait sylvaris notes state | grep -q '"title":"plain.txt","dirty":false,"readOnly":false[^}]*"length":15'
+check i=0; while [ $i -lt 12000 ]; do echo "LOG  : General     f:$i> a game console line that keeps growing while it is open"; i=$((i+1)); done > "$HOME/console.txt"
+syl notes open ~/console.txt
+wait sylvaris notes state | grep -q '"title":"console.txt"'
+bg i=0; while [ $i -lt 300 ]; do echo "LOG  : General     appended $i" >> "$HOME/console.txt"; i=$((i+1)); sleep 0.01; done
+check n=0; slow=0; while [ $n -lt 10 ]; do a=$(date +%s%3N); sylvaris notes state >/dev/null; [ $(($(date +%s%3N) - a)) -gt 250 ] && slow=$((slow + 1)); n=$((n + 1)); sleep 0.2; done; [ $slow -le 2 ]
+wait test "$(sylvaris notes state | grep -o '"title":"console.txt"[^}]*"length":[0-9]*' | grep -o '[0-9]*$')" = "$(wc -c < "$HOME/console.txt")" && grep -q 'appended 299' "$HOME/console.txt"
 check printf 'def f(x):\n    return x + 1\n\nprint(f(41))\n' > "$HOME/demo.py"
 syl notes open ~/demo.py
 wait sylvaris notes state | grep -q '"title":"demo.py"[^}]*"language":"Python","highlighted":true'
