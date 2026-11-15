@@ -1,0 +1,11 @@
+sleep 1.5
+check printf 'x = 1\n' > "$HOME/big.py"
+check mkdir -p "$HOME/.local/state/sylvaris/notes" && awk -v p="$HOME/big.py" 'BEGIN { printf "{\"key\":\"%s\",\"path\":\"%s\",\"eol\":\"lf\",\"at\":1,\"text\":\"", p, p; for (i = 0; i < 40000; i++) printf "print(%d, \\\"a recovered line from a draft far larger than the file on disk\\\")\\n", i; print "\"}" }' > "$HOME/.local/state/sylvaris/notes/big.swp"
+check test "$(wc -c < "$HOME/.local/state/sylvaris/notes/big.swp")" -gt 2097152
+restart
+sleep 2
+syl notes open ~/big.py
+check timeout 30 sh -c 'until sylvaris notes state | grep -q "\"title\":\"big.py\",\"dirty\":true[^}]*\"highlighted\":false,\"recovered\":true"; do sleep 0.3; done'
+bg wtype -k Shift_L -s 400 X
+check timeout 30 sh -c 'until sylvaris notes state | grep -q "\"line\":1,\"column\":2"; do sleep 0.3; done'
+check n=0; slow=0; while [ $n -lt 10 ]; do a=$(date +%s%3N); sylvaris notes state >/dev/null; [ $(($(date +%s%3N) - a)) -gt 250 ] && slow=$((slow + 1)); n=$((n + 1)); sleep 0.2; done; [ $slow -le 2 ]

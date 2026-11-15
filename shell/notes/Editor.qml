@@ -63,7 +63,7 @@ FocusScope {
             return;
         ed.swapped = true;
         if (!ed.readOnly && swap.text !== edit.text) {
-            edit.text = swap.text;
+            ed.load(swap.text);
             ed.recovered = true;
         } else {
             ed.dropSwap();
@@ -75,11 +75,16 @@ FocusScope {
         ed.key = swap ? swap.key : "untitled-" + Date.now() + "-" + n;
         ed.apply("");
         if (swap) {
-            edit.text = swap.text;
+            ed.load(swap.text);
             ed.eol = swap.eol === "crlf" ? "crlf" : "lf";
             ed.recovered = true;
             ed.swapped = true;
         }
+    }
+
+    function load(text: string): void {
+        ed.big = text.length > 1048576;
+        edit.text = text;
     }
 
     function apply(raw: string): void {
@@ -143,7 +148,7 @@ FocusScope {
 
     function discardRecovered(): void {
         ed.recovered = false;
-        edit.text = ed.savedText;
+        ed.load(ed.savedText);
         ed.dropSwap();
     }
 

@@ -4,6 +4,10 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Fixed
+
+- SylNotes no longer freezes the shell when it recovers an unsaved draft far larger than the file on disk; drafts over 1 MB open without syntax colours, like large files do
+
 ## [1.7.0] - 2026-11-12
 
 ### Added
