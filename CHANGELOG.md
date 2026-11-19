@@ -8,6 +8,10 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 - The resting island pill is blank: the grey bar inside it is gone
 
+### Fixed
+
+- The lock screen no longer goes dead when the GPU is out of memory, for example while a game runs: a window that cannot start drawing tries again with a fresh surface instead of hiding
+
 ## [1.8.0] - 2026-11-19
 
 ### Added

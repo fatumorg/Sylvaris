@@ -5,6 +5,7 @@
 #include <LayerShellQt/window.h>
 #include <QGuiApplication>
 #include <QQmlListReference>
+#include <QTimer>
 #include <QtWaylandClient/QWaylandClientExtensionTemplate>
 #include <QtWaylandClient/private/qwaylanddisplay_p.h>
 #include <QtWaylandClient/private/qwaylandwindow_p.h>
@@ -218,9 +219,17 @@ QQuickWindow *WindowBase::makeWindow()
         }
     });
     connect(w, &QQuickWindow::closing, this, [this] { emit closed(); });
-    connect(w, &QQuickWindow::sceneGraphError, this, [w](QQuickWindow::SceneGraphError, const QString &message) {
-        qWarning().noquote() << "window could not start drawing, hiding it:" << message;
-        QMetaObject::invokeMethod(w, &QWindow::hide, Qt::QueuedConnection);
+    connect(w, &QQuickWindow::frameSwapped, this, [this] { m_drawRetries = 0; }, Qt::SingleShotConnection);
+    connect(w, &QQuickWindow::sceneGraphError, this, [this, w](QQuickWindow::SceneGraphError, const QString &message) {
+        const int delay = std::min(30000, 1000 << std::min(m_drawRetries++, 5));
+        qWarning().noquote() << "window could not start drawing, trying again in" << delay << "ms:" << message;
+        QTimer::singleShot(delay, this, [this, w] {
+            if (m_window != w || !m_shown)
+                return;
+            m_shown = false;
+            releaseWindow();
+            syncVisible();
+        });
     });
     connect(w, &QQuickWindow::afterAnimating, this, [this] {
         if ((m_mask && m_mask->dynamic()) || (m_effect && m_effect->blurRegion() && m_effect->blurRegion()->dynamic()))

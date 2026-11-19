@@ -264,6 +264,7 @@ protected:
     bool m_shown = false;
     int m_implicitWidth = 100;
     int m_implicitHeight = 100;
+    int m_drawRetries = 0;
     QPointer<ShellScreen> m_screen;
 
 private:
