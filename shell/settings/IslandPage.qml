@@ -61,8 +61,9 @@ Column {
 
             IslandBody {
                 id: preview
+                readonly property real gap: preview.notch ? 0 : 16
                 anchors.horizontalCenter: parent.horizontalCenter
-                y: I.placeOf(root.cfg.position).top ? 16 : parent.height - height - 16
+                y: I.placeOf(root.cfg.position).top ? preview.gap : parent.height - height - preview.gap
                 items: root.sample
                 shortcuts: I.shortcutsFor(root.cfg.shortcuts, Object.keys(I.SHORTCUTS).map(k => I.SHORTCUTS[k].needs)).map(s => Object.assign({}, s, {
                         lit: s.id === "dnd"
@@ -71,6 +72,7 @@ Column {
                 atTop: I.placeOf(root.cfg.position).top
                 idle: root.cfg.idle
                 look: root.cfg.look
+                shape: root.cfg.shape
                 glow: root.cfg.glow
                 time: Qt.formatTime(new Date(), Cal.timeFormat(Settings.values.clock.format, false))
                 progress: 0.42
@@ -199,6 +201,22 @@ Column {
                         }))
                 current: root.cfg.look
                 onPicked: key => Settings.put("island.look", key)
+            }
+        }
+
+        SettingRow {
+            title: "Shape"
+            key: "island.shape"
+            subtitle: "Pill floats below the edge; Notch hangs from it like an older phone's cutout"
+
+            Segmented {
+                width: 240
+                options: I.SHAPES.map(s => ({
+                            key: s,
+                            label: s.charAt(0).toUpperCase() + s.slice(1)
+                        }))
+                current: root.cfg.shape
+                onPicked: key => Settings.put("island.shape", key)
             }
         }
 

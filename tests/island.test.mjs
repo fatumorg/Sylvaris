@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { DEFAULT_ISLAND, validateIsland, activities, label, joined, custom, SHORTCUTS, shortcutsFor, placeOf, cardHeight, CHAT_APPS, chatOf, isCall, pickActions, takes, hiddenSite, voiceOf, tucked, inUse, status, inCall, ownerOf, nodeKind, streamsOf, nextSession, VOICE_GRACE, voiceWindow, ownsFocus, LOOKS, haloOf } from "../shell/lib/island.mjs"
+import { DEFAULT_ISLAND, validateIsland, activities, label, joined, custom, SHORTCUTS, shortcutsFor, placeOf, cardHeight, CHAT_APPS, chatOf, isCall, pickActions, takes, hiddenSite, voiceOf, tucked, inUse, status, inCall, ownerOf, nodeKind, streamsOf, nextSession, VOICE_GRACE, voiceWindow, ownsFocus, LOOKS, haloOf, SHAPES, notchPath } from "../shell/lib/island.mjs"
 
 const idle = { flash: null, recording: { on: false }, alarm: null, focus: null, next: null, media: { title: "", playing: false } }
 
@@ -399,6 +399,20 @@ test("validateIsland picks the ink look with a glow unless told otherwise", () =
     assert.equal(validateIsland({ look: "neon" }).look, "ink")
     assert.equal(validateIsland({ glow: false }).glow, false)
     assert.equal(validateIsland({ glow: "no" }).glow, true)
+})
+
+test("validateIsland keeps the pill shape unless told notch", () => {
+    assert.equal(DEFAULT_ISLAND.shape, "pill")
+    assert.deepEqual(SHAPES, ["pill", "notch"])
+    assert.equal(validateIsland({ shape: "notch" }).shape, "notch")
+    assert.equal(validateIsland({ shape: "drop" }).shape, "pill")
+})
+
+test("notchPath hangs from the edge with flared ears and leaves the edge itself open", () => {
+    assert.equal(notchPath(100, 38, 19, 10, true), "M 0 0 A 10 10 0 0 1 10 10 L 10 19 A 19 19 0 0 0 29 38 L 91 38 A 19 19 0 0 0 110 19 L 110 10 A 10 10 0 0 1 120 0")
+    assert.equal(notchPath(100, 38, 19, 10, false), "M 0 38 A 10 10 0 0 0 10 28 L 10 19 A 19 19 0 0 1 29 0 L 91 0 A 19 19 0 0 1 110 19 L 110 28 A 10 10 0 0 0 120 38")
+    assert.match(notchPath(30, 20, 40, 10, true), /A 10 10 0 0 0 20 20/)
+    assert.equal(notchPath(0, 38, 19, 10, true), "")
 })
 
 test("haloOf rings media, volume, upcoming tasks and recordings and nothing else", () => {

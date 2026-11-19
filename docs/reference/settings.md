@@ -276,6 +276,7 @@ Explained in [island](../parts/island.md).
 | `island.screens` | `"focused"` |  |
 | `island.hideSites` | `["youtube.com","youtu.be"]` |  |
 | `island.look` | `"ink"` |  |
+| `island.shape` | `"pill"` |  |
 | `island.glow` | `true` |  |
 
 ## viewer

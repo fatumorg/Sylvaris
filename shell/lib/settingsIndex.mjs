@@ -115,6 +115,7 @@ const ROWS = [
     {key: "island.position", title: "Side", tab: "island", words: ["top", "bottom", "notch"]},
     {key: "island.reveal", title: "Visibility", tab: "island", subtitle: "Reveal on hover tucks it into the edge like the deck; calls and alerts still slide out"},
     {key: "island.look", title: "Look", tab: "island", subtitle: "Ink is a solid black capsule; Material follows your glass", words: ["ink", "black", "material", "glass", "style", "capsule"]},
+    {key: "island.shape", title: "Shape", tab: "island", subtitle: "Pill floats below the edge; Notch hangs from it like an older phone's cutout", words: ["notch", "cutout", "pill", "iphone", "shape"]},
     {key: "island.glow", title: "Glow", tab: "island", subtitle: "An ink island glows in the colour of what it shows", words: ["rim", "halo", "light", "colour"]},
     {key: "island.idle", title: "When nothing is going on", tab: "island", subtitle: "A pill keeps your shortcuts one hover away"},
     {key: "island.hover", title: "Expand on hover", tab: "island", subtitle: "Otherwise click the island to expand it"},

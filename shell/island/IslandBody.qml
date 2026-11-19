@@ -23,8 +23,11 @@ Item {
     property int unread: 0
     property bool quiet: false
     property string look: "ink"
+    property string shape: "pill"
     property bool glow: true
     readonly property bool ink: root.look === "ink"
+    readonly property bool notch: root.shape === "notch"
+    readonly property real ear: root.notch ? 10 : 0
     readonly property color fg: root.ink ? "#f5f5f7" : root.fg
     readonly property color fgDim: root.ink ? "#a5a5ae" : root.fgDim
     readonly property bool trailing: root.main !== null && ["recording", "focus", "volume"].indexOf(root.main.kind) >= 0
@@ -46,13 +49,14 @@ Item {
     readonly property bool calm: Tokens.paused || Tokens.motion < 0.05
     readonly property Item pill: body
     readonly property Item side: bubbleItem
+    readonly property Item flat: flatEdge
 
     signal act(string kind, string what)
     signal run(string id)
     signal pin
     signal wheel(int steps)
 
-    implicitWidth: body.width + (root.bubble ? root.pillHeight + 8 : 0)
+    implicitWidth: body.width + (root.bubble ? root.pillHeight + 8 + 2 * root.ear : 0)
     implicitHeight: body.height
     opacity: root.shown ? 1 : 0
     visible: opacity > 0
@@ -301,12 +305,14 @@ Item {
         property real radius: 0
         property color rim: "transparent"
         readonly property bool lit: root.ink && root.glow && !Tokens.lite && skin.rim.a > 0
+        readonly property string outline: root.notch ? I.notchPath(skin.width - 2 * root.ear, skin.height, skin.radius, root.ear, root.atTop) : ""
 
         Glass {
             role: "island"
             visible: !root.ink
             anchors.fill: parent
             radius: skin.radius
+            path: skin.outline
             raised: true
             flowing: false
             offColor: Theme.surface
@@ -314,7 +320,7 @@ Item {
         }
 
         Rectangle {
-            visible: skin.lit
+            visible: skin.lit && !root.notch
             anchors.fill: parent
             anchors.margins: -5
             radius: skin.radius + 5
@@ -324,7 +330,7 @@ Item {
         }
 
         Rectangle {
-            visible: skin.lit
+            visible: skin.lit && !root.notch
             anchors.fill: parent
             anchors.margins: -2
             radius: skin.radius + 2
@@ -333,8 +339,25 @@ Item {
             border.color: Qt.alpha(skin.rim, 0.24)
         }
 
+        GlassFill {
+            visible: skin.lit && root.notch
+            anchors.fill: parent
+            path: skin.outline
+            stroke: Qt.alpha(skin.rim, 0.18)
+            strokeWidth: 6
+        }
+
+        GlassFill {
+            visible: root.ink && root.notch
+            anchors.fill: parent
+            path: skin.outline
+            fill: "#050506"
+            stroke: skin.lit ? Qt.alpha(skin.rim, 0.62) : Qt.rgba(1, 1, 1, 0.09)
+            strokeWidth: 2
+        }
+
         Rectangle {
-            visible: root.ink
+            visible: root.ink && !root.notch
             anchors.fill: parent
             radius: skin.radius
             color: "#050506"
@@ -720,9 +743,9 @@ Item {
     }
 
     Skin {
-        x: body.x
+        x: body.x - root.ear
         y: body.y
-        width: body.width
+        width: body.width + 2 * root.ear
         height: body.height
         radius: Math.min(height / 2, root.ink ? 30 : Tokens.radiusPanel)
         rim: root.main === null ? "transparent" : root.tintOf(root.main)
@@ -955,8 +978,15 @@ Item {
     }
 
     Item {
+        id: flatEdge
+        width: body.width
+        height: body.height / 2
+        y: root.atTop ? 0 : body.height / 2
+    }
+
+    Item {
         id: bubbleItem
-        x: body.width + 8
+        x: body.width + 8 + 2 * root.ear
         y: root.atTop ? 0 : body.height - root.pillHeight
         width: root.pillHeight
         height: root.pillHeight
@@ -980,6 +1010,8 @@ Item {
 
         Skin {
             anchors.fill: parent
+            anchors.leftMargin: -root.ear
+            anchors.rightMargin: -root.ear
             radius: height / 2
             rim: root.second === null ? "transparent" : root.tintOf(root.second)
         }

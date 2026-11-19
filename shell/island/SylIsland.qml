@@ -675,7 +675,8 @@ Scope {
                 voice: root.session
             })
             readonly property bool edge: win.wcfg.reveal === "hover"
-            readonly property real inset: win.edge ? Tokens.edgeMargin : 0
+            readonly property bool notch: win.wcfg.shape === "notch"
+            readonly property real inset: win.edge && !win.notch ? Tokens.edgeMargin : 0
             readonly property bool hovering: bodyHover.hovered || stripArea.containsMouse
             readonly property bool tucked: I.tucked(win.wcfg.reveal, {
                 hot: root.hotScreen === win.name,
@@ -700,8 +701,8 @@ Scope {
             anchors.bottom: !win.place.top
             anchors.left: win.place.side === "left"
             anchors.right: win.place.side === "right"
-            margins.top: win.edge ? 0 : Tokens.edgeMargin
-            margins.bottom: win.edge ? 0 : Tokens.edgeMargin
+            margins.top: win.edge || win.notch ? 0 : Tokens.edgeMargin
+            margins.bottom: win.edge || win.notch ? 0 : Tokens.edgeMargin
             margins.left: Tokens.edgeMargin
             margins.right: Tokens.edgeMargin
             implicitWidth: body.cardWidth + body.pillHeight + 16
@@ -733,6 +734,10 @@ Scope {
                     item: body.bubble ? body.side : null
                     radius: body.pillHeight / 2
                 }
+
+                Region {
+                    item: body.notch ? body.flat : null
+                }
             }
 
             Item {
@@ -742,7 +747,7 @@ Scope {
                 x: Math.max(0, Math.min(parent.width - width, body.x + (body.pill.width - width) / 2))
                 y: win.place.top ? 0 : parent.height - height
                 width: Math.max(body.pill.width, 120)
-                height: win.inset + 2
+                height: Tokens.edgeMargin + 2
 
                 MouseArea {
                     id: stripArea
@@ -772,7 +777,7 @@ Scope {
 
             IslandBody {
                 id: body
-                x: win.place.side === "left" ? 0 : win.place.side === "right" ? parent.width - width : (parent.width - body.pill.width) / 2
+                x: win.place.side === "left" ? body.ear : win.place.side === "right" ? parent.width - width - body.ear : (parent.width - body.pill.width) / 2
                 y: Math.round(win.place.top ? win.inset - (1 - win.reveal) * (height + win.inset + 4) : parent.height - height - win.inset + (1 - win.reveal) * (height + win.inset + 4))
                 items: root.items
                 shortcuts: root.shortcutsOf(win.wcfg.shortcuts)
@@ -780,6 +785,7 @@ Scope {
                 atTop: win.place.top
                 idle: win.wcfg.idle
                 look: win.wcfg.look
+                shape: win.wcfg.shape
                 glow: win.wcfg.glow
                 time: root.time
                 replying: root.pinned === win.name ? root.replyTo : -1

@@ -66,6 +66,8 @@ When nothing is going on, `island.idle` decides: `hide` it, keep a small `pill` 
 
 `island.look` is `ink` by default: a solid black capsule that keeps its shape on any wallpaper and theme, with no compositor blur behind it. `material` draws it in your glass like the other panels. The capsule springs between its shapes with your motion settings: a short pill at rest, a compact capsule with the activity's icon on the left and its time, level or music bars on the right, and the full card when it expands. A second activity splits off as a small round bubble beside it.
 
+`island.shape` is `pill` by default, floating just below the screen edge. `notch` glues it to the edge instead, with square corners where it meets the edge and small flared ears, like the cutout on older phones. It grows into the same compact capsule and card and works the same way; a second activity hangs beside it as a small notch of its own. The shape combines with either look.
+
 A ring around the icon fills with the song's progress, the volume level or the time until a Diver task, and pulses while a recording runs. With `island.glow` on, an ink island also gets a soft rim in the activity's colour: the accent for most things, the warning colour for recordings, alarms and privacy mode. Lite mode turns the glow off.
 
 ## Sites it ignores
@@ -97,6 +99,7 @@ sylvaris island open                     # also: close, toggle, state
 | `reveal` | `always` | `always`, or `hover` to tuck it into the edge until you point at it |
 | `idle` | `pill` | `hide`, `pill` or `clock` |
 | `look` | `ink` | `ink` (solid black capsule) or `material` (your glass) |
+| `shape` | `pill` | `pill` (floats below the edge) or `notch` (hangs from the edge) |
 | `glow` | `true` | the activity-coloured rim on an ink island |
 | `shortcuts` | `["notify","center","media","screenshot","record","dnd"]` | up to 8 |
 | `hideSites` | `["youtube.com","youtu.be"]` | up to 20 sites |

@@ -22,6 +22,7 @@ Item {
     property point light: root.rest
 
     property var preview: null
+    property string path: ""
     readonly property var g: root.preview !== null ? root.preview : root.role === "" ? Resin.values : Look.glassFor(root.role)
     readonly property real r: root.role === "" || Look.radius <= 0 ? root.radius : root.radius * root.g.radius / Look.radius
     readonly property bool on: root.g.enabled
@@ -32,8 +33,8 @@ Item {
     readonly property color lineColor: Qt.alpha(Theme.text, 0.22)
     readonly property bool gpu: root.GraphicsInfo.api !== GraphicsInfo.Software && root.GraphicsInfo.api !== GraphicsInfo.Unknown
     readonly property bool extras: root.on && !Tokens.lite
-    readonly property bool shaped: root.extras && root.role !== "" && root.panel && (Look.corners === "squircle" || Look.corners === "bevel")
-    readonly property string outline: root.shaped ? L.cornerPath(root.width, root.height, root.r, Look.corners) : ""
+    readonly property bool shaped: root.path !== "" || root.extras && root.role !== "" && root.panel && (Look.corners === "squircle" || Look.corners === "bevel")
+    readonly property string outline: root.path !== "" ? root.path : root.shaped ? L.cornerPath(root.width, root.height, root.r, Look.corners) : ""
     readonly property bool shiny: root.on && root.panel && root.g.sheen > 0 && !Tokens.lite
     readonly property real bodyAlpha: root.inner ? root.g.layerOpacity : root.raised ? Math.max(root.g.opacity, 0.88) : root.g.opacity
     readonly property real rimAlpha: root.g.rim * (root.inner ? 0.22 : 0.3)

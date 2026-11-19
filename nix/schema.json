@@ -219,6 +219,7 @@
       "youtu.be"
     ],
     "look": "ink",
+    "shape": "pill",
     "glow": true
   },
   "viewer": {

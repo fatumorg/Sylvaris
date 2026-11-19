@@ -3,10 +3,12 @@ import { elapsed } from "./capture.mjs"
 export const DEFAULT_ISLAND = {
     media: true, recording: true, diver: true, volume: true, devices: true, notifications: false, messages: true, calls: true, pinCalls: true, privacy: true, status: true, keepPaused: true, hover: true, seconds: 5,
     position: "top-center", idle: "pill", reveal: "always", shortcuts: ["notify", "center", "media", "screenshot", "record", "dnd"],
-    screens: "focused", hideSites: ["youtube.com", "youtu.be"], look: "ink", glow: true
+    screens: "focused", hideSites: ["youtube.com", "youtu.be"], look: "ink", shape: "pill", glow: true
 }
 
 export const LOOKS = ["ink", "material"]
+
+export const SHAPES = ["pill", "notch"]
 
 export const SCREENS = ["focused", "all"]
 
@@ -89,9 +91,20 @@ export function validateIsland(raw) {
     out.reveal = REVEAL.includes(v.reveal) ? v.reveal : DEFAULT_ISLAND.reveal
     out.screens = SCREENS.includes(v.screens) ? v.screens : DEFAULT_ISLAND.screens
     out.look = LOOKS.includes(v.look) ? v.look : DEFAULT_ISLAND.look
+    out.shape = SHAPES.includes(v.shape) ? v.shape : DEFAULT_ISLAND.shape
     out.hideSites = Array.isArray(v.hideSites) ? [...new Set(v.hideSites.map(siteOf).filter(s => s !== ""))].slice(0, 20) : DEFAULT_ISLAND.hideSites.slice()
     out.shortcuts = Array.isArray(v.shortcuts) ? [...new Set(v.shortcuts.filter(id => Object.prototype.hasOwnProperty.call(SHORTCUTS, id)))].slice(0, MAX_SHORTCUTS) : DEFAULT_ISLAND.shortcuts.slice()
     return out
+}
+
+export function notchPath(w, h, r, e, top) {
+    if (!(w > 0 && h > 0))
+        return ""
+    const c = Math.max(0, Math.min(r, w / 2, h - e))
+    const y = v => top ? v : h - v
+    const sweep = s => top ? s : 1 - s
+    const arc = (rad, s, px, py) => " A " + rad + " " + rad + " 0 0 " + sweep(s) + " " + px + " " + y(py)
+    return "M 0 " + y(0) + arc(e, 1, e, e) + " L " + e + " " + y(h - c) + arc(c, 0, e + c, h) + " L " + (e + w - c) + " " + y(h) + arc(c, 0, e + w, h - c) + " L " + (e + w) + " " + y(e) + arc(e, 1, w + 2 * e, 0)
 }
 
 export function chatOf(n) {

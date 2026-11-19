@@ -21,3 +21,10 @@ syl set island.look material
 sleep 1.5
 check sylvaris island 2>&1 | grep -q "kind"
 shot island-look-material
+syl set island.shape notch
+sleep 1.5
+check sylvaris island 2>&1 | grep -q "kind"
+shot island-look-notch
+syl island open
+sleep 1
+shot island-look-notch-open
