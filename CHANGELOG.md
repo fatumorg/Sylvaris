@@ -4,6 +4,8 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+## [1.7.1] - 2026-11-18
+
 ### Fixed
 
 - SylNotes no longer freezes the shell when it recovers an unsaved draft far larger than the file on disk; drafts over 1 MB open without syntax colours, like large files do
@@ -490,7 +492,8 @@ The first official release, out of beta.
 - Relock a lock screen that is still closing and report locks that fail
 - Never prompt or hang on plugin clones and unfreeze settings once the file is gone
 
-[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.7.0...HEAD
+[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.7.1...HEAD
+[1.7.1]: https://github.com/fatumorg/Sylvaris/compare/v1.7.0...v1.7.1
 [1.7.0]: https://github.com/fatumorg/Sylvaris/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/fatumorg/Sylvaris/compare/v1.5.1...v1.6.0
 [1.5.1]: https://github.com/fatumorg/Sylvaris/compare/v1.5.0...v1.5.1
