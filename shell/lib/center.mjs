@@ -9,12 +9,14 @@ export const EXTRAS = [
     { key: "screenshot", label: "Screenshot", glyph: "camera", plugin: "" },
     { key: "record", label: "Record", glyph: "record", plugin: "" },
     { key: "clip", label: "Clipboard", glyph: "clipboard", plugin: "" },
-    { key: "lock", label: "Lock", glyph: "lock", plugin: "" }
+    { key: "lock", label: "Lock", glyph: "lock", plugin: "" },
+    { key: "keyboard", label: "Keyboard", glyph: "keyboard", plugin: "", part: "keyboard" }
 ]
 
-export function offeredExtras(plugins) {
+export function offeredExtras(plugins, parts) {
     const on = plugins !== null && typeof plugins === "object" && plugins.enabled !== null && typeof plugins.enabled === "object" ? plugins.enabled : {}
-    return EXTRAS.filter(e => e.plugin === "" || on[e.plugin] === true)
+    const live = parts !== null && typeof parts === "object" ? parts : {}
+    return EXTRAS.filter(e => (e.plugin === "" || on[e.plugin] === true) && (e.part === undefined || live[e.part] === true))
 }
 
 const level = side => side !== null && typeof side === "object" && typeof side.level === "number" ? side.level : -1

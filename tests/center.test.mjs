@@ -4,13 +4,19 @@ import { EXTRAS, offeredExtras, airpodsLine, speedLine, layoutBento } from "../s
 import { validateSettings } from "../shell/lib/settings.mjs"
 
 test("extra tiles are opt-in and plugin tiles need their plugin", () => {
-    assert.deepEqual(EXTRAS.map(e => e.key), ["fatest", "airpods", "rgb", "awake", "temp", "screenshot", "record", "clip", "lock"])
+    assert.deepEqual(EXTRAS.map(e => e.key), ["fatest", "airpods", "rgb", "awake", "temp", "screenshot", "record", "clip", "lock", "keyboard"])
     const none = offeredExtras({ enabled: {} }).map(e => e.key)
     assert.deepEqual(none, ["screenshot", "record", "clip", "lock"])
     const both = offeredExtras({ enabled: { fatest: true, airpods: true } }).map(e => e.key)
     assert.deepEqual(both, ["fatest", "airpods", "screenshot", "record", "clip", "lock"])
     assert.deepEqual(offeredExtras(undefined).map(e => e.key), none)
     assert.deepEqual(offeredExtras({ enabled: { temp: true } }).map(e => e.key), ["temp", "screenshot", "record", "clip", "lock"])
+})
+
+test("part tiles need their part turned on", () => {
+    assert.deepEqual(offeredExtras({ enabled: {} }, { keyboard: true }).map(e => e.key), ["screenshot", "record", "clip", "lock", "keyboard"])
+    assert.deepEqual(offeredExtras({ enabled: {} }, { keyboard: false }).map(e => e.key), ["screenshot", "record", "clip", "lock"])
+    assert.deepEqual(offeredExtras({ enabled: {} }, null).map(e => e.key), ["screenshot", "record", "clip", "lock"])
 })
 
 test("center.extra keeps known extras once, in order given", () => {

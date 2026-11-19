@@ -14,4 +14,4 @@ sylvaris access filter grayscale
 | `text` | `1` | text size of every Sylvaris panel |
 | `cursor` | `0` | pointer size, 16 to 128 px; `0` keeps your system's |
 
-Zoom and filters need Hyprland; the rest works everywhere. If Orca or wvkbd are installed, the screen reader and the on-screen keyboard are one click away. Reduce motion and reduce transparency set `motion.reduced` and turn off the glass (see [look and motion](../look.md)).
+Zoom and filters need Hyprland; the rest works everywhere. If Orca is installed, the screen reader is one click away. The on-screen keyboard button opens [SylKeyboard](keyboard.md) when it is on, or wvkbd if that is installed. Reduce motion and reduce transparency set `motion.reduced` and turn off the glass (see [look and motion](../look.md)).

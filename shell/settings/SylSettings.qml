@@ -981,6 +981,7 @@ Scope {
                                     island: islandPage,
                                     capture: capturePage,
                                     access: accessPage,
+                                    keyboard: keyboardPage,
                                     plugins: pluginsPage,
                                     sync: syncPage,
                                     keybinds: keybindsPage,
@@ -1105,6 +1106,12 @@ Scope {
         id: notesPage
 
         NotesPage {}
+    }
+
+    Component {
+        id: keyboardPage
+
+        KeyboardPage {}
     }
 
     Component {

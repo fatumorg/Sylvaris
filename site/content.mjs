@@ -17,7 +17,7 @@ export const NAV = [
         items: [["parts/README.md", "All parts"], ["parts/bar.md", "SylBar"], ["parts/center.md", "SylCenter"], ["parts/clock.md", "SylClock"], ["parts/notify.md", "SylNotify"],
             ["parts/island.md", "SylIsland"], ["parts/deck.md", "SylDeck"], ["parts/pad.md", "SylPad"], ["parts/switcher.md", "SylSwitch"], ["parts/clip.md", "SylClip"], ["parts/viewer.md", "SylViewer"], ["parts/files.md", "SylFiles"], ["parts/archive.md", "SylArchive"], ["parts/notes.md", "SylNotes"], ["parts/top.md", "SylTop"],
             ["parts/capture.md", "SylCapture"], ["parts/media.md", "SylMedia"], ["parts/power.md", "SylPower"], ["parts/paper.md", "SylPaper"], ["parts/widgets.md", "SylWidget"], ["parts/settings.md", "SylSettings"],
-            ["parts/theme.md", "SylTheme"], ["parts/sync.md", "SylSync"], ["parts/access.md", "SylAccessibility"], ["parts/lock.md", "SylLock"], ["parts/greet.md", "SylGreet"],
+            ["parts/theme.md", "SylTheme"], ["parts/sync.md", "SylSync"], ["parts/access.md", "SylAccessibility"], ["parts/keyboard.md", "SylKeyboard"], ["parts/lock.md", "SylLock"], ["parts/greet.md", "SylGreet"],
             ["parts/polkit.md", "SylPolkit"]]
     },
     {
@@ -54,6 +54,7 @@ export const PARTS = [
     { id: "theme", name: "SylTheme", group: "system", page: "parts/theme.md", text: "Themes on a turning ring. The whole desktop previews a theme before you keep it." },
     { id: "sync", name: "SylSync", group: "system", page: "parts/sync.md", text: "Your theme's colours in GTK, Qt, kitty, foot, VS Code, Zed, Neovim and Firefox, every time you switch." },
     { id: "access", name: "SylAccessibility", group: "system", page: "parts/access.md", text: "Zoom, colour filters for colour-weak vision, bigger text and pointer, less motion and less transparency." },
+    { id: "keyboard", name: "SylKeyboard", group: "system", page: "parts/keyboard.md", text: "An on-screen keyboard you can use with a mouse, a gamepad or a TV remote, for a computer on the couch." },
     { id: "lock", name: "SylLock", group: "system", page: "parts/lock.md", text: "A lock screen in its own process, so a crash elsewhere can never leave your session open, with the clock faces of the widgets." },
     { id: "greet", name: "SylGreet", group: "system", page: "parts/greet.md", text: "A login screen for greetd that always looks like your desktop." },
     { id: "plugins", name: "SylPlugins", group: "system", page: "plugins/README.md", text: "Your own widgets, panels and helpers, plus Diver, AirPods, FaTest, Keep Awake, SylRGB and SylTemp built in." }

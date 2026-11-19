@@ -26,6 +26,7 @@ export const PART_PACKAGES = {
     top: ["python", "util-linux"],
     widgets: ["cava"],
     access: [],
+    keyboard: [],
     plugins: ["git"],
     sync: ["python", "procps"],
     capture: ["grim", "slurp", "wf-recorder", "ffmpeg", "wl-clipboard", "libnotify", "pulseaudio"],

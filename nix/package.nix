@@ -114,6 +114,7 @@ let
       util-linux
     ];
     access = [ ];
+    keyboard = [ ];
     fatest = [ ];
     rgb = [ python ];
     temp = [ ];

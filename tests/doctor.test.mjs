@@ -63,7 +63,7 @@ test("report covers versions, parts, tools and both files", () => {
     assert.match(r, /^SylStack: SylStack 1\.0\.0 \(Qt 6\.11\.2\)$/m)
     assert.match(r, /^Compositor: hyprland 0\.51\.0$/m)
     assert.match(r, /^GPU: NVIDIA \(nvidia\)$/m)
-    assert.match(r, /^Parts off: diver, island$/m)
+    assert.match(r, /^Parts off: diver, island, keyboard$/m)
     assert.match(r, /^Parts on: .*capture/m)
     assert.match(r, /^ {2}capture: grim$/m)
     assert.match(r, /^config\.json \(\/c\/config\.json\): 1 problem$/m)

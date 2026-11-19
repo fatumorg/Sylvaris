@@ -457,6 +457,15 @@ Explained in [access](../parts/access.md).
 | `access.text` | `1` |  |
 | `access.cursor` | `0` |  |
 
+## keyboard
+
+| Key | Default | Per screen |
+|---|---|:---:|
+| `keyboard.layout` | `"us"` |  |
+| `keyboard.size` | `1` |  |
+| `keyboard.gamepad` | `true` |  |
+| `keyboard.combo` | `true` |  |
+
 ## keybinds
 
 Explained in [keybinds](../keybinds.md).
@@ -569,6 +578,7 @@ Explained in [configuration](../configuration.md#turning-parts-off).
 | `parts.notes` | `true` |  |
 | `parts.top` | `true` |  |
 | `parts.access` | `true` |  |
+| `parts.keyboard` | `false` |  |
 | `parts.plugins` | `true` |  |
 | `parts.sync` | `true` |  |
 | `parts.switcher` | `true` |  |

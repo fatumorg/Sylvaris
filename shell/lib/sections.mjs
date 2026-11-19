@@ -15,6 +15,7 @@ export const SECTIONS = [
     { key: "sound", label: "Sound", glyph: GLYPHS.volume, group: "system" },
     { key: "power", label: "Power", glyph: GLYPHS.power, group: "system" },
     { key: "access", label: "Accessibility", glyph: GLYPHS.accessibility, group: "system" },
+    { key: "keyboard", label: "Keyboard", glyph: GLYPHS.keyboard, group: "system" },
     { key: "rgb", label: "Lighting", glyph: GLYPHS.rgb, group: "system", plugin: "rgb" },
     { key: "look", label: "Style", glyph: GLYPHS.palette, group: "look" },
     { key: "appearance", label: "Appearance", glyph: GLYPHS.theme, group: "look" },
@@ -63,7 +64,7 @@ export const HUBS = [
     { key: "desktop", label: "Desktop", icon: GLYPHS.image, tabs: ["wallpaper", "widgets", "clock", "weather"] },
     { key: "panels", label: "Panels", icon: GLYPHS.grid, tabs: ["bar", "deck", "center", "island", "notifications", "launcher", "switcher"] },
     { key: "apps", label: "Apps", icon: GLYPHS.apps, tabs: ["files", "archive", "viewer", "capture", "clip", "notes", "top"] },
-    { key: "system", label: "System", icon: GLYPHS.settings, tabs: ["general", "displays", "sound", "power", "access", "keybinds", "commands"] },
+    { key: "system", label: "System", icon: GLYPHS.settings, tabs: ["general", "displays", "sound", "power", "access", "keyboard", "keybinds", "commands"] },
     { key: "security", label: "Security", icon: GLYPHS.shield, tabs: ["lock", "polkit"] },
     { key: "plugins", label: "Plugins", icon: GLYPHS.puzzle, tabs: ["plugins", "diver", "fatest", "rgb", "temp"] }
 ]

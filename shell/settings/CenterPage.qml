@@ -43,7 +43,7 @@ Column {
             glyph: Icons.GLYPHS.hotspot
         }
     ], page.toggleTiles.slice(1))
-    readonly property var extras: C.offeredExtras(Settings.shown.plugins).map(e => ({
+    readonly property var extras: C.offeredExtras(Settings.shown.plugins, Settings.shown.parts).map(e => ({
                 key: e.key,
                 label: e.label,
                 glyph: Icons.GLYPHS[e.glyph]

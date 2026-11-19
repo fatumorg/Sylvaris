@@ -10,6 +10,7 @@ import { DEFAULT_NOTES, validateNotes } from "./notes.mjs"
 import { DEFAULT_TOP, validateTop } from "./top.mjs"
 import { DEFAULT_CAPTURE, validateCapture } from "./capture.mjs"
 import { DEFAULT_ACCESS, validateAccess } from "./access.mjs"
+import { DEFAULT_KEYBOARD, validateKeyboard } from "./keyboard.mjs"
 import { EXTRAS, LAYOUTS } from "./center.mjs"
 import { validateKeybinds } from "./keys.mjs"
 import { DEFAULT_PLUGINS, validatePlugins, BUILTIN, builtinOn } from "./plugins.mjs"
@@ -58,6 +59,7 @@ export const PARTS = {
     notes: [],
     top: [],
     access: ["NightLight"],
+    keyboard: [],
     plugins: ["Plugins"],
     sync: ["Sync"],
     switcher: ["Apps"],
@@ -75,7 +77,7 @@ export const SERVICE_DEPS = {
     Weather: ["Sky"]
 }
 
-export const OPT_IN = ["island"]
+export const OPT_IN = ["island", "keyboard"]
 
 function partOn(parts, name) {
     return OPT_IN.includes(name) ? parts[name] === true : parts[name] !== false
@@ -141,6 +143,7 @@ export const DEFAULT_SETTINGS = {
     screens: {},
     capture: DEFAULT_CAPTURE,
     access: DEFAULT_ACCESS,
+    keyboard: DEFAULT_KEYBOARD,
     keybinds: {},
     plugins: DEFAULT_PLUGINS,
     sync: DEFAULT_SYNC,
@@ -410,6 +413,7 @@ export function validateSettings(raw, userLooks) {
         v.placement[key] = PLACES.includes(place[key]) || key === "media" && place[key] === "auto" ? place[key] : DEFAULT_PLACEMENT[key]
     v.capture = validateCapture(v.capture)
     v.access = validateAccess(v.access)
+    v.keyboard = validateKeyboard(v.keyboard)
     v.keybinds = validateKeybinds(v.keybinds)
     v.plugins = validatePlugins(v.plugins)
     v.widgets = validateWidgets(v.widgets, v.plugins).values

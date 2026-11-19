@@ -1,0 +1,3 @@
+module qs.keyboard
+KeyCap 1.0 KeyCap.qml
+SylKeyboard 1.0 SylKeyboard.qml

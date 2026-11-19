@@ -160,7 +160,7 @@ Column {
         }
 
         SettingRow {
-            visible: root.tools["wvkbd-mobintl"] === true
+            visible: Settings.values.parts.keyboard === true || root.tools["wvkbd-mobintl"] === true
             title: "On-screen keyboard"
             key: "access.keyboard"
             last: true
@@ -168,7 +168,7 @@ Column {
             RowButton {
                 icon: Icons.GLYPHS.keyboard
                 label: "Show or hide"
-                onClicked: root.access.toggleTool("wvkbd-mobintl", ["-L", "300"])
+                onClicked: Settings.values.parts.keyboard === true ? Ipc.run(["keyboard", "toggle"]) : root.access.toggleTool("wvkbd-mobintl", ["-L", "300"])
             }
         }
     }

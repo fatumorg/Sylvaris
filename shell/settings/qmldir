@@ -23,6 +23,7 @@ GlassPreview 1.0 GlassPreview.qml
 IslandPage 1.0 IslandPage.qml
 KeybindsCard 1.0 KeybindsCard.qml
 KeybindsPage 1.0 KeybindsPage.qml
+KeyboardPage 1.0 KeyboardPage.qml
 LauncherPage 1.0 LauncherPage.qml
 LockPage 1.0 LockPage.qml
 LookPage 1.0 LookPage.qml

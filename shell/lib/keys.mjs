@@ -25,6 +25,7 @@ export const ACTIONS = [
     { id: "access toggle", label: "Accessibility" },
     { id: "access zoom in", label: "Zoom in" },
     { id: "access zoom out", label: "Zoom out" },
+    { id: "keyboard toggle", label: "On-screen keyboard" },
     { id: "dnd toggle", label: "Do not disturb" },
     { id: "nightlight toggle", label: "Night light" },
     { id: "privacy toggle", label: "Mute microphones and cameras" },

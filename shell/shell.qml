@@ -33,6 +33,7 @@ import qs.plugins
 import qs.sync
 import qs.widgets
 import qs.corners
+import qs.keyboard
 import "lib/ipc.mjs" as I
 import "lib/eq.mjs" as E
 import "lib/settings.mjs" as S
@@ -71,6 +72,7 @@ ShellRoot {
             notes: notesLoader,
             top: topLoader,
             access: accessLoader,
+            keyboard: keyboardLoader,
             plugins: pluginsLoader,
             sync: syncLoader
         })
@@ -292,6 +294,7 @@ ShellRoot {
             notes: root.part("notes") !== null ? root.part("notes").state() : undefined,
             top: root.part("top") !== null ? root.part("top").state() : undefined,
             access: root.part("access") !== null ? root.part("access").state() : undefined,
+            keyboard: root.part("keyboard") !== null ? root.part("keyboard").state() : undefined,
             fatest: root.part("fatest") !== null ? root.part("fatest").state() : undefined,
             rgb: root.part("rgb") !== null ? root.part("rgb").state() : undefined,
             temp: root.part("temp") !== null ? root.part("temp").state() : undefined,
@@ -524,6 +527,13 @@ ShellRoot {
             id: accessPart
             onOpened: root.solo(accessPart)
         }
+    }
+
+    LazyLoader {
+        id: keyboardLoader
+        active: root.on("keyboard")
+
+        SylKeyboard {}
     }
 
     LazyLoader {
@@ -1025,6 +1035,14 @@ ShellRoot {
                 zoom: v => root.need("access").zoom(v || "in"),
                 filter: name => root.need("access").filter(name || "none"),
                 state: () => root.need("access").state()
+            },
+            keyboard: {
+                toggle: () => root.need("keyboard").toggle(),
+                open: how => root.need("keyboard").open(how || ""),
+                close: () => root.need("keyboard").close(),
+                type: (...words) => root.need("keyboard").type(words.join(" ")),
+                press: button => root.need("keyboard").press(button || ""),
+                state: () => root.need("keyboard").state()
             },
             fatest: I.gated({
                 default: "state",

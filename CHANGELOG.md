@@ -7,6 +7,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 ### Added
 
 - `island.shape`: a `notch` island that hangs from the screen edge like an older phone's cutout, with the same activities, card and shortcuts as the pill
+- SylKeyboard, an opt-in on-screen keyboard for a computer on a TV: click keys with a mouse, or move across them with a gamepad or a TV remote; `sylvaris keyboard` commands, a SylCenter tile and a settings page (`parts.keyboard`)
 
 ## [1.7.1] - 2026-11-18
 

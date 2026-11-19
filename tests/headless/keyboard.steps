@@ -1,0 +1,32 @@
+sleep 1.5
+syl set parts.keyboard true
+sleep 1.5
+syl notes new
+sleep 2
+syl keyboard open
+wait sylvaris keyboard state | grep -q '"open":true'
+check sylvaris keyboard state | grep -q '"available":true'
+check sylvaris keyboard state | grep -q '"mode":"pointer"'
+shot keyboard
+pointer move 1266 1275 click 1
+pointer move 1371 1215 click 1
+wait sylvaris notes state | grep -q '"line":1,"column":3'
+check sylvaris notes state | grep -q '"dirty":true'
+syl keyboard press right
+check sylvaris keyboard state | grep -q '"mode":"focus"'
+syl keyboard press a
+syl keyboard press right
+syl keyboard press a
+check sylvaris keyboard state | grep -q '"preview":"we"'
+shot keyboard-focus
+syl keyboard press start
+wait sylvaris keyboard state | grep -q '"open":false'
+wait sylvaris notes state | grep -q '"line":1,"column":5'
+syl keyboard type a b
+wait sylvaris notes state | grep -q '"line":1,"column":8'
+check ! sylvaris keyboard press bogus
+check ! sylvaris keyboard type
+check ! sylvaris keyboard open sideways
+syl set parts.keyboard false
+sleep 1
+check ! sylvaris keyboard state

@@ -27,6 +27,7 @@ export const MODULES = {
     notes: { label: "Notes", section: "notes", glyph: "pencil" },
     top: { label: "Task manager", section: "top", glyph: "chart" },
     access: { label: "Accessibility", section: "access", glyph: "accessibility" },
+    keyboard: { label: "On-screen keyboard", section: "keyboard", glyph: "keyboard" },
     plugins: { label: "Plugins", section: "plugins", glyph: "puzzle" },
     sync: { label: "App colours", section: "sync", glyph: "sync" }
 }
@@ -34,7 +35,7 @@ export const MODULES = {
 export const PRODUCT = {
     bar: "SylBar", deck: "SylDeck", center: "SylCenter", theme: "SylTheme", clock: "SylClock", notify: "SylNotify",
     pad: "SylPad", media: "SylMedia", settings: "SylSettings", power: "SylPower", paper: "SylPaper", diver: "SylDiver", fatest: "FaTest", rgb: "SylRGB", temp: "SylTemp",
-    switcher: "SylSwitch", lock: "SylLock", polkit: "SylPolkit", clip: "SylClip", island: "SylIsland", capture: "SylCapture", viewer: "SylViewer", files: "SylFiles", archive: "SylArchive", notes: "SylNotes", top: "SylTop", access: "SylAccessibility", plugins: "SylPlugins", sync: "SylSync", widgets: "SylWidget"
+    switcher: "SylSwitch", lock: "SylLock", polkit: "SylPolkit", clip: "SylClip", island: "SylIsland", capture: "SylCapture", viewer: "SylViewer", files: "SylFiles", archive: "SylArchive", notes: "SylNotes", top: "SylTop", access: "SylAccessibility", keyboard: "SylKeyboard", plugins: "SylPlugins", sync: "SylSync", widgets: "SylWidget"
 }
 
 export function tiles() {

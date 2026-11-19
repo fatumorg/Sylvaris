@@ -95,7 +95,7 @@ Item {
             });
         for (let i = 1; i < root.toggles.length; i++)
             out.push(root.toggleTile(root.toggles[i]));
-        for (const e of C.offeredExtras(Settings.values.plugins)) {
+        for (const e of C.offeredExtras(Settings.values.plugins, Settings.values.parts)) {
             const t = root.cfg.extra.indexOf(e.key) >= 0 ? root.extraTile(e) : null;
             if (t !== null)
                 out.push(t);
@@ -141,6 +141,9 @@ Item {
         } else if (e.key === "record") {
             tile.subtitle = p.recording ? "Recording" : "Select an area";
             tile.active = p.recording;
+        } else if (e.key === "keyboard") {
+            tile.subtitle = p.wanted ? "Showing" : "On-screen keyboard";
+            tile.active = p.wanted;
         } else {
             tile.subtitle = e.key === "screenshot" ? "Select an area" : e.key === "clip" ? "History" : "Lock the screen";
         }
@@ -197,6 +200,8 @@ Item {
             root.peers.clip.open();
         else if (key === "lock")
             root.peers.lock.lock();
+        else if (key === "keyboard")
+            root.peers.keyboard.toggle();
     }
 
     function iconAction(key: string): void {
