@@ -20,7 +20,8 @@ Scope {
     property int col: 0
     property string preview: ""
     property bool sending: false
-    property string pending: ""
+    property var queue: []
+    property int tries: 0
     property bool closeAfter: false
     readonly property var rows: K.rowsFor(root.cfg.layout, root.page)
     readonly property bool upper: root.shift !== (root.caps && root.page === "letters")
@@ -46,9 +47,10 @@ Scope {
     function close(): void {
         root.wanted = false;
         root.preview = "";
+        root.queue = [];
+        root.closeAfter = false;
         root.sending = false;
         flushTimer.stop();
-        VirtualInput.releaseAll();
     }
 
     function toggle(): void {
@@ -79,8 +81,17 @@ Scope {
     function type(text: string): void {
         if (typeof text !== "string" || text === "" || text.length > 4096)
             throw new Error("usage: keyboard type <text> (1 to 4096 characters)");
-        if (!VirtualInput.type(text))
+        if (!VirtualInput.available)
             throw new Error("this compositor does not accept virtual keyboard input");
+        if (root.focusing || root.sending) {
+            root.queue = root.queue.concat([{
+                    text: text
+                }]);
+            root.flush("", false);
+            return;
+        }
+        if (!VirtualInput.type(text))
+            throw new Error("could not type this text; it has too many different characters at once");
     }
 
     function state(): var {
@@ -123,16 +134,31 @@ Scope {
     }
 
     function flush(sym: string, done: bool): void {
-        root.pending = sym;
-        root.closeAfter = done;
+        const items = root.queue.slice();
+        if (root.preview !== "")
+            items.push({
+                text: root.preview
+            });
+        if (sym !== "")
+            items.push({
+                sym: sym
+            });
+        root.queue = items;
+        root.preview = "";
+        root.closeAfter = root.closeAfter || done;
         root.sending = true;
-        flushTimer.restart();
+        if (!flushTimer.running) {
+            root.tries = 0;
+            flushTimer.start();
+        }
     }
 
     function hit(key: var, pointer: bool): void {
         const leaving = pointer && root.mode === "focus";
-        if (leaving)
+        if (leaving) {
             root.mode = "pointer";
+            root.flush("", false);
+        }
         if (key.action === "shift" || key.action === "caps" || key.action === "alt" || key.action === "page") {
             if (key.action === "shift")
                 root.shift = !root.shift;
@@ -142,20 +168,23 @@ Scope {
                 root.alt = !root.alt;
             else
                 root.turn();
-            if (leaving && root.preview !== "")
-                root.flush("", false);
             return;
         }
-        if (root.mode === "focus" || leaving) {
-            const text = K.textFor(key, root.upper, root.alt);
+        const text = K.textFor(key, root.upper, root.alt);
+        if (root.mode === "focus") {
             if (key.action === "backspace" && root.preview !== "")
                 root.preview = root.preview.slice(0, -1);
             else if (text !== "")
                 root.preview = (root.preview + text).slice(0, 4096);
             else
-                root.flush(key.sym, !leaving && key.sym === "Return");
-            if (leaving && root.pending === "" && !flushTimer.running)
-                root.flush("", false);
+                root.flush(key.sym, key.sym === "Return");
+        } else if (root.sending) {
+            if (text !== "")
+                root.queue = root.queue.concat([{
+                        text: text
+                    }]);
+            else
+                root.flush(key.sym, false);
         } else {
             VirtualInput.tap(K.symFor(key, root.upper, root.alt), []);
         }
@@ -174,8 +203,14 @@ Scope {
         if (known.indexOf(button) < 0)
             throw new Error("usage: keyboard press <" + known.join("|") + ">");
         if (button === "combo") {
-            if (root.cfg.combo)
-                root.wanted ? root.close() : root.open("focus");
+            if (!root.cfg.combo)
+                return;
+            if (!root.wanted)
+                root.open("focus");
+            else if (root.preview !== "" || root.sending)
+                root.flush("", true);
+            else
+                root.close();
             return;
         }
         if (!root.wanted)
@@ -202,7 +237,7 @@ Scope {
 
     Gamepad {
         id: pad
-        enabled: root.cfg.gamepad
+        enabled: root.cfg.gamepad && (root.wanted || root.cfg.combo)
         grabbed: root.focusing
         onPressed: button => root.press(button)
     }
@@ -211,12 +246,19 @@ Scope {
         id: flushTimer
         interval: 120
         onTriggered: {
-            if (root.preview !== "")
-                VirtualInput.type(root.preview);
-            if (root.pending !== "")
-                VirtualInput.tap(root.pending, []);
-            root.preview = "";
-            root.pending = "";
+            if (root.grid !== null && root.grid.Window.active && root.tries < 15) {
+                root.tries++;
+                flushTimer.start();
+                return;
+            }
+            const items = root.queue;
+            root.queue = [];
+            for (const item of items) {
+                if (item.text !== undefined)
+                    VirtualInput.type(item.text);
+                else
+                    VirtualInput.tap(item.sym, []);
+            }
             root.sending = false;
             if (root.closeAfter)
                 root.close();
@@ -254,6 +296,10 @@ Scope {
                 focus: true
 
                 Keys.onPressed: event => {
+                    if (root.sending) {
+                        event.accepted = true;
+                        return;
+                    }
                     const map = {
                         [Qt.Key_Up]: "up",
                         [Qt.Key_Down]: "down",

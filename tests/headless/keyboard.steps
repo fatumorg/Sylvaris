@@ -30,3 +30,11 @@ check ! sylvaris keyboard open sideways
 syl set parts.keyboard false
 sleep 1
 check ! sylvaris keyboard state
+syl set parts.keyboard true
+sleep 1.5
+syl keyboard open focus
+wait sylvaris keyboard state | grep -q '"mode":"focus"'
+syl keyboard type z
+syl keyboard press combo
+wait sylvaris keyboard state | grep -q '"open":false'
+wait sylvaris notes state | grep -q '"line":1,"column":9'
