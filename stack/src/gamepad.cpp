@@ -30,6 +30,20 @@ bool isPad(int fd)
     return hasBit(keys, BTN_SOUTH) || hasBit(keys, BTN_GAMEPAD);
 }
 
+bool buttonsHeld(int fd)
+{
+    unsigned long keys[(KEY_MAX + 1) / (sizeof(unsigned long) * CHAR_BIT) + 1] = {};
+    if (ioctl(fd, EVIOCGKEY(sizeof(keys)), keys) < 0)
+        return true;
+    for (int b = BTN_SOUTH; b <= BTN_THUMBR; ++b)
+        if (hasBit(keys, b))
+            return true;
+    for (int b = BTN_DPAD_UP; b <= BTN_DPAD_RIGHT; ++b)
+        if (hasBit(keys, b))
+            return true;
+    return false;
+}
+
 bool absRange(int fd, int code, int *min, int *max)
 {
     input_absinfo info {};
@@ -73,9 +87,24 @@ void Gamepad::setGrabbed(bool on)
     if (on == m_grabbed)
         return;
     m_grabbed = on;
-    for (const Pad &pad : std::as_const(m_pads))
-        ioctl(pad.fd, EVIOCGRAB, on ? 1 : 0);
+    for (Pad &pad : m_pads) {
+        if (on) {
+            tryGrab(pad);
+        } else if (pad.owned) {
+            ioctl(pad.fd, EVIOCGRAB, 0);
+            pad.owned = false;
+        }
+    }
     emit grabbedChanged();
+}
+
+void Gamepad::tryGrab(Pad &pad)
+{
+    if (pad.owned || !m_grabbed)
+        return;
+    if (pad.hatX != 0 || pad.hatY != 0 || pad.x.dir != 0 || pad.y.dir != 0 || buttonsHeld(pad.fd))
+        return;
+    pad.owned = ioctl(pad.fd, EVIOCGRAB, 1) == 0;
 }
 
 void Gamepad::scan()
@@ -109,8 +138,7 @@ void Gamepad::scan()
         pad.fd = fd;
         absRange(fd, ABS_X, &pad.x.min, &pad.x.max);
         absRange(fd, ABS_Y, &pad.y.min, &pad.y.max);
-        if (m_grabbed)
-            ioctl(fd, EVIOCGRAB, 1);
+        tryGrab(pad);
         pad.notifier = new QSocketNotifier(fd, QSocketNotifier::Read, this);
         connect(pad.notifier, &QSocketNotifier::activated, this, [this, path] { readPad(path); });
         m_pads.insert(path, pad);
@@ -226,6 +254,7 @@ void Gamepad::readPad(const QString &path)
             if (it == m_pads.end())
                 return;
         }
+        tryGrab(*it);
     }
 }
 

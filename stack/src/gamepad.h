@@ -47,6 +47,7 @@ private:
         int hatY = 0;
         bool select = false;
         bool start = false;
+        bool owned = false;
     };
 
     void scan();
@@ -55,6 +56,7 @@ private:
     void readPad(const QString &path);
     void stick(Axis &axis, int value, const char *minus, const char *plus);
     void button(Pad &pad, int code, int value);
+    void tryGrab(Pad &pad);
 
     bool m_enabled = false;
     bool m_grabbed = false;

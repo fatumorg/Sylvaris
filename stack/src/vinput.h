@@ -5,6 +5,7 @@
 #include <QQmlEngine>
 #include <QSet>
 #include <QStringList>
+#include <QTimer>
 
 #include <cstdint>
 
@@ -37,6 +38,7 @@ public:
     Q_INVOKABLE void releaseAll();
 
     static constexpr int MaxText = 4096;
+    static constexpr int MaxQueue = 4 * MaxText;
 
 signals:
     void availableChanged();
@@ -44,17 +46,25 @@ signals:
 private:
     bool ensureKeyboard();
     bool ensurePointer();
+    struct Op {
+        int code;
+        bool pressed;
+        uint32_t mods;
+    };
+
     bool learn(const QList<uint32_t> &syms);
-    int codeFor(uint32_t sym);
     void sendKeymap();
-    void sendKey(int code, bool pressed);
-    void sendMods(uint32_t mask);
+    void enqueue(int code, bool pressed, uint32_t mods);
+    void pump();
     uint32_t now() const;
 
     zwp_virtual_keyboard_v1 *m_keyboard = nullptr;
     zwlr_virtual_pointer_v1 *m_pointer = nullptr;
-    QList<uint32_t> m_syms;
     QHash<uint32_t, int> m_codes;
+    int m_dynamic = 0;
+    uint32_t m_mods = 0;
+    QList<Op> m_queue;
+    QTimer m_pump;
     QSet<int> m_down;
     QSet<uint32_t> m_buttons;
 };
