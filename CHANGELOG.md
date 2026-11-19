@@ -4,6 +4,10 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Changed
+
+- The resting island pill is blank: the grey bar inside it is gone
+
 ## [1.8.0] - 2026-11-19
 
 ### Added

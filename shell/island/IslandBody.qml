@@ -912,15 +912,6 @@ Item {
                         font.weight: Font.DemiBold
                     }
                 }
-
-                Rectangle {
-                    anchors.verticalCenter: parent.verticalCenter
-                    visible: root.idle !== "clock" && !root.quiet && root.unread === 0
-                    width: 28
-                    height: 4
-                    radius: Tokens.r(2)
-                    color: Qt.alpha(root.fg, 0.35)
-                }
             }
         }
 
