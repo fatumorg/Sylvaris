@@ -10,7 +10,7 @@ find_package(Qt6 6.9 REQUIRED COMPONENTS GuiPrivate WaylandClientPrivate)
 find_package(LayerShellQt REQUIRED)
 find_package(PolkitQt6-1 REQUIRED)
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(DEPS REQUIRED IMPORTED_TARGET libpipewire-0.3 wayland-client pam)
+pkg_check_modules(DEPS REQUIRED IMPORTED_TARGET libpipewire-0.3 wayland-client pam xkbcommon)
 
 qt_standard_project_setup(REQUIRES 6.9)
 
@@ -44,6 +44,8 @@ qt_add_qml_module(sylstack
         src/greetd.h src/greetd.cpp
         src/networking.h src/networking.cpp
         src/bluetooth.h src/bluetooth.cpp
+        src/vinput.h src/vinput.cpp
+        src/gamepad.h src/gamepad.cpp
     QML_FILES
         qml/FileView.qml
         qml/IconImage.qml
@@ -57,6 +59,8 @@ qt6_generate_wayland_protocol_client_sources(sylstack FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/protocols/wlr-foreign-toplevel-management-unstable-v1.xml
     ${CMAKE_CURRENT_SOURCE_DIR}/protocols/hyprland-toplevel-export-v1.xml
     ${CMAKE_CURRENT_SOURCE_DIR}/protocols/hyprland-toplevel-mapping-v1.xml
+    ${CMAKE_CURRENT_SOURCE_DIR}/protocols/virtual-keyboard-unstable-v1.xml
+    ${CMAKE_CURRENT_SOURCE_DIR}/protocols/wlr-virtual-pointer-unstable-v1.xml
 )
 
 target_include_directories(sylstack PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)

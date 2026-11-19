@@ -10,6 +10,7 @@
   linux-pam,
   wayland,
   wayland-scanner,
+  libxkbcommon,
 }:
 
 stdenv.mkDerivation {
@@ -39,6 +40,7 @@ stdenv.mkDerivation {
     pipewire
     linux-pam
     wayland
+    libxkbcommon
   ];
 
   cmakeFlags = [ (lib.cmakeFeature "CMAKE_BUILD_TYPE" "Release") ];
