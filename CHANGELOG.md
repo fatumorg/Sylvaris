@@ -4,10 +4,13 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-11-19
+
 ### Added
 
 - `island.shape`: a `notch` island that hangs from the screen edge like an older phone's cutout, with the same activities, card and shortcuts as the pill
 - SylKeyboard, an opt-in on-screen keyboard for a computer on a TV: click keys with a mouse, or move across them with a gamepad or a TV remote; `sylvaris keyboard` commands, a SylCenter tile and a settings page (`parts.keyboard`)
+- SylStack 1.1.0 adds virtual keyboard, virtual pointer and gamepad input
 
 ## [1.7.1] - 2026-11-18
 
@@ -497,7 +500,8 @@ The first official release, out of beta.
 - Relock a lock screen that is still closing and report locks that fail
 - Never prompt or hang on plugin clones and unfreeze settings once the file is gone
 
-[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.7.1...HEAD
+[Unreleased]: https://github.com/fatumorg/Sylvaris/compare/v1.8.0...HEAD
+[1.8.0]: https://github.com/fatumorg/Sylvaris/compare/v1.7.1...v1.8.0
 [1.7.1]: https://github.com/fatumorg/Sylvaris/compare/v1.7.0...v1.7.1
 [1.7.0]: https://github.com/fatumorg/Sylvaris/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/fatumorg/Sylvaris/compare/v1.5.1...v1.6.0
