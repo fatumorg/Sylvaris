@@ -20,6 +20,7 @@ FilesPage 1.0 FilesPage.qml
 FilesPreview 1.0 FilesPreview.qml
 GeneralPage 1.0 GeneralPage.qml
 GlassPreview 1.0 GlassPreview.qml
+HomePicker 1.0 HomePicker.qml
 IslandPage 1.0 IslandPage.qml
 KeybindsCard 1.0 KeybindsCard.qml
 KeybindsPage 1.0 KeybindsPage.qml
