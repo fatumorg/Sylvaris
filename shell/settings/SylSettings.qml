@@ -1014,7 +1014,8 @@ Scope {
                                     plugins: pluginsPage,
                                     sync: syncPage,
                                     keybinds: keybindsPage,
-                                    commands: commandsPage
+                                    commands: commandsPage,
+                                    about: aboutPage
                                 })[root.shownSection] || null
                         }
 
@@ -1169,6 +1170,14 @@ Scope {
         id: switcherPage
 
         SwitcherPage {}
+    }
+
+    Component {
+        id: aboutPage
+
+        AboutPage {
+            host: root
+        }
     }
 
     Component {

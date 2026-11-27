@@ -1,4 +1,5 @@
 module qs.settings
+AboutPage 1.0 AboutPage.qml
 AccessPage 1.0 AccessPage.qml
 AppearancePage 1.0 AppearancePage.qml
 ArchivePage 1.0 ArchivePage.qml

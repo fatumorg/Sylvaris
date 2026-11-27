@@ -25,10 +25,12 @@ test("hubs group pages by what people look for", () => {
         ["system", ["general", "displays", "sound", "power", "access", "keyboard"]],
         ["shortcuts", ["keybinds", "commands"]],
         ["security", ["lock", "polkit"]],
-        ["plugins", ["plugins", "diver", "fatest", "rgb", "temp"]]
+        ["plugins", ["plugins", "diver", "fatest", "rgb", "temp"]],
+        ["about", ["about"]]
     ])
     assert.equal(HUBS.find(h => h.key === "time").label, "Clock & weather")
     assert.equal(HUBS.find(h => h.key === "shortcuts").label, "Shortcuts")
+    assert.equal(SECTIONS.find(s => s.key === "about").label, "About")
 })
 
 test("labels say what is inside", () => {

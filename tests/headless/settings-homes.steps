@@ -35,3 +35,8 @@ check sylvaris settings state | grep -q '"open":false'
 syl settings open time
 sleep 1
 check sylvaris settings state | grep -q '"hub":"time","tab":"clock"'
+syl set settings.home constellation
+syl settings open about
+sleep 1.5
+check sylvaris settings state | grep -q '"hub":"about","tab":"about"'
+shot settings-about

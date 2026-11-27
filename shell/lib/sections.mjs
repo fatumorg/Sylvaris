@@ -37,7 +37,8 @@ export const SECTIONS = [
     { key: "polkit", label: "Authentication", glyph: GLYPHS.shield },
     { key: "keybinds", label: "Key bindings", glyph: GLYPHS.keyboard },
     { key: "commands", label: "Commands", glyph: GLYPHS.code },
-    { key: "plugins", label: "Plugins", glyph: GLYPHS.puzzle }
+    { key: "plugins", label: "Plugins", glyph: GLYPHS.puzzle },
+    { key: "about", label: "About", glyph: GLYPHS.info }
 ]
 
 export const HUBS = [
@@ -48,7 +49,8 @@ export const HUBS = [
     { key: "system", label: "System", icon: GLYPHS.settings, tabs: ["general", "displays", "sound", "power", "access", "keyboard"] },
     { key: "shortcuts", label: "Shortcuts", icon: GLYPHS.keyboard, tabs: ["keybinds", "commands"] },
     { key: "security", label: "Security", icon: GLYPHS.shield, tabs: ["lock", "polkit"] },
-    { key: "plugins", label: "Plugins", icon: GLYPHS.puzzle, tabs: ["plugins", "diver", "fatest", "rgb", "temp"] }
+    { key: "plugins", label: "Plugins", icon: GLYPHS.puzzle, tabs: ["plugins", "diver", "fatest", "rgb", "temp"] },
+    { key: "about", label: "About", icon: GLYPHS.info, tabs: ["about"] }
 ]
 
 export function resolveSection(key) {

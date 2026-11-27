@@ -6,6 +6,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Added
 
+- An About page in SylSettings with the statistics, version and config folder, and the constellation options while the constellation is the settings home
 - `settings.home`: the screen SylSettings opens on: `cards` (default), a grid of groups listing their pages; `sidebar`, straight to the last page; or `constellation`, the star map, now with each group's pages under its star. Switch it under General › Settings home or from any home screen
 
 ### Changed
