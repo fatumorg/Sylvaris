@@ -28,12 +28,16 @@ Scope {
     readonly property bool hasBattery: UPower.displayDevice !== null && UPower.displayDevice.isLaptopBattery
     readonly property var cons: Settings.shown.constellation
     readonly property var sections: Sec.SECTIONS
-    readonly property var shownSections: Sec.HUBS.map(h => ({
-                key: h.key,
-                label: h.label,
-                glyph: h.icon,
-                tabs: Sec.tabsIn(h.key, Settings.shown.plugins.enabled)
-            })).filter(h => h.tabs.length > 0)
+    readonly property string pluginsOn: JSON.stringify(Settings.shown.plugins.enabled)
+    readonly property var shownSections: {
+        const on = JSON.parse(root.pluginsOn);
+        return Sec.HUBS.map(h => ({
+                    key: h.key,
+                    label: h.label,
+                    glyph: h.icon,
+                    tabs: Sec.tabsIn(h.key, on)
+                })).filter(h => h.tabs.length > 0);
+    }
     readonly property string hub: {
         const w = Sec.resolveSection(root.section);
         return w === null ? "" : w.hub;
@@ -217,14 +221,20 @@ Scope {
         root.hovered = root.hovered < 0 ? (d > 0 ? 0 : n - 1) : (root.hovered + d + n) % n;
     }
 
+    function listed(key: string): bool {
+        return root.shownSections.some(h => h.tabs.some(t => t.key === key));
+    }
+
     function landing(): string {
-        return root.shownSections.some(h => h.tabs.some(t => t.key === root.lastSection)) ? root.lastSection : "general";
+        return root.listed(root.lastSection) ? root.lastSection : "general";
     }
 
     function go(target: string): void {
         const name = target === "" && root.home === "sidebar" ? root.landing() : target;
         if (name !== "")
             root.lastSection = name;
+        if (name !== "")
+            root.hovered = -1;
         if (name === root.section)
             return;
         const w = Sec.resolveSection(name);
@@ -278,10 +288,10 @@ Scope {
     }
 
     function showSection(name: string): void {
-        if (name !== "" && root.sectionInfo(name) === null && root.shownSections.some(h => h.key === name))
+        if (name !== "" && !root.listed(name) && root.shownSections.some(h => h.key === name))
             root.openHub(name);
         else
-            root.go(name !== "" && root.sectionInfo(name) !== null ? name : name === "" ? root.section : "");
+            root.go(name !== "" && root.listed(name) ? name : name === "" ? root.section : "");
         root.open();
     }
 
@@ -315,6 +325,11 @@ Scope {
             speed: 0.4 + r(4) * 1.4,
             glow: r(5)
         };
+    }
+
+    onShownSectionsChanged: {
+        if (root.section !== "" && !root.listed(root.section))
+            root.go("");
     }
 
     onHomeChanged: {
@@ -516,30 +531,51 @@ Scope {
                 id: keys
                 focus: true
                 Keys.onEscapePressed: root.back()
-                Keys.onLeftPressed: root.hovered = (root.hovered - 1 + root.shownSections.length) % root.shownSections.length
-                Keys.onRightPressed: root.hovered = (root.hovered + 1) % root.shownSections.length
-                Keys.onTabPressed: event => root.step(event.modifiers & Qt.ShiftModifier ? -1 : 1)
-                Keys.onBacktabPressed: root.step(-1)
-                Keys.onReturnPressed: {
-                    if (root.hovered >= 0 && root.hovered < root.shownSections.length)
-                        root.openHub(root.shownSections[root.hovered].key);
-                }
                 Keys.onPressed: event => {
-                    if ((event.modifiers & Qt.ControlModifier) && event.key === Qt.Key_Z) {
-                        Settings.undo();
+                    const home = root.section === "";
+                    const n = root.shownSections.length;
+                    if (home && (event.key === Qt.Key_Left || event.key === Qt.Key_Right)) {
+                        root.hovered = (root.hovered + (event.key === Qt.Key_Left ? n - 1 : 1)) % n;
                         event.accepted = true;
                         return;
                     }
-                    if (event.text.length !== 1 || event.text.charCodeAt(0) <= 32 || event.text.charCodeAt(0) === 127 || (event.modifiers & (Qt.ControlModifier | Qt.AltModifier | Qt.MetaModifier)))
+                    if (home && (event.key === Qt.Key_Tab || event.key === Qt.Key_Backtab)) {
+                        root.step(event.key === Qt.Key_Backtab || (event.modifiers & Qt.ShiftModifier) ? -1 : 1);
+                        event.accepted = true;
                         return;
-                    if (root.section !== "")
-                        sidebar.typeIn(event.text);
-                    else {
-                        search.text = search.text + event.text;
-                        search.focusInput();
                     }
-                    event.accepted = true;
+                    if (home && (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) && root.hovered >= 0 && root.hovered < n) {
+                        root.openHub(root.shownSections[root.hovered].key);
+                        event.accepted = true;
+                        return;
+                    }
+                    win.typed(event);
                 }
+            }
+
+            function dismiss(): void {
+                if (root.query !== "")
+                    root.query = "";
+                else
+                    root.back();
+                keys.forceActiveFocus();
+            }
+
+            function typed(event: var): void {
+                if ((event.modifiers & Qt.ControlModifier) && event.key === Qt.Key_Z) {
+                    Settings.undo();
+                    event.accepted = true;
+                    return;
+                }
+                if (event.text.length !== 1 || event.text.charCodeAt(0) <= 32 || event.text.charCodeAt(0) === 127 || (event.modifiers & (Qt.ControlModifier | Qt.AltModifier | Qt.MetaModifier)))
+                    return;
+                if (root.section !== "")
+                    sidebar.typeIn(event.text);
+                else {
+                    search.text = search.text + event.text;
+                    search.focusInput();
+                }
+                event.accepted = true;
             }
 
             Item {
@@ -777,7 +813,7 @@ Scope {
             TextBox {
                 id: search
                 x: hub.cx - width / 2
-                y: root.home === "cards" ? Math.max(win.gutter + 8, (win.height - cards.contentHeight) / 2 - search.height - 28) : win.height * 0.5 - hub.ry - 150
+                y: Math.max(homePicker.y + homePicker.height + 16, root.home === "cards" ? (win.height - cards.contentHeight) / 2 - search.height - 28 : win.height * 0.5 - hub.ry - 150)
                 width: Math.min(win.midW - 40, 560)
                 visible: root.dive < 0.99 && root.home !== "sidebar"
                 opacity: root.phase(0.4, 0.9) * (1 - root.dive)
@@ -786,13 +822,7 @@ Scope {
                 onAccepted: results.accept()
                 Keys.onUpPressed: results.step(-1)
                 Keys.onDownPressed: results.step(1)
-                Keys.onEscapePressed: {
-                    if (search.text !== "")
-                        search.text = "";
-                    else
-                        root.back();
-                    keys.forceActiveFocus();
-                }
+                Keys.onEscapePressed: win.dismiss()
 
                 Connections {
                     target: root
@@ -820,9 +850,12 @@ Scope {
                 onPickedPage: key => root.go(key)
                 onPickedHub: key => root.openHub(key)
                 onHoveredHub: index => root.hovered = index
+                Keys.onEscapePressed: win.dismiss()
+                Keys.onPressed: event => win.typed(event)
             }
 
             HomePicker {
+                id: homePicker
                 x: win.width - win.gutter - width
                 y: win.gutter + 8
                 visible: root.home !== "sidebar" && root.dive < 0.99
@@ -878,13 +911,9 @@ Scope {
                     onSearched: text => root.query = text
                     onStepped: d => pageResults.step(d)
                     onAccepted: pageResults.accept()
-                    onEscaped: {
-                        if (root.query !== "")
-                            root.query = "";
-                        else
-                            root.back();
-                        keys.forceActiveFocus();
-                    }
+                    onEscaped: win.dismiss()
+                    Keys.onEscapePressed: win.dismiss()
+                    Keys.onPressed: event => win.typed(event)
                 }
 
                 Row {

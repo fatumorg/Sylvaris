@@ -85,6 +85,7 @@ Item {
                             width: group.width
                             height: 38
                             activeFocusOnTab: true
+                            scale: area.pressed ? 0.97 : 1
                             Keys.onReturnPressed: root.picked(tab.modelData.key)
                             Keys.onSpacePressed: root.picked(tab.modelData.key)
 

@@ -1,0 +1,52 @@
+sleep 1.5
+syl set settings.home constellation
+syl settings open
+sleep 1.5
+bg wtype -k Shift_L -s 300 -k Tab -s 300 -k Tab -s 300 -k Return
+sleep 1.2
+check sylvaris settings state | grep -q '"tab":"[a-z]'
+syl settings open sound
+sleep 1
+bg wtype -k Shift_L -s 300 -k Return
+sleep 1
+check sylvaris settings state | grep -q '"tab":"sound"'
+syl set settings.home cards
+syl settings open bar
+sleep 1
+bg wtype -k Shift_L -s 300 x -s 300 -k Tab -s 300 -k Escape
+sleep 1
+check sylvaris settings state | grep -q '"tab":"bar","home":"cards","query":""'
+bg wtype -k Shift_L -s 300 -k Escape
+sleep 1
+check sylvaris settings state | grep -q '"tab":"","home":"cards"'
+syl settings open bar
+sleep 1
+bg wtype -k Shift_L -s 300 x -s 300 -k Tab
+sleep 1
+syl set motion.scale 2
+sleep 0.6
+bg wtype -k Shift_L -s 300 -k Return
+sleep 1
+check sylvaris settings state | grep -q '"tab":"look"'
+syl set motion.scale 1
+syl set plugins.enabled.temp true
+sleep 1
+syl settings open temp
+sleep 1
+check sylvaris settings state | grep -q '"tab":"temp"'
+syl set plugins.enabled.temp false
+sleep 1
+check ! sylvaris settings state | grep -q '"tab":"temp"'
+syl settings open temp
+sleep 1
+check ! sylvaris settings state | grep -q '"tab":"temp"'
+syl settings close
+sleep 1
+sway output HEADLESS-1 resolution 1000x800
+sleep 1.5
+syl settings open
+sleep 1.5
+shot settings-narrow-cards
+syl set settings.home constellation
+sleep 1.5
+shot settings-narrow-constellation
