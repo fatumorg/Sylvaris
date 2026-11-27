@@ -126,7 +126,7 @@ export const DEFAULT_SETTINGS = {
     weather: DEFAULT_WEATHER,
     diver: { enabled: true, refresh: 2, notify: true, alarms: true, sound: true, calendar: true },
     constellation: { speed: 1, links: true, ring: true, labels: true, stars: true },
-    settings: { detail: "simple" },
+    settings: { detail: "simple", home: "cards" },
     switcher: { previews: true, titles: true },
     lock: DEFAULT_LOCK,
     clip: DEFAULT_CLIP,
@@ -386,7 +386,7 @@ export function validateSettings(raw, userLooks) {
         calendar: dv.calendar !== false
     })
     const panel = isObject(v.settings) ? v.settings : {}
-    v.settings = Object.assign({}, panel, { detail: panel.detail === "full" ? "full" : "simple" })
+    v.settings = Object.assign({}, panel, { detail: panel.detail === "full" ? "full" : "simple", home: ["sidebar", "cards", "constellation"].includes(panel.home) ? panel.home : "cards" })
 
     const cons = isObject(v.constellation) ? v.constellation : {}
     v.constellation = Object.assign({}, cons, {

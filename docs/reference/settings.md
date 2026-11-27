@@ -218,6 +218,7 @@ Explained in [settings](../parts/settings.md).
 | Key | Default | Per screen |
 |---|---|:---:|
 | `settings.detail` | `"simple"` |  |
+| `settings.home` | `"cards"` |  |
 
 ## switcher
 

@@ -170,7 +170,8 @@
     "stars": true
   },
   "settings": {
-    "detail": "simple"
+    "detail": "simple",
+    "home": "cards"
   },
   "switcher": {
     "previews": true,

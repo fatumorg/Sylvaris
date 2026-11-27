@@ -4,6 +4,10 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ## [Unreleased]
 
+### Added
+
+- `settings.home`: the screen SylSettings opens on, `cards` (default), `sidebar` or `constellation`
+
 ### Changed
 
 - The resting island pill is blank: the grey bar inside it is gone

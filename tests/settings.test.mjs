@@ -416,6 +416,14 @@ test("resolveGlass layers over a given base", () => {
     assert.equal(resolveGlass(undefined, undefined).values.sheen, DEFAULT_GLASS.sheen)
 })
 
+test("settings.home is cards unless sidebar or constellation", () => {
+    assert.equal(validateSettings({}).settings.home, "cards")
+    assert.equal(validateSettings({ settings: { home: "sidebar" } }).settings.home, "sidebar")
+    assert.equal(validateSettings({ settings: { home: "constellation" } }).settings.home, "constellation")
+    assert.equal(validateSettings({ settings: { home: "stars" } }).settings.home, "cards")
+    assert.equal(validateSettings({ settings: { home: 2 } }).settings.home, "cards")
+})
+
 test("settings.detail is simple unless full", () => {
     assert.equal(validateSettings({}).settings.detail, "simple")
     assert.equal(validateSettings({ settings: { detail: "full" } }).settings.detail, "full")
