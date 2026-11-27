@@ -8,7 +8,7 @@ check sylvaris state settingsPanel | grep -q '"query":"blur"'
 shot settings-search
 bg wtype -k Shift_L -s 400 -k Return
 sleep 1.5
-check sylvaris settings state | grep -q '"hub":"desktop","tab":"wallpaper"'
+check sylvaris settings state | grep -q '"hub":"look","tab":"wallpaper"'
 shot settings-search-hit
 check sylvaris settings search blur | head -1 | grep -q '^\["paper.blur'
 syl set motion.scale 2
@@ -30,6 +30,6 @@ shot settings-simple
 syl set settings.detail full
 sleep 1
 shot settings-full
-syl settings open desktop
+syl settings open time
 sleep 1
-check sylvaris settings state | grep -q '"hub":"desktop","tab":"wallpaper"'
+check sylvaris settings state | grep -q '"hub":"time","tab":"clock"'

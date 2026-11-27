@@ -46,6 +46,7 @@ PowerPreview 1.0 PowerPreview.qml
 ScreenPicker 1.0 ScreenPicker.qml
 SearchResults 1.0 SearchResults.qml
 SettingRow 1.0 SettingRow.qml
+SettingsSidebar 1.0 SettingsSidebar.qml
 SidePanel 1.0 SidePanel.qml
 SoundPage 1.0 SoundPage.qml
 StatsAbout 1.0 StatsAbout.qml

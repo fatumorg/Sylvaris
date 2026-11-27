@@ -38,10 +38,6 @@ Scope {
         const w = Sec.resolveSection(root.section);
         return w === null ? "" : w.hub;
     }
-    readonly property var hubInfo: {
-        const w = Sec.resolveSection(root.shownSection);
-        return w === null ? null : root.shownSections.find(h => h.key === w.hub) || null;
-    }
     property string group: ""
     property var lastTab: ({})
     property string query: ""
@@ -440,10 +436,9 @@ Scope {
             WlrLayershell.keyboardFocus: root.wanted ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
             readonly property bool roomy: win.width >= 1200
-            readonly property real side: win.roomy ? Math.min(400, Math.max(300, width * 0.17)) : 0
             readonly property real gutter: Math.max(24, width * 0.018)
-            readonly property real midX: win.roomy ? win.gutter * 2 + win.side : win.gutter
-            readonly property real midW: win.roomy ? win.width - (win.gutter * 2 + win.side) * 2 : win.width - win.gutter * 2
+            readonly property real midX: win.gutter
+            readonly property real midW: win.width - win.gutter * 2
 
             onVisibleChanged: {
                 if (visible)
@@ -521,9 +516,11 @@ Scope {
                     if (event.text.length !== 1 || event.text.charCodeAt(0) <= 32 || event.text.charCodeAt(0) === 127 || (event.modifiers & (Qt.ControlModifier | Qt.AltModifier | Qt.MetaModifier)))
                         return;
                     if (root.section !== "")
-                        root.go("");
-                    search.text = search.text + event.text;
-                    search.focusInput();
+                        sidebar.typeIn(event.text);
+                    else {
+                        search.text = search.text + event.text;
+                        search.focusInput();
+                    }
                     event.accepted = true;
                 }
             }
@@ -534,12 +531,11 @@ Scope {
                 readonly property real cy: win.height * 0.5
                 readonly property real rx: Math.min(win.midW * 0.42, 560)
                 readonly property real ry: Math.min(win.height * 0.3, hub.rx * 0.52)
-                readonly property real mini: 0.38
-                readonly property real targetY: win.gutter + 20 + (hub.ry + 70) * hub.mini
                 property real hush: root.query.trim() !== "" ? 1 : 0
                 anchors.fill: parent
-                opacity: root.phase(0.1, 0.5) * (1 - 0.2 * root.dive) * (1 - 0.88 * hub.hush)
-                enabled: hub.hush < 0.5
+                visible: root.dive < 0.99
+                opacity: root.phase(0.1, 0.5) * (1 - root.dive) * (1 - 0.88 * hub.hush)
+                enabled: hub.hush < 0.5 && root.section === ""
 
                 Behavior on hush {
                     NumberAnimation {
@@ -548,18 +544,6 @@ Scope {
                         easing.bezierCurve: Tokens.enterCurve
                     }
                 }
-
-                transform: [
-                    Scale {
-                        origin.x: hub.cx
-                        origin.y: hub.cy
-                        xScale: 1 - (1 - hub.mini) * root.dive
-                        yScale: 1 - (1 - hub.mini) * root.dive
-                    },
-                    Translate {
-                        y: (hub.targetY - hub.cy) * root.dive
-                    }
-                ]
 
                 Shape {
                     anchors.fill: parent
@@ -715,8 +699,6 @@ Scope {
                             anchors.horizontalCenter: parent.horizontalCenter
                             anchors.top: parent.bottom
                             anchors.topMargin: 10
-                            transformOrigin: Item.Top
-                            scale: Math.max(1, 0.72 / (1 - (1 - hub.mini) * root.dive))
                             text: star.modelData.label
                             color: star.hot || star.on ? Theme.text : Theme.textSoft
                             font.family: Tokens.fontUi
@@ -797,49 +779,12 @@ Scope {
                 onPicked: entry => root.pickSetting(entry)
             }
 
-            SidePanel {
-                id: leftPanel
-                visible: win.roomy
-                x: win.gutter - (1 - root.phase(0.3, 0.8)) * 60
-                y: win.gutter
-                width: win.side
-                height: win.height - win.gutter * 2
-                opacity: root.phase(0.3, 0.8)
-                title: "Constellation"
-                glyph: Icons.GLYPHS.stars
-
-                ConstellationControls {
-                    width: parent.width
-                }
-            }
-
-            SidePanel {
-                id: rightPanel
-                visible: win.roomy
-                x: win.width - win.gutter - win.side + (1 - root.phase(0.35, 0.85)) * 60
-                y: win.gutter
-                width: win.side
-                height: win.height - win.gutter * 2
-                opacity: root.phase(0.35, 0.85)
-                title: "Statistics"
-                glyph: Icons.GLYPHS.chart
-
-                StatsAbout {
-                    width: parent.width
-                    version: root.version
-                    memory: root.memory
-                    uptime: root.uptimeText
-                    onReload: Stack.reload(false)
-                }
-            }
-
             Item {
                 id: sheet
-                readonly property real startY: win.gutter + 30 + (hub.ry + 70) * 2 * hub.mini
-                x: win.midX + (win.midW - width) / 2
-                y: sheet.startY + (1 - root.dive) * 80
-                width: Math.min(win.midW - win.gutter, 860)
-                height: win.height - sheet.startY - win.gutter
+                x: (win.width - width) / 2
+                y: win.gutter + (1 - root.dive) * 60
+                width: Math.min(win.width - win.gutter * 2, 1400)
+                height: win.height - win.gutter * 2
                 visible: root.dive > 0.01
                 opacity: root.dive
 
@@ -856,16 +801,41 @@ Scope {
                     offBorder: Theme.line
                 }
 
+                SettingsSidebar {
+                    id: sidebar
+                    x: 24
+                    y: 24
+                    width: 260
+                    height: parent.height - 48
+                    hubs: root.shownSections
+                    current: root.section
+                    query: root.query
+                    onPicked: key => {
+                        root.query = "";
+                        root.go(key);
+                    }
+                    onSearched: text => root.query = text
+                    onStepped: d => pageResults.step(d)
+                    onAccepted: pageResults.accept()
+                    onEscaped: {
+                        if (root.query !== "")
+                            root.query = "";
+                        else
+                            root.back();
+                        keys.forceActiveFocus();
+                    }
+                }
+
                 Row {
                     id: sheetHead
-                    x: 30
+                    x: sidebar.x + sidebar.width + 30
                     y: 24
                     spacing: 14
-                    opacity: root.hubInfo === null ? root.swap : 1
+                    opacity: root.swap
 
                     Glyph {
                         anchors.verticalCenter: parent.verticalCenter
-                        text: root.hubInfo !== null ? root.hubInfo.glyph : root.shownSection === "" ? "" : root.sectionInfo(root.shownSection).glyph
+                        text: root.shownSection === "" ? "" : root.sectionInfo(root.shownSection).glyph
                         size: 24
                         color: Theme.accent
                     }
@@ -873,7 +843,7 @@ Scope {
                     Text {
                         textFormat: Text.PlainText
                         anchors.verticalCenter: parent.verticalCenter
-                        text: root.hubInfo !== null ? root.hubInfo.label : root.shownSection === "" ? "" : root.sectionInfo(root.shownSection).label
+                        text: root.shownSection === "" ? "" : root.sectionInfo(root.shownSection).label
                         color: Theme.text
                         font.family: Tokens.fontUi
                         font.pixelSize: 26
@@ -902,40 +872,38 @@ Scope {
                         anchors.margins: -10
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: root.go("")
+                        onClicked: root.back()
                     }
-                }
-
-                Segmented {
-                    id: tabs
-                    x: 30
-                    y: sheetHead.y + sheetHead.height + 18
-                    width: Math.min(parent.width - 60 - detail.width - 16, 128 * Math.max(1, tabs.options.length))
-                    options: root.hubInfo === null ? [] : root.hubInfo.tabs.map(t => ({
-                                key: t.key,
-                                label: t.label
-                            }))
-                    current: root.section
-                    onPicked: key => root.go(key)
                 }
 
                 Chip {
                     id: detail
                     anchors.right: parent.right
                     anchors.rightMargin: 30
-                    y: tabs.y + (tabs.height - height) / 2
+                    y: sheetHead.y + sheetHead.height + 14
                     text: "All options"
                     lit: Settings.values.settings.detail === "full"
                     onClicked: Settings.set("settings.detail", Settings.values.settings.detail === "full" ? "simple" : "full")
                 }
 
+                SearchResults {
+                    id: pageResults
+                    x: sheetHead.x
+                    y: detail.y + detail.height + 18
+                    width: Math.min(parent.width - x - 30, 760)
+                    visible: root.query.trim() !== ""
+                    query: root.query
+                    onPicked: entry => root.pickSetting(entry)
+                }
+
                 Flickable {
                     id: content
-                    x: 30
-                    y: tabs.y + tabs.height + 22
-                    width: parent.width - 60
+                    x: sheetHead.x
+                    y: detail.y + detail.height + 18
+                    width: parent.width - x - 30
                     height: parent.height - y - 20
                     clip: true
+                    visible: root.query.trim() === ""
                     contentHeight: pageColumn.implicitHeight + 20
                     boundsBehavior: Flickable.StopAtBounds
                     opacity: root.swap

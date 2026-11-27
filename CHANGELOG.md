@@ -11,6 +11,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 ### Changed
 
 - The resting island pill is blank: the grey bar inside it is gone
+- SylSettings opens pages in one wide window with every page listed in a sidebar, search on top; the tab strip and the Constellation and Statistics side panels are gone
 - Settings pages sit in eight groups: Look now holds wallpaper and widgets, new Clock & weather and Shortcuts groups replace Desktop, and Appearance and Sky are renamed Theme & colours and Clock & sky
 
 ### Fixed
