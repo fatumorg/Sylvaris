@@ -1,8 +1,18 @@
 # SylSettings
 
-The gear in SylCenter, `sylvaris settings` or `sylvaris settings open <section>` opens SylSettings over a starfield.
+The gear in SylCenter, `sylvaris settings` or `sylvaris settings open <section>` opens SylSettings.
 
-Seven hubs sit around the core: **Look** (style, appearance, motion, app colours), **Desktop** (wallpaper, sky, weather), **Panels** (bar, deck, Control Center, island, notifications, launcher, switcher), **Apps** (files, archive, viewer, capture, clipboard), **System** (general, displays, sound, power, accessibility, key bindings, commands), **Security** (lock, authentication) and **Plugins** (plugins, plus Diver, FaTest and lighting once their plugins are on). Picking a hub shrinks the constellation to the top and opens it below with a tab for each section; it remembers the tab you used last. Tab and Shift+Tab walk the hubs and Enter opens one. `sylvaris settings open <section>` still opens any section, and `sylvaris settings open <hub>` opens a hub.
+Pages sit in nine groups: **Look** (style, theme & colours, wallpaper, widgets, motion, app colours), **Panels** (bar, deck, Control Center, island, notifications, launcher, switcher), **Apps** (files, archive, viewer, capture, clipboard, notes, task manager), **Clock & weather** (clock & sky, weather), **System** (general, displays, sound, power, accessibility, keyboard), **Shortcuts** (key bindings, commands), **Security** (lock, authentication), **Plugins** (plugins, plus Diver, FaTest, SylTemp and lighting once their plugins are on) and **About**. An open page fills a wide window with every page listed in a sidebar on its left, under its group, and the search box on top. `sylvaris settings open <section>` opens any page, and `sylvaris settings open <group>` opens the page you used last in that group.
+
+## Home screen
+
+`settings.home` picks what SylSettings shows before you pick a page. Change it under General › Settings home, at the foot of the sidebar or in the top corner of any home screen.
+
+- `cards` (default): a card per group with its pages as buttons; click a page to open it or the card to open the group.
+- `sidebar`: no home screen, SylSettings opens straight on the page you used last (General the first time) and Escape closes it.
+- `constellation`: the groups as stars around a core, each with its pages written under it. Tab and Shift+Tab walk the stars and Enter opens one.
+
+Escape on a page goes back to the home screen, and Escape there closes SylSettings.
 
 ## Search
 
@@ -10,7 +20,7 @@ Start typing anywhere and the search pill takes it: every setting is listed by n
 
 ## Simple and full
 
-By default (`settings.detail: "simple"`) the options most people never touch wait behind a **more options** row at the bottom of each section. **All options** in the tab strip, or `sylvaris set settings.detail full`, shows everything everywhere.
+By default (`settings.detail: "simple"`) the options most people never touch wait behind a **more options** row at the bottom of each section. **All options** under the page title, or `sylvaris set settings.detail full`, shows everything everywhere.
 
 ## Style studio
 
@@ -20,7 +30,7 @@ Look › Style starts with a live sample: a panel, a few chips and a title drawn
 
 A setting you changed carries a small accent dot next to its name; click it to reset that setting to its default (or to the Look's value). Every change made here shows an **Undo** toast, and Ctrl+Z undoes the last twenty changes. The same from a script: `sylvaris settings reset <key>` and `sylvaris settings undo`.
 
-On the left you tune the constellation itself (drift speed, ring, silk links, labels, starfield), which also changes SylCenter's orbits. On the right are statistics (uptime, the shell's memory, apps, themes, windows, workspaces, screens, notifications) and About.
+The About page shows statistics (uptime, the shell's memory, apps, themes, windows, workspaces, screens, notifications), the version and the config folder. While the constellation is the home screen it also tunes the constellation itself (drift speed, ring, silk links, labels, starfield), which also changes SylCenter's orbits.
 
 ## One screen at a time
 
@@ -36,3 +46,4 @@ Every switch is also a `sylvaris set` away, and values that come from `config.js
 | Key | Default | Meaning |
 |---|---|---|
 | `settings.detail` | `"simple"` | `simple` keeps rarely used options behind more options, `full` shows them all |
+| `settings.home` | `"cards"` | the home screen: `cards`, `sidebar` or `constellation` |

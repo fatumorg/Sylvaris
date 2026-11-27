@@ -11,7 +11,7 @@ sylvaris widgets edit
 
 Right-click the desktop and pick **Add widget…**: choose a type, set its options while a live preview shows the result, then **Add here**. The widget lands centred where you clicked, anchored to that part of the screen.
 
-`sylvaris widgets edit` (or **Edit widgets** in SylSettings › Desktop › Widgets) dims every screen and shows a grid with an outline for each widget:
+`sylvaris widgets edit` (or **Edit widgets** in SylSettings › Look › Widgets) dims every screen and shows a grid with an outline for each widget:
 
 - **Drag** a widget to move it; it snaps to the grid.
 - **Pull** the dot in its corner to resize it.
@@ -32,7 +32,7 @@ Changes are saved when you are done; two widgets that ended up on top of each ot
 | `terminal` | a kitty panel running any command, like `cava` or `btop` | command, font size, background, padding, typing, start again |
 | `visualizer` | bars, mirrored bars, dots, a wave or a ring from `cava` | style, bars, frame rate, smoothing, colour, glow |
 | `diver` | today's plans (with the Diver plugin) | how many, done ones, today heading |
-| `stack` | several widgets in one place; scroll to flip, or let it turn by itself. Pick the stack in SylSettings › Desktop › Widgets to add, change or remove what it holds (anything but a terminal or another stack) | seconds per turn, page dots |
+| `stack` | several widgets in one place; scroll to flip, or let it turn by itself. Pick the stack in SylSettings › Look › Widgets to add, change or remove what it holds (anything but a terminal or another stack) | seconds per turn, page dots |
 | `media` | the cover, title and artist of what is playing, with previous, play and next | spin the cover like a record, recolour (tint or mono), buttons, artist |
 | `system` | processor and memory use and network speed as small graphs, and how full the disk is | which of the four to show, seconds between readings |
 | `sky` | the sun's path through today with sunrise and sunset, and the moon's phase (needs a location, like [SylClock](clock.md)) | moon, sunrise and sunset |

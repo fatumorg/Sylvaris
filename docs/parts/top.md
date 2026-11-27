@@ -22,7 +22,7 @@ It reads `/proc` through a small Python helper only while the window is open; cl
 
 ## Keys
 
-Bind **Task manager** under SylSettings › System › Key bindings; Ctrl+Shift+Escape is a good fit and can be recorded there. The action is `sylvaris top toggle`.
+Bind **Task manager** under SylSettings › Shortcuts › Key bindings; Ctrl+Shift+Escape is a good fit and can be recorded there. The action is `sylvaris top toggle`.
 
 ## Settings
 

@@ -8,7 +8,7 @@ sylvaris files open ~/Downloads
 sylvaris files open ~/Pictures/cat.png   # opens the folder with the file selected
 ```
 
-Bind `files open` to a key under SylSettings › Advanced › Key bindings (Super+E is the classic), or open it from SylPad: it ships a `sylvaris-files.desktop` entry. Opening a folder while the window is up adds a tab instead of a second window; for a second window press Ctrl+N, right-click a folder › Open in a new window, or run `sylvaris files window [folder]`. Cut in one window and paste in another moves the files. Commands go to the window you used last. The window has its own icon, so SylBar, SylDeck and SylSwitch show it as SylFiles and you can pin it to the deck.
+Bind `files open` to a key under SylSettings › Shortcuts › Key bindings (Super+E is the classic), or open it from SylPad: it ships a `sylvaris-files.desktop` entry. Opening a folder while the window is up adds a tab instead of a second window; for a second window press Ctrl+N, right-click a folder › Open in a new window, or run `sylvaris files window [folder]`. Cut in one window and paste in another moves the files. Commands go to the window you used last. The window has its own icon, so SylBar, SylDeck and SylSwitch show it as SylFiles and you can pin it to the deck.
 
 ## The window
 

@@ -67,7 +67,7 @@ Share one with `sylvaris look export ~/night-owl.json night-owl` (leave out the 
 
 ### Pastel themes
 
-`sylvaris theme pastel <peach|mint|sky|lilac|butter|rose|rrggbb> [light|dark]` writes a solid pastel theme as `pastel-<name>-<light|dark>.json` and applies it (the `#` before a colour is optional, which saves quoting it in the shell); SylSettings › Look › Appearance has the same choice under **Pastel theme**. Pair it with the Pastel style, or `look.material` `solid`, for flat opaque surfaces instead of glass.
+`sylvaris theme pastel <peach|mint|sky|lilac|butter|rose|rrggbb> [light|dark]` writes a solid pastel theme as `pastel-<name>-<light|dark>.json` and applies it (the `#` before a colour is optional, which saves quoting it in the shell); SylSettings › Look › Theme & colours has the same choice under **Pastel theme**. Pair it with the Pastel style, or `look.material` `solid`, for flat opaque surfaces instead of glass.
 
 A theme can name the Look it was made for with a `"look"` key. SylTheme draws that theme's card in its Look, and with `look.followTheme` on, applying the theme switches to its Look as well.
 
