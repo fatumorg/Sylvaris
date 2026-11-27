@@ -6,7 +6,7 @@ All notable changes to Sylvaris are listed here. The format follows [Keep a Chan
 
 ### Added
 
-- `settings.home`: the screen SylSettings opens on, `cards` (default), `sidebar` or `constellation`
+- `settings.home`: the screen SylSettings opens on, `cards` (default), `sidebar` or `constellation`, picked under General › Settings home
 
 ### Changed
 

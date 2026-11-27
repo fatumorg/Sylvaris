@@ -104,6 +104,7 @@ const ROWS = [
     {key: "files.confirmTrash", title: "Ask before moving to the trash", tab: "files", subtitle: "Undo brings things back either way"},
     {key: "files.start", title: "Start in", tab: "files", subtitle: "The folder a new window opens, like ~ or ~/Downloads", advanced: true},
     {key: "files.bookmarks", title: "Bookmarks", tab: "files"},
+    {key: "settings.home", title: "Settings home", tab: "general", subtitle: "What this window shows before you pick a page", words: ["constellation", "cards", "sidebar", "start", "home"]},
     {key: "center.corner", title: "Control Center", tab: "general", subtitle: "Where SylCenter and SylMedia open"},
     {key: "clock.corner", title: "Clock", tab: "general", subtitle: "Where SylClock opens"},
     {key: "notifications.corner", title: "Notifications", tab: "general", subtitle: "Where toasts and the notification center appear"},

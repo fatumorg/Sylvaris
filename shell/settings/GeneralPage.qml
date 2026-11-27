@@ -11,6 +11,18 @@ Column {
     spacing: 24
 
     Card {
+        title: "Settings"
+
+        SettingRow {
+            title: "Settings home"
+            key: "settings.home"
+            subtitle: "What this window shows before you pick a page"
+
+            HomePicker {}
+        }
+    }
+
+    Card {
         title: "Panels"
 
         PlacementPreview {}
