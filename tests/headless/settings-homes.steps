@@ -1,0 +1,37 @@
+sleep 1.5
+syl set settings.home cards
+syl settings open
+sleep 1.5
+check sylvaris settings state | grep -q '"tab":"","home":"cards"'
+shot settings-home-cards
+syl settings open bar
+sleep 1
+check sylvaris settings state | grep -q '"hub":"panels","tab":"bar"'
+bg wtype -k Shift_L -s 400 -k Escape
+sleep 1
+check sylvaris settings state | grep -q '"open":true,"hub":"","tab":""'
+bg wtype -k Shift_L -s 400 -k Escape
+sleep 1
+check sylvaris settings state | grep -q '"open":false'
+syl set settings.home constellation
+syl settings open
+sleep 1.5
+shot settings-home-constellation
+syl settings open bar
+sleep 1
+bg wtype -k Shift_L -s 400 -k Escape
+sleep 1
+check sylvaris settings state | grep -q '"open":true,"hub":"","tab":""'
+syl settings close
+sleep 1
+syl set settings.home sidebar
+syl settings open
+sleep 1.5
+check sylvaris settings state | grep -q '"tab":"bar"'
+shot settings-home-sidebar
+bg wtype -k Shift_L -s 400 -k Escape
+sleep 1
+check sylvaris settings state | grep -q '"open":false'
+syl settings open time
+sleep 1
+check sylvaris settings state | grep -q '"hub":"time","tab":"clock"'

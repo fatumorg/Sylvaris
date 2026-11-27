@@ -6,6 +6,7 @@ ArchivePreview 1.0 ArchivePreview.qml
 BarPage 1.0 BarPage.qml
 CapturePage 1.0 CapturePage.qml
 Card 1.0 Card.qml
+CardsHome 1.0 CardsHome.qml
 CenterPage 1.0 CenterPage.qml
 Chip 1.0 Chip.qml
 ClipPage 1.0 ClipPage.qml

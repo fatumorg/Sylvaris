@@ -39,6 +39,8 @@ Scope {
         return w === null ? "" : w.hub;
     }
     property string group: ""
+    property string lastSection: ""
+    readonly property string home: Settings.shown.settings.home
     property var lastTab: ({})
     property string query: ""
     property string pending: ""
@@ -165,6 +167,8 @@ Scope {
     }
 
     function show(screen: var): void {
+        if (root.section === "" && root.home === "sidebar")
+            root.go("");
         root.screenInfo = screen;
         root.shown = true;
         statsFile.reload();
@@ -213,7 +217,14 @@ Scope {
         root.hovered = root.hovered < 0 ? (d > 0 ? 0 : n - 1) : (root.hovered + d + n) % n;
     }
 
-    function go(name: string): void {
+    function landing(): string {
+        return root.shownSections.some(h => h.tabs.some(t => t.key === root.lastSection)) ? root.lastSection : "general";
+    }
+
+    function go(target: string): void {
+        const name = target === "" && root.home === "sidebar" ? root.landing() : target;
+        if (name !== "")
+            root.lastSection = name;
         if (name === root.section)
             return;
         const w = Sec.resolveSection(name);
@@ -252,6 +263,7 @@ Scope {
             open: root.wanted,
             hub: root.hub,
             tab: root.section,
+            home: root.home,
             query: root.query,
             detail: Settings.values.settings.detail,
             undo: Settings.undoStack.length
@@ -259,7 +271,7 @@ Scope {
     }
 
     function back(): void {
-        if (root.section !== "")
+        if (root.section !== "" && root.home !== "sidebar")
             root.go("");
         else
             root.close();
@@ -303,6 +315,11 @@ Scope {
             speed: 0.4 + r(4) * 1.4,
             glow: r(5)
         };
+    }
+
+    onHomeChanged: {
+        if (root.home === "sidebar" && root.section === "")
+            root.go("");
     }
 
     onSectionChanged: {
@@ -533,7 +550,7 @@ Scope {
                 readonly property real ry: Math.min(win.height * 0.3, hub.rx * 0.52)
                 property real hush: root.query.trim() !== "" ? 1 : 0
                 anchors.fill: parent
-                visible: root.dive < 0.99
+                visible: root.dive < 0.99 && root.home === "constellation"
                 opacity: root.phase(0.1, 0.5) * (1 - root.dive) * (1 - 0.88 * hub.hush)
                 enabled: hub.hush < 0.5 && root.section === ""
 
@@ -697,6 +714,26 @@ Scope {
                             textFormat: Text.PlainText
                             visible: root.cons.labels || star.hot
                             anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.top: starLabel.bottom
+                            anchors.topMargin: 4
+                            width: 160
+                            horizontalAlignment: Text.AlignHCenter
+                            wrapMode: Text.WordWrap
+                            maximumLineCount: 2
+                            elide: Text.ElideRight
+                            text: star.modelData.tabs.map(t => t.label).join(" · ")
+                            color: star.hot ? Theme.textSoft : Theme.textDim
+                            font.family: Tokens.fontUi
+                            font.pixelSize: 12
+                            style: Text.Raised
+                            styleColor: Qt.alpha("#000000", 0.3)
+                        }
+
+                        Text {
+                            id: starLabel
+                            textFormat: Text.PlainText
+                            visible: root.cons.labels || star.hot
+                            anchors.horizontalCenter: parent.horizontalCenter
                             anchors.top: parent.bottom
                             anchors.topMargin: 10
                             text: star.modelData.label
@@ -729,7 +766,7 @@ Scope {
                 textFormat: Text.PlainText
                 x: hub.cx - width / 2
                 y: win.height - 120
-                visible: root.dive < 0.99
+                visible: root.dive < 0.99 && root.home === "constellation"
                 opacity: root.phase(0.6, 1) * (1 - root.dive)
                 text: root.hovered >= 0 && root.hovered < root.shownSections.length ? "Open " + root.shownSections[root.hovered].label.toLowerCase() : "Pick a star, or start typing to search"
                 color: Theme.textSoft
@@ -740,9 +777,9 @@ Scope {
             TextBox {
                 id: search
                 x: hub.cx - width / 2
-                y: win.height * 0.5 - hub.ry - 150
+                y: root.home === "cards" ? Math.max(win.gutter + 8, (win.height - cards.contentHeight) / 2 - search.height - 28) : win.height * 0.5 - hub.ry - 150
                 width: Math.min(win.midW - 40, 560)
-                visible: root.dive < 0.99
+                visible: root.dive < 0.99 && root.home !== "sidebar"
                 opacity: root.phase(0.4, 0.9) * (1 - root.dive)
                 placeholder: "Search settings"
                 onTextChanged: root.query = text
@@ -768,12 +805,36 @@ Scope {
                 }
             }
 
+            CardsHome {
+                id: cards
+                x: (win.width - width) / 2
+                y: search.y + search.height + 28
+                width: Math.min(win.midW, 1240)
+                height: win.height - y - win.gutter
+                visible: root.home === "cards" && root.dive < 0.99
+                enabled: hub.hush < 0.5 && root.section === ""
+                opacity: root.phase(0.2, 0.7) * (1 - root.dive) * (1 - 0.88 * hub.hush)
+                columns: win.roomy ? 3 : 2
+                hubs: root.shownSections
+                hovered: root.hovered
+                onPickedPage: key => root.go(key)
+                onPickedHub: key => root.openHub(key)
+                onHoveredHub: index => root.hovered = index
+            }
+
+            HomePicker {
+                x: win.width - win.gutter - width
+                y: win.gutter + 8
+                visible: root.home !== "sidebar" && root.dive < 0.99
+                opacity: root.phase(0.4, 0.9) * (1 - root.dive)
+            }
+
             SearchResults {
                 id: results
                 x: search.x
                 y: search.y + search.height + 14
                 width: search.width
-                visible: root.query.trim() !== "" && root.dive < 0.99
+                visible: root.query.trim() !== "" && root.dive < 0.99 && root.home !== "sidebar"
                 opacity: hub.hush
                 query: root.query
                 onPicked: entry => root.pickSetting(entry)
