@@ -28,10 +28,10 @@ syl settings close
 sleep 1
 syl settings open
 sleep 1.5
-check sylvaris state settingsPanel | grep -q '"section":"commands","group":"system"'
+check sylvaris state settingsPanel | grep -q '"section":"commands","group":"shortcuts"'
 bg wtype -k Shift_L -s 400 -k Escape
 sleep 1.2
-check sylvaris state settingsPanel | grep -q '"section":"","group":"system"'
+check sylvaris state settingsPanel | grep -q '"section":"","group":"shortcuts"'
 bg wtype -k Shift_L -s 400 -k Tab -s 300 -k Return
 sleep 1.2
 check sylvaris state settingsPanel | grep -q '"section":"[a-z]'
